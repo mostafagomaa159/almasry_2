@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_sizes.dart';
-
 class AuthToggleTabs extends StatelessWidget {
   final String rightTitle;
   final String leftTitle;
@@ -22,71 +19,87 @@ class AuthToggleTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isRtl = Directionality.of(context) == TextDirection.rtl;
+
+    final Widget rightTab = Expanded(
+      child: _ToggleTabItem(
+        title: rightTitle,
+        isSelected: isRightSelected,
+        onTap: onRightTap,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(isRtl ? 0 : 14.r),
+          bottomLeft: Radius.circular(isRtl ? 0 : 14.r),
+          topRight: Radius.circular(isRtl ? 14.r : 0),
+          bottomRight: Radius.circular(isRtl ? 14.r : 0),
+        ),
+      ),
+    );
+
+    final Widget leftTab = Expanded(
+      child: _ToggleTabItem(
+        title: leftTitle,
+        isSelected: !isRightSelected,
+        onTap: onLeftTap,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(isRtl ? 14.r : 0),
+          bottomLeft: Radius.circular(isRtl ? 14.r : 0),
+          topRight: Radius.circular(isRtl ? 0 : 14.r),
+          bottomRight: Radius.circular(isRtl ? 0 : 14.r),
+        ),
+      ),
+    );
+
     return Container(
-      height: 56.h,
+      height: 58.h,
       decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(30.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 18,
-            offset: const Offset(0, 6),
-          ),
-        ],
+        color: const Color(0xFFF4F4F4),
+        borderRadius: BorderRadius.circular(16.r),
       ),
       child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: onLeftTap,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: !isRightSelected
-                      ? AppColors.primaryRed
-                      : AppColors.white,
-                  borderRadius: BorderRadius.circular(30.r),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  leftTitle,
-                  textDirection: TextDirection.rtl,
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w700,
-                    color: !isRightSelected
-                        ? AppColors.white
-                        : AppColors.textPrimary,
-                  ),
-                ),
+        children: isRtl ? [rightTab, leftTab] : [leftTab, rightTab],
+      ),
+    );
+  }
+}
+
+class _ToggleTabItem extends StatelessWidget {
+  final String title;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final BorderRadius borderRadius;
+
+  const _ToggleTabItem({
+    required this.title,
+    required this.isSelected,
+    required this.onTap,
+    required this.borderRadius,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: isSelected ? const Color(0xFFD92525) : Colors.white,
+      borderRadius: borderRadius,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: borderRadius,
+        child: Container(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w700,
+                color: isSelected ? Colors.white : const Color(0xFF202020),
               ),
             ),
           ),
-          Expanded(
-            child: GestureDetector(
-              onTap: onRightTap,
-              child: Container(
-                decoration: BoxDecoration(
-                  color:
-                  isRightSelected ? AppColors.primaryRed : AppColors.white,
-                  borderRadius: BorderRadius.circular(30.r),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  rightTitle,
-                  textDirection: TextDirection.rtl,
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w700,
-                    color: isRightSelected
-                        ? AppColors.white
-                        : AppColors.textPrimary,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

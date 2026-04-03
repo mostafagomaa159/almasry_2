@@ -1,18 +1,16 @@
-class Validators {
-  static String? validateRequired(String value) {
-    if (value.trim().isEmpty) {
-      return 'هذا الحقل مطلوب';
-    }
-    return null;
-  }
+import 'package:almasry_2/core/localization/locale_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
 
+
+
+class Validators {
   static String? validateName(String value) {
     if (value.trim().isEmpty) {
-      return 'هذا الحقل مطلوب';
+      return LocaleKeys.requiredField.tr();
     }
 
-    if (value.trim().length < 3) {
-      return 'يجب أن يكون الاسم 3 أحرف على الأقل';
+    if (value.trim().length < 2) {
+      return LocaleKeys.invalidName.tr();
     }
 
     return null;
@@ -20,12 +18,12 @@ class Validators {
 
   static String? validateEmail(String value) {
     if (value.trim().isEmpty) {
-      return 'هذا الحقل مطلوب';
+      return LocaleKeys.requiredField.tr();
     }
 
     final RegExp emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
     if (!emailRegex.hasMatch(value.trim())) {
-      return 'يرجى إدخال بريد إلكتروني صحيح';
+      return LocaleKeys.invalidEmail.tr();
     }
 
     return null;
@@ -33,12 +31,12 @@ class Validators {
 
   static String? validatePhone(String value) {
     if (value.trim().isEmpty) {
-      return 'هذا الحقل مطلوب';
+      return LocaleKeys.requiredField.tr();
     }
 
-    final RegExp phoneRegex = RegExp(r'^01[0125][0-9]{8}$');
+    final RegExp phoneRegex = RegExp(r'^\+?[0-9]{10,15}$');
     if (!phoneRegex.hasMatch(value.trim())) {
-      return 'يرجى إدخال رقم هاتف صحيح';
+      return LocaleKeys.invalidPhone.tr();
     }
 
     return null;
@@ -46,17 +44,17 @@ class Validators {
 
   static String? validateEmailOrPhone(String value) {
     if (value.trim().isEmpty) {
-      return 'هذا الحقل مطلوب';
+      return LocaleKeys.requiredField.tr();
     }
 
     final RegExp emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
-    final RegExp phoneRegex = RegExp(r'^01[0125][0-9]{8}$');
+    final RegExp phoneRegex = RegExp(r'^\+?[0-9]{10,15}$');
 
     final String trimmedValue = value.trim();
 
     if (!emailRegex.hasMatch(trimmedValue) &&
         !phoneRegex.hasMatch(trimmedValue)) {
-      return 'يرجى إدخال بريد إلكتروني أو رقم هاتف صحيح';
+      return LocaleKeys.invalidEmailOrPhone.tr();
     }
 
     return null;
@@ -64,11 +62,30 @@ class Validators {
 
   static String? validatePassword(String value) {
     if (value.trim().isEmpty) {
-      return 'هذا الحقل مطلوب';
+      return LocaleKeys.requiredField.tr();
     }
 
     if (value.length < 8) {
-      return 'يجب أن تكون كلمة المرور 8 أحرف على الأقل';
+      return LocaleKeys.invalidPassword.tr();
+    }
+
+    return null;
+  }
+
+  static String? validateStrongPassword(String value) {
+    if (value.trim().isEmpty) {
+      return LocaleKeys.requiredField.tr();
+    }
+
+    if (value.length < 8) {
+      return LocaleKeys.invalidStrongPassword.tr();
+    }
+
+    final RegExp uppercaseRegex = RegExp(r'[A-Z]');
+    final RegExp numberRegex = RegExp(r'[0-9]');
+
+    if (!uppercaseRegex.hasMatch(value) || !numberRegex.hasMatch(value)) {
+      return LocaleKeys.invalidStrongPassword.tr();
     }
 
     return null;
@@ -79,11 +96,11 @@ class Validators {
     required String confirmPassword,
   }) {
     if (confirmPassword.trim().isEmpty) {
-      return 'هذا الحقل مطلوب';
+      return LocaleKeys.requiredField.tr();
     }
 
     if (password != confirmPassword) {
-      return 'كلمتا المرور غير متطابقتين';
+      return LocaleKeys.passwordNotMatch.tr();
     }
 
     return null;

@@ -1,0 +1,33 @@
+{
+  "login": "تسجيل الدخول",
+  "login_with_phone": "الدخول برقم الهاتف",
+  "email_or_phone": "البريد الالكتروني او رقم الهاتف",
+  "phone_number": "رقم الهاتف",
+  "password": "كلمة المرور",
+  "remember_me": "تذكرني",
+  "forgot_password": "هل نسيت كلمة المرور ؟",
+  "sign_in": "الدخول",
+  "send_verification_code": "ارسل رمز التأكيد",
+  "create_account": "انشاء حساب",
+  "continue_as_guest": "اكمل كضيف",
+  "full_name": "الاسم بالكامل",
+  "confirm_password": "تأكيد كلمة المرور",
+  "blink_home_title": "الصفحة الرئيسية",
+
+  "first_name": "الاسم الأول",
+  "last_name": "الاسم الأخير",
+  "email": "البريد الإلكتروني",
+
+  "password_rule_uppercase": "يجب أن تحتوي على حرف كبير واحد على الأقل",
+  "password_rule_number": "يجب أن تحتوي على رقم واحد على الأقل",
+  "password_rule_length": "يجب ألا تقل عن 8 أحرف",
+
+  "required_field": "هذا الحقل مطلوب",
+  "invalid_email": "يرجى إدخال بريد إلكتروني صحيح",
+  "invalid_phone": "يرجى إدخال رقم هاتف صحيح",
+  "invalid_email_or_phone": "يرجى إدخال بريد إلكتروني أو رقم هاتف صحيح",
+  "invalid_password": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+  "invalid_strong_password": "يجب أن تكون كلمة المرور 8 أحرف على الأقل وتحتوي على حرف كبير ورقم واحد",
+  "password_not_match": "كلمتا المرور غير متطابقتين",
+  "invalid_name": "يجب أن يكون الاسم حرفين على الأقل"
+}

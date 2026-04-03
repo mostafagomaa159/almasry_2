@@ -1,0 +1,33 @@
+{
+  "login": "Login",
+  "login_with_phone": "Login with phone number",
+  "email_or_phone": "Email or phone number",
+  "phone_number": "Phone Number",
+  "password": "Password",
+  "remember_me": "Remember me",
+  "forgot_password": "Forgot password?",
+  "sign_in": "Login",
+  "send_verification_code": "Send verification code",
+  "create_account": "Create account",
+  "continue_as_guest": "Continue as guest",
+  "full_name": "Full Name",
+  "confirm_password": "Confirm Password",
+  "blink_home_title": "Home",
+
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "email": "Email",
+
+  "password_rule_uppercase": "At least 1 capital letter",
+  "password_rule_number": "At least one number",
+  "password_rule_length": "At least 8 characters long",
+
+  "required_field": "This field is required",
+  "invalid_email": "Please enter a valid email",
+  "invalid_phone": "Please enter a valid phone number",
+  "invalid_email_or_phone": "Please enter a valid email or phone number",
+  "invalid_password": "Password must be at least 8 characters",
+  "invalid_strong_password": "Password must be at least 8 characters and include 1 capital letter and 1 number",
+  "password_not_match": "Passwords do not match",
+  "invalid_name": "Must be at least 2 characters"
+}

@@ -1,19 +1,20 @@
+import 'package:almasry_2/core/constants/app_sizes.dart';
+import 'package:almasry_2/core/localization/app_locale.dart';
+import 'package:almasry_2/core/localization/locale_keys.dart';
+import 'package:almasry_2/core/utils/focus_helper.dart';
+import 'package:almasry_2/core/utils/validators.dart';
+import 'package:almasry_2/core/widgets/app_button.dart';
+import 'package:almasry_2/core/widgets/app_text_field.dart';
+import 'package:almasry_2/features/auth/presentation/view_model/auth_cubit.dart';
+import 'package:almasry_2/features/auth/presentation/view_model/auth_state.dart';
+import 'package:almasry_2/features/auth/presentation/widgets/auth_header.dart';
+import 'package:almasry_2/features/auth/presentation/widgets/auth_toggle_tabs.dart';
+import 'package:almasry_2/features/auth/presentation/widgets/remember_me_row.dart';
+import 'package:almasry_2/features/home/presentation/view/blink_home_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../../core/constants/app_sizes.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../core/utils/focus_helper.dart';
-import '../../../../core/utils/validators.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_text_field.dart';
-import '../../../home/presentation/view/blink_home_screen.dart';
-import '../view_model/auth_cubit.dart';
-import '../view_model/auth_state.dart';
-import '../widgets/auth_header.dart';
-import '../widgets/auth_toggle_tabs.dart';
-import '../widgets/remember_me_row.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -162,6 +163,14 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Future<void> _toggleLanguage() async {
+    if (context.locale.languageCode == 'ar') {
+      await context.setLocale(AppLocale.english);
+    } else {
+      await context.setLocale(AppLocale.arabic);
+    }
+  }
+
   Widget _buildRegularLoginForm(AuthState state, AuthCubit authCubit) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -169,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
         AppTextField(
           controller: emailOrPhoneController,
           focusNode: emailOrPhoneFocusNode,
-          hintText: AppStrings.emailOrPhone,
+          hintText: LocaleKeys.emailOrPhone.tr(),
           errorText: state.emailOrPhoneError,
           keyboardType: TextInputType.emailAddress,
           textInputAction: TextInputAction.next,
@@ -182,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
         AppTextField(
           controller: passwordController,
           focusNode: passwordFocusNode,
-          hintText: AppStrings.password,
+          hintText: LocaleKeys.password.tr(),
           errorText: state.passwordError,
           obscureText: state.isPasswordHidden,
           textInputAction: TextInputAction.done,
@@ -202,14 +211,14 @@ class _LoginScreenState extends State<LoginScreen> {
         SizedBox(height: 22.h),
         RememberMeRow(
           isChecked: state.rememberMe,
-          rememberMeTitle: AppStrings.rememberMe,
-          forgotPasswordTitle: AppStrings.forgotPassword,
+          rememberMeTitle: LocaleKeys.rememberMe.tr(),
+          forgotPasswordTitle: LocaleKeys.forgotPassword.tr(),
           onCheckboxTap: authCubit.toggleRememberMe,
           onForgotPasswordTap: () {},
         ),
         SizedBox(height: 34.h),
         AppButton(
-          title: AppStrings.signIn,
+          title: LocaleKeys.signIn.tr(),
           onPressed: _submitRegularLogin,
           isLoading: state.isLoading,
         ),
@@ -224,16 +233,16 @@ class _LoginScreenState extends State<LoginScreen> {
         AppTextField(
           controller: phoneController,
           focusNode: phoneFocusNode,
-          hintText: AppStrings.phoneNumber,
+          hintText: LocaleKeys.phoneNumber.tr(),
           errorText: state.emailOrPhoneError,
           keyboardType: TextInputType.phone,
           textInputAction: TextInputAction.done,
           onChanged: (_) => _clearLoginErrors(),
           onEditingComplete: _submitPhoneLogin,
         ),
-        SizedBox(height: 34.h),
+        SizedBox(height: 60.h),
         AppButton(
-          title: AppStrings.sendVerificationCode,
+          title: LocaleKeys.sendVerificationCode.tr(),
           onPressed: _submitPhoneLogin,
           isLoading: state.isLoading,
         ),
@@ -243,6 +252,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isArabic = context.locale.languageCode == 'ar';
+
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         final AuthCubit authCubit = context.read<AuthCubit>();
@@ -253,51 +264,61 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: EdgeInsets.symmetric(
                 horizontal: AppSizes.screenHorizontalPadding.w,
               ),
-              child: Directionality(
-                textDirection: TextDirection.rtl,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const AuthHeader(),
-                    SizedBox(height: 18.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12.w),
-                      child: AuthToggleTabs(
-                        rightTitle: AppStrings.login,
-                        leftTitle: AppStrings.loginWithPhone,
-                        isRightSelected: isRegularLoginSelected,
-                        onRightTap: () => _onTabChanged(true),
-                        onLeftTap: () => _onTabChanged(false),
-                      ),
-                    ),
-                    SizedBox(height: 34.h),
-                    if (isRegularLoginSelected)
-                      _buildRegularLoginForm(state, authCubit)
-                    else
-                      _buildPhoneLoginForm(state),
-                    SizedBox(height: 16.h),
-                    AppButton(
-                      title: AppStrings.createAccount,
-                      onPressed: _goToRegisterScreen,
-                      isPrimary: false,
-                    ),
-                    SizedBox(height: 30.h),
-                    Center(
-                      child: GestureDetector(
-                        onTap: _continueAsGuest,
-                        child: Text(
-                          AppStrings.continueAsGuest,
-                          style: TextStyle(
-                            fontSize: 17.sp,
-                            fontWeight: FontWeight.w600,
-                            decoration: TextDecoration.underline,
-                          ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const AuthHeader(),
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: TextButton(
+                      onPressed: _toggleLanguage,
+                      child: Text(
+                        isArabic ? 'EN' : 'AR',
+                        style: TextStyle(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
-                    SizedBox(height: 24.h),
-                  ],
-                ),
+                  ),
+                  SizedBox(height: 8.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12.w),
+                    child: AuthToggleTabs(
+                      rightTitle: LocaleKeys.login.tr(),
+                      leftTitle: LocaleKeys.loginWithPhone.tr(),
+                      isRightSelected: isRegularLoginSelected,
+                      onRightTap: () => _onTabChanged(true),
+                      onLeftTap: () => _onTabChanged(false),
+                    ),
+                  ),
+                  SizedBox(height: 34.h),
+                  if (isRegularLoginSelected)
+                    _buildRegularLoginForm(state, authCubit)
+                  else
+                    _buildPhoneLoginForm(state),
+                  SizedBox(height: 16.h),
+                  AppButton(
+                    title: LocaleKeys.createAccount.tr(),
+                    onPressed: _goToRegisterScreen,
+                    isPrimary: false,
+                  ),
+                  SizedBox(height: 30.h),
+                  Center(
+                    child: GestureDetector(
+                      onTap: _continueAsGuest,
+                      child: Text(
+                        LocaleKeys.continueAsGuest.tr(),
+                        style: TextStyle(
+                          fontSize: 17.sp,
+                          fontWeight: FontWeight.w600,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 24.h),
+                ],
               ),
             ),
           ),

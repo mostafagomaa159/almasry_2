@@ -1,7 +1,7 @@
+import 'package:almasry_2/core/constants/app_colors.dart';
+import 'package:almasry_2/core/utils/app_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../../core/constants/app_colors.dart';
 
 class AuthHeader extends StatelessWidget {
   const AuthHeader({super.key});
@@ -29,7 +29,7 @@ class AuthHeader extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.only(top: 30.h),
               child: Image.asset(
-                'assets/images/logo.png',
+                AppLogo.asset(context),
                 width: 250.w,
                 fit: BoxFit.contain,
               ),

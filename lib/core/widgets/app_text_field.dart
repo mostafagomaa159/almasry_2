@@ -1,96 +1,87 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../constants/app_colors.dart';
-import '../constants/app_sizes.dart';
-
 class AppTextField extends StatelessWidget {
   final TextEditingController controller;
-  final FocusNode focusNode;
+  final FocusNode? focusNode;
   final String hintText;
   final String? errorText;
   final bool obscureText;
   final TextInputType keyboardType;
-  final Widget? prefixIcon;
-  final Widget? suffixIcon;
-  final ValueChanged<String>? onChanged;
   final TextInputAction textInputAction;
+  final Widget? suffixIcon;
+  final void Function(String)? onChanged;
   final VoidCallback? onEditingComplete;
 
   const AppTextField({
     super.key,
     required this.controller,
-    required this.focusNode,
     required this.hintText,
+    this.focusNode,
     this.errorText,
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
-    this.prefixIcon,
+    this.textInputAction = TextInputAction.next,
     this.suffixIcon,
     this.onChanged,
-    this.textInputAction = TextInputAction.next,
     this.onEditingComplete,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: TextField(
-        controller: controller,
-        focusNode: focusNode,
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-        textInputAction: textInputAction,
-        onChanged: onChanged,
-        onEditingComplete: onEditingComplete,
-        style: TextStyle(
-          fontSize: 16.sp,
-          color: AppColors.textPrimary,
-          fontWeight: FontWeight.w500,
+    return TextFormField(
+      controller: controller,
+      focusNode: focusNode,
+      obscureText: obscureText,
+      keyboardType: keyboardType,
+      textInputAction: textInputAction,
+      onChanged: onChanged,
+      onEditingComplete: onEditingComplete,
+      style: TextStyle(
+        fontSize: 18.sp,
+        color: Colors.black87,
+        fontWeight: FontWeight.w400,
+      ),
+      decoration: InputDecoration(
+        hintText: hintText,
+        errorText: errorText,
+        hintStyle: TextStyle(
+          fontSize: 18.sp,
+          color: const Color(0xFF3A3A4A),
+          fontWeight: FontWeight.w400,
         ),
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: TextStyle(
-            fontSize: 16.sp,
-            color: AppColors.textSecondary,
-            fontWeight: FontWeight.w500,
+        suffixIcon: suffixIcon,
+        suffixIconColor: Colors.black54,
+        isDense: true,
+        contentPadding: EdgeInsets.symmetric(vertical: 18.h),
+        enabledBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: Color(0xFFCFCFCF),
+            width: 1.4,
           ),
-          errorText: errorText,
-          errorStyle: TextStyle(
-            fontSize: 12.sp,
+        ),
+        focusedBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: Color(0xFFB71C1C),
+            width: 1.6,
+          ),
+        ),
+        errorBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(
             color: Colors.red,
+            width: 1.4,
           ),
-          prefixIcon: prefixIcon,
-          suffixIcon: suffixIcon,
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 12.w,
-            vertical: 18.h,
+        ),
+        focusedErrorBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.red,
+            width: 1.6,
           ),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color: AppColors.border,
-              width: 1.w,
-            ),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color: AppColors.darkBlue,
-              width: 1.2.w,
-            ),
-          ),
-          errorBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.red,
-              width: 1.w,
-            ),
-          ),
-          focusedErrorBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.red,
-              width: 1.2.w,
-            ),
-          ),
+        ),
+        errorStyle: TextStyle(
+          fontSize: 12.sp,
+          color: Colors.red,
+          fontWeight: FontWeight.w400,
         ),
       ),
     );

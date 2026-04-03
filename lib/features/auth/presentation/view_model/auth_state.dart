@@ -9,6 +9,11 @@ class AuthState {
   final String? passwordError;
   final String? confirmPasswordError;
 
+  final String? firstNameError;
+  final String? lastNameError;
+  final String? phoneError;
+  final String? emailError;
+
   const AuthState({
     this.isPasswordHidden = true,
     this.isConfirmPasswordHidden = true,
@@ -18,6 +23,10 @@ class AuthState {
     this.emailOrPhoneError,
     this.passwordError,
     this.confirmPasswordError,
+    this.firstNameError,
+    this.lastNameError,
+    this.phoneError,
+    this.emailError,
   });
 
   AuthState copyWith({
@@ -29,6 +38,10 @@ class AuthState {
     String? emailOrPhoneError,
     String? passwordError,
     String? confirmPasswordError,
+    String? firstNameError,
+    String? lastNameError,
+    String? phoneError,
+    String? emailError,
   }) {
     return AuthState(
       isPasswordHidden: isPasswordHidden ?? this.isPasswordHidden,
@@ -40,6 +53,10 @@ class AuthState {
       emailOrPhoneError: emailOrPhoneError,
       passwordError: passwordError,
       confirmPasswordError: confirmPasswordError,
+      firstNameError: firstNameError,
+      lastNameError: lastNameError,
+      phoneError: phoneError,
+      emailError: emailError,
     );
   }
 }

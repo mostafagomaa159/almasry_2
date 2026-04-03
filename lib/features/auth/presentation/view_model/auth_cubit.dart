@@ -53,17 +53,31 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void setRegisterValidationErrors({
-    String? nameError,
-    String? emailOrPhoneError,
+    String? firstNameError,
+    String? lastNameError,
+    String? phoneError,
+    String? emailError,
     String? passwordError,
-    String? confirmPasswordError,
   }) {
     emit(
       state.copyWith(
-        nameError: nameError,
-        emailOrPhoneError: emailOrPhoneError,
+        firstNameError: firstNameError,
+        lastNameError: lastNameError,
+        phoneError: phoneError,
+        emailError: emailError,
         passwordError: passwordError,
-        confirmPasswordError: confirmPasswordError,
+      ),
+    );
+  }
+
+  void clearRegisterValidationErrors() {
+    emit(
+      state.copyWith(
+        firstNameError: null,
+        lastNameError: null,
+        phoneError: null,
+        emailError: null,
+        passwordError: null,
       ),
     );
   }
@@ -75,6 +89,10 @@ class AuthCubit extends Cubit<AuthState> {
         emailOrPhoneError: null,
         passwordError: null,
         confirmPasswordError: null,
+        firstNameError: null,
+        lastNameError: null,
+        phoneError: null,
+        emailError: null,
       ),
     );
   }
