@@ -16,6 +16,8 @@ class HomeOfferTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isArabic = context.locale.languageCode == 'ar';
+
     final List<String> tabs = [
       LocaleKeys.homeBeautyOffers.tr(),
       LocaleKeys.homePersonalCareOffers.tr(),
@@ -23,10 +25,10 @@ class HomeOfferTabs extends StatelessWidget {
     ];
 
     return SizedBox(
-      height: 42.h,
+      height: 46.h,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        reverse: true,
+        reverse: isArabic,
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         itemCount: tabs.length,
         separatorBuilder: (_, __) => SizedBox(width: 8.w),
@@ -36,7 +38,8 @@ class HomeOfferTabs extends StatelessWidget {
           return GestureDetector(
             onTap: () => onTap(index),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 14.w),
+              constraints: BoxConstraints(minWidth: 95.w),
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
               decoration: BoxDecoration(
                 color: isSelected ? AppColors.primaryRed : AppColors.white,
                 borderRadius: BorderRadius.circular(10.r),
@@ -52,6 +55,9 @@ class HomeOfferTabs extends StatelessWidget {
               alignment: Alignment.center,
               child: Text(
                 tabs[index],
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13.sp,
                   color: isSelected ? AppColors.white : AppColors.textPrimary,

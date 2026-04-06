@@ -32,8 +32,8 @@ class HomeHeader extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  width: 64.w,
-                  height: 64.h,
+                  width: 44.w,
+                  height: 44.h,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(

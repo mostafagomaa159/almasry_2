@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:almasry_2/features/home/presentation/view_model/home_cubit.dart';
 import 'package:almasry_2/features/home/presentation/view_model/home_state.dart';
@@ -25,25 +27,54 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late final PageController bannerController;
+  Timer? bannerTimer;
+
+  final List<String> banners = [
+    'assets/images/Red_Big_Card.png',
+    'assets/images/Red_Big_Card.png',
+    'assets/images/Red_Big_Card.png',
+  ];
 
   @override
   void initState() {
     super.initState();
     bannerController = PageController();
+    _startBannerAutoSlide();
+  }
+
+  void _startBannerAutoSlide() {
+    bannerTimer?.cancel();
+
+    bannerTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (!mounted || !bannerController.hasClients || banners.isEmpty) {
+        return;
+      }
+
+      final int currentPage =
+          bannerController.page?.round() ?? bannerController.initialPage;
+      final int nextPage = (currentPage + 1) % banners.length;
+
+      bannerController.animateToPage(
+        nextPage,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    });
   }
 
   @override
   void dispose() {
+    bannerTimer?.cancel();
     bannerController.dispose();
     super.dispose();
   }
 
-  Widget _buildProductsList() {
+  Widget _buildProductsList(bool isArabic) {
     return SizedBox(
-      height: 318.h,
+      height: 330.h,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        reverse: true,
+        reverse: isArabic,
         padding: EdgeInsets.symmetric(horizontal: 4.w),
         itemCount: 4,
         itemBuilder: (context, index) {
@@ -53,12 +84,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildGoalsList() {
+  Widget _buildGoalsList(bool isArabic) {
     return SizedBox(
       height: 102.h,
       child: ListView(
         scrollDirection: Axis.horizontal,
-        reverse: true,
+        reverse: isArabic,
         padding: EdgeInsets.symmetric(horizontal: 4.w),
         children: [
           WideInfoCard(
@@ -74,12 +105,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildConcernsList() {
+  Widget _buildConcernsList(bool isArabic) {
     return SizedBox(
       height: 102.h,
       child: ListView(
         scrollDirection: Axis.horizontal,
-        reverse: true,
+        reverse: isArabic,
         padding: EdgeInsets.symmetric(horizontal: 4.w),
         children: [
           WideInfoCard(
@@ -104,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisSpacing: 12.h,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        childAspectRatio: 0.88,
+        childAspectRatio: 0.82,
         children: [
           ServiceCard(
             iconPath: 'assets/images/Red_Big_Card.png',
@@ -133,6 +164,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isArabic = context.locale.languageCode == 'ar';
+
     return BlocProvider(
       create: (_) => HomeCubit(),
       child: BlocBuilder<HomeCubit, HomeState>(
@@ -167,6 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               controller: bannerController,
                               currentIndex: state.currentBannerIndex,
                               onPageChanged: homeCubit.changeBannerIndex,
+                              banners: banners,
                             ),
                             SizedBox(height: 24.h),
                             HomeSectionHeader(
@@ -178,13 +212,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               onTap: homeCubit.changeOfferTab,
                             ),
                             SizedBox(height: 16.h),
-                            _buildProductsList(),
+                            _buildProductsList(isArabic),
                             SizedBox(height: 22.h),
                             HomeSectionHeader(
                               title: LocaleKeys.homeGoals.tr(),
                             ),
                             SizedBox(height: 12.h),
-                            _buildGoalsList(),
+                            _buildGoalsList(isArabic),
                             SizedBox(height: 18.h),
                             const BrandStrip(),
                             SizedBox(height: 24.h),
@@ -192,13 +226,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               title: LocaleKeys.homeBestSelling.tr(),
                             ),
                             SizedBox(height: 16.h),
-                            _buildProductsList(),
+                            _buildProductsList(isArabic),
                             SizedBox(height: 22.h),
                             HomeSectionHeader(
                               title: LocaleKeys.homeConcerns.tr(),
                             ),
                             SizedBox(height: 12.h),
-                            _buildConcernsList(),
+                            _buildConcernsList(isArabic),
                             SizedBox(height: 22.h),
                             _buildServicesGrid(),
                           ],

@@ -16,7 +16,8 @@ class HomeSearchBar extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: TextField(
-        textAlign: TextAlign.right,
+        textAlign: TextAlign.start,
+        textDirection: Directionality.of(context),
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: LocaleKeys.homeSearch.tr(),
@@ -29,7 +30,7 @@ class HomeSearchBar extends StatelessWidget {
             horizontal: 14.w,
             vertical: 10.h,
           ),
-          suffixIcon: Icon(
+          prefixIcon: Icon(
             Icons.search,
             color: AppColors.textSecondary,
             size: 24.sp,

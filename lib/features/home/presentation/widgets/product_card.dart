@@ -10,7 +10,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 165.w,
+      width: 175.w,
       margin: EdgeInsetsDirectional.only(start: 10.w),
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -24,7 +24,7 @@ class ProductCard extends StatelessWidget {
             borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
             child: Image.asset(
               'assets/images/Red_Big_Card.png',
-              height: 150.h,
+              height: 145.h,
               fit: BoxFit.cover,
             ),
           ),
@@ -32,7 +32,9 @@ class ProductCard extends StatelessWidget {
             padding: EdgeInsets.only(top: 6.h, right: 10.w, left: 10.w),
             child: Text(
               LocaleKeys.homeDiscountBadge.tr(),
-              textAlign: TextAlign.right,
+              textAlign: TextAlign.start,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 13.sp,
                 color: AppColors.textPrimary,
@@ -44,8 +46,9 @@ class ProductCard extends StatelessWidget {
             padding: EdgeInsets.only(top: 4.h, right: 10.w, left: 10.w),
             child: Text(
               LocaleKeys.homeProductTitle.tr(),
-              textAlign: TextAlign.right,
+              textAlign: TextAlign.start,
               maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 15.sp,
                 color: AppColors.textPrimary,
@@ -58,7 +61,9 @@ class ProductCard extends StatelessWidget {
             padding: EdgeInsets.only(top: 6.h, right: 10.w, left: 10.w),
             child: Text(
               LocaleKeys.homePrice.tr(),
-              textAlign: TextAlign.right,
+              textAlign: TextAlign.start,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 18.sp,
                 color: AppColors.textPrimary,

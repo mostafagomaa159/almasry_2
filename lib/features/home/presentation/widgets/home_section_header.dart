@@ -20,21 +20,30 @@ class HomeSectionHeader extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 10.w),
       child: Row(
         children: [
-          Text(
-            actionTitle ?? LocaleKeys.homeMore.tr(),
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: AppColors.primaryRed,
-              fontWeight: FontWeight.w700,
+          Flexible(
+            child: Text(
+              actionTitle ?? LocaleKeys.homeMore.tr(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: AppColors.primaryRed,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
-          const Spacer(),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 24.sp,
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.w800,
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.end,
+              style: TextStyle(
+                fontSize: 22.sp,
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ),
         ],

@@ -6,22 +6,18 @@ class HomeBannerSlider extends StatelessWidget {
   final PageController controller;
   final int currentIndex;
   final ValueChanged<int> onPageChanged;
+  final List<String> banners;
 
   const HomeBannerSlider({
     super.key,
     required this.controller,
     required this.currentIndex,
     required this.onPageChanged,
+    required this.banners,
   });
 
   @override
   Widget build(BuildContext context) {
-    final List<String> banners = [
-      'assets/images/Red_Big_Card.png',
-      'assets/images/Red_Big_Card.png',
-      'assets/images/Red_Big_Card.png',
-    ];
-
     return Column(
       children: [
         SizedBox(
