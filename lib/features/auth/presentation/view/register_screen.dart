@@ -8,7 +8,7 @@ import 'package:almasry_2/core/widgets/app_text_field.dart';
 import 'package:almasry_2/features/auth/presentation/view_model/auth_cubit.dart';
 import 'package:almasry_2/features/auth/presentation/view_model/auth_state.dart';
 import 'package:almasry_2/features/auth/presentation/widgets/auth_header.dart';
-import 'package:almasry_2/features/home/presentation/view/blink_home_screen.dart';
+import 'package:almasry_2/features/home/presentation/view/home_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -138,7 +138,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => const BlinkHomeScreen(),
+        builder: (_) => const HomeScreen(),
       ),
     );
   }
