@@ -1,21 +1,11 @@
-import 'package:almasry_2/core/constants/app_sizes.dart';
-import 'package:almasry_2/core/localization/app_locale.dart';
-import 'package:almasry_2/core/localization/locale_keys.dart';
-import 'package:almasry_2/core/utils/focus_helper.dart';
-import 'package:almasry_2/core/utils/validators.dart';
-import 'package:almasry_2/core/widgets/app_button.dart';
-import 'package:almasry_2/core/widgets/app_text_field.dart';
-import 'package:almasry_2/features/auth/presentation/view_model/auth_cubit.dart';
-import 'package:almasry_2/features/auth/presentation/view_model/auth_state.dart';
-import 'package:almasry_2/features/auth/presentation/widgets/auth_header.dart';
-import 'package:almasry_2/features/auth/presentation/widgets/auth_toggle_tabs.dart';
-import 'package:almasry_2/features/auth/presentation/widgets/remember_me_row.dart';
-import 'package:almasry_2/features/home/presentation/view/home_screen.dart';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'register_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'package:almasry_2/features/auth/auth.dart';
+import 'package:almasry_2/core/core.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -103,12 +93,8 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const HomeScreen(),
-      ),
-    );
+    context.push(AppRoutes.home);
+
   }
 
   Future<void> _submitPhoneLogin() async {
@@ -133,34 +119,21 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const HomeScreen(),
-      ),
-    );
+    context.push(AppRoutes.home);
+
   }
 
   void _goToRegisterScreen() {
     FocusHelper.unfocusKeyboard(context);
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const RegisterScreen(),
-      ),
-    );
+    context.push(AppRoutes.signup);
+
   }
 
   void _continueAsGuest() {
     FocusHelper.unfocusKeyboard(context);
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const HomeScreen(),
-      ),
-    );
+    context.push(AppRoutes.home);
   }
 
   Future<void> _toggleLanguage() async {

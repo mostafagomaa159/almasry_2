@@ -122,7 +122,7 @@ class HomeBottomNavBar extends StatelessWidget {
             if (showBadge)
               Positioned(
                 top: 12.h,
-                right: 24.w,
+                right: 80.w,
                 child: Container(
                   width: 16.w,
                   height: 16.h,

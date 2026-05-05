@@ -1,21 +1,10 @@
-import 'package:almasry_2/core/constants/app_sizes.dart';
-import 'package:almasry_2/core/localization/app_locale.dart';
-import 'package:almasry_2/core/localization/locale_keys.dart';
-import 'package:almasry_2/core/utils/focus_helper.dart';
-import 'package:almasry_2/core/utils/validators.dart';
-import 'package:almasry_2/core/widgets/app_button.dart';
-import 'package:almasry_2/core/widgets/app_text_field.dart';
-import 'package:almasry_2/features/auth/presentation/view_model/auth_cubit.dart';
-import 'package:almasry_2/features/auth/presentation/view_model/auth_state.dart';
-import 'package:almasry_2/features/auth/presentation/widgets/auth_header.dart';
-import 'package:almasry_2/features/home/presentation/view/home_screen.dart';
+import 'package:almasry_2/core/core.dart';
+import 'package:almasry_2/features/auth/auth.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-
-import 'login_screen.dart';
+import 'package:go_router/go_router.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -135,23 +124,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const HomeScreen(),
-      ),
-    );
+    context.go(AppRoutes.home);
   }
 
   void _goToLogin() {
     FocusHelper.unfocusKeyboard(context);
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const LoginScreen(),
-      ),
-    );
+    context.go(AppRoutes.login);
   }
 
   Widget _buildPasswordRules() {
