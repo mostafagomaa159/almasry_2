@@ -62,4 +62,43 @@ class LocaleKeys {
   static const String cart = 'cart';
   static const String categories = 'categories';
   static const String homePharmacy = 'home_pharmacy';
+
+  // Profile - guest screen
+  static const String guestStartWithPharmacy = 'guest_start_with_pharmacy';
+  static const String start = 'start';
+  static const String changeLanguage = 'change_language';
+  static const String wishlist = 'wishlist';
+  static const String appVersion = 'app_version';
+
+  // Profile - logged user placeholders / labels
+  static const String profileNameNotAdded = 'profile_name_not_added';
+  static const String profileEmailNotAdded = 'profile_email_not_added';
+  static const String profilePhoneNotAdded = 'profile_phone_not_added';
+  static const String profileNotAdded = 'profile_not_added';
+
+  static const String profilePhoneLabel = 'profile_phone_label';
+  static const String profileGenderLabel = 'profile_gender_label';
+  static const String profileBirthDateLabel = 'profile_birth_date_label';
+  static const String profilePregnancyLabel = 'profile_pregnancy_label';
+  static const String profileChronicDiseaseLabel = 'profile_chronic_disease_label';
+
+  static const String profileOrders = 'profile_orders';
+  static const String profileShippingData = 'profile_shipping_data';
+  static const String profilePaymentMethods = 'profile_payment_methods';
+  static const String profileNews = 'profile_news';
+  static const String profilePointsProgram = 'profile_points_program';
+
+  static const String back = 'back';
+
+  //Edit Profile
+  static const String editAccount='editAccount';
+  static const String choose= 'choose';
+  static const String yes = 'yes';
+  static const String no = 'no';
+  static const String male = 'male';
+  static const String female = 'female';
+  static const String save = 'save';
+  static const String savedSuccessfully = 'savedSuccessfully';
+  static const String diseaseType = 'diseaseType';
+
 }

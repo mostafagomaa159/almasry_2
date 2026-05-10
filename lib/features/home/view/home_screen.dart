@@ -1,15 +1,21 @@
 import 'dart:async';
-import 'package:almasry_2/features/home/presentation/widgets/widgets.dart';
 import 'package:almasry_2/core/localization/locale_keys.dart';
-import 'package:almasry_2/features/home/presentation/view_model/home_cubit.dart';
-import 'package:almasry_2/features/home/presentation/view_model/home_state.dart';
+import 'package:almasry_2/core/routing/app_routes.dart';
+import 'package:almasry_2/features/home/data/home_mock_data.dart';
+import 'package:almasry_2/features/home/home.dart';
+import 'package:almasry_2/features/home/view_model/home_state.dart';
+import 'package:almasry_2/features/home/widgets/widgets.dart';
+import 'package:almasry_2/features/profile/view_model/profile_args.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final ProfileArgs? args;
+
+  const HomeScreen({super.key, this.args});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -19,11 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late final PageController bannerController;
   Timer? bannerTimer;
 
-  final List<String> banners = [
-    'assets/images/Red_Big_Card.png',
-    'assets/images/Red_Big_Card.png',
-    'assets/images/Red_Big_Card.png',
-  ];
+  List<String> get banners => HomeMockData.banners;
 
   @override
   void initState() {
@@ -59,102 +61,22 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  Widget _buildProductsList(bool isArabic) {
-    return SizedBox(
-      height: 330.h,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        reverse: isArabic,
-        padding: EdgeInsets.symmetric(horizontal: 4.w),
-        itemCount: 4,
-        itemBuilder: (context, index) {
-          return const ProductCard();
-        },
-      ),
-    );
-  }
+  String _buildWelcomeName() {
+    final String? firstName = widget.args?.firstName?.trim();
+    final String? email = widget.args?.email?.trim();
+    final String? phone = widget.args?.phone?.trim();
 
-  Widget _buildGoalsList(bool isArabic) {
-    return SizedBox(
-      height: 102.h,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        reverse: isArabic,
-        padding: EdgeInsets.symmetric(horizontal: 4.w),
-        children: [
-          WideInfoCard(
-            title: LocaleKeys.homeGoalFitness.tr(),
-            imagePath: 'assets/images/Red_Big_Card.png',
-          ),
-          WideInfoCard(
-            title: LocaleKeys.homeGoalSkinCare.tr(),
-            imagePath: 'assets/images/Red_Big_Card.png',
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildConcernsList(bool isArabic) {
-    return SizedBox(
-      height: 102.h,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        reverse: isArabic,
-        padding: EdgeInsets.symmetric(horizontal: 4.w),
-        children: [
-          WideInfoCard(
-            title: LocaleKeys.homeConcernHeadache.tr(),
-            imagePath: 'assets/images/Red_Big_Card.png',
-          ),
-          WideInfoCard(
-            title: LocaleKeys.homeConcernTitle.tr(),
-            imagePath: 'assets/images/Red_Big_Card.png',
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildServicesGrid() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10.w),
-      child: GridView.count(
-        crossAxisCount: 2,
-        crossAxisSpacing: 12.w,
-        mainAxisSpacing: 12.h,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        childAspectRatio: 0.82,
-        children: [
-          ServiceCard(
-            iconPath: 'assets/images/Red_Big_Card.png',
-            title: LocaleKeys.homeSafeShopping.tr(),
-            description: LocaleKeys.homeSafeShoppingDesc.tr(),
-          ),
-          ServiceCard(
-            iconPath: 'assets/images/Red_Big_Card.png',
-            title: LocaleKeys.homeFastShipping.tr(),
-            description: LocaleKeys.homeFastShippingDesc.tr(),
-          ),
-          ServiceCard(
-            iconPath: 'assets/images/Red_Big_Card.png',
-            title: LocaleKeys.homeMoneyBack.tr(),
-            description: LocaleKeys.homeMoneyBackDesc.tr(),
-          ),
-          ServiceCard(
-            iconPath: 'assets/images/Red_Big_Card.png',
-            title: LocaleKeys.homeCustomerService.tr(),
-            description: LocaleKeys.homeCustomerServiceDesc.tr(),
-          ),
-        ],
-      ),
-    );
+    if (firstName != null && firstName.isNotEmpty) return firstName;
+    if (email != null && email.isNotEmpty) return email;
+    if (phone != null && phone.isNotEmpty) return phone;
+    if (widget.args?.isGuest == true) return 'Guest';
+    return 'User';
   }
 
   @override
   Widget build(BuildContext context) {
     final bool isArabic = context.locale.languageCode == 'ar';
+    final String welcomeName = _buildWelcomeName();
 
     return BlocProvider(
       create: (_) => HomeCubit(),
@@ -166,7 +88,16 @@ class _HomeScreenState extends State<HomeScreen> {
             backgroundColor: const Color(0xFFF8F8F8),
             bottomNavigationBar: HomeBottomNavBar(
               selectedIndex: state.selectedBottomNavIndex,
-              onTap: homeCubit.changeBottomNavIndex,
+              onTap: (index) {
+                homeCubit.changeBottomNavIndex(index);
+
+                if (index == 0) {
+                  context.push(
+                    AppRoutes.profile,
+                    extra: widget.args,
+                  );
+                }
+              },
             ),
             body: SafeArea(
               top: false,
@@ -202,13 +133,18 @@ class _HomeScreenState extends State<HomeScreen> {
                               onTap: homeCubit.changeOfferTab,
                             ),
                             SizedBox(height: 16.h),
-                            _buildProductsList(isArabic),
+                            HomeProductsSection(
+                              isArabic: isArabic,
+                            ),
                             SizedBox(height: 22.h),
                             HomeSectionHeader(
                               title: LocaleKeys.homeGoals.tr(),
                             ),
                             SizedBox(height: 12.h),
-                            _buildGoalsList(isArabic),
+                            HomeGoalsSection(
+                              isArabic: isArabic,
+                              items: HomeMockData.goals(),
+                            ),
                             SizedBox(height: 18.h),
                             const BrandStrip(),
                             SizedBox(height: 24.h),
@@ -216,15 +152,22 @@ class _HomeScreenState extends State<HomeScreen> {
                               title: LocaleKeys.homeBestSelling.tr(),
                             ),
                             SizedBox(height: 16.h),
-                            _buildProductsList(isArabic),
+                            HomeProductsSection(
+                              isArabic: isArabic,
+                            ),
                             SizedBox(height: 22.h),
                             HomeSectionHeader(
                               title: LocaleKeys.homeConcerns.tr(),
                             ),
                             SizedBox(height: 12.h),
-                            _buildConcernsList(isArabic),
+                            HomeConcernsSection(
+                              isArabic: isArabic,
+                              items: HomeMockData.concerns(),
+                            ),
                             SizedBox(height: 22.h),
-                            _buildServicesGrid(),
+                            HomeServicesSection(
+                              items: HomeMockData.services(),
+                            ),
                           ],
                         ),
                       ),

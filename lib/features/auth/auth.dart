@@ -1,7 +1,7 @@
-export 'presentation/view/login_screen.dart';
-export 'presentation/view/register_screen.dart';
-export 'presentation/view_model/auth_cubit.dart';
-export 'presentation/view_model/auth_state.dart';
-export 'presentation/widgets/auth_header.dart';
-export 'presentation/widgets/auth_toggle_tabs.dart';
-export 'presentation/widgets/remember_me_row.dart';
+export 'view/login_screen.dart';
+export 'view/register_screen.dart';
+export 'view_model/auth_cubit.dart';
+export 'view_model/auth_state.dart';
+export 'widgets/auth_header.dart';
+export 'widgets/auth_toggle_tabs.dart';
+export 'widgets/remember_me_row.dart';

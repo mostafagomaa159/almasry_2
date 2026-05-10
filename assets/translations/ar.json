@@ -57,8 +57,42 @@
   "home_money_back_desc": "ضمان استعادة الأموال!\nألا يعجبك؟ أعده إلينا!",
   "home_customer_service": "خدمة العملاء",
   "home_customer_service_desc": "سفراء العافية يقفون إلى\nجانبك 7 أيام في الأسبوع.",
-  "profile": "Profile",
-  "cart": "cart",
-  "categories": "Categories",
-  "home_pharmacy": "المصري"
+  "profile": "الملف الشخصي",
+  "cart": "السلة",
+  "categories": "التصنيفات",
+  "home_pharmacy": "المصري",
+  "guest_start_with_pharmacy": "ابدأ مع صيدلية المصري",
+  "start": "ابدأ",
+  "change_language": "تغيير اللغة",
+  "wishlist": "المفضلة",
+  "app_version": "الإصدار",
+
+  "profile_name_not_added": "لم يتم إضافة الاسم",
+  "profile_email_not_added": "لم يتم إضافة البريد الإلكتروني",
+  "profile_phone_not_added": "لم يتم إضافة رقم الهاتف",
+  "profile_not_added": "لم يتم الإضافة",
+
+  "profile_phone_label": "الهاتف :",
+  "profile_gender_label": "النوع :",
+  "profile_birth_date_label": "تاريخ الميلاد :",
+  "profile_pregnancy_label": "هل يوجد حمل :",
+  "profile_chronic_disease_label": "مرض مزمن :",
+
+  "profile_orders": "الطلبات",
+  "profile_shipping_data": "بيانات الشحن",
+  "profile_payment_methods": "طرق الدفع",
+  "profile_news": "أخبار تهمك",
+  "profile_points_program": "برنامج النقاط",
+
+  "back": "رجوع",
+
+  "editAccount": "تعديل الحساب",
+  "choose": "اختر ...",
+  "yes": "نعم",
+  "no": "لا",
+  "male": "ذكر",
+  "female": "أنثى",
+  "save": "حفظ",
+  "savedSuccessfully": "تم حفظ البيانات بنجاح",
+  "diseaseType": "نوع المرض"
 }

@@ -60,5 +60,40 @@
   "profile": "Profile",
   "cart": "Cart",
   "categories": "Categories",
-  "home_pharmacy": "Almasry"
+  "home_pharmacy": "Almasry",
+  "guest_start_with_pharmacy": "Start with the Almasry Pharmacy",
+  "start": "Start",
+  "change_language": "Change language",
+  "wishlist": "Wishlist",
+  "app_version": "Version",
+
+
+  "profile_name_not_added": "Name not added",
+  "profile_email_not_added": "Email not added",
+  "profile_phone_not_added": "Phone number not added",
+  "profile_not_added": "Not added",
+
+  "profile_phone_label": "Phone :",
+  "profile_gender_label": "Gender :",
+  "profile_birth_date_label": "Birth date :",
+  "profile_pregnancy_label": "Pregnancy :",
+  "profile_chronic_disease_label": "Chronic disease :",
+
+  "profile_orders": "Orders",
+  "profile_shipping_data": "Shipping Data",
+  "profile_payment_methods": "Payment Methods",
+  "profile_news": "News For You",
+  "profile_points_program": "Points Program",
+
+  "back": "Back",
+
+  "editAccount": "Edit Account",
+  "choose": "Choose...",
+  "yes": "Yes",
+  "no": "No",
+  "male": "Male",
+  "female": "Female",
+  "save": "Save",
+  "savedSuccessfully": "Profile saved successfully",
+  "diseaseType": "Disease Type"
 }

@@ -1,0 +1,207 @@
+import 'package:almasry_2/core/localization/locale_keys.dart';
+import 'package:almasry_2/features/edit_profile/view_model/edit_profile_args.dart';
+import 'package:almasry_2/features/profile/profile.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+
+class AccountProfileView extends StatefulWidget {
+  final ProfileArgs? args;
+
+  const AccountProfileView({super.key, this.args});
+
+  @override
+  State<AccountProfileView> createState() => _AccountProfileViewState();
+}
+
+class _AccountProfileViewState extends State<AccountProfileView> {
+  late ProfileArgs currentProfile;
+
+  @override
+  void initState() {
+    super.initState();
+    currentProfile = ProfileArgs(
+      firstName: widget.args?.firstName,
+      lastName: widget.args?.lastName,
+      email: widget.args?.email,
+      phone: widget.args?.phone,
+      gender: widget.args?.gender,
+      birthDate: widget.args?.birthDate,
+      hasPregnancy: widget.args?.hasPregnancy,
+      chronicDisease: widget.args?.chronicDisease,
+      diseaseType: widget.args?.diseaseType, source: '',
+    );
+  }
+
+  String _buildDisplayName() {
+    final String? firstName = currentProfile.firstName?.trim();
+    final String? lastName = currentProfile.lastName?.trim();
+
+    final List<String> parts = [
+      if (firstName != null && firstName.isNotEmpty) firstName,
+      if (lastName != null && lastName.isNotEmpty) lastName,
+    ];
+
+    if (parts.isNotEmpty) {
+      return parts.join(' ');
+    }
+
+    return LocaleKeys.profileNameNotAdded.tr();
+  }
+
+  String _buildEmail() {
+    final String? email = currentProfile.email?.trim();
+    if (email != null && email.isNotEmpty) {
+      return email;
+    }
+    return LocaleKeys.profileEmailNotAdded.tr();
+  }
+
+  String _buildPhone() {
+    final String? phone = currentProfile.phone?.trim();
+    if (phone != null && phone.isNotEmpty) {
+      return phone;
+    }
+    return LocaleKeys.profilePhoneNotAdded.tr();
+  }
+
+  String _buildGender() {
+    final String? gender = currentProfile.gender?.trim();
+    if (gender != null && gender.isNotEmpty) {
+      return gender;
+    }
+    return LocaleKeys.profileNotAdded.tr();
+  }
+
+  String _buildBirthDate() {
+    final String? birthDate = currentProfile.birthDate?.trim();
+    if (birthDate != null && birthDate.isNotEmpty) {
+      return birthDate;
+    }
+    return LocaleKeys.profileNotAdded.tr();
+  }
+
+  String _buildPregnancy() {
+    final String? hasPregnancy = currentProfile.hasPregnancy?.trim();
+    if (hasPregnancy != null && hasPregnancy.isNotEmpty) {
+      return hasPregnancy;
+    }
+    return LocaleKeys.profileNotAdded.tr();
+  }
+
+  String _buildChronicDisease() {
+    final String? chronicDisease = currentProfile.chronicDisease?.trim();
+    if (chronicDisease != null && chronicDisease.isNotEmpty) {
+      return chronicDisease;
+    }
+    return LocaleKeys.profileNotAdded.tr();
+  }
+
+  Future<void> _openEditProfile() async {
+    final Object? result = await context.pushNamed(
+      'editProfile',
+      extra: EditProfileArgs(
+        firstName: currentProfile.firstName,
+        lastName: currentProfile.lastName,
+        email: currentProfile.email,
+        phone: currentProfile.phone,
+        gender: currentProfile.gender,
+        birthDate: currentProfile.birthDate,
+        hasPregnancy: currentProfile.hasPregnancy,
+        chronicDisease: currentProfile.chronicDisease,
+        diseaseType: currentProfile.diseaseType,
+      ),
+    );
+
+    if (result is EditProfileArgs) {
+      setState(() {
+        currentProfile = ProfileArgs(
+          firstName: result.firstName,
+          lastName: result.lastName,
+          email: result.email,
+          phone: result.phone,
+          gender: result.gender,
+          birthDate: result.birthDate,
+          hasPregnancy: result.hasPregnancy,
+          chronicDisease: result.chronicDisease,
+          diseaseType: result.diseaseType, source: '',
+        );
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final String displayName = _buildDisplayName();
+    final String email = _buildEmail();
+    final String phone = _buildPhone();
+    final String gender = _buildGender();
+    final String birthDate = _buildBirthDate();
+    final String hasPregnancy = _buildPregnancy();
+    final String chronicDisease = _buildChronicDisease();
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF6F6F6),
+      body: SafeArea(
+        child: Column(
+          children: [
+            ProfileHeader(
+              onBackTap: () => context.pop(),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.w,
+                  vertical: 12.h,
+                ),
+                child: Column(
+                  children: [
+                    ProfileInfoCard(
+                      name: displayName,
+                      email: email,
+                      phone: phone,
+                      gender: gender,
+                      birthDate: birthDate,
+                      hasPregnancy: hasPregnancy,
+                      chronicDisease: chronicDisease,
+                      onEditTap: _openEditProfile,
+                    ),
+                    SizedBox(height: 20.h),
+                    ProfileMenuItem(
+                      title: LocaleKeys.profileOrders.tr(),
+                      onTap: () {},
+                    ),
+                    ProfileMenuItem(
+                      title: LocaleKeys.profileShippingData.tr(),
+                      onTap: () {},
+                    ),
+                    ProfileMenuItem(
+                      title: LocaleKeys.profilePaymentMethods.tr(),
+                      onTap: () {},
+                    ),
+                    ProfileMenuItem(
+                      title: LocaleKeys.profileNews.tr(),
+                      onTap: () {},
+                    ),
+                    ProfileMenuItem(
+                      title: LocaleKeys.profilePointsProgram.tr(),
+                      onTap: () {},
+                    ),
+                    ProfileMenuItem(
+                      title: LocaleKeys.changeLanguage.tr(),
+                      onTap: () {
+                        context.read<ProfileCubit>().toggleLanguage(context);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
