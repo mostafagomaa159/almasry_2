@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/core.dart';
+
 class AccountProfileView extends StatefulWidget {
   final ProfileArgs? args;
 
@@ -31,7 +33,8 @@ class _AccountProfileViewState extends State<AccountProfileView> {
       birthDate: widget.args?.birthDate,
       hasPregnancy: widget.args?.hasPregnancy,
       chronicDisease: widget.args?.chronicDisease,
-      diseaseType: widget.args?.diseaseType, source: '',
+      diseaseType: widget.args?.diseaseType,
+      source: '',
     );
   }
 
@@ -126,10 +129,23 @@ class _AccountProfileViewState extends State<AccountProfileView> {
           birthDate: result.birthDate,
           hasPregnancy: result.hasPregnancy,
           chronicDisease: result.chronicDisease,
-          diseaseType: result.diseaseType, source: '',
+          diseaseType: result.diseaseType,
+          source: '',
         );
       });
     }
+  }
+
+  Future<void> _logout() async {
+    // Clear saved session data here if needed
+    // Example:
+    // await CacheHelper.removeData(key: 'token');
+    // await CacheHelper.removeData(key: 'user');
+    // await CacheHelper.removeData(key: 'isLoggedIn');
+
+    if (!mounted) return;
+
+    context.go(AppRoutes.login);
   }
 
   @override
@@ -145,6 +161,7 @@ class _AccountProfileViewState extends State<AccountProfileView> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
       body: SafeArea(
+        top: false,
         child: Column(
           children: [
             ProfileHeader(
@@ -171,7 +188,9 @@ class _AccountProfileViewState extends State<AccountProfileView> {
                     SizedBox(height: 20.h),
                     ProfileMenuItem(
                       title: LocaleKeys.profileOrders.tr(),
-                      onTap: () {},
+                      onTap: () {
+                        context.pushNamed('orders');
+                      },
                     ),
                     ProfileMenuItem(
                       title: LocaleKeys.profileShippingData.tr(),
@@ -194,6 +213,10 @@ class _AccountProfileViewState extends State<AccountProfileView> {
                       onTap: () {
                         context.read<ProfileCubit>().toggleLanguage(context);
                       },
+                    ),
+                    ProfileMenuItem(
+                      title: LocaleKeys.log_out.tr(),
+                      onTap: _logout,
                     ),
                   ],
                 ),

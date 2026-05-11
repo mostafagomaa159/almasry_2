@@ -9,6 +9,10 @@ import 'package:almasry_2/features/splash/splash.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/order_details/order_details.dart';
+import '../../features/orders/orders.dart';
+import '../../features/product_details/product_details.dart';
+
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: AppRoutes.splash,
@@ -19,6 +23,10 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.login,
+        builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.logOut,
         builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
@@ -50,6 +58,33 @@ class AppRouter {
             create: (_) => EditProfileCubit()..initialize(args),
             child: EditProfileView(args: args),
           );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.orders,
+        name: 'orders',
+        builder: (context, state) => BlocProvider(
+          create: (_) => OrdersCubit(),
+          child: const OrdersView(),
+        ),
+      ),
+      GoRoute(
+        path: '/order-details',
+        name: 'orderDetails',
+        builder: (context, state) {
+          final args = state.extra as OrderDetailsArgs;
+
+          return BlocProvider(
+            create: (_) => OrderDetailsCubit()..loadOrderDetails(args.orderId),
+            child: const OrderDetailsView(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.productDetails,
+        builder: (context, state) {
+          final args = state.extra as ProductDetailsArgs;
+          return ProductDetailsView(args: args);
         },
       ),
 

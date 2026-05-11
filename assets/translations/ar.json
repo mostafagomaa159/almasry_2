@@ -7,6 +7,7 @@
   "remember_me": "تذكرني",
   "forgot_password": "هل نسيت كلمة المرور ؟",
   "sign_in": "الدخول",
+  "log_out": "تسجيل الخروج",
   "send_verification_code": "ارسل رمز التأكيد",
   "create_account": "انشاء حساب",
   "continue_as_guest": "اكمل كضيف",
@@ -94,5 +95,27 @@
   "female": "أنثى",
   "save": "حفظ",
   "savedSuccessfully": "تم حفظ البيانات بنجاح",
-  "diseaseType": "نوع المرض"
+  "diseaseType": "نوع المرض",
+
+
+  "ordersTitle": "الطلبات",
+  "orderNumber": "طلب #",
+  "orderDelivered": "تم التوصيل",
+  "orderPending": "قيد التنفيذ",
+  "totalAmount": "المجموع الكلي",
+  "orderDetails": "تفاصيل الطلب",
+  "currency": "جنيه",
+  "noOrdersYet": "لا توجد طلبات بعد",
+  "subtotal": "المجموع الجزئي",
+  "shippingFees": "مصاريف الشحن",
+  "discount": "الخصم",
+  "reorder": "إعادة الطلب",
+
+  "product_details_categories": "الفئات",
+  "product_details_description": "التفاصيل",
+  "product_details_more": "المزيد",
+  "product_details_rating": "التقييم",
+  "product_details_add_to_basket": "أضف إلى السلة",
+  "product_details_category_women_clothing": "ملابس نسائية",
+  "product_details_description_value": "95٪ قطن، 5٪ سباندكس، المميزات: كاجوال، كم قصير، طباعة حروف، رقبة على شكل V، قماش ناعم وبه بعض المرونة. مناسب للاستخدام اليومي والعمل والشاطئ والمدرسة والمنزل والشارع. مناسب لفصول الربيع والصيف والخريف والشتاء."
 }

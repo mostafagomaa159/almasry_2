@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class ProfileHeader extends StatelessWidget {
+class OrdersHeader extends StatelessWidget {
   final VoidCallback onBackTap;
 
-  const ProfileHeader({
+  const OrdersHeader({
     super.key,
     required this.onBackTap,
   });
@@ -49,7 +49,7 @@ class ProfileHeader extends StatelessWidget {
               children: [
                 PositionedDirectional(
                   end: 18.w,
-                  top: 12.h,
+                  top: 14.h,
                   child: Image.asset(
                     'assets/images/profile_left_icon.png',
                     width: 45.w,

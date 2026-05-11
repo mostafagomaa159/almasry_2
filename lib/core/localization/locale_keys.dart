@@ -101,4 +101,33 @@ class LocaleKeys {
   static const String savedSuccessfully = 'savedSuccessfully';
   static const String diseaseType = 'diseaseType';
 
+  //Orders
+
+  static const String ordersTitle = 'ordersTitle';
+  static const String orderNumber = 'orderNumber';
+  static const String orderDelivered = 'orderDelivered';
+  static const String orderPending = 'orderPending';
+  static const String totalAmount = 'totalAmount';
+  static const String orderDetails = 'orderDetails';
+  static const String currency = 'currency';
+  static const String noOrdersYet = 'noOrdersYet';
+
+  //order_details
+  static const String subtotal = 'subtotal';
+  static const String shippingFees = 'shippingFees';
+  static const String discount = 'discount';
+  static const String reorder = 'reorder';
+  static const String log_out = 'log_out';
+
+  static const String productDetailsCategories = 'product_details_categories';
+  static const String productDetailsDescription = 'product_details_description';
+  static const String productDetailsMore = 'product_details_more';
+  static const String productDetailsRating = 'product_details_rating';
+  static const String productDetailsAddToBasket = 'product_details_add_to_basket';
+  static const String productDetailsCategoryWomenClothing = 'product_details_category_women_clothing';
+  static const String productDetailsDescriptionValue = 'product_details_description_value';
+
+
+
+
 }

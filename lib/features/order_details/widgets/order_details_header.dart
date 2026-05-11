@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class ProfileHeader extends StatelessWidget {
+class OrderDetailsHeader extends StatelessWidget {
   final VoidCallback onBackTap;
 
-  const ProfileHeader({
+  const OrderDetailsHeader({
     super.key,
     required this.onBackTap,
   });
@@ -34,7 +34,7 @@ class ProfileHeader extends StatelessWidget {
             height: 72.h,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: const Color(0xFFFDFDFD),
               border: Border.all(
                 color: const Color(0xFFFF2D2D),
                 width: 1.2,
@@ -45,11 +45,10 @@ class ProfileHeader extends StatelessWidget {
               ),
             ),
             child: Stack(
-              clipBehavior: Clip.none,
               children: [
                 PositionedDirectional(
                   end: 18.w,
-                  top: 12.h,
+                  top: 14.h,
                   child: Image.asset(
                     'assets/images/profile_left_icon.png',
                     width: 45.w,
