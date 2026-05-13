@@ -7,8 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-class GuestProfileView extends StatelessWidget {
+class GuestProfileView extends StatefulWidget {
   final ProfileArgs? args;
 
   const GuestProfileView({
@@ -17,12 +18,36 @@ class GuestProfileView extends StatelessWidget {
   });
 
   @override
+  State<GuestProfileView> createState() => _GuestProfileViewState();
+}
+
+class _GuestProfileViewState extends State<GuestProfileView> {
+  String appVersion = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAppVersion();
+  }
+
+  Future<void> _loadAppVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+
+    setState(() {
+      appVersion = packageInfo.version;
+      // If you want version + build number:
+      // appVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final profileCubit = context.read<ProfileCubit>();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF7F7F7),
       body: SafeArea(
+        top: false,
         child: Column(
           children: [
             const ProfileGuestHeader(),
@@ -90,15 +115,15 @@ class GuestProfileView extends StatelessWidget {
                           child: GuestActionCard(
                             icon: Icons.favorite,
                             title: LocaleKeys.wishlist.tr(),
-                            onTap: () {},
+                            onTap: () {context.push(AppRoutes.wishlist);
+                            },
                           ),
                         ),
                       ],
                     ),
                     SizedBox(height: 28.h),
                     Text(
-                      '${LocaleKeys.appVersion.tr()} 4.2.7',
-
+                      '${LocaleKeys.appVersion.tr()} ${appVersion.isEmpty ? '...' : appVersion}',
                       style: TextStyle(
                         fontSize: 16.sp,
                         color: const Color(0xFF8D8D8D),
@@ -116,8 +141,6 @@ class GuestProfileView extends StatelessWidget {
     );
   }
 }
-
-
 
 class _GuestBottomNavBar extends StatelessWidget {
   @override

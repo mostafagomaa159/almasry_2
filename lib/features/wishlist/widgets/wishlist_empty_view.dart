@@ -1,0 +1,43 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+class WishlistEmptyView extends StatelessWidget {
+  const WishlistEmptyView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 24.w),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.favorite_border,
+              size: 70.sp,
+              color: Colors.grey,
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              'No favorites yet',
+              style: TextStyle(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w700,
+                color: Colors.black87,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              'Products you mark as favorite will appear here.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

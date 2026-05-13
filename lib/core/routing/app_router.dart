@@ -6,6 +6,7 @@ import 'package:almasry_2/features/edit_profile/view_model/edit_profile_cubit.da
 import 'package:almasry_2/features/home/home.dart';
 import 'package:almasry_2/features/profile/profile.dart';
 import 'package:almasry_2/features/splash/splash.dart';
+import 'package:almasry_2/features/wishlist/view/wishlist_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -87,6 +88,11 @@ class AppRouter {
           return ProductDetailsView(args: args);
         },
       ),
+      GoRoute(
+        path: AppRoutes.wishlist,
+        builder: (context, state) => const WishlistScreen(),
+      ),
+
 
 
 

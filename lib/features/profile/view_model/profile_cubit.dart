@@ -1,7 +1,7 @@
 
+import 'package:almasry_2/features/profile/view_model/profile_state.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:almasry_2/features/profile/view_model/profile_state.dart';
 import 'package:almasry_2/features/profile/view_model/profile_args.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

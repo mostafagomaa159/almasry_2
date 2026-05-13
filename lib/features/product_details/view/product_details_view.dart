@@ -1,17 +1,70 @@
+import 'package:almasry_2/core/database/favorite_product_model.dart';
 import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:almasry_2/features/product_details/product_details.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:almasry_2/core/database/favorites_repository.dart';
 
-class ProductDetailsView extends StatelessWidget {
+class ProductDetailsView extends StatefulWidget {
   final ProductDetailsArgs args;
 
   const ProductDetailsView({
     super.key,
     required this.args,
   });
+
+  @override
+  State<ProductDetailsView> createState() => _ProductDetailsViewState();
+}
+
+class _ProductDetailsViewState extends State<ProductDetailsView> {
+  bool isFavorite = false;
+  bool isLoadingFavorite = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFavoriteStatus();
+  }
+
+  Future<void> _loadFavoriteStatus() async {
+    final result = await FavoritesRepository.instance.isFavorite(
+      widget.args.productId,
+    );
+
+    if (mounted) {
+      setState(() {
+        isFavorite = result;
+        isLoadingFavorite = false;
+      });
+    }
+  }
+
+  Future<void> _toggleFavorite() async {
+    final product = FavoriteProductModel(
+      id: widget.args.productId,
+      title: widget.args.title,
+      imagePath: widget.args.imagePath,
+      price: widget.args.price,
+      oldPrice: widget.args.oldPrice,
+      category: widget.args.category,
+      description: widget.args.description,
+    );
+
+    await FavoritesRepository.instance.toggleFavorite(product);
+
+    final updatedValue = await FavoritesRepository.instance.isFavorite(
+      widget.args.productId,
+    );
+
+    if (mounted) {
+      setState(() {
+        isFavorite = updatedValue;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +80,7 @@ class ProductDetailsView extends StatelessWidget {
               child: Column(
                 children: [
                   ProductDetailsHeader(
-                    title: args.title,
+                    title: widget.args.title,
                     isArabic: isArabic,
                   ),
                   Expanded(
@@ -36,8 +89,53 @@ class ProductDetailsView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ProductDetailsImageSection(
-                            imagePath: args.imagePath,
+                          Stack(
+                            children: [
+                              ProductDetailsImageSection(
+                                imagePath: widget.args.imagePath,
+                              ),
+                              Positioned(
+                                top: 16.h,
+                                right: 20.w,
+                                child: InkWell(
+                                  onTap: _toggleFavorite,
+                                  borderRadius: BorderRadius.circular(50.r),
+                                  child: Container(
+                                    width: 42.w,
+                                    height: 42.h,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.08),
+                                          blurRadius: 8,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: isLoadingFavorite
+                                        ? SizedBox(
+                                      width: 18.w,
+                                      height: 18.h,
+                                      child: const CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                        : Icon(
+                                      isFavorite
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                      color: isFavorite
+                                          ? Colors.red
+                                          : Colors.grey,
+                                      size: 22.sp,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           SizedBox(height: 18.h),
                           Padding(
@@ -46,7 +144,7 @@ class ProductDetailsView extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  args.title,
+                                  widget.args.title,
                                   style: TextStyle(
                                     fontSize: 19.sp,
                                     fontWeight: FontWeight.w800,
@@ -56,7 +154,7 @@ class ProductDetailsView extends StatelessWidget {
                                 ),
                                 SizedBox(height: 14.h),
                                 Text(
-                                  args.price,
+                                  widget.args.price,
                                   style: TextStyle(
                                     fontSize: 17.sp,
                                     fontWeight: FontWeight.w700,
@@ -74,15 +172,15 @@ class ProductDetailsView extends StatelessWidget {
                                 ),
                                 SizedBox(height: 14.h),
                                 ProductDetailsCategoryChip(
-                                  title: args.category,
+                                  title: widget.args.category,
                                 ),
                                 SizedBox(height: 36.h),
                                 ProductDetailsDescriptionSection(
-                                  description: args.description,
+                                  description: widget.args.description,
                                 ),
                                 SizedBox(height: 34.h),
                                 ProductDetailsRatingSection(
-                                  rating: args.rating,
+                                  rating: widget.args.rating,
                                 ),
                                 SizedBox(height: 34.h),
                                 ProductDetailsBottomAction(

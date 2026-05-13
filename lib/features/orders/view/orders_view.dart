@@ -56,7 +56,7 @@ class _OrdersViewState extends State<OrdersView> {
                         },
                       );
                     },
-                    separatorBuilder: (_, __) => SizedBox(height: 16.h),
+                    separatorBuilder: (_, _) => SizedBox(height: 16.h),
                     itemCount: state.orders.length,
                   ),
                 ),

@@ -1,14 +1,37 @@
 import 'package:almasry_2/core/constants/app_colors.dart';
+import 'package:almasry_2/core/core.dart';
+import 'package:almasry_2/core/database/favorite_product_model.dart';
 import 'package:almasry_2/features/product_details/product_details.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../core/core.dart';
+import 'package:almasry_2/core/database/favorites_repository.dart';
 
 class ProductCard extends StatefulWidget {
-  const ProductCard({super.key});
+  final String productId;
+  final String imagePath;
+  final String title;
+  final String price;
+  final String oldPrice;
+  final String category;
+  final String description;
+  final String discountText;
+  final String pointsText;
+  final double rating;
+
+  const ProductCard({
+    super.key,
+    required this.productId,
+    required this.imagePath,
+    required this.title,
+    required this.price,
+    required this.oldPrice,
+    required this.category,
+    required this.description,
+    required this.discountText,
+    required this.pointsText,
+    required this.rating,
+  });
 
   @override
   State<ProductCard> createState() => _ProductCardState();
@@ -16,6 +39,50 @@ class ProductCard extends StatefulWidget {
 
 class _ProductCardState extends State<ProductCard> {
   int quantity = 1;
+  bool isFavorite = false;
+  bool isLoadingFavorite = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFavoriteStatus();
+  }
+
+  Future<void> _loadFavoriteStatus() async {
+    final result =
+    await FavoritesRepository.instance.isFavorite(widget.productId);
+
+    if (mounted) {
+      setState(() {
+        isFavorite = result;
+        isLoadingFavorite = false;
+      });
+    }
+  }
+
+  Future<void> _toggleFavorite() async {
+    final product = FavoriteProductModel(
+      id: widget.productId,
+      title: widget.title,
+      imagePath: widget.imagePath,
+      price: widget.price,
+      oldPrice: widget.oldPrice,
+      category: widget.category,
+      description: widget.description,
+    );
+
+    await FavoritesRepository.instance.toggleFavorite(product);
+
+    final updatedValue =
+    await FavoritesRepository.instance.isFavorite(widget.productId);
+
+    if (mounted) {
+      setState(() {
+        isFavorite = updatedValue;
+      });
+    }
+  }
+
 
   void _incrementQuantity() {
     setState(() {
@@ -35,15 +102,18 @@ class _ProductCardState extends State<ProductCard> {
     context.push(
       AppRoutes.productDetails,
       extra: ProductDetailsArgs(
-        imagePath: 'assets/images/Red_Big_Card.png',
-        title: LocaleKeys.homeProductTitle.tr(),
-        price: LocaleKeys.homePrice.tr(),
-        category: LocaleKeys.productDetailsCategoryWomenClothing.tr(),
-        description: LocaleKeys.productDetailsDescriptionValue.tr(),
-        rating: 3.6,
+        productId: widget.productId,
+        imagePath: widget.imagePath,
+        title: widget.title,
+        price: widget.price,
+        oldPrice: widget.oldPrice,
+        category: widget.category,
+        description: widget.description,
+        rating: widget.rating,
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -61,18 +131,66 @@ class _ProductCardState extends State<ProductCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
-              child: Image.asset(
-                'assets/images/Red_Big_Card.png',
-                height: 145.h,
-                fit: BoxFit.cover,
-              ),
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius:
+                  BorderRadius.vertical(top: Radius.circular(12.r)),
+                  child: Image.asset(
+                    widget.imagePath,
+                    height: 145.h,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Positioned(
+                  top: 10.h,
+                  right: 10.w,
+                  child: InkWell(
+                    onTap: _toggleFavorite,
+                    borderRadius: BorderRadius.circular(50.r),
+                    child: Container(
+                      width: 34.w,
+                      height: 34.h,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      alignment: Alignment.center,
+                      child: isLoadingFavorite
+                          ? SizedBox(
+                        width: 16.w,
+                        height: 16.h,
+                        child:const CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.primaryRed,
+                        ),
+                      )
+                          : Icon(
+                        isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: isFavorite
+                            ? AppColors.primaryRed
+                            : Colors.grey,
+                        size: 20.sp,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             Padding(
               padding: EdgeInsets.only(top: 6.h, right: 10.w, left: 10.w),
               child: Text(
-                LocaleKeys.homeDiscountBadge.tr(),
+                widget.discountText,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -85,7 +203,7 @@ class _ProductCardState extends State<ProductCard> {
             Padding(
               padding: EdgeInsets.only(top: 4.h, right: 10.w, left: 10.w),
               child: Text(
-                LocaleKeys.homeProductTitle.tr(),
+                widget.title,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -99,7 +217,7 @@ class _ProductCardState extends State<ProductCard> {
             Padding(
               padding: EdgeInsets.only(top: 6.h, right: 10.w, left: 10.w),
               child: Text(
-                LocaleKeys.homePrice.tr(),
+                widget.price,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -114,7 +232,7 @@ class _ProductCardState extends State<ProductCard> {
               child: Row(
                 children: [
                   Text(
-                    LocaleKeys.homeOldPrice.tr(),
+                    widget.oldPrice,
                     style: TextStyle(
                       fontSize: 12.sp,
                       color: AppColors.textSecondary,
@@ -123,7 +241,7 @@ class _ProductCardState extends State<ProductCard> {
                   ),
                   const Spacer(),
                   Text(
-                    LocaleKeys.homePoints.tr(),
+                    widget.pointsText,
                     style: TextStyle(
                       fontSize: 12.sp,
                       color: AppColors.primaryRed,

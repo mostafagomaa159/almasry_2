@@ -31,7 +31,7 @@ class HomeOfferTabs extends StatelessWidget {
         reverse: isArabic,
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         itemCount: tabs.length,
-        separatorBuilder: (_, __) => SizedBox(width: 8.w),
+        separatorBuilder: (_, _) => SizedBox(width: 8.w),
         itemBuilder: (context, index) {
           final bool isSelected = selectedIndex == index;
 

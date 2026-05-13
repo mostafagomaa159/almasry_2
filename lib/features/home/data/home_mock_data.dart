@@ -12,11 +12,11 @@ class HomeMockData {
 
   static List<HomeGoalModel> goals() {
     return [
-      HomeGoalModel(
+      const HomeGoalModel(
         titleKey: LocaleKeys.homeGoalFitness,
         imagePath: 'assets/images/Red_Big_Card.png',
       ),
-      HomeGoalModel(
+      const HomeGoalModel(
         titleKey: LocaleKeys.homeGoalSkinCare,
         imagePath: 'assets/images/Red_Big_Card.png',
       ),
@@ -25,11 +25,11 @@ class HomeMockData {
 
   static List<HomeConcernModel> concerns() {
     return [
-      HomeConcernModel(
+      const HomeConcernModel(
         titleKey: LocaleKeys.homeConcernHeadache,
         imagePath: 'assets/images/Red_Big_Card.png',
       ),
-      HomeConcernModel(
+      const HomeConcernModel(
         titleKey: LocaleKeys.homeConcernTitle,
         imagePath: 'assets/images/Red_Big_Card.png',
       ),
@@ -38,22 +38,22 @@ class HomeMockData {
 
   static List<HomeServiceModel> services() {
     return [
-      HomeServiceModel(
+      const HomeServiceModel(
         iconPath: 'assets/images/Red_Big_Card.png',
         titleKey: LocaleKeys.homeSafeShopping,
         descriptionKey: LocaleKeys.homeSafeShoppingDesc,
       ),
-      HomeServiceModel(
+      const HomeServiceModel(
         iconPath: 'assets/images/Red_Big_Card.png',
         titleKey: LocaleKeys.homeFastShipping,
         descriptionKey: LocaleKeys.homeFastShippingDesc,
       ),
-      HomeServiceModel(
+      const HomeServiceModel(
         iconPath: 'assets/images/Red_Big_Card.png',
         titleKey: LocaleKeys.homeMoneyBack,
         descriptionKey: LocaleKeys.homeMoneyBackDesc,
       ),
-      HomeServiceModel(
+      const HomeServiceModel(
         iconPath: 'assets/images/Red_Big_Card.png',
         titleKey: LocaleKeys.homeCustomerService,
         descriptionKey: LocaleKeys.homeCustomerServiceDesc,

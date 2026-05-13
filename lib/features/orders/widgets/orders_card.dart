@@ -83,7 +83,7 @@ class OrdersCard extends StatelessWidget {
           ),
           SizedBox(height: 10.h),
          const Divider(
-            color: const Color(0xFF8FA2B7),
+            color: Color(0xFF8FA2B7),
             thickness: 1,
             height: 1,
           ),

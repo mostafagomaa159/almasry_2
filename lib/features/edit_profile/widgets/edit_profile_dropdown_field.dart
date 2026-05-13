@@ -35,7 +35,7 @@ class EditProfileDropdownField extends StatelessWidget {
           ),
           SizedBox(height: 6.h),
           DropdownButtonFormField<String>(
-            value: (value != null && value!.isNotEmpty) ? value : null,
+            initialValue: (value != null && value!.isNotEmpty) ? value : null,
             items: items,
             onChanged: onChanged,
             icon: const Icon(
