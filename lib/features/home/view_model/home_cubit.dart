@@ -1,5 +1,5 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'home_state.dart';
+part of '../home_imports.dart';
+
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(const HomeState());

@@ -1,4 +1,4 @@
-import 'package:almasry_2/features/orders/view_model/order_model.dart';
+part of '../order_details_imports.dart';
 
 class OrderDetailsModel {
   final String orderId;

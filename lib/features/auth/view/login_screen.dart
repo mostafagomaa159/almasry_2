@@ -1,12 +1,5 @@
-import 'package:almasry_2/features/profile/view_model/profile_args.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:almasry_2/features/auth/auth.dart';
-import 'package:almasry_2/core/core.dart';
-
 import '../widgets/widgets.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -70,8 +63,9 @@ class _LoginScreenState extends State<LoginScreen> {
     final String emailOrPhone = emailOrPhoneController.text.trim();
     final String password = passwordController.text;
 
-    final String? emailOrPhoneError =
-    Validators.validateEmailOrPhone(emailOrPhone);
+    final String? emailOrPhoneError = Validators.validateEmailOrPhone(
+      emailOrPhone,
+    );
     final String? passwordError = Validators.validatePassword(password);
 
     context.read<AuthCubit>().setLoginValidationErrors(
@@ -127,10 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     context.go(
       AppRoutes.home,
-      extra: ProfileArgs(
-        phone: phone,
-        source: 'login',
-      ),
+      extra: ProfileArgs(phone: phone, source: 'login'),
     );
   }
 
@@ -143,10 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
     FocusHelper.unfocusKeyboard(context);
     context.go(
       AppRoutes.home,
-      extra: const ProfileArgs(
-        isGuest: true,
-        source: 'guest',
-      ),
+      extra: const ProfileArgs(isGuest: true, source: 'guest'),
     );
   }
 
@@ -243,7 +231,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ],
             ),
           ),
-
         );
       },
     );

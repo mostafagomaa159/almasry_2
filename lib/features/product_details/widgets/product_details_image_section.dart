@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+part of '../product_details_imports.dart';
+
 
 class ProductDetailsImageSection extends StatelessWidget {
   final String imagePath;

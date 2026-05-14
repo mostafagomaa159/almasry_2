@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+part of '../../wishlist/wishlist_imports.dart';
+
 
 class WishlistEmptyView extends StatelessWidget {
   const WishlistEmptyView({super.key});

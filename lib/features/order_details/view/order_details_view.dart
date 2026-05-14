@@ -1,11 +1,4 @@
-import 'package:almasry_2/core/localization/locale_keys.dart';
-import 'package:almasry_2/features/order_details/order_details.dart';
-import 'package:almasry_2/features/orders/widgets/orders_status_badge.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
+part of '../order_details_imports.dart';
 
 class OrderDetailsView extends StatelessWidget {
   const OrderDetailsView({super.key});

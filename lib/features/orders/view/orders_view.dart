@@ -1,10 +1,4 @@
-import 'package:almasry_2/features/orders/orders.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-
-import '../../order_details/order_details.dart';
+part of '../orders_imports.dart';
 
 class OrdersView extends StatefulWidget {
   const OrdersView({super.key});

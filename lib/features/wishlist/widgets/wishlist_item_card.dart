@@ -1,25 +1,17 @@
-import 'package:almasry_2/core/constants/app_colors.dart';
-import 'package:almasry_2/core/database/favorite_product_model.dart';
-import 'package:almasry_2/core/database/favorites_repository.dart';
-import 'package:almasry_2/core/routing/app_routes.dart';
-import 'package:almasry_2/features/product_details/product_details.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
+part of '../../wishlist/wishlist_imports.dart';
+
+
 
 class WishlistItemCard extends StatelessWidget {
   final FavoriteProductModel product;
-  final VoidCallback onRemoved;
 
   const WishlistItemCard({
     super.key,
     required this.product,
-    required this.onRemoved,
   });
 
-  Future<void> _removeFromWishlist() async {
-    await FavoritesRepository.instance.removeFavorite(product.id);
-    onRemoved();
+  Future<void> _removeFromWishlist(BuildContext context) async {
+    await context.read<FavoritesCubit>().removeFavorite(product.id);
   }
 
   void _openDetails(BuildContext context) {
@@ -110,7 +102,7 @@ class WishlistItemCard extends StatelessWidget {
             ),
             SizedBox(width: 8.w),
             InkWell(
-              onTap: _removeFromWishlist,
+              onTap: () => _removeFromWishlist(context),
               borderRadius: BorderRadius.circular(50.r),
               child: Container(
                 width: 38.w,

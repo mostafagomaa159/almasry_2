@@ -1,6 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'product_details_state.dart';
+part of '../product_details_imports.dart';
 
 class ProductDetailsCubit extends Cubit<ProductDetailsState> {
   ProductDetailsCubit() : super(const ProductDetailsState());

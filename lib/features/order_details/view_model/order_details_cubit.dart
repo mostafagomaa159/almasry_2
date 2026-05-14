@@ -1,7 +1,5 @@
-import 'package:almasry_2/features/order_details/view_model/order_details_model.dart';
-import 'package:almasry_2/features/order_details/view_model/order_details_state.dart';
-import 'package:almasry_2/features/orders/view_model/order_model.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+part of '../order_details_imports.dart';
+
 
 class OrderDetailsCubit extends Cubit<OrderDetailsState> {
   OrderDetailsCubit() : super(const OrderDetailsState());

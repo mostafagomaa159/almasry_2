@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+part of '../profile_imports.dart';
+
 
 class GuestActionCard extends StatelessWidget {
   final IconData icon;

@@ -1,8 +1,4 @@
-import 'package:almasry_2/core/localization/locale_keys.dart';
-import 'package:almasry_2/features/orders/orders.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+part of '../orders_imports.dart';
 
 class OrdersItemRow extends StatelessWidget {
   final OrderItemModel item;

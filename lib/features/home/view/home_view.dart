@@ -1,16 +1,4 @@
-import 'dart:async';
-import 'package:almasry_2/core/localization/locale_keys.dart';
-import 'package:almasry_2/core/routing/app_routes.dart';
-import 'package:almasry_2/features/home/data/home_mock_data.dart';
-import 'package:almasry_2/features/home/home.dart';
-import 'package:almasry_2/features/home/view_model/home_state.dart';
-import 'package:almasry_2/features/home/widgets/widgets.dart';
-import 'package:almasry_2/features/profile/view_model/profile_args.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
+part of '../home_imports.dart';
 
 class HomeScreen extends StatefulWidget {
   final ProfileArgs? args;
@@ -92,10 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 homeCubit.changeBottomNavIndex(index);
 
                 if (index == 0) {
-                  context.push(
-                    AppRoutes.profile,
-                    extra: widget.args,
-                  );
+                  context.push(AppRoutes.profile, extra: widget.args);
                 }
               },
             ),
@@ -135,11 +120,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             SizedBox(height: 16.h),
                             HomeProductsSection(
                               isArabic: isArabic,
+                              sectionKey: 'best_offers',
                             ),
+
                             SizedBox(height: 22.h),
-                            HomeSectionHeader(
-                              title: LocaleKeys.homeGoals.tr(),
-                            ),
+                            HomeSectionHeader(title: LocaleKeys.homeGoals.tr()),
                             SizedBox(height: 12.h),
                             HomeGoalsSection(
                               isArabic: isArabic,
@@ -154,7 +139,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             SizedBox(height: 16.h),
                             HomeProductsSection(
                               isArabic: isArabic,
+                              sectionKey: 'best_selling',
                             ),
+
                             SizedBox(height: 22.h),
                             HomeSectionHeader(
                               title: LocaleKeys.homeConcerns.tr(),
@@ -165,9 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               items: HomeMockData.concerns(),
                             ),
                             SizedBox(height: 22.h),
-                            HomeServicesSection(
-                              items: HomeMockData.services(),
-                            ),
+                            HomeServicesSection(items: HomeMockData.services()),
                           ],
                         ),
                       ),

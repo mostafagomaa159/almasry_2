@@ -1,6 +1,4 @@
-import 'package:almasry_2/features/profile/profile.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+part of '../profile_imports.dart';
 
 class ProfileScreen extends StatelessWidget {
   final ProfileArgs? args;

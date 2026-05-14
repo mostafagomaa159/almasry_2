@@ -1,8 +1,5 @@
-import 'package:almasry_2/core/constants/app_colors.dart';
-import 'package:almasry_2/core/localization/locale_keys.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+part of '../product_details_imports.dart';
+
 
 class ProductDetailsBottomAction extends StatelessWidget {
   final int quantity;

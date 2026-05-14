@@ -1,7 +1,7 @@
-import 'package:almasry_2/core/localization/locale_keys.dart';
-import 'package:almasry_2/features/home/model/home_concern_model.dart';
-import 'package:almasry_2/features/home/model/home_goal_model.dart';
-import 'package:almasry_2/features/home/model/home_service_model.dart';
+part of '../home_imports.dart';
+
+
+
 
 class HomeMockData {
   static const List<String> banners = [

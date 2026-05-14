@@ -1,11 +1,6 @@
-import 'package:almasry_2/core/database/favorite_product_model.dart';
-import 'package:almasry_2/core/localization/locale_keys.dart';
-import 'package:almasry_2/features/product_details/product_details.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:almasry_2/core/database/favorites_repository.dart';
+part of '../product_details_imports.dart';
+
+
 
 class ProductDetailsView extends StatefulWidget {
   final ProductDetailsArgs args;
@@ -20,28 +15,6 @@ class ProductDetailsView extends StatefulWidget {
 }
 
 class _ProductDetailsViewState extends State<ProductDetailsView> {
-  bool isFavorite = false;
-  bool isLoadingFavorite = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadFavoriteStatus();
-  }
-
-  Future<void> _loadFavoriteStatus() async {
-    final result = await FavoritesRepository.instance.isFavorite(
-      widget.args.productId,
-    );
-
-    if (mounted) {
-      setState(() {
-        isFavorite = result;
-        isLoadingFavorite = false;
-      });
-    }
-  }
-
   Future<void> _toggleFavorite() async {
     final product = FavoriteProductModel(
       id: widget.args.productId,
@@ -53,17 +26,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
       description: widget.args.description,
     );
 
-    await FavoritesRepository.instance.toggleFavorite(product);
-
-    final updatedValue = await FavoritesRepository.instance.isFavorite(
-      widget.args.productId,
-    );
-
-    if (mounted) {
-      setState(() {
-        isFavorite = updatedValue;
-      });
-    }
+    await context.read<FavoritesCubit>().toggleFavorite(product);
   }
 
   @override
@@ -97,44 +60,39 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                               Positioned(
                                 top: 16.h,
                                 right: 20.w,
-                                child: InkWell(
-                                  onTap: _toggleFavorite,
-                                  borderRadius: BorderRadius.circular(50.r),
-                                  child: Container(
-                                    width: 42.w,
-                                    height: 42.h,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.08),
-                                          blurRadius: 8,
-                                          offset: const Offset(0, 2),
+                                child: BlocBuilder<FavoritesCubit, FavoritesState>(
+                                  builder: (context, favoritesState) {
+                                    final isFavorite = favoritesState.isFavorite(widget.args.productId);
+
+                                    return InkWell(
+                                      onTap: _toggleFavorite,
+                                      borderRadius: BorderRadius.circular(50.r),
+                                      child: Container(
+                                        width: 42.w,
+                                        height: 42.h,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withOpacity(0.08),
+                                              blurRadius: 8,
+                                              offset: const Offset(0, 2),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: isLoadingFavorite
-                                        ? SizedBox(
-                                      width: 18.w,
-                                      height: 18.h,
-                                      child: const CircularProgressIndicator(
-                                        strokeWidth: 2,
+                                        alignment: Alignment.center,
+                                        child: Icon(
+                                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                                          color: isFavorite ? Colors.red : Colors.grey,
+                                          size: 22.sp,
+                                        ),
                                       ),
-                                    )
-                                        : Icon(
-                                      isFavorite
-                                          ? Icons.favorite
-                                          : Icons.favorite_border,
-                                      color: isFavorite
-                                          ? Colors.red
-                                          : Colors.grey,
-                                      size: 22.sp,
-                                    ),
-                                  ),
+                                    );
+                                  },
                                 ),
                               ),
+
                             ],
                           ),
                           SizedBox(height: 18.h),

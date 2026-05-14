@@ -1,18 +1,16 @@
-import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/features/auth/auth.dart';
 import 'package:almasry_2/features/edit_profile/view/edit_profile_view.dart';
 import 'package:almasry_2/features/edit_profile/view_model/edit_profile_args.dart';
 import 'package:almasry_2/features/edit_profile/view_model/edit_profile_cubit.dart';
-import 'package:almasry_2/features/home/home.dart';
-import 'package:almasry_2/features/profile/profile.dart';
-import 'package:almasry_2/features/splash/splash.dart';
-import 'package:almasry_2/features/wishlist/view/wishlist_screen.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-
-import '../../features/order_details/order_details.dart';
-import '../../features/orders/orders.dart';
-import '../../features/product_details/product_details.dart';
+import 'package:almasry_2/features/home/home_imports.dart';
+import 'package:almasry_2/features/profile/profile_imports.dart';
+import 'package:almasry_2/features/splash/splash_imports.dart';
+import '../../features/order_details/order_details_imports.dart';
+import '../../features/order_details/view_model/order_details_args.dart';
+import '../../features/orders/orders_imports.dart';
+import '../../features/product_details/product_details_imports.dart';
+import '../../features/product_details/view_model/product_details_args.dart';
+import '../../features/wishlist/wishlist_imports.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(

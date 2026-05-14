@@ -1,11 +1,4 @@
-import 'package:almasry_2/core/constants/app_colors.dart';
-import 'package:almasry_2/core/core.dart';
-import 'package:almasry_2/core/database/favorite_product_model.dart';
-import 'package:almasry_2/features/product_details/product_details.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:almasry_2/core/database/favorites_repository.dart';
+part of '../home_imports.dart';
 
 class ProductCard extends StatefulWidget {
   final String productId;
@@ -39,26 +32,8 @@ class ProductCard extends StatefulWidget {
 
 class _ProductCardState extends State<ProductCard> {
   int quantity = 1;
-  bool isFavorite = false;
-  bool isLoadingFavorite = true;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadFavoriteStatus();
-  }
 
-  Future<void> _loadFavoriteStatus() async {
-    final result =
-    await FavoritesRepository.instance.isFavorite(widget.productId);
-
-    if (mounted) {
-      setState(() {
-        isFavorite = result;
-        isLoadingFavorite = false;
-      });
-    }
-  }
 
   Future<void> _toggleFavorite() async {
     final product = FavoriteProductModel(
@@ -71,17 +46,9 @@ class _ProductCardState extends State<ProductCard> {
       description: widget.description,
     );
 
-    await FavoritesRepository.instance.toggleFavorite(product);
-
-    final updatedValue =
-    await FavoritesRepository.instance.isFavorite(widget.productId);
-
-    if (mounted) {
-      setState(() {
-        isFavorite = updatedValue;
-      });
-    }
+    await context.read<FavoritesCubit>().toggleFavorite(product);
   }
+
 
 
   void _incrementQuantity() {
@@ -146,45 +113,39 @@ class _ProductCardState extends State<ProductCard> {
                 Positioned(
                   top: 10.h,
                   right: 10.w,
-                  child: InkWell(
-                    onTap: _toggleFavorite,
-                    borderRadius: BorderRadius.circular(50.r),
-                    child: Container(
-                      width: 34.w,
-                      height: 34.h,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
+                  child: BlocBuilder<FavoritesCubit, FavoritesState>(
+                    builder: (context, favoritesState) {
+                      final isFavorite = favoritesState.isFavorite(widget.productId);
+
+                      return InkWell(
+                        onTap: _toggleFavorite,
+                        borderRadius: BorderRadius.circular(50.r),
+                        child: Container(
+                          width: 34.w,
+                          height: 34.h,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.08),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      alignment: Alignment.center,
-                      child: isLoadingFavorite
-                          ? SizedBox(
-                        width: 16.w,
-                        height: 16.h,
-                        child:const CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: AppColors.primaryRed,
+                          alignment: Alignment.center,
+                          child: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: isFavorite ? AppColors.primaryRed : Colors.grey,
+                            size: 20.sp,
+                          ),
                         ),
-                      )
-                          : Icon(
-                        isFavorite
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        color: isFavorite
-                            ? AppColors.primaryRed
-                            : Colors.grey,
-                        size: 20.sp,
-                      ),
-                    ),
+                      );
+                    },
                   ),
                 ),
+
               ],
             ),
             Padding(

@@ -1,4 +1,5 @@
-import 'package:almasry_2/features/orders/view_model/order_model.dart';
+part of '../orders_imports.dart';
+
 
 class OrdersState {
   final List<OrderModel> orders;

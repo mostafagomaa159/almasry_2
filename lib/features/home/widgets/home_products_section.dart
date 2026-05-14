@@ -1,17 +1,15 @@
-import 'package:almasry_2/features/home/widgets/widgets.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+part of '../home_imports.dart';
 
-import '../../../core/core.dart';
 
 class HomeProductsSection extends StatelessWidget {
   final bool isArabic;
   final int itemCount;
+  final String sectionKey;
 
   const HomeProductsSection({
     super.key,
     required this.isArabic,
+    required this.sectionKey,
     this.itemCount = 4,
   });
 
@@ -25,8 +23,8 @@ class HomeProductsSection extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 4.w),
         itemCount: itemCount,
         itemBuilder: (context, index) {
-          return  ProductCard(
-            productId: 'product_1',
+          return ProductCard(
+            productId: '${sectionKey}_product_$index',
             imagePath: 'assets/images/Red_Big_Card.png',
             title: LocaleKeys.homeProductTitle.tr(),
             price: LocaleKeys.homePrice.tr(),
@@ -37,9 +35,9 @@ class HomeProductsSection extends StatelessWidget {
             pointsText: LocaleKeys.homePoints.tr(),
             rating: 3.6,
           );
-
         },
       ),
     );
   }
 }
+
