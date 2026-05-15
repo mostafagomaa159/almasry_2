@@ -1,6 +1,5 @@
 part of '../auth_imports.dart';
 
-
 class PhoneLoginForm extends StatelessWidget {
   final AuthState state;
   final TextEditingController phoneController;
@@ -19,26 +18,15 @@ class PhoneLoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        AppTextField(
-          controller: phoneController,
-          focusNode: phoneFocusNode,
-          hintText: LocaleKeys.phoneNumber.tr(),
-          errorText: state.emailOrPhoneError,
-          keyboardType: TextInputType.phone,
-          textInputAction: TextInputAction.done,
-          onChanged: (_) => onClearErrors(),
-          onEditingComplete: onSubmit,
-        ),
-        SizedBox(height: 60.h),
-        AppButton(
-          title: LocaleKeys.sendVerificationCode.tr(),
-          onPressed: onSubmit,
-          isLoading: state.isLoading,
-        ),
-      ],
+    return AuthUnderlineField(
+      controller: phoneController,
+      focusNode: phoneFocusNode,
+      hintText: LocaleKeys.phoneNumber.tr(),
+      errorText: state.emailOrPhoneError,
+      keyboardType: TextInputType.phone,
+      textInputAction: TextInputAction.done,
+      onChanged: (_) => onClearErrors(),
+      onEditingComplete: onSubmit,
     );
   }
 }

@@ -77,8 +77,8 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     final bool isArabic = context.locale.languageCode == 'ar';
     final String logoPath = isArabic
-        ? 'assets/images/Almasry-AR.png'
-        : 'assets/images/Almasry-EN.png';
+        ? AppImages.logoAr
+        : AppImages.logoEn;
 
     return Scaffold(
       backgroundColor: Colors.white,

@@ -49,7 +49,7 @@ class _GuestProfileViewState extends State<GuestProfileView> {
                 child: Column(
                   children: [
                     Image.asset(
-                      'assets/images/startwithpharmacy.png',
+                      AppImages.startWithPharmacy,
                       width: double.infinity,
                       height: 250.h,
                       fit: BoxFit.contain,

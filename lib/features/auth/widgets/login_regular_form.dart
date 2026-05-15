@@ -27,7 +27,7 @@ class RegularLoginForm extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        AppTextField(
+        AuthUnderlineField(
           controller: emailOrPhoneController,
           focusNode: emailOrPhoneFocusNode,
           hintText: LocaleKeys.emailOrPhone.tr(),
@@ -39,8 +39,8 @@ class RegularLoginForm extends StatelessWidget {
             passwordFocusNode.requestFocus();
           },
         ),
-        SizedBox(height: AppSizes.textFieldVerticalSpacing.h),
-        AppTextField(
+        SizedBox(height: 20.h),
+        AuthUnderlineField(
           controller: passwordController,
           focusNode: passwordFocusNode,
           hintText: LocaleKeys.password.tr(),
@@ -49,29 +49,22 @@ class RegularLoginForm extends StatelessWidget {
           textInputAction: TextInputAction.done,
           onChanged: (_) => onClearErrors(),
           onEditingComplete: onSubmit,
-          suffixIcon: IconButton(
+          leading: IconButton(
             onPressed: authCubit.togglePasswordVisibility,
             icon: Icon(
               state.isPasswordHidden
                   ? Icons.visibility_off_outlined
                   : Icons.visibility_outlined,
-              color: Colors.black54,
+              color: const Color(0xFF4F4F4F),
               size: 24.sp,
             ),
           ),
         ),
-        SizedBox(height: 22.h),
+        SizedBox(height: 18.h),
         RememberMeRow(
           isChecked: state.rememberMe,
           rememberMeTitle: LocaleKeys.rememberMe.tr(),
           onCheckboxTap: authCubit.toggleRememberMe,
-        ),
-
-        SizedBox(height: 34.h),
-        AppButton(
-          title: LocaleKeys.signIn.tr(),
-          onPressed: onSubmit,
-          isLoading: state.isLoading,
         ),
       ],
     );

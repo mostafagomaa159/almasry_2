@@ -157,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        SizedBox(height: 6.h),
+                        SizedBox(height: 4.h),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 12.w),
                           child: AuthToggleTabs(
@@ -168,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             onLeftTap: () => _onTabChanged(false),
                           ),
                         ),
-                        SizedBox(height: 28.h),
+                        SizedBox(height: 30.h),
                         if (isRegularLoginSelected)
                           RegularLoginForm(
                             state: state,
@@ -188,10 +188,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             onSubmit: _submitPhoneLogin,
                             onClearErrors: _clearLoginErrors,
                           ),
+
                         SizedBox(height: 18.h),
-                        Center(
-                          child: GestureDetector(
-                            onTap: () {},
+
+                        if (isRegularLoginSelected)
+                          Center(
                             child: Text(
                               LocaleKeys.forgotPassword.tr(),
                               style: TextStyle(
@@ -201,22 +202,26 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-                        ),
+
                         SizedBox(height: 28.h),
+
                         AppButton(
-                          title: LocaleKeys.signIn.tr(),
+                          title: isRegularLoginSelected
+                              ? LocaleKeys.signIn.tr()
+                              : LocaleKeys.sendVerificationCode.tr(),
                           onPressed: isRegularLoginSelected
                               ? _submitRegularLogin
                               : _submitPhoneLogin,
                           isLoading: state.isLoading,
                         ),
+
                         SizedBox(height: 16.h),
                         AppButton(
                           title: LocaleKeys.createAccount.tr(),
                           onPressed: _goToRegisterScreen,
                           isPrimary: false,
                         ),
-                        SizedBox(height: 26.h),
+                        SizedBox(height: 30.h),
                         Center(
                           child: GestureDetector(
                             onTap: _continueAsGuest,
@@ -225,7 +230,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               style: TextStyle(
                                 fontSize: 17.sp,
                                 fontWeight: FontWeight.w600,
-                                color: const Color(0xFF555555),
                                 decoration: TextDecoration.underline,
                               ),
                             ),
@@ -236,6 +240,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
+
               ],
             ),
           ),

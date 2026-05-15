@@ -25,7 +25,7 @@ class HomeProductsSection extends StatelessWidget {
         itemBuilder: (context, index) {
           return ProductCard(
             productId: '${sectionKey}_product_$index',
-            imagePath: 'assets/images/Red_Big_Card.png',
+            imagePath: AppImages.redBigCard,
             title: LocaleKeys.homeProductTitle.tr(),
             price: LocaleKeys.homePrice.tr(),
             oldPrice: LocaleKeys.homeOldPrice.tr(),

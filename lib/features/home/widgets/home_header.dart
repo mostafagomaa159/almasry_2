@@ -37,7 +37,7 @@ class HomeHeader extends StatelessWidget {
                   ),
                   child: ClipOval(
                     child: Image.asset(
-                      'assets/images/Red_Big_Card.png',
+                      AppImages.redBigCard,
                       fit: BoxFit.cover,
                     ),
                   ),

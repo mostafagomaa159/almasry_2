@@ -20,6 +20,7 @@ import '../product_details/view_model/product_details_args.dart';
 import 'model/home_concern_model.dart';
 import 'model/home_goal_model.dart';
 import 'model/home_service_model.dart';
+import 'package:almasry_2/core/constants/app_images.dart';
 
 part 'view/home_view.dart';
 part 'view_model/home_cubit.dart';

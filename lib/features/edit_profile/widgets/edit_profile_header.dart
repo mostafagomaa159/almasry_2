@@ -39,7 +39,7 @@ class EditProfileHeader extends StatelessWidget {
                 start: 18.w,
                 top: 16.h,
                 child: Image.asset(
-                  'assets/images/profile_left_icon.png',
+                  AppImages.profileLeft,
                   width: 74.w,
                   fit: BoxFit.contain,
                 ),
@@ -64,7 +64,7 @@ class EditProfileHeader extends StatelessWidget {
                       padding: EdgeInsets.all(4.w),
                       child: ClipOval(
                         child: Image.asset(
-                          'assets/images/profile_doctor.png',
+                          AppImages.profileDoctor,
                           fit: BoxFit.cover,
                         ),
                       ),

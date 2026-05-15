@@ -66,7 +66,7 @@ class ProfileGuestHeader extends StatelessWidget {
                     backgroundColor: Colors.transparent,
                     child: ClipOval(
                       child: Image.asset(
-                        'assets/images/profile_doctor.png',
+                        AppImages.profileDoctor,
                         width: 84.w,
                         height: 84.w,
                         fit: BoxFit.cover,

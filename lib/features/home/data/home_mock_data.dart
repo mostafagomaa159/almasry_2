@@ -5,20 +5,20 @@ part of '../home_imports.dart';
 
 class HomeMockData {
   static const List<String> banners = [
-    'assets/images/Red_Big_Card.png',
-    'assets/images/Red_Big_Card.png',
-    'assets/images/Red_Big_Card.png',
+    AppImages.redBigCard,
+    AppImages.redBigCard,
+    AppImages.redBigCard,
   ];
 
   static List<HomeGoalModel> goals() {
     return [
       const HomeGoalModel(
         titleKey: LocaleKeys.homeGoalFitness,
-        imagePath: 'assets/images/Red_Big_Card.png',
+        imagePath:AppImages.redBigCard,
       ),
       const HomeGoalModel(
         titleKey: LocaleKeys.homeGoalSkinCare,
-        imagePath: 'assets/images/Red_Big_Card.png',
+        imagePath: AppImages.redBigCard,
       ),
     ];
   }
@@ -27,11 +27,11 @@ class HomeMockData {
     return [
       const HomeConcernModel(
         titleKey: LocaleKeys.homeConcernHeadache,
-        imagePath: 'assets/images/Red_Big_Card.png',
+        imagePath: AppImages.redBigCard,
       ),
       const HomeConcernModel(
         titleKey: LocaleKeys.homeConcernTitle,
-        imagePath: 'assets/images/Red_Big_Card.png',
+        imagePath: AppImages.redBigCard,
       ),
     ];
   }
@@ -39,22 +39,22 @@ class HomeMockData {
   static List<HomeServiceModel> services() {
     return [
       const HomeServiceModel(
-        iconPath: 'assets/images/Red_Big_Card.png',
+        iconPath: AppImages.redBigCard,
         titleKey: LocaleKeys.homeSafeShopping,
         descriptionKey: LocaleKeys.homeSafeShoppingDesc,
       ),
       const HomeServiceModel(
-        iconPath: 'assets/images/Red_Big_Card.png',
+        iconPath: AppImages.redBigCard,
         titleKey: LocaleKeys.homeFastShipping,
         descriptionKey: LocaleKeys.homeFastShippingDesc,
       ),
       const HomeServiceModel(
-        iconPath: 'assets/images/Red_Big_Card.png',
+        iconPath: AppImages.redBigCard,
         titleKey: LocaleKeys.homeMoneyBack,
         descriptionKey: LocaleKeys.homeMoneyBackDesc,
       ),
       const HomeServiceModel(
-        iconPath: 'assets/images/Red_Big_Card.png',
+        iconPath:AppImages.redBigCard,
         titleKey: LocaleKeys.homeCustomerService,
         descriptionKey: LocaleKeys.homeCustomerServiceDesc,
       ),

@@ -7,9 +7,9 @@ class BrandStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<String> brands = [
-      'assets/images/Red_Big_Card.png',
-      'assets/images/Red_Big_Card.png',
-      'assets/images/Red_Big_Card.png',
+      AppImages.redBigCard,
+      AppImages.redBigCard,
+      AppImages.redBigCard,
     ];
 
     return Container(
