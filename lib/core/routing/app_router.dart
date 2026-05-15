@@ -1,10 +1,13 @@
-import 'package:almasry_2/features/auth/auth.dart';
-import 'package:almasry_2/features/edit_profile/view/edit_profile_view.dart';
+import 'package:almasry_2/core/routing/app_routes.dart';
+import 'package:almasry_2/features/auth/auth_imports.dart';
 import 'package:almasry_2/features/edit_profile/view_model/edit_profile_args.dart';
-import 'package:almasry_2/features/edit_profile/view_model/edit_profile_cubit.dart';
 import 'package:almasry_2/features/home/home_imports.dart';
 import 'package:almasry_2/features/profile/profile_imports.dart';
+import 'package:almasry_2/features/profile/view_model/profile_args.dart';
 import 'package:almasry_2/features/splash/splash_imports.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import '../../features/edit_profile/edit_profile_imports.dart';
 import '../../features/order_details/order_details_imports.dart';
 import '../../features/order_details/view_model/order_details_args.dart';
 import '../../features/orders/orders_imports.dart';

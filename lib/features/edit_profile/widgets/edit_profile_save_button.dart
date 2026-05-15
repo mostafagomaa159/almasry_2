@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+part of '../edit_profile_imports.dart';
+
 
 class EditProfileSaveButton extends StatelessWidget {
   final String title;

@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:almasry_2/features/auth/auth.dart';
-import '../widgets/widgets.dart';
+part of '../auth_imports.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -138,23 +136,14 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> _toggleLanguage() async {
-    if (context.locale.languageCode == 'ar') {
-      await context.setLocale(AppLocale.english);
-    } else {
-      await context.setLocale(AppLocale.arabic);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final bool isArabic = context.locale.languageCode == 'ar';
-
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         final AuthCubit authCubit = context.read<AuthCubit>();
 
         return Scaffold(
+          backgroundColor: const Color(0xFFF5F5F5),
           body: SafeArea(
             top: false,
             child: Column(
@@ -168,11 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        LoginLanguageSwitch(
-                          isArabic: isArabic,
-                          onTap: _toggleLanguage,
-                        ),
-                        8.verticalSpace,
+                        SizedBox(height: 6.h),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 12.w),
                           child: AuthToggleTabs(
@@ -183,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             onLeftTap: () => _onTabChanged(false),
                           ),
                         ),
-                        SizedBox(height: 34.h),
+                        SizedBox(height: 28.h),
                         if (isRegularLoginSelected)
                           RegularLoginForm(
                             state: state,
@@ -203,13 +188,35 @@ class _LoginScreenState extends State<LoginScreen> {
                             onSubmit: _submitPhoneLogin,
                             onClearErrors: _clearLoginErrors,
                           ),
+                        SizedBox(height: 18.h),
+                        Center(
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: Text(
+                              LocaleKeys.forgotPassword.tr(),
+                              style: TextStyle(
+                                color: const Color(0xFF9E9E9E),
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 28.h),
+                        AppButton(
+                          title: LocaleKeys.signIn.tr(),
+                          onPressed: isRegularLoginSelected
+                              ? _submitRegularLogin
+                              : _submitPhoneLogin,
+                          isLoading: state.isLoading,
+                        ),
                         SizedBox(height: 16.h),
                         AppButton(
                           title: LocaleKeys.createAccount.tr(),
                           onPressed: _goToRegisterScreen,
                           isPrimary: false,
                         ),
-                        SizedBox(height: 30.h),
+                        SizedBox(height: 26.h),
                         Center(
                           child: GestureDetector(
                             onTap: _continueAsGuest,
@@ -218,6 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               style: TextStyle(
                                 fontSize: 17.sp,
                                 fontWeight: FontWeight.w600,
+                                color: const Color(0xFF555555),
                                 decoration: TextDecoration.underline,
                               ),
                             ),

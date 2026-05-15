@@ -1,10 +1,4 @@
-import 'package:almasry_2/core/core.dart';
-import 'package:almasry_2/features/auth/view_model/auth_cubit.dart';
-import 'package:almasry_2/features/auth/view_model/auth_state.dart';
-import 'package:almasry_2/features/auth/widgets/remember_me_row.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+part of '../auth_imports.dart';
 
 class RegularLoginForm extends StatelessWidget {
   final AuthState state;
@@ -70,10 +64,9 @@ class RegularLoginForm extends StatelessWidget {
         RememberMeRow(
           isChecked: state.rememberMe,
           rememberMeTitle: LocaleKeys.rememberMe.tr(),
-          forgotPasswordTitle: LocaleKeys.forgotPassword.tr(),
           onCheckboxTap: authCubit.toggleRememberMe,
-          onForgotPasswordTap: () {},
         ),
+
         SizedBox(height: 34.h),
         AppButton(
           title: LocaleKeys.signIn.tr(),

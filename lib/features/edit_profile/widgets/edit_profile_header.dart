@@ -1,7 +1,5 @@
-import 'package:almasry_2/core/localization/locale_keys.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+part of '../edit_profile_imports.dart';
+
 
 class EditProfileHeader extends StatelessWidget {
   final VoidCallback onBackTap;

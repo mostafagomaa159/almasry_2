@@ -1,7 +1,5 @@
-import 'package:almasry_2/core/constants/app_colors.dart';
-import 'package:almasry_2/core/utils/app_logo.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+part of '../auth_imports.dart';
+
 
 class AuthHeader extends StatelessWidget {
   const AuthHeader({super.key});
@@ -9,12 +7,12 @@ class AuthHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 260.h,
+      height: 240.h,
       child: Stack(
         children: [
           Positioned(
-            top: -80.h,
-            left: -120.w,
+            top: -90.h,
+            left: -130.w,
             child: Container(
               width: 320.w,
               height: 320.h,
@@ -27,7 +25,7 @@ class AuthHeader extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: Padding(
-              padding: EdgeInsets.only(top: 30.h),
+              padding: EdgeInsets.only(top: 38.h),
               child: Image.asset(
                 AppLogo.asset(context),
                 width: 250.w,

@@ -1,8 +1,5 @@
-import 'package:almasry_2/core/core.dart';
-import 'package:almasry_2/features/auth/view_model/auth_state.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+part of '../auth_imports.dart';
+
 
 class PhoneLoginForm extends StatelessWidget {
   final AuthState state;

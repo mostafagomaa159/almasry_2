@@ -1,5 +1,5 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:almasry_2/features/edit_profile/edit_profile.dart';
+part of '../edit_profile_imports.dart';
+
 
 class EditProfileCubit extends Cubit<EditProfileState> {
   EditProfileCubit() : super(EditProfileState.initial());
