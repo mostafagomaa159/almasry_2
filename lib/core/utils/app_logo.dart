@@ -1,5 +1,4 @@
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/widgets.dart';
+part of '../core_imports.dart';
 
 class AppLogo {
   static String asset(BuildContext context) {

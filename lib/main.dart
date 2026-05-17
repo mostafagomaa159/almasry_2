@@ -1,16 +1,17 @@
-import 'package:almasry_2/core/localization/app_locale.dart';
-import 'package:almasry_2/core/routing/app_router.dart';
-import 'package:almasry_2/features/favorites/favorites.dart';
+import 'package:almasry_2/core/core_imports.dart';
+import 'package:almasry_2/features/favorites/favorites_imports.dart';
+import 'package:almasry_2/features/splash/splash_imports.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'features/auth/auth_imports.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  await SharedPrefsHelper.init();
+
 
   runApp(
     EasyLocalization(
@@ -30,6 +31,9 @@ class BlinkApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<StartupCubit>(
+          create: (_) => StartupCubit(),
+        ),
         BlocProvider<AuthCubit>(
           create: (_) => AuthCubit(),
         ),

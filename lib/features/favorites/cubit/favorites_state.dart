@@ -1,5 +1,4 @@
-import 'package:almasry_2/core/database/favorite_product_model.dart';
-
+part of '../favorites_imports.dart';
 class FavoritesState {
   final bool isLoading;
   final List<FavoriteProductModel> favorites;

@@ -82,6 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     await context.read<AuthCubit>().login();
+    await context.read<StartupCubit>().saveLoggedIn();
 
     if (!mounted) return;
 

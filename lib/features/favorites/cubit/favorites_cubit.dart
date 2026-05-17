@@ -1,8 +1,5 @@
-import 'package:almasry_2/core/database/favorite_product_model.dart';
-import 'package:almasry_2/core/database/favorites_repository.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+part of '../favorites_imports.dart';
 
-import 'favorites_state.dart';
 
 class FavoritesCubit extends Cubit<FavoritesState> {
   FavoritesCubit() : super(FavoritesState.initial());

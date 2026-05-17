@@ -1,6 +1,4 @@
-import 'favorite_product_model.dart';
-import 'favorites_db_helper.dart';
-
+part of '../core_imports.dart';
 class FavoritesRepository {
   FavoritesRepository._();
 

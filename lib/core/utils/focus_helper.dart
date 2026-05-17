@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+part of '../core_imports.dart';
 
 class FocusHelper {
   static void unfocusKeyboard(BuildContext context) {

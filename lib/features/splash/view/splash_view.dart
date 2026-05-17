@@ -1,6 +1,5 @@
 part of '../../splash/splash_imports.dart';
 
-
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -57,11 +56,12 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    _timer = Timer(const Duration(seconds: 3), () {
-      if (!mounted) {
-        return;
-      }
+    _timer = Timer(const Duration(seconds: 3), () async {
+      if (!mounted) return;
 
+      await context.read<StartupCubit>().completeFirstTime();
+
+      if (!mounted) return;
       context.go(AppRoutes.login);
     });
   }

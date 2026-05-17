@@ -1,16 +1,18 @@
-import 'package:almasry_2/core/constants/app_colors.dart';
-import 'package:almasry_2/core/utils/app_logo.dart';
+import 'package:almasry_2/core/constants/app_sizes.dart';
+import 'package:almasry_2/core/localization/locale_keys.dart';
+import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/features/auth/view_model/auth_state.dart';
 import 'package:almasry_2/features/auth/widgets/login_toggle_tabs.dart';
 import 'package:almasry_2/features/auth/widgets/login_remember_me_row.dart';
 import 'package:flutter/material.dart';
-import 'package:almasry_2/core/core.dart';
+import 'package:almasry_2/core/core_imports.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../profile/view_model/profile_args.dart';
+import '../splash/splash_imports.dart';
 
 part 'view/login_screen.dart';
 part 'view/register_screen.dart';

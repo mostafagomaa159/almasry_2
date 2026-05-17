@@ -1,24 +1,13 @@
-import 'package:almasry_2/core/routing/app_routes.dart';
-import 'package:almasry_2/features/auth/auth_imports.dart';
-import 'package:almasry_2/features/edit_profile/view_model/edit_profile_args.dart';
-import 'package:almasry_2/features/home/home_imports.dart';
-import 'package:almasry_2/features/profile/profile_imports.dart';
-import 'package:almasry_2/features/profile/view_model/profile_args.dart';
-import 'package:almasry_2/features/splash/splash_imports.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import '../../features/edit_profile/edit_profile_imports.dart';
-import '../../features/order_details/order_details_imports.dart';
-import '../../features/order_details/view_model/order_details_args.dart';
-import '../../features/orders/orders_imports.dart';
-import '../../features/product_details/product_details_imports.dart';
-import '../../features/product_details/view_model/product_details_args.dart';
-import '../../features/wishlist/wishlist_imports.dart';
+part of '../core_imports.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: AppRoutes.splash,
+    initialLocation: AppRoutes.startup,
     routes: [
+      GoRoute(
+        path: AppRoutes.startup,
+        builder: (context, state) => const StartupGate(),
+      ),
       GoRoute(
         path: AppRoutes.splash,
         builder: (context, state) => const SplashScreen(),
@@ -27,10 +16,7 @@ class AppRouter {
         path: AppRoutes.login,
         builder: (context, state) => const LoginScreen(),
       ),
-      GoRoute(
-        path: AppRoutes.logOut,
-        builder: (context, state) => const LoginScreen(),
-      ),
+
       GoRoute(
         path: AppRoutes.signup,
         name: 'signup',

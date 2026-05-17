@@ -133,6 +133,7 @@ class _AccountProfileViewState extends State<AccountProfileView> {
     // await CacheHelper.removeData(key: 'token');
     // await CacheHelper.removeData(key: 'user');
     // await CacheHelper.removeData(key: 'isLoggedIn');
+    await context.read<StartupCubit>().logout();
 
     if (!mounted) return;
 

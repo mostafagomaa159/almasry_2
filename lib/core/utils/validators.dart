@@ -1,6 +1,4 @@
-import 'package:almasry_2/core/localization/locale_keys.dart';
-import 'package:easy_localization/easy_localization.dart';
-
+part of '../core_imports.dart';
 
 
 class Validators {

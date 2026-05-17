@@ -1,8 +1,10 @@
+import 'package:almasry_2/core/core_imports.dart';
 import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/features/profile/view_model/profile_args.dart';
 import 'package:almasry_2/features/profile/view_model/profile_state.dart';
 import 'package:almasry_2/features/profile/widgets/profile_menu_item.dart';
+import 'package:almasry_2/features/splash/splash_imports.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,8 +12,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import '../../core/constants/app_colors.dart';
-import '../auth/auth_imports.dart';
 import '../edit_profile/view_model/edit_profile_args.dart';
 import 'package:almasry_2/core/constants/app_images.dart';
 
