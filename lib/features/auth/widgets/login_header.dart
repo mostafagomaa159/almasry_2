@@ -1,6 +1,5 @@
 part of '../auth_imports.dart';
 
-
 class AuthHeader extends StatelessWidget {
   const AuthHeader({super.key});
 

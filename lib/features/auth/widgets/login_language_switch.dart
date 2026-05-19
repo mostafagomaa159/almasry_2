@@ -18,10 +18,7 @@ class LoginLanguageSwitch extends StatelessWidget {
         onPressed: onTap,
         child: Text(
           isArabic ? 'EN' : 'AR',
-          style: TextStyle(
-            fontSize: 15.sp,
-            fontWeight: FontWeight.w700,
-          ),
+          style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w700),
         ),
       ),
     );

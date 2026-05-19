@@ -3,10 +3,7 @@ part of '../orders_imports.dart';
 class OrdersItemRow extends StatelessWidget {
   final OrderItemModel item;
 
-  const OrdersItemRow({
-    super.key,
-    required this.item,
-  });
+  const OrdersItemRow({super.key, required this.item});
 
   String _formatPrice(double value, BuildContext context) {
     return '${value.toStringAsFixed(2)} ${LocaleKeys.currency.tr()}';

@@ -2,7 +2,7 @@ part of '../home_imports.dart';
 
 class HomeGoalsSection extends StatelessWidget {
   final bool isArabic;
-  final List<HomeGoalModel> items;
+  final List<HomeSubCategoryResponse> items;
 
   const HomeGoalsSection({
     super.key,
@@ -12,6 +12,8 @@ class HomeGoalsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (items.isEmpty) return const SizedBox.shrink();
+
     return SizedBox(
       height: 102.h,
       child: ListView.builder(
@@ -21,9 +23,11 @@ class HomeGoalsSection extends StatelessWidget {
         itemCount: items.length,
         itemBuilder: (context, index) {
           final item = items[index];
+
           return WideInfoCard(
-            title: item.titleKey.tr(),
-            imagePath: item.imagePath,
+            title: item.name,
+            imagePath: item.image,
+            isNetworkImage: true,
           );
         },
       ),

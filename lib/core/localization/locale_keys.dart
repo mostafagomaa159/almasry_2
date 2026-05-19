@@ -80,7 +80,8 @@ class LocaleKeys {
   static const String profileGenderLabel = 'profile_gender_label';
   static const String profileBirthDateLabel = 'profile_birth_date_label';
   static const String profilePregnancyLabel = 'profile_pregnancy_label';
-  static const String profileChronicDiseaseLabel = 'profile_chronic_disease_label';
+  static const String profileChronicDiseaseLabel =
+      'profile_chronic_disease_label';
 
   static const String profileOrders = 'profile_orders';
   static const String profileShippingData = 'profile_shipping_data';
@@ -91,8 +92,8 @@ class LocaleKeys {
   static const String back = 'back';
 
   //Edit Profile
-  static const String editAccount='editAccount';
-  static const String choose= 'choose';
+  static const String editAccount = 'editAccount';
+  static const String choose = 'choose';
   static const String yes = 'yes';
   static const String no = 'no';
   static const String male = 'male';
@@ -123,11 +124,10 @@ class LocaleKeys {
   static const String productDetailsDescription = 'product_details_description';
   static const String productDetailsMore = 'product_details_more';
   static const String productDetailsRating = 'product_details_rating';
-  static const String productDetailsAddToBasket = 'product_details_add_to_basket';
-  static const String productDetailsCategoryWomenClothing = 'product_details_category_women_clothing';
-  static const String productDetailsDescriptionValue = 'product_details_description_value';
-
-
-
-
+  static const String productDetailsAddToBasket =
+      'product_details_add_to_basket';
+  static const String productDetailsCategoryWomenClothing =
+      'product_details_category_women_clothing';
+  static const String productDetailsDescriptionValue =
+      'product_details_description_value';
 }

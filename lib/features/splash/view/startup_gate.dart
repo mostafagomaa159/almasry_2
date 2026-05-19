@@ -17,7 +17,6 @@ class _StartupGateState extends State<StartupGate> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<StartupCubit, StartupState>(
@@ -36,11 +35,7 @@ class _StartupGateState extends State<StartupGate> {
             break;
         }
       },
-      child: const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      ),
+      child: const Scaffold(body: Center(child: CircularProgressIndicator())),
     );
   }
 }

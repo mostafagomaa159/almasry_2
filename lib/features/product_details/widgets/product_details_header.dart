@@ -55,11 +55,7 @@ class ProductDetailsHeader extends StatelessWidget {
                 ),
               ],
             ),
-            child: Icon(
-              Icons.share_outlined,
-              color: Colors.black,
-              size: 22.sp,
-            ),
+            child: Icon(Icons.share_outlined, color: Colors.black, size: 22.sp),
           ),
         ],
       ),

@@ -75,8 +75,9 @@ class EditProfileState {
       diseaseType: diseaseType ?? this.diseaseType,
       isLoading: isLoading ?? this.isLoading,
       isSaving: isSaving ?? this.isSaving,
-      errorMessage:
-      clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
+      errorMessage: clearErrorMessage
+          ? null
+          : (errorMessage ?? this.errorMessage),
       saveSuccess: saveSuccess ?? this.saveSuccess,
     );
   }

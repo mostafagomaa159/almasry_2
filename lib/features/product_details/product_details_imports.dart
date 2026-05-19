@@ -7,10 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/services/favorite_product_model.dart';
+import '../../core/models/response/response_favorite_product.dart';
 import '../favorites/favorites_imports.dart';
-
-
 
 part 'view/product_details_view.dart';
 part 'view_model/product_details_cubit.dart';

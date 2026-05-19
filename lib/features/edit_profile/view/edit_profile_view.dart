@@ -1,11 +1,9 @@
 part of '../edit_profile_imports.dart';
+
 class EditProfileView extends StatefulWidget {
   final EditProfileArgs? args;
 
-  const EditProfileView({
-    super.key,
-    this.args,
-  });
+  const EditProfileView({super.key, this.args});
 
   @override
   State<EditProfileView> createState() => _EditProfileViewState();
@@ -67,33 +65,20 @@ class _EditProfileViewState extends State<EditProfileView> {
 
   List<DropdownMenuItem<String>> _yesNoItems(BuildContext context) {
     return [
-      DropdownMenuItem(
-        value: 'yes',
-        child: Text(LocaleKeys.yes.tr()),
-      ),
-      DropdownMenuItem(
-        value: 'no',
-        child: Text(LocaleKeys.no.tr()),
-      ),
+      DropdownMenuItem(value: 'yes', child: Text(LocaleKeys.yes.tr())),
+      DropdownMenuItem(value: 'no', child: Text(LocaleKeys.no.tr())),
     ];
   }
 
   List<DropdownMenuItem<String>> _genderItems(BuildContext context) {
     return [
-      DropdownMenuItem(
-        value: 'male',
-        child: Text(LocaleKeys.male.tr()),
-      ),
-      DropdownMenuItem(
-        value: 'female',
-        child: Text(LocaleKeys.female.tr()),
-      ),
+      DropdownMenuItem(value: 'male', child: Text(LocaleKeys.male.tr())),
+      DropdownMenuItem(value: 'female', child: Text(LocaleKeys.female.tr())),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
-
     return BlocConsumer<EditProfileCubit, EditProfileState>(
       listener: (context, state) {
         if (state.saveSuccess) {
@@ -113,16 +98,13 @@ class _EditProfileViewState extends State<EditProfileView> {
         }
       },
 
-
       builder: (context, state) {
         return Scaffold(
           backgroundColor: const Color(0xFFF2F2F2),
           body: SafeArea(
             child: Column(
               children: [
-                EditProfileHeader(
-                  onBackTap: () => context.pop(),
-                ),
+                EditProfileHeader(onBackTap: () => context.pop()),
                 Expanded(
                   child: SingleChildScrollView(
                     padding: EdgeInsets.symmetric(horizontal: 22.w),
@@ -212,9 +194,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                           value: state.gender.isEmpty ? null : state.gender,
                           items: _genderItems(context),
                           onChanged: (value) {
-                            context
-                                .read<EditProfileCubit>()
-                                .updateGender(value ?? '');
+                            context.read<EditProfileCubit>().updateGender(
+                              value ?? '',
+                            );
                           },
                         ),
                         EditProfileDropdownField(
@@ -225,9 +207,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                               : state.hasPregnancy,
                           items: _yesNoItems(context),
                           onChanged: (value) {
-                            context
-                                .read<EditProfileCubit>()
-                                .updateHasPregnancy(value ?? '');
+                            context.read<EditProfileCubit>().updateHasPregnancy(
+                              value ?? '',
+                            );
                           },
                         ),
                         EditProfileDropdownField(
@@ -250,9 +232,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                           textAlign: TextAlign.end,
 
                           onChanged: (value) {
-                            context
-                                .read<EditProfileCubit>()
-                                .updateDiseaseType(value);
+                            context.read<EditProfileCubit>().updateDiseaseType(
+                              value,
+                            );
                           },
                         ),
                         SizedBox(height: 26.h),

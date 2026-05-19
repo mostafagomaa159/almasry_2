@@ -1,13 +1,9 @@
 part of '../orders_imports.dart';
 
-
 class OrdersHeader extends StatelessWidget {
   final VoidCallback onBackTap;
 
-  const OrdersHeader({
-    super.key,
-    required this.onBackTap,
-  });
+  const OrdersHeader({super.key, required this.onBackTap});
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +28,7 @@ class OrdersHeader extends StatelessWidget {
             width: double.infinity,
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(
-                color: const Color(0xFFFF2D2D),
-                width: 1.2,
-              ),
+              border: Border.all(color: const Color(0xFFFF2D2D), width: 1.2),
               borderRadius: BorderRadiusDirectional.only(
                 bottomStart: Radius.circular(28.r),
                 bottomEnd: Radius.circular(28.r),

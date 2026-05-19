@@ -3,10 +3,7 @@ part of '../product_details_imports.dart';
 class ProductDetailsRatingSection extends StatelessWidget {
   final double rating;
 
-  const ProductDetailsRatingSection({
-    super.key,
-    required this.rating,
-  });
+  const ProductDetailsRatingSection({super.key, required this.rating});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +34,7 @@ class ProductDetailsRatingSection extends StatelessWidget {
             SizedBox(width: 10.w),
             ...List.generate(
               5,
-                  (index) => Padding(
+              (index) => Padding(
                 padding: EdgeInsetsDirectional.only(end: 2.w),
                 child: Icon(
                   index < filledStars ? Icons.star : Icons.star_border,

@@ -1,6 +1,5 @@
 part of '../auth_imports.dart';
 
-
 class RegisterForm extends StatelessWidget {
   final AuthState state;
   final AuthCubit authCubit;

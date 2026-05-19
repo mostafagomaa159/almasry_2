@@ -1,6 +1,5 @@
 part of '../orders_imports.dart';
 
-
 class OrdersCubit extends Cubit<OrdersState> {
   OrdersCubit() : super(const OrdersState());
 

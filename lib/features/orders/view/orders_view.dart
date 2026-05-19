@@ -24,9 +24,7 @@ class _OrdersViewState extends State<OrdersView> {
             top: false,
             child: Column(
               children: [
-                OrdersHeader(
-                  onBackTap: () => context.pop(),
-                ),
+                OrdersHeader(onBackTap: () => context.pop()),
                 Expanded(
                   child: ListView.separated(
                     padding: EdgeInsetsDirectional.fromSTEB(
@@ -43,9 +41,7 @@ class _OrdersViewState extends State<OrdersView> {
                         onDetailsTap: () {
                           context.pushNamed(
                             'orderDetails',
-                            extra: OrderDetailsArgs(
-                              orderId: order.id,
-                            ),
+                            extra: OrderDetailsArgs(orderId: order.id),
                           );
                         },
                       );

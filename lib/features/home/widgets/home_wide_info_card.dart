@@ -1,53 +1,55 @@
 part of '../home_imports.dart';
-
-
 class WideInfoCard extends StatelessWidget {
   final String title;
   final String imagePath;
+  final bool isNetworkImage;
 
   const WideInfoCard({
     super.key,
     required this.title,
     required this.imagePath,
+    this.isNetworkImage = false, Color? backgroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 220.w,
-      height: 100.h,
-      margin: EdgeInsetsDirectional.only(start: 10.w),
+      width: 150.w,
+      margin: EdgeInsets.symmetric(horizontal: 6.w),
       decoration: BoxDecoration(
-        color: const Color(0xFFFBEAEA),
-        borderRadius: BorderRadius.circular(18.r),
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(14.r),
       ),
-      child: Row(
+      child: Column(
         children: [
           Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: 14.w),
-              child: Text(
-                title,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
-                  height: 1.1,
+            child: ClipRRect(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(14.r)),
+              child: isNetworkImage
+                  ? Image.network(
+                imagePath,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                errorBuilder: (_, __, ___) => Container(
+                  color: Colors.grey.shade300,
+                  alignment: Alignment.center,
+                  child: const Icon(Icons.broken_image),
                 ),
+              )
+                  : Image.asset(
+                imagePath,
+                fit: BoxFit.cover,
+                width: double.infinity,
               ),
             ),
           ),
-          ClipRRect(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(18.r),
-              bottomLeft: Radius.circular(18.r),
-            ),
-            child: Image.asset(
-              imagePath,
-              width: 90.w,
-              height: double.infinity,
-              fit: BoxFit.cover,
+          Padding(
+            padding: EdgeInsets.all(8.w),
+            child: Text(
+              title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
             ),
           ),
         ],

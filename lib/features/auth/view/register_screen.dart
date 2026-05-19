@@ -1,6 +1,5 @@
 part of '../auth_imports.dart';
 
-
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -202,7 +201,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
         );
-
       },
     );
   }

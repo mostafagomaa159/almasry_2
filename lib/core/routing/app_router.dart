@@ -79,10 +79,6 @@ class AppRouter {
         path: AppRoutes.wishlist,
         builder: (context, state) => const WishlistScreen(),
       ),
-
-
-
-
     ],
   );
 }

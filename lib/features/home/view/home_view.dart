@@ -13,26 +13,23 @@ class _HomeScreenState extends State<HomeScreen> {
   late final PageController bannerController;
   Timer? bannerTimer;
 
-  List<String> get banners => HomeMockData.banners;
-
   @override
   void initState() {
     super.initState();
     bannerController = PageController();
-    _startBannerAutoSlide();
   }
 
-  void _startBannerAutoSlide() {
+  void _startBannerAutoSlide(int bannersLength) {
     bannerTimer?.cancel();
 
+    if (bannersLength <= 1) return;
+
     bannerTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
-      if (!mounted || !bannerController.hasClients || banners.isEmpty) {
-        return;
-      }
+      if (!mounted || !bannerController.hasClients) return;
 
       final int currentPage =
           bannerController.page?.round() ?? bannerController.initialPage;
-      final int nextPage = (currentPage + 1) % banners.length;
+      final int nextPage = (currentPage + 1) % bannersLength;
 
       bannerController.animateToPage(
         nextPage,
@@ -49,26 +46,20 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  String _buildWelcomeName() {
-    final String? firstName = widget.args?.firstName?.trim();
-    final String? email = widget.args?.email?.trim();
-    final String? phone = widget.args?.phone?.trim();
-
-    if (firstName != null && firstName.isNotEmpty) return firstName;
-    if (email != null && email.isNotEmpty) return email;
-    if (phone != null && phone.isNotEmpty) return phone;
-    if (widget.args?.isGuest == true) return 'Guest';
-    return 'User';
-  }
-
   @override
   Widget build(BuildContext context) {
     final bool isArabic = context.locale.languageCode == 'ar';
-    final String welcomeName = _buildWelcomeName();
 
     return BlocProvider(
-      create: (_) => HomeCubit(),
-      child: BlocBuilder<HomeCubit, HomeState>(
+      create: (_) => sl<HomeCubit>()..getHomeData(),
+      child: BlocConsumer<HomeCubit, HomeState>(
+        listener: (context, state) {
+          if (state.banners.isNotEmpty) {
+            _startBannerAutoSlide(state.banners.length);
+          } else {
+            bannerTimer?.cancel();
+          }
+        },
         builder: (context, state) {
           final HomeCubit homeCubit = context.read<HomeCubit>();
 
@@ -90,72 +81,121 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   const HomeHeader(),
                   Expanded(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 18.h),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            SizedBox(height: 10.h),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 14.w),
-                              child: const HomeSearchBar(),
-                            ),
-                            SizedBox(height: 16.h),
-                            HomeBannerSlider(
-                              controller: bannerController,
-                              currentIndex: state.currentBannerIndex,
-                              onPageChanged: homeCubit.changeBannerIndex,
-                              banners: banners,
-                            ),
-                            SizedBox(height: 24.h),
-                            HomeSectionHeader(
-                              title: LocaleKeys.homeBestOffers.tr(),
-                            ),
-                            SizedBox(height: 14.h),
-                            HomeOfferTabs(
-                              selectedIndex: state.selectedOfferTabIndex,
-                              onTap: homeCubit.changeOfferTab,
-                            ),
-                            SizedBox(height: 16.h),
-                            HomeProductsSection(
-                              isArabic: isArabic,
-                              sectionKey: 'best_offers',
-                            ),
+                    child: Builder(
+                      builder: (_) {
+                        if (state.status == HomeStatus.loading) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
 
-                            SizedBox(height: 22.h),
-                            HomeSectionHeader(title: LocaleKeys.homeGoals.tr()),
-                            SizedBox(height: 12.h),
-                            HomeGoalsSection(
-                              isArabic: isArabic,
-                              items: HomeMockData.goals(),
+                        if (state.status == HomeStatus.error) {
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(24),
+                              child: Text(
+                                state.errorMessage.isEmpty
+                                    ? 'Something went wrong'
+                                    : state.errorMessage,
+                                textAlign: TextAlign.center,
+                              ),
                             ),
-                            SizedBox(height: 18.h),
-                            const BrandStrip(),
-                            SizedBox(height: 24.h),
-                            HomeSectionHeader(
-                              title: LocaleKeys.homeBestSelling.tr(),
-                            ),
-                            SizedBox(height: 16.h),
-                            HomeProductsSection(
-                              isArabic: isArabic,
-                              sectionKey: 'best_selling',
-                            ),
+                          );
+                        }
 
-                            SizedBox(height: 22.h),
-                            HomeSectionHeader(
-                              title: LocaleKeys.homeConcerns.tr(),
+                        return RefreshIndicator(
+                          onRefresh: homeCubit.getHomeData,
+                          child: SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: 18.h),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  SizedBox(height: 10.h),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 14.w),
+                                    child: const HomeSearchBar(),
+                                  ),
+                                  SizedBox(height: 16.h),
+
+                                  if (state.banners.isNotEmpty) ...[
+                                    HomeBannerSlider(
+                                      controller: bannerController,
+                                      currentIndex: state.currentBannerIndex,
+                                      onPageChanged: homeCubit.changeBannerIndex,
+                                      banners: state.banners,
+                                    ),
+                                    SizedBox(height: 24.h),
+                                  ],
+
+                                  if (state.offers.isNotEmpty) ...[
+                                    HomeSectionHeader(
+                                      title: LocaleKeys.homeBestOffers.tr(),
+                                    ),
+                                    SizedBox(height: 14.h),
+                                    HomeOfferTabs(
+                                      selectedIndex: state.selectedOfferTabIndex,
+                                      onTap: homeCubit.changeOfferTab,
+                                    ),
+                                    SizedBox(height: 16.h),
+                                    HomeOffersSection(
+                                      isArabic: isArabic,
+                                      items: state.offers,
+                                    ),
+                                  ],
+
+                                  if (state.goals.isNotEmpty) ...[
+                                    SizedBox(height: 22.h),
+                                    HomeSectionHeader(
+                                      title: LocaleKeys.homeGoals.tr(),
+                                    ),
+                                    SizedBox(height: 12.h),
+                                    HomeGoalsSection(
+                                      isArabic: isArabic,
+                                      items: state.goals,
+                                    ),
+                                  ],
+
+                                  if (state.brands.isNotEmpty) ...[
+                                    SizedBox(height: 18.h),
+                                    BrandStrip(
+                                      brands: state.brands,
+                                    ),
+                                  ],
+
+                                  SizedBox(height: 24.h),
+                                  HomeSectionHeader(
+                                    title: LocaleKeys.homeBestSelling.tr(),
+                                  ),
+                                  SizedBox(height: 16.h),
+                                  HomeProductsSection(
+                                    isArabic: isArabic,
+                                    sectionKey: 'best_selling',
+                                  ),
+
+                                  if (state.concerns.isNotEmpty) ...[
+                                    SizedBox(height: 22.h),
+                                    HomeSectionHeader(
+                                      title: LocaleKeys.homeConcerns.tr(),
+                                    ),
+                                    SizedBox(height: 12.h),
+                                    HomeConcernsSection(
+                                      isArabic: isArabic,
+                                      items: state.concerns,
+                                    ),
+                                  ],
+
+                                  SizedBox(height: 22.h),
+                                  HomeServicesSection(
+                                    items: const [],
+                                  ),
+                                ],
+                              ),
                             ),
-                            SizedBox(height: 12.h),
-                            HomeConcernsSection(
-                              isArabic: isArabic,
-                              items: HomeMockData.concerns(),
-                            ),
-                            SizedBox(height: 22.h),
-                            HomeServicesSection(items: HomeMockData.services()),
-                          ],
-                        ),
-                      ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],

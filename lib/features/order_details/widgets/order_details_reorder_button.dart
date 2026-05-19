@@ -3,10 +3,7 @@ part of '../order_details_imports.dart';
 class OrderDetailsReorderButton extends StatelessWidget {
   final VoidCallback onTap;
 
-  const OrderDetailsReorderButton({
-    super.key,
-    required this.onTap,
-  });
+  const OrderDetailsReorderButton({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

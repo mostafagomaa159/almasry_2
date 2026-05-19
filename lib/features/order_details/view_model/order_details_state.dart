@@ -4,10 +4,7 @@ class OrderDetailsState {
   final bool isLoading;
   final OrderDetailsModel? orderDetails;
 
-  const OrderDetailsState({
-    this.isLoading = false,
-    this.orderDetails,
-  });
+  const OrderDetailsState({this.isLoading = false, this.orderDetails});
 
   OrderDetailsState copyWith({
     bool? isLoading,

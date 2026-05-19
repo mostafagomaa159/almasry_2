@@ -1,13 +1,9 @@
 part of '../order_details_imports.dart';
 
-
 class OrderDetailsProductItem extends StatelessWidget {
   final OrderItemModel item;
 
-  const OrderDetailsProductItem({
-    super.key,
-    required this.item,
-  });
+  const OrderDetailsProductItem({super.key, required this.item});
 
   String _formatPrice(BuildContext context, double value) {
     return '${value.toStringAsFixed(2)} ${LocaleKeys.currency.tr()}';
@@ -61,10 +57,7 @@ class OrderDetailsProductItem extends StatelessWidget {
           ),
           child: Padding(
             padding: EdgeInsets.all(6.w),
-            child: Image.asset(
-              item.imagePath,
-              fit: BoxFit.contain,
-            ),
+            child: Image.asset(item.imagePath, fit: BoxFit.contain),
           ),
         ),
       ],

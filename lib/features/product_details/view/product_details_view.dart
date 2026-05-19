@@ -1,14 +1,9 @@
 part of '../product_details_imports.dart';
 
-
-
 class ProductDetailsView extends StatefulWidget {
   final ProductDetailsArgs args;
 
-  const ProductDetailsView({
-    super.key,
-    required this.args,
-  });
+  const ProductDetailsView({super.key, required this.args});
 
   @override
   State<ProductDetailsView> createState() => _ProductDetailsViewState();
@@ -60,39 +55,47 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                               Positioned(
                                 top: 16.h,
                                 right: 20.w,
-                                child: BlocBuilder<FavoritesCubit, FavoritesState>(
-                                  builder: (context, favoritesState) {
-                                    final isFavorite = favoritesState.isFavorite(widget.args.productId);
+                                child:
+                                    BlocBuilder<FavoritesCubit, FavoritesState>(
+                                      builder: (context, favoritesState) {
+                                        final isFavorite = favoritesState
+                                            .isFavorite(widget.args.productId);
 
-                                    return InkWell(
-                                      onTap: _toggleFavorite,
-                                      borderRadius: BorderRadius.circular(50.r),
-                                      child: Container(
-                                        width: 42.w,
-                                        height: 42.h,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          shape: BoxShape.circle,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black.withOpacity(0.08),
-                                              blurRadius: 8,
-                                              offset: const Offset(0, 2),
+                                        return InkWell(
+                                          onTap: _toggleFavorite,
+                                          borderRadius: BorderRadius.circular(
+                                            50.r,
+                                          ),
+                                          child: Container(
+                                            width: 42.w,
+                                            height: 42.h,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black
+                                                      .withOpacity(0.08),
+                                                  blurRadius: 8,
+                                                  offset: const Offset(0, 2),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                        alignment: Alignment.center,
-                                        child: Icon(
-                                          isFavorite ? Icons.favorite : Icons.favorite_border,
-                                          color: isFavorite ? Colors.red : Colors.grey,
-                                          size: 22.sp,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
+                                            alignment: Alignment.center,
+                                            child: Icon(
+                                              isFavorite
+                                                  ? Icons.favorite
+                                                  : Icons.favorite_border,
+                                              color: isFavorite
+                                                  ? Colors.red
+                                                  : Colors.grey,
+                                              size: 22.sp,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
                               ),
-
                             ],
                           ),
                           SizedBox(height: 18.h),

@@ -1,7 +1,5 @@
 part of '../../wishlist/wishlist_imports.dart';
 
-
-
 class WishlistScreen extends StatefulWidget {
   const WishlistScreen({super.key});
 
@@ -19,16 +17,11 @@ class _WishlistScreenState extends State<WishlistScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Wishlist'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Wishlist'), centerTitle: true),
       body: BlocBuilder<FavoritesCubit, FavoritesState>(
         builder: (context, state) {
           if (state.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (state.favorites.isEmpty) {
@@ -41,9 +34,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
             itemBuilder: (context, index) {
               final product = state.favorites[index];
 
-              return WishlistItemCard(
-                product: product,
-              );
+              return WishlistItemCard(product: product);
             },
           );
         },

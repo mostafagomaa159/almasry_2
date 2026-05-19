@@ -1,6 +1,5 @@
 part of '../edit_profile_imports.dart';
 
-
 class EditProfileDropdownField extends StatelessWidget {
   final String label;
   final String hintText;
@@ -57,22 +56,13 @@ class EditProfileDropdownField extends StatelessWidget {
               ),
               contentPadding: EdgeInsets.only(bottom: 10.h),
               enabledBorder: const UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: Color(0xFFB9B9B9),
-                  width: 1,
-                ),
+                borderSide: BorderSide(color: Color(0xFFB9B9B9), width: 1),
               ),
               focusedBorder: const UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: Color(0xFFFF2D2D),
-                  width: 1.2,
-                ),
+                borderSide: BorderSide(color: Color(0xFFFF2D2D), width: 1.2),
               ),
               border: const UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: Color(0xFFB9B9B9),
-                  width: 1,
-                ),
+                borderSide: BorderSide(color: Color(0xFFB9B9B9), width: 1),
               ),
             ),
           ),

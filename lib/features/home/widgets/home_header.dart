@@ -14,10 +14,7 @@ class HomeHeader extends StatelessWidget {
           bottomLeft: Radius.circular(28.r),
           bottomRight: Radius.circular(28.r),
         ),
-        border: Border.all(
-          color: AppColors.primaryRed,
-          width: 1,
-        ),
+        border: Border.all(color: AppColors.primaryRed, width: 1),
       ),
       child: SafeArea(
         bottom: false,
@@ -36,10 +33,7 @@ class HomeHeader extends StatelessWidget {
                     ),
                   ),
                   child: ClipOval(
-                    child: Image.asset(
-                      AppImages.redBigCard,
-                      fit: BoxFit.cover,
-                    ),
+                    child: Image.asset(AppImages.redBigCard, fit: BoxFit.cover),
                   ),
                 ),
                 SizedBox(height: 4.h),
@@ -60,11 +54,7 @@ class HomeHeader extends StatelessWidget {
               fit: BoxFit.contain,
             ),
             SizedBox(width: 18.w),
-            Icon(
-              Icons.menu,
-              size: 30.sp,
-              color: AppColors.textPrimary,
-            ),
+            Icon(Icons.menu, size: 30.sp, color: AppColors.textPrimary),
           ],
         ),
       ),

@@ -1,18 +1,13 @@
 part of '../favorites_imports.dart';
+
 class FavoritesState {
   final bool isLoading;
   final List<FavoriteProductModel> favorites;
 
-  const FavoritesState({
-    required this.isLoading,
-    required this.favorites,
-  });
+  const FavoritesState({required this.isLoading, required this.favorites});
 
   factory FavoritesState.initial() {
-    return const FavoritesState(
-      isLoading: false,
-      favorites: [],
-    );
+    return const FavoritesState(isLoading: false, favorites: []);
   }
 
   FavoritesState copyWith({

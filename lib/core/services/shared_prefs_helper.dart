@@ -1,4 +1,5 @@
 part of '../core_imports.dart';
+
 class SharedPrefsHelper {
   SharedPrefsHelper._();
 

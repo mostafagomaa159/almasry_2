@@ -1,31 +1,20 @@
 part of '../auth_imports.dart';
 
-
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(const AuthState());
 
   void togglePasswordVisibility() {
-    emit(
-      state.copyWith(
-        isPasswordHidden: !state.isPasswordHidden,
-      ),
-    );
+    emit(state.copyWith(isPasswordHidden: !state.isPasswordHidden));
   }
 
   void toggleConfirmPasswordVisibility() {
     emit(
-      state.copyWith(
-        isConfirmPasswordHidden: !state.isConfirmPasswordHidden,
-      ),
+      state.copyWith(isConfirmPasswordHidden: !state.isConfirmPasswordHidden),
     );
   }
 
   void toggleRememberMe() {
-    emit(
-      state.copyWith(
-        rememberMe: !state.rememberMe,
-      ),
-    );
+    emit(state.copyWith(rememberMe: !state.rememberMe));
   }
 
   void setLoginValidationErrors({
@@ -43,12 +32,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void clearLoginValidationErrors() {
-    emit(
-      state.copyWith(
-        emailOrPhoneError: null,
-        passwordError: null,
-      ),
-    );
+    emit(state.copyWith(emailOrPhoneError: null, passwordError: null));
   }
 
   void setRegisterValidationErrors({

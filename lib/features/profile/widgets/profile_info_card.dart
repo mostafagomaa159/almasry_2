@@ -1,6 +1,5 @@
 part of '../profile_imports.dart';
 
-
 class ProfileInfoCard extends StatelessWidget {
   final String name;
   final String email;

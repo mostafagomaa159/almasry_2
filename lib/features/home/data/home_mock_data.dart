@@ -1,8 +1,5 @@
 part of '../home_imports.dart';
 
-
-
-
 class HomeMockData {
   static const List<String> banners = [
     AppImages.redBigCard,
@@ -14,7 +11,7 @@ class HomeMockData {
     return [
       const HomeGoalModel(
         titleKey: LocaleKeys.homeGoalFitness,
-        imagePath:AppImages.redBigCard,
+        imagePath: AppImages.redBigCard,
       ),
       const HomeGoalModel(
         titleKey: LocaleKeys.homeGoalSkinCare,
@@ -54,7 +51,7 @@ class HomeMockData {
         descriptionKey: LocaleKeys.homeMoneyBackDesc,
       ),
       const HomeServiceModel(
-        iconPath:AppImages.redBigCard,
+        iconPath: AppImages.redBigCard,
         titleKey: LocaleKeys.homeCustomerService,
         descriptionKey: LocaleKeys.homeCustomerServiceDesc,
       ),

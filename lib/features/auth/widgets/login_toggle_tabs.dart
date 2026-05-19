@@ -44,9 +44,7 @@ class AuthToggleTabs extends StatelessWidget {
         color: const Color(0xFFF1F1F1),
         borderRadius: BorderRadius.circular(32.r),
       ),
-      child: Row(
-        children: isRtl ? [rightTab, leftTab] : [leftTab, rightTab],
-      ),
+      child: Row(children: isRtl ? [rightTab, leftTab] : [leftTab, rightTab]),
     );
   }
 }
@@ -77,12 +75,12 @@ class _ToggleTabItem extends StatelessWidget {
             boxShadow: isSelected
                 ? []
                 : [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.w),

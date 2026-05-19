@@ -50,7 +50,7 @@ class OrdersCard extends StatelessWidget {
           ),
           SizedBox(height: 14.h),
           ...order.items.map(
-                (item) => Padding(
+            (item) => Padding(
               padding: EdgeInsetsDirectional.only(bottom: 10.h),
               child: OrdersItemRow(item: item),
             ),
@@ -78,11 +78,7 @@ class OrdersCard extends StatelessWidget {
             ],
           ),
           SizedBox(height: 10.h),
-         const Divider(
-            color: Color(0xFF8FA2B7),
-            thickness: 1,
-            height: 1,
-          ),
+          const Divider(color: Color(0xFF8FA2B7), thickness: 1, height: 1),
           SizedBox(height: 12.h),
           Align(
             alignment: AlignmentDirectional.centerEnd,

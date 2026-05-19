@@ -1,15 +1,10 @@
 part of '../home_imports.dart';
 
-
 class HomeSectionHeader extends StatelessWidget {
   final String title;
   final String? actionTitle;
 
-  const HomeSectionHeader({
-    super.key,
-    required this.title,
-    this.actionTitle,
-  });
+  const HomeSectionHeader({super.key, required this.title, this.actionTitle});
 
   @override
   Widget build(BuildContext context) {

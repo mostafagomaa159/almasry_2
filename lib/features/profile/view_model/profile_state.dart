@@ -1,5 +1,3 @@
-
-
 class ProfileState {
   final bool isGuest;
   final String currentLanguageCode;
@@ -9,10 +7,7 @@ class ProfileState {
     required this.currentLanguageCode,
   });
 
-  ProfileState copyWith({
-    bool? isGuest,
-    String? currentLanguageCode,
-  }) {
+  ProfileState copyWith({bool? isGuest, String? currentLanguageCode}) {
     return ProfileState(
       isGuest: isGuest ?? this.isGuest,
       currentLanguageCode: currentLanguageCode ?? this.currentLanguageCode,

@@ -11,6 +11,7 @@ class ProductCard extends StatefulWidget {
   final String discountText;
   final String pointsText;
   final double rating;
+  final bool isNetworkImage;
 
   const ProductCard({
     super.key,
@@ -24,6 +25,7 @@ class ProductCard extends StatefulWidget {
     required this.discountText,
     required this.pointsText,
     required this.rating,
+    this.isNetworkImage = false,
   });
 
   @override
@@ -32,8 +34,6 @@ class ProductCard extends StatefulWidget {
 
 class _ProductCardState extends State<ProductCard> {
   int quantity = 1;
-
-
 
   Future<void> _toggleFavorite() async {
     final product = FavoriteProductModel(
@@ -48,8 +48,6 @@ class _ProductCardState extends State<ProductCard> {
 
     await context.read<FavoritesCubit>().toggleFavorite(product);
   }
-
-
 
   void _incrementQuantity() {
     setState(() {
@@ -81,7 +79,6 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -101,9 +98,26 @@ class _ProductCardState extends State<ProductCard> {
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius:
-                  BorderRadius.vertical(top: Radius.circular(12.r)),
-                  child: Image.asset(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(12.r),
+                  ),
+                  child: widget.isNetworkImage
+                      ? Image.network(
+                    widget.imagePath,
+                    height: 145.h,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        height: 145.h,
+                        width: double.infinity,
+                        color: Colors.grey.shade200,
+                        alignment: Alignment.center,
+                        child: const Icon(Icons.broken_image),
+                      );
+                    },
+                  )
+                      : Image.asset(
                     widget.imagePath,
                     height: 145.h,
                     width: double.infinity,
@@ -115,7 +129,9 @@ class _ProductCardState extends State<ProductCard> {
                   right: 10.w,
                   child: BlocBuilder<FavoritesCubit, FavoritesState>(
                     builder: (context, favoritesState) {
-                      final isFavorite = favoritesState.isFavorite(widget.productId);
+                      final isFavorite = favoritesState.isFavorite(
+                        widget.productId,
+                      );
 
                       return InkWell(
                         onTap: _toggleFavorite,
@@ -137,7 +153,9 @@ class _ProductCardState extends State<ProductCard> {
                           alignment: Alignment.center,
                           child: Icon(
                             isFavorite ? Icons.favorite : Icons.favorite_border,
-                            color: isFavorite ? AppColors.primaryRed : Colors.grey,
+                            color: isFavorite
+                                ? AppColors.primaryRed
+                                : Colors.grey,
                             size: 20.sp,
                           ),
                         ),
@@ -145,7 +163,6 @@ class _ProductCardState extends State<ProductCard> {
                     },
                   ),
                 ),
-
               ],
             ),
             Padding(
@@ -266,11 +283,7 @@ class _ProductCardState extends State<ProductCard> {
           border: Border.all(color: const Color(0xFFE5E5E5)),
         ),
         alignment: Alignment.center,
-        child: Icon(
-          icon,
-          size: 18.sp,
-          color: AppColors.textPrimary,
-        ),
+        child: Icon(icon, size: 18.sp, color: AppColors.textPrimary),
       ),
     );
   }

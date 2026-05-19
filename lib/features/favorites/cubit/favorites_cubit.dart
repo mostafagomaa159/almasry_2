@@ -1,6 +1,5 @@
 part of '../favorites_imports.dart';
 
-
 class FavoritesCubit extends Cubit<FavoritesState> {
   FavoritesCubit() : super(FavoritesState.initial());
 
@@ -9,12 +8,7 @@ class FavoritesCubit extends Cubit<FavoritesState> {
 
     final favorites = await FavoritesRepository.instance.getFavorites();
 
-    emit(
-      state.copyWith(
-        isLoading: false,
-        favorites: favorites,
-      ),
-    );
+    emit(state.copyWith(isLoading: false, favorites: favorites));
   }
 
   Future<void> toggleFavorite(FavoriteProductModel product) async {

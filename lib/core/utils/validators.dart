@@ -1,6 +1,5 @@
 part of '../core_imports.dart';
 
-
 class Validators {
   static String? validateName(String value) {
     if (value.trim().isEmpty) {

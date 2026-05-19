@@ -1,6 +1,5 @@
 part of '../profile_imports.dart';
 
-
 class GuestActionCard extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -26,9 +25,7 @@ class GuestActionCard extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 18.h),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.r),
-            border: Border.all(
-              color: const Color(0xFFEDEDED),
-            ),
+            border: Border.all(color: const Color(0xFFEDEDED)),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.03),
@@ -40,11 +37,7 @@ class GuestActionCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                size: 38.sp,
-                color: const Color(0xFFA7A7A7),
-              ),
+              Icon(icon, size: 38.sp, color: const Color(0xFFA7A7A7)),
               SizedBox(height: 16.h),
               Text(
                 title,

@@ -14,7 +14,6 @@ class StartupCubit extends Cubit<StartupState> {
       defaultValue: false,
     );
 
-
     if (isFirstTime) {
       emit(state.copyWith(status: StartupStatus.firstTime));
       return;
@@ -27,7 +26,6 @@ class StartupCubit extends Cubit<StartupState> {
 
     emit(state.copyWith(status: StartupStatus.unauthenticated));
   }
-
 
   Future<void> completeFirstTime() async {
     await SharedPrefsHelper.setBool(PrefKeys.isFirstTime, false);

@@ -1,6 +1,5 @@
 part of '../product_details_imports.dart';
 
-
 class ProductDetailsBottomAction extends StatelessWidget {
   final int quantity;
   final VoidCallback onIncrementTap;
@@ -93,11 +92,7 @@ class ProductDetailsBottomAction extends StatelessWidget {
           border: Border.all(color: const Color(0xFFE6E6E6)),
         ),
         alignment: Alignment.center,
-        child: Icon(
-          icon,
-          size: 30.sp,
-          color: iconColor,
-        ),
+        child: Icon(icon, size: 30.sp, color: iconColor),
       ),
     );
   }

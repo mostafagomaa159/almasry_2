@@ -1,4 +1,7 @@
+import 'package:almasry_2/core/constants/app_images.dart';
 import 'package:almasry_2/core/localization/locale_keys.dart';
+import 'package:almasry_2/core/models/response/home/home_brand_response.dart';
+import 'package:almasry_2/core/models/response/home/home_sub_category_response.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/core/services/favorites_db_helper.dart';
 import 'package:almasry_2/features/auth/auth_imports.dart';
@@ -14,14 +17,18 @@ import 'package:almasry_2/features/profile/profile_imports.dart';
 import 'package:almasry_2/features/profile/view_model/profile_args.dart';
 import 'package:almasry_2/features/splash/splash_imports.dart';
 import 'package:almasry_2/features/wishlist/wishlist_imports.dart';
+import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'constants/app_sizes.dart';
-import 'services/favorite_product_model.dart';
+import 'models/response/response_favorite_product.dart';
+
+
 
 part 'constants/app_colors.dart';
 part 'services/favorites_repository.dart';
@@ -33,5 +40,10 @@ part 'utils/focus_helper.dart';
 part 'utils/validators.dart';
 part 'widgets/app_button.dart';
 part 'widgets/app_text_field.dart';
-
-
+part 'services/api_services.dart';
+part 'constants/app_api.dart';
+part 'models/response/home/home_banner_url_response.dart';
+part 'models/response/home/home_brands_data_response.dart';
+part 'models/response/home/home_cms_response.dart';
+part 'models/response/home/home_mobile_block_response.dart';
+part 'models/response/home/home_slider_item_response.dart';

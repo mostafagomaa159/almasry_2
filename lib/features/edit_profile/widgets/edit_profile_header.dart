@@ -1,13 +1,9 @@
 part of '../edit_profile_imports.dart';
 
-
 class EditProfileHeader extends StatelessWidget {
   final VoidCallback onBackTap;
 
-  const EditProfileHeader({
-    super.key,
-    required this.onBackTap,
-  });
+  const EditProfileHeader({super.key, required this.onBackTap});
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +19,7 @@ class EditProfileHeader extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             color: const Color(0xFFF7F7F7),
-            border: Border.all(
-              color: const Color(0xFFFF2D2D),
-              width: 1.2,
-            ),
+            border: Border.all(color: const Color(0xFFFF2D2D), width: 1.2),
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(28.r),
               bottomRight: Radius.circular(28.r),

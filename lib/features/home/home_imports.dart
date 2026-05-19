@@ -2,17 +2,19 @@ import 'dart:async';
 
 import 'package:almasry_2/core/core_imports.dart';
 import 'package:almasry_2/core/localization/locale_keys.dart';
+import 'package:almasry_2/core/models/response/home/home_brand_response.dart';
+import 'package:almasry_2/core/models/response/home/home_sub_category_response.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/features/favorites/favorites_imports.dart';
-import 'package:almasry_2/features/home/view_model/home_state.dart';
 import 'package:almasry_2/features/profile/view_model/profile_args.dart';
+import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/services/favorite_product_model.dart';
+import '../../core/models/response/response_favorite_product.dart';
 import '../product_details/view_model/product_details_args.dart';
 import 'model/home_concern_model.dart';
 import 'model/home_goal_model.dart';
@@ -36,3 +38,5 @@ part 'widgets/home_service_card.dart';
 part 'widgets/home_services_section.dart';
 part 'widgets/home_wide_info_card.dart';
 part 'data/home_mock_data.dart';
+part 'view_model/home_state.dart';
+part 'widgets/home_offers_section.dart';

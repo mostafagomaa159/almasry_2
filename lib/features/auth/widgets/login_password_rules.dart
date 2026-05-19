@@ -1,6 +1,5 @@
 part of '../auth_imports.dart';
 
-
 class PasswordRules extends StatelessWidget {
   const PasswordRules({super.key});
 

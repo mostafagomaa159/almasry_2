@@ -1,6 +1,5 @@
 part of '../edit_profile_imports.dart';
 
-
 class EditProfileCubit extends Cubit<EditProfileState> {
   EditProfileCubit() : super(EditProfileState.initial());
 
@@ -69,11 +68,6 @@ class EditProfileCubit extends Cubit<EditProfileState> {
 
     await Future.delayed(const Duration(milliseconds: 500));
 
-    emit(
-      state.copyWith(
-        isSaving: false,
-        saveSuccess: true,
-      ),
-    );
+    emit(state.copyWith(isSaving: false, saveSuccess: true));
   }
 }

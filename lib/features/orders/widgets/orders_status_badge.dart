@@ -1,27 +1,18 @@
 part of '../orders_imports.dart';
 
-
 class OrdersStatusBadge extends StatelessWidget {
   final OrderStatus status;
 
-  const OrdersStatusBadge({
-    super.key,
-    required this.status,
-  });
+  const OrdersStatusBadge({super.key, required this.status});
 
   @override
   Widget build(BuildContext context) {
     final bool isDelivered = status == OrderStatus.delivered;
 
     return Container(
-      padding: EdgeInsetsDirectional.symmetric(
-        horizontal: 10.w,
-        vertical: 5.h,
-      ),
+      padding: EdgeInsetsDirectional.symmetric(horizontal: 10.w, vertical: 5.h),
       decoration: BoxDecoration(
-        color: isDelivered
-            ? const Color(0xFF54D38A)
-            : const Color(0xFFF5B942),
+        color: isDelivered ? const Color(0xFF54D38A) : const Color(0xFFF5B942),
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: Row(

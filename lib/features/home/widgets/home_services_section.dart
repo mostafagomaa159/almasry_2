@@ -1,13 +1,9 @@
 part of '../home_imports.dart';
 
-
 class HomeServicesSection extends StatelessWidget {
   final List<HomeServiceModel> items;
 
-  const HomeServicesSection({
-    super.key,
-    required this.items,
-  });
+  const HomeServicesSection({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {

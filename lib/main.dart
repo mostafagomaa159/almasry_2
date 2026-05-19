@@ -9,9 +9,9 @@ import 'features/auth/auth_imports.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await setupServiceLocator();
   await EasyLocalization.ensureInitialized();
   await SharedPrefsHelper.init();
-
 
   runApp(
     EasyLocalization(
@@ -31,12 +31,8 @@ class BlinkApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<StartupCubit>(
-          create: (_) => StartupCubit(),
-        ),
-        BlocProvider<AuthCubit>(
-          create: (_) => AuthCubit(),
-        ),
+        BlocProvider<StartupCubit>(create: (_) => StartupCubit()),
+        BlocProvider<AuthCubit>(create: (_) => AuthCubit()),
         BlocProvider<FavoritesCubit>(
           create: (_) => FavoritesCubit()..loadFavorites(),
         ),

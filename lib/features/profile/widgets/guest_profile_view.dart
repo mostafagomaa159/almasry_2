@@ -1,13 +1,9 @@
 part of '../profile_imports.dart';
 
-
 class GuestProfileView extends StatefulWidget {
   final ProfileArgs? args;
 
-  const GuestProfileView({
-    super.key,
-    this.args,
-  });
+  const GuestProfileView({super.key, this.args});
 
   @override
   State<GuestProfileView> createState() => _GuestProfileViewState();
@@ -107,7 +103,8 @@ class _GuestProfileViewState extends State<GuestProfileView> {
                           child: GuestActionCard(
                             icon: Icons.favorite,
                             title: LocaleKeys.wishlist.tr(),
-                            onTap: () {context.push(AppRoutes.wishlist);
+                            onTap: () {
+                              context.push(AppRoutes.wishlist);
                             },
                           ),
                         ),

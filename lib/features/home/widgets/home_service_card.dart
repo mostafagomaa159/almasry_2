@@ -1,6 +1,5 @@
 part of '../home_imports.dart';
 
-
 class ServiceCard extends StatelessWidget {
   final String iconPath;
   final String title;
@@ -31,11 +30,7 @@ class ServiceCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Image.asset(
-            iconPath,
-            height: 52.h,
-            fit: BoxFit.contain,
-          ),
+          Image.asset(iconPath, height: 52.h, fit: BoxFit.contain),
           SizedBox(height: 10.h),
           Text(
             title,

@@ -1,6 +1,5 @@
 part of '../profile_imports.dart';
 
-
 class ProfileGuestHeader extends StatelessWidget {
   const ProfileGuestHeader({super.key});
 
@@ -28,10 +27,7 @@ class ProfileGuestHeader extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(
-                color: const Color(0xFFD72626),
-                width: 1.2,
-              ),
+              border: Border.all(color: const Color(0xFFD72626), width: 1.2),
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(28.r),
                 bottomRight: Radius.circular(28.r),

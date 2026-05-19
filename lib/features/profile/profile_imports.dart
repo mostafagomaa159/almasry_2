@@ -15,8 +15,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../edit_profile/view_model/edit_profile_args.dart';
 import 'package:almasry_2/core/constants/app_images.dart';
 
-
-
 part 'view/profile_view.dart';
 part 'widgets/profile_account_view.dart';
 part 'widgets/guest_action_card.dart';

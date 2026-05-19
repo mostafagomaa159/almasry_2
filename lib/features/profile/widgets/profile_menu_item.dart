@@ -5,11 +5,7 @@ class ProfileMenuItem extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
 
-  const ProfileMenuItem({
-    super.key,
-    required this.title,
-    required this.onTap,
-  });
+  const ProfileMenuItem({super.key, required this.title, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +21,7 @@ class ProfileMenuItem extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           decoration: const BoxDecoration(
             border: Border(
-              bottom: BorderSide(
-                color: Color(0xFFD9D9D9),
-                width: 1,
-              ),
+              bottom: BorderSide(color: Color(0xFFD9D9D9), width: 1),
             ),
           ),
           child: Row(

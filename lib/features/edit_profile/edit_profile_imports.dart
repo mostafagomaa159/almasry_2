@@ -8,7 +8,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:almasry_2/core/constants/app_images.dart';
 
-
 part 'view/edit_profile_view.dart';
 part 'view_model/edit_profile_cubit.dart';
 part 'widgets/edit_profile_dropdown_field.dart';

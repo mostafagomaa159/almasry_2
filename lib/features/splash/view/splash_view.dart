@@ -27,32 +27,17 @@ class _SplashScreenState extends State<SplashScreen>
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeIn,
-      ),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
     _scaleAnimation = Tween<double>(
       begin: 0.85,
       end: 1.0,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOutBack,
-      ),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.08),
       end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOut,
-      ),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.forward();
 
@@ -76,9 +61,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     final bool isArabic = context.locale.languageCode == 'ar';
-    final String logoPath = isArabic
-        ? AppImages.logoAr
-        : AppImages.logoEn;
+    final String logoPath = isArabic ? AppImages.logoAr : AppImages.logoEn;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -90,11 +73,7 @@ class _SplashScreenState extends State<SplashScreen>
               position: _slideAnimation,
               child: ScaleTransition(
                 scale: _scaleAnimation,
-                child: Image.asset(
-                  logoPath,
-                  width: 220,
-                  fit: BoxFit.contain,
-                ),
+                child: Image.asset(logoPath, width: 220, fit: BoxFit.contain),
               ),
             ),
           ),

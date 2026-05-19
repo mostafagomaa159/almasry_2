@@ -4,7 +4,7 @@ class HomeBannerSlider extends StatelessWidget {
   final PageController controller;
   final int currentIndex;
   final ValueChanged<int> onPageChanged;
-  final List<String> banners;
+  final List<HomeSliderItemResponse> banners;
 
   const HomeBannerSlider({
     super.key,
@@ -16,6 +16,8 @@ class HomeBannerSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (banners.isEmpty) return const SizedBox.shrink();
+
     return Column(
       children: [
         SizedBox(
@@ -25,14 +27,23 @@ class HomeBannerSlider extends StatelessWidget {
             onPageChanged: onPageChanged,
             itemCount: banners.length,
             itemBuilder: (context, index) {
+              final banner = banners[index];
+
               return Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12.w),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(22.r),
-                  child: Image.asset(
-                    banners[index],
+                  child: Image.network(
+                    banner.image,
                     fit: BoxFit.cover,
                     width: double.infinity,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey.shade300,
+                        alignment: Alignment.center,
+                        child: const Icon(Icons.broken_image),
+                      );
+                    },
                   ),
                 ),
               );

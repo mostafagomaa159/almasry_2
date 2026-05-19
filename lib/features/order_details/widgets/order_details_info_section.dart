@@ -1,6 +1,5 @@
 part of '../order_details_imports.dart';
 
-
 class OrderDetailsInfoSection extends StatelessWidget {
   final String customerName;
   final String phoneNumber;

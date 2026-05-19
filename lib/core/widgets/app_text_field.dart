@@ -54,28 +54,16 @@ class AppTextField extends StatelessWidget {
         isDense: true,
         contentPadding: EdgeInsets.symmetric(vertical: 18.h),
         enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Color(0xFFCFCFCF),
-            width: 1.4,
-          ),
+          borderSide: BorderSide(color: Color(0xFFCFCFCF), width: 1.4),
         ),
         focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Color(0xFFB71C1C),
-            width: 1.6,
-          ),
+          borderSide: BorderSide(color: Color(0xFFB71C1C), width: 1.6),
         ),
         errorBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.red,
-            width: 1.4,
-          ),
+          borderSide: BorderSide(color: Colors.red, width: 1.4),
         ),
         focusedErrorBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.red,
-            width: 1.6,
-          ),
+          borderSide: BorderSide(color: Colors.red, width: 1.6),
         ),
         errorStyle: TextStyle(
           fontSize: 12.sp,

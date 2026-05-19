@@ -1,6 +1,5 @@
 part of '../home_imports.dart';
 
-
 class HomeProductsSection extends StatelessWidget {
   final bool isArabic;
   final int itemCount;
@@ -40,4 +39,3 @@ class HomeProductsSection extends StatelessWidget {
     );
   }
 }
-

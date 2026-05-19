@@ -1,6 +1,5 @@
 part of '../edit_profile_imports.dart';
 
-
 class EditProfileSaveButton extends StatelessWidget {
   final String title;
   final bool isLoading;
@@ -31,21 +30,21 @@ class EditProfileSaveButton extends StatelessWidget {
         ),
         child: isLoading
             ? SizedBox(
-          width: 20.w,
-          height: 20.w,
-          child: const CircularProgressIndicator(
-            strokeWidth: 2.4,
-            color: Colors.white,
-          ),
-        )
+                width: 20.w,
+                height: 20.w,
+                child: const CircularProgressIndicator(
+                  strokeWidth: 2.4,
+                  color: Colors.white,
+                ),
+              )
             : Text(
-          title,
-          style: TextStyle(
-            fontSize: 19.sp,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
-        ),
+                title,
+                style: TextStyle(
+                  fontSize: 19.sp,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
       ),
     );
   }

@@ -1,6 +1,5 @@
 part of '../product_details_imports.dart';
 
-
 class ProductDetailsDescriptionSection extends StatelessWidget {
   final String description;
 

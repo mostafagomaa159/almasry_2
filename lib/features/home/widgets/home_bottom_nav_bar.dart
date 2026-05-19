@@ -1,6 +1,5 @@
 part of '../home_imports.dart';
 
-
 class HomeBottomNavBar extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onTap;

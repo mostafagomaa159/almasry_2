@@ -1,6 +1,4 @@
-
 part of '../core_imports.dart';
-
 
 class AppButton extends StatelessWidget {
   final String title;
@@ -24,8 +22,8 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color resolvedBackgroundColor = backgroundColor ??
-        (isPrimary ? AppColors.primaryRed : AppColors.white);
+    final Color resolvedBackgroundColor =
+        backgroundColor ?? (isPrimary ? AppColors.primaryRed : AppColors.white);
 
     final Color resolvedBorderColor =
         borderColor ?? (isPrimary ? AppColors.primaryRed : AppColors.darkBlue);
@@ -45,29 +43,26 @@ class AppButton extends StatelessWidget {
           foregroundColor: resolvedTextColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSizes.borderRadius.r),
-            side: BorderSide(
-              color: resolvedBorderColor,
-              width: 1.5.w,
-            ),
+            side: BorderSide(color: resolvedBorderColor, width: 1.5.w),
           ),
         ),
         child: isLoading
             ? SizedBox(
-          width: 22.w,
-          height: 22.h,
-          child: const CircularProgressIndicator(
-            strokeWidth: 2.5,
-            color: AppColors.white,
-          ),
-        )
+                width: 22.w,
+                height: 22.h,
+                child: const CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  color: AppColors.white,
+                ),
+              )
             : Text(
-          title,
-          style: TextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w700,
-            color: resolvedTextColor,
-          ),
-        ),
+                title,
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w700,
+                  color: resolvedTextColor,
+                ),
+              ),
       ),
     );
   }

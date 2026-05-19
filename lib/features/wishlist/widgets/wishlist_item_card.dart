@@ -1,14 +1,9 @@
 part of '../../wishlist/wishlist_imports.dart';
 
-
-
 class WishlistItemCard extends StatelessWidget {
   final FavoriteProductModel product;
 
-  const WishlistItemCard({
-    super.key,
-    required this.product,
-  });
+  const WishlistItemCard({super.key, required this.product});
 
   Future<void> _removeFromWishlist(BuildContext context) async {
     await context.read<FavoritesCubit>().removeFavorite(product.id);

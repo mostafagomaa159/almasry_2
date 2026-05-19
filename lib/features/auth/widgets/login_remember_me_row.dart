@@ -40,9 +40,7 @@ class RememberMeRow extends StatelessWidget {
 class _RememberCheckbox extends StatelessWidget {
   final bool isChecked;
 
-  const _RememberCheckbox({
-    required this.isChecked,
-  });
+  const _RememberCheckbox({required this.isChecked});
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +57,7 @@ class _RememberCheckbox extends StatelessWidget {
         ),
       ),
       child: isChecked
-          ? Icon(
-        Icons.check,
-        size: 15.sp,
-        color: Colors.white,
-      )
+          ? Icon(Icons.check, size: 15.sp, color: Colors.white)
           : null,
     );
   }
