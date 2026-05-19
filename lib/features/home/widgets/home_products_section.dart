@@ -2,38 +2,43 @@ part of '../home_imports.dart';
 
 class HomeProductsSection extends StatelessWidget {
   final bool isArabic;
-  final int itemCount;
-  final String sectionKey;
+  final List<ProductResponse> products;
 
   const HomeProductsSection({
     super.key,
     required this.isArabic,
-    required this.sectionKey,
-    this.itemCount = 4,
+    required this.products,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (products.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return SizedBox(
       height: 330.h,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         reverse: isArabic,
         padding: EdgeInsets.symmetric(horizontal: 4.w),
-        itemCount: itemCount,
+        itemCount: products.length,
         itemBuilder: (context, index) {
+          final product = products[index];
+
           return ProductCard(
-            productId: '${sectionKey}_product_$index',
-            imagePath: AppImages.redBigCard,
-            title: LocaleKeys.homeProductTitle.tr(),
-            price: LocaleKeys.homePrice.tr(),
-            oldPrice: LocaleKeys.homeOldPrice.tr(),
-            category: LocaleKeys.productDetailsCategoryWomenClothing.tr(),
-            description: LocaleKeys.productDetailsDescriptionValue.tr(),
-            discountText: LocaleKeys.homeDiscountBadge.tr(),
-            pointsText: LocaleKeys.homePoints.tr(),
-            rating: 3.6,
+            productId: product.id.toString(),
+            imagePath: product.image.isNotEmpty ? product.image : AppImages.redBigCard,
+            title: product.name.isNotEmpty ? product.name : '-',
+            price: product.price.toString(),
+            oldPrice: '',
+            category: '',
+            description: '',
+            discountText: '',
+            pointsText: '',
+            rating: 0,
           );
+
         },
       ),
     );

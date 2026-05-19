@@ -113,10 +113,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   SizedBox(height: 10.h),
+
                                   Padding(
                                     padding: EdgeInsets.symmetric(horizontal: 14.w),
                                     child: const HomeSearchBar(),
                                   ),
+
                                   SizedBox(height: 16.h),
 
                                   if (state.banners.isNotEmpty) ...[
@@ -126,27 +128,89 @@ class _HomeScreenState extends State<HomeScreen> {
                                       onPageChanged: homeCubit.changeBannerIndex,
                                       banners: state.banners,
                                     ),
-                                    SizedBox(height: 24.h),
+                                    SizedBox(height: 18.h),
                                   ],
+
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 14.w),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: HomeQuickActionCard(
+                                            title: isArabic
+                                                ? 'تحليل البشرة'
+                                                : 'Skin Analysis',
+                                            iconPath: AppImages.redBigCard,
+                                            backgroundColor: const Color(0xFFFDEBEC),
+                                            onTap: () {},
+                                          ),
+                                        ),
+                                        SizedBox(width: 12.w),
+                                        Expanded(
+                                          child: HomeQuickActionCard(
+                                            title: isArabic
+                                                ? 'الباحث الذكي'
+                                                : 'Smart Search',
+                                            iconPath: AppImages.redBigCard,
+                                            backgroundColor: const Color(0xFFEAF4FF),
+                                            onTap: () {},
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 24.h),
 
                                   if (state.offers.isNotEmpty) ...[
                                     HomeSectionHeader(
-                                      title: LocaleKeys.homeBestOffers.tr(),
+                                      title: LocaleKeys.homeOffers.tr(),
                                     ),
                                     SizedBox(height: 14.h),
-                                    HomeOfferTabs(
-                                      selectedIndex: state.selectedOfferTabIndex,
-                                      onTap: homeCubit.changeOfferTab,
-                                    ),
-                                    SizedBox(height: 16.h),
                                     HomeOffersSection(
                                       isArabic: isArabic,
                                       items: state.offers,
                                     ),
+                                    SizedBox(height: 24.h),
+                                  ],
+
+                                  if (state.categories.isNotEmpty) ...[
+                                    HomeSectionHeader(
+                                      title: LocaleKeys.homeCategories.tr(),
+                                    ),
+                                    SizedBox(height: 12.h),
+                                    HomeCategoriesSection(
+                                      isArabic: isArabic,
+                                      items: state.categories,
+                                    ),
+                                    SizedBox(height: 24.h),
+                                  ],
+
+                                  if (state.bestSellerBlock != null && state.bestSellerProducts.isNotEmpty) ...[
+                                    HomeSectionHeader(
+                                      title: LocaleKeys.homeBestSelling.tr(),
+                                    ),
+                                    SizedBox(height: 16.h),
+                                    HomeProductsSection(
+                                      isArabic: isArabic,
+                                      products: state.bestSellerProducts,
+                                    ),
+                                    SizedBox(height: 24.h),
+                                  ],
+
+
+                                  if (state.brands.isNotEmpty) ...[
+                                    HomeSectionHeader(
+                                      title: isArabic ? 'العلامات التجارية' : 'Brands',
+                                    ),
+                                    SizedBox(height: 12.h),
+                                    BrandStrip(
+                                      brands: state.brands,
+                                    ),
+                                    SizedBox(height: 24.h),
                                   ],
 
                                   if (state.goals.isNotEmpty) ...[
-                                    SizedBox(height: 22.h),
                                     HomeSectionHeader(
                                       title: LocaleKeys.homeGoals.tr(),
                                     ),
@@ -155,27 +219,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                       isArabic: isArabic,
                                       items: state.goals,
                                     ),
+                                    SizedBox(height: 24.h),
                                   ],
-
-                                  if (state.brands.isNotEmpty) ...[
-                                    SizedBox(height: 18.h),
-                                    BrandStrip(
-                                      brands: state.brands,
-                                    ),
-                                  ],
-
-                                  SizedBox(height: 24.h),
-                                  HomeSectionHeader(
-                                    title: LocaleKeys.homeBestSelling.tr(),
-                                  ),
-                                  SizedBox(height: 16.h),
-                                  HomeProductsSection(
-                                    isArabic: isArabic,
-                                    sectionKey: 'best_selling',
-                                  ),
 
                                   if (state.concerns.isNotEmpty) ...[
-                                    SizedBox(height: 22.h),
                                     HomeSectionHeader(
                                       title: LocaleKeys.homeConcerns.tr(),
                                     ),
@@ -184,9 +231,61 @@ class _HomeScreenState extends State<HomeScreen> {
                                       isArabic: isArabic,
                                       items: state.concerns,
                                     ),
+                                    SizedBox(height: 24.h),
                                   ],
 
-                                  SizedBox(height: 22.h),
+                                  if (state.momBabyBlock != null && state.momBabyProducts.isNotEmpty) ...[
+                                    HomeDynamicBlockSection(
+                                      title: isArabic
+                                          ? 'العناية بالام والطفل'
+                                          : 'Mom & Baby & Child Care',
+                                      isArabic: isArabic,
+                                      block: state.momBabyBlock!,
+                                      products: state.momBabyProducts,
+                                    ),
+                                    SizedBox(height: 24.h),
+                                  ],
+
+
+
+                                  if (state.homeCareBlock != null && state.homeCareProducts.isNotEmpty) ...[
+                                    HomeDynamicBlockSection(
+                                      title: isArabic
+                                          ? 'العناية بالمنزل'
+                                          : 'Home Care',
+                                      isArabic: isArabic,
+                                      block: state.homeCareBlock!,
+                                      products: state.homeCareProducts,
+                                    ),
+                                    SizedBox(height: 24.h),
+                                  ],
+
+                                  if (state.feminineCareBlock != null &&
+                                      state.feminineCareProducts.isNotEmpty) ...[
+                                    HomeDynamicBlockSection(
+                                      title: isArabic
+                                          ? 'العناية النسائية'
+                                          : 'Feminine Personal Care',
+                                      isArabic: isArabic,
+                                      block: state.feminineCareBlock!,
+                                      products: state.feminineCareProducts,
+                                    ),
+                                    SizedBox(height: 24.h),
+                                  ],
+
+                                  if (state.menCareBlock != null && state.menCareProducts.isNotEmpty) ...[
+                                    HomeDynamicBlockSection(
+                                      title: isArabic
+                                          ? 'العناية للرجال'
+                                          : 'Men Care',
+                                      isArabic: isArabic,
+                                      block: state.menCareBlock!,
+                                      products: state.menCareProducts,
+                                    ),
+                                    SizedBox(height: 24.h),
+                                  ],
+
+
                                   HomeServicesSection(
                                     items: const [],
                                   ),

@@ -39,6 +39,9 @@ class LocaleKeys {
   static const String homeCareOffers = 'home_care_offers';
   static const String homeGoals = 'home_goals';
   static const String homeBestSelling = 'home_best_selling';
+  static const String homeCategories = 'home_categories';
+  static const String homeOffers = 'home_offers';
+
   static const String homeConcerns = 'home_concerns';
   static const String homeTalkToDoctor = 'home_talk_to_doctor';
   static const String homeDiscountBadge = 'home_discount_badge';

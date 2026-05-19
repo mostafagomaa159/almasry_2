@@ -22,11 +22,38 @@ class HomeRepository {
         .toList();
   }
 }
+class ProductsRepository {
+  final ApiService _apiService;
+
+  ProductsRepository(this._apiService);
+
+  Future<List<ProductResponse>> getSectionProducts({
+    required String sectionKey,
+  }) async {
+    final response = await _apiService.get(
+      endPoint: ApiConstants.products,
+      queryParameters: {
+        'section': sectionKey,
+      },
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer ${ApiConstants.token}',
+        },
+      ),
+    );
+
+    final List<dynamic> data = response.data as List<dynamic>;
+
+    return data
+        .map((e) => ProductResponse.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+}
 
 class HomeCubit extends Cubit<HomeState> {
   final HomeRepository _repository;
 
-  final apiServices = sl<ApiService> ();
+  final apiServices = sl<ApiService>();
 
   HomeCubit(this._repository) : super(const HomeState());
 
@@ -51,41 +78,75 @@ class HomeCubit extends Cubit<HomeState> {
     try {
       final response = await _repository.getHomeData();
 
-      final List<HomeSliderItemResponse> banners = [];
-      final List<HomeSubCategoryResponse> offers = [];
-      final List<HomeSubCategoryResponse> goals = [];
-      final List<HomeSubCategoryResponse> concerns = [];
-      final List<HomeBrandResponse> brands = [];
+      List<HomeSliderItemResponse> banners = [];
+      List<HomeSliderItemResponse> secondaryBanners = [];
+
+      List<HomeSubCategoryResponse> offers = [];
+      List<HomeSubCategoryResponse> categories = [];
+      List<HomeSubCategoryResponse> goals = [];
+      List<HomeSubCategoryResponse> concerns = [];
+      List<HomeBrandResponse> brands = [];
+
+      HomeMobileBlockResponse? bestSellerBlock;
+      HomeMobileBlockResponse? momBabyBlock;
+      HomeMobileBlockResponse? homeCareBlock;
+      HomeMobileBlockResponse? feminineCareBlock;
+      HomeMobileBlockResponse? menCareBlock;
 
       for (final item in response) {
         if (item.slider.isNotEmpty) {
-          banners.addAll(item.slider);
+          if (banners.isEmpty) {
+            banners = item.slider;
+          } else {
+            secondaryBanners = item.slider;
+          }
         }
 
         if (item.mobileBlock != null) {
-          final title = item.mobileBlock!.title.trim().toLowerCase();
+          final mobileBlock = item.mobileBlock!;
+          final title = mobileBlock.title.trim().toLowerCase();
 
           if (title == 'offers') {
-            offers.addAll(item.mobileBlock!.subCategories);
+            offers = mobileBlock.subCategories;
+          } else if (title == 'categories') {
+            categories = mobileBlock.subCategories;
+          } else if (title == 'bestseller') {
+            bestSellerBlock = mobileBlock;
           } else if (title == 'shop by goals') {
-            goals.addAll(item.mobileBlock!.subCategories);
+            goals = mobileBlock.subCategories;
           } else if (title == 'shop by concerns') {
-            concerns.addAll(item.mobileBlock!.subCategories);
+            concerns = mobileBlock.subCategories;
+          } else if (title == 'mom and baby and child care') {
+            momBabyBlock = mobileBlock;
+          } else if (title == 'home care') {
+            homeCareBlock = mobileBlock;
+          } else if (title == 'feminine personal care') {
+            feminineCareBlock = mobileBlock;
+          } else if (title == 'men care') {
+            menCareBlock = mobileBlock;
           }
         }
 
         if (item.brandsData != null) {
-          brands.addAll(item.brandsData!.brands);
+          brands = item.brandsData!.brands;
         }
       }
 
       emit(state.copyWith(
         status: HomeStatus.success,
+        errorMessage: '',
         banners: banners,
+        secondaryBanners: secondaryBanners,
         offers: offers,
+        categories: categories,
         goals: goals,
         concerns: concerns,
         brands: brands,
+        bestSellerBlock: bestSellerBlock,
+        momBabyBlock: momBabyBlock,
+        homeCareBlock: homeCareBlock,
+        feminineCareBlock: feminineCareBlock,
+        menCareBlock: menCareBlock,
       ));
     } catch (e) {
       emit(state.copyWith(
@@ -94,5 +155,4 @@ class HomeCubit extends Cubit<HomeState> {
       ));
     }
   }
-
 }
