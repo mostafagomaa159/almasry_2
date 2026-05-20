@@ -31,13 +31,13 @@ class FavoriteProductModel {
 
   factory FavoriteProductModel.fromMap(Map<String, dynamic> map) {
     return FavoriteProductModel(
-      id: map['id'] as String,
-      title: map['title'] as String,
-      imagePath: map['imagePath'] as String,
-      price: map['price'] as String,
-      oldPrice: map['oldPrice'] as String,
-      category: map['category'] as String,
-      description: map['description'] as String,
+      id: map['id']?.toString() ?? '',
+      title: map['title']?.toString() ?? '',
+      imagePath: map['imagePath']?.toString() ?? '',
+      price: map['price']?.toString() ?? '',
+      oldPrice: map['oldPrice']?.toString() ?? '',
+      category: map['category']?.toString() ?? '',
+      description: map['description']?.toString() ?? '',
     );
   }
 }

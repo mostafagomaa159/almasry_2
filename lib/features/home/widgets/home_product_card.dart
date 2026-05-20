@@ -1,7 +1,7 @@
 part of '../home_imports.dart';
 
 class ProductCard extends StatefulWidget {
-  final String productId;
+  final String sku;
   final String imagePath;
   final String title;
   final String price;
@@ -15,7 +15,7 @@ class ProductCard extends StatefulWidget {
 
   const ProductCard({
     super.key,
-    required this.productId,
+    required this.sku,
     required this.imagePath,
     required this.title,
     required this.price,
@@ -32,12 +32,13 @@ class ProductCard extends StatefulWidget {
   State<ProductCard> createState() => _ProductCardState();
 }
 
+
 class _ProductCardState extends State<ProductCard> {
   int quantity = 1;
 
   Future<void> _toggleFavorite() async {
     final product = FavoriteProductModel(
-      id: widget.productId,
+      id: widget.sku,
       title: widget.title,
       imagePath: widget.imagePath,
       price: widget.price,
@@ -48,6 +49,7 @@ class _ProductCardState extends State<ProductCard> {
 
     await context.read<FavoritesCubit>().toggleFavorite(product);
   }
+
 
   void _incrementQuantity() {
     setState(() {
@@ -64,20 +66,20 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   void _openProductDetails() {
+    print('OPEN PRODUCT DETAILS WITH SKU: ${widget.sku}');
+
     context.push(
       AppRoutes.productDetails,
       extra: ProductDetailsArgs(
-        productId: widget.productId,
-        imagePath: widget.imagePath,
+        sku: widget.sku,
         title: widget.title,
-        price: widget.price,
-        oldPrice: widget.oldPrice,
-        category: widget.category,
-        description: widget.description,
-        rating: widget.rating,
+        imagePath: widget.imagePath,
       ),
     );
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +132,7 @@ class _ProductCardState extends State<ProductCard> {
                   child: BlocBuilder<FavoritesCubit, FavoritesState>(
                     builder: (context, favoritesState) {
                       final isFavorite = favoritesState.isFavorite(
-                        widget.productId,
+                        widget.sku,
                       );
 
                       return InkWell(

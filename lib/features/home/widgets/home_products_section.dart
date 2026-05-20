@@ -1,6 +1,6 @@
 part of '../home_imports.dart';
 
-class HomeProductsSection extends StatelessWidget {
+class HomeProductsSection extends StatefulWidget {
   final bool isArabic;
   final List<ProductResponse> products;
 
@@ -11,27 +11,88 @@ class HomeProductsSection extends StatelessWidget {
   });
 
   @override
+  State<HomeProductsSection> createState() => _HomeProductsSectionState();
+}
+
+class _HomeProductsSectionState extends State<HomeProductsSection> {
+  final ScrollController _scrollController = ScrollController();
+  int visibleCount = 5;
+  bool isLoadingMore = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void didUpdateWidget(covariant HomeProductsSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.products != widget.products) {
+      visibleCount = 5;
+    }
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    if (isLoadingMore) return;
+
+    final position = _scrollController.position;
+
+    if (position.pixels >= position.maxScrollExtent - 150) {
+      _loadMore();
+    }
+  }
+
+  void _loadMore() {
+    if (visibleCount >= widget.products.length) return;
+
+    setState(() {
+      isLoadingMore = true;
+    });
+
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (!mounted) return;
+
+      setState(() {
+        visibleCount = (visibleCount + 5).clamp(0, widget.products.length);
+        isLoadingMore = false;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (products.isEmpty) {
+    if (widget.products.isEmpty) {
       return const SizedBox.shrink();
     }
+
+    final visibleProducts = widget.products.take(visibleCount).toList();
 
     return SizedBox(
       height: 330.h,
       child: ListView.builder(
+        controller: _scrollController,
         scrollDirection: Axis.horizontal,
-        reverse: isArabic,
+        reverse: widget.isArabic,
         padding: EdgeInsets.symmetric(horizontal: 4.w),
-        itemCount: products.length,
+        itemCount: visibleProducts.length,
         itemBuilder: (context, index) {
-          final product = products[index];
+          final product = visibleProducts[index];
           final hasNetworkImage = product.imageUrl.isNotEmpty;
           final imagePath = hasNetworkImage
               ? product.imageUrl
               : AppImages.redBigCard;
 
           return ProductCard(
-            productId: product.id.toString(),
+            sku: product.sku,
             imagePath: imagePath,
             isNetworkImage: hasNetworkImage,
             title: product.name.isNotEmpty ? product.name : '-',
@@ -44,7 +105,6 @@ class HomeProductsSection extends StatelessWidget {
             rating: 0,
           );
         },
-
       ),
     );
   }

@@ -10,18 +10,42 @@ class ProductDetailsView extends StatefulWidget {
 }
 
 class _ProductDetailsViewState extends State<ProductDetailsView> {
-  Future<void> _toggleFavorite() async {
-    final product = FavoriteProductModel(
-      id: widget.args.productId,
-      title: widget.args.title,
-      imagePath: widget.args.imagePath,
-      price: widget.args.price,
-      oldPrice: widget.args.oldPrice,
-      category: widget.args.category,
-      description: widget.args.description,
+  Future<void> _toggleFavorite(ProductResponse product) async {
+    final favoriteProduct = FavoriteProductModel(
+      id: product.id.toString(),
+      title: product.name,
+      imagePath: product.imageUrl,
+      price: product.price.toString(),
+      oldPrice: '',
+      category: '',
+      description: product.description,
     );
 
-    await context.read<FavoritesCubit>().toggleFavorite(product);
+    await context.read<FavoritesCubit>().toggleFavorite(favoriteProduct);
+  }
+
+  String _formatPrice(num? price) {
+    if (price == null) return '';
+    return '${price.toStringAsFixed(2)} ${LocaleKeys.currency.tr()}';
+  }
+
+  String _getCustomAttributeValue(ProductResponse product, String code) {
+    try {
+      final attribute = product.customAttributes?.firstWhere(
+            (item) => item.attributeCode == code,
+      );
+
+      final value = attribute?.value;
+      if (value == null) return '';
+
+      if (value is List) {
+        return value.join(', ');
+      }
+
+      return value.toString().trim();
+    } catch (_) {
+      return '';
+    }
   }
 
   @override
@@ -29,140 +53,135 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     final bool isArabic = context.locale.languageCode == 'ar';
 
     return BlocProvider(
-      create: (_) => ProductDetailsCubit(),
+      create: (_) => sl<ProductDetailsCubit>()..getProductDetails(widget.args.sku),
       child: BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
         builder: (context, state) {
+          if (state.isLoading && state.product == null) {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+
+          if (state.errorMessage != null && state.product == null) {
+            return Scaffold(
+              backgroundColor: const Color(0xFFF7F7F7),
+              body: Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                  child: Text(
+                    state.errorMessage!,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            );
+          }
+
+          final product = state.product;
+
+          if (product == null) {
+            return const Scaffold(
+              body: Center(
+                child: Text('No product found'),
+              ),
+            );
+          }
+
+          final imagePath = product.imageUrl.isNotEmpty
+              ? product.imageUrl
+              : (widget.args.imagePath ?? '');
+
+          final title = product.name.isNotEmpty
+              ? product.name
+              : (widget.args.title ?? '');
+
+          final description = product.description ?? '';
+          final price = _formatPrice(product.price);
+
+          /// Temporary / derived values
+          final brand = _getCustomAttributeValue(product, 'brand');
+          final oldPrice = '';
+          final rating = 0.0;
+          final isInStock = true;
+
           return Scaffold(
             backgroundColor: const Color(0xFFF7F7F7),
             body: SafeArea(
-              child: Column(
+              child: Stack(
                 children: [
-                  ProductDetailsHeader(
-                    title: widget.args.title,
-                    isArabic: isArabic,
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      padding: EdgeInsets.only(bottom: 20.h),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Stack(
-                            children: [
-                              ProductDetailsImageSection(
-                                imagePath: widget.args.imagePath,
-                              ),
-                              Positioned(
-                                top: 16.h,
-                                right: 20.w,
-                                child:
-                                    BlocBuilder<FavoritesCubit, FavoritesState>(
-                                      builder: (context, favoritesState) {
-                                        final isFavorite = favoritesState
-                                            .isFavorite(widget.args.productId);
-
-                                        return InkWell(
-                                          onTap: _toggleFavorite,
-                                          borderRadius: BorderRadius.circular(
-                                            50.r,
-                                          ),
-                                          child: Container(
-                                            width: 42.w,
-                                            height: 42.h,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              shape: BoxShape.circle,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black
-                                                      .withOpacity(0.08),
-                                                  blurRadius: 8,
-                                                  offset: const Offset(0, 2),
-                                                ),
-                                              ],
-                                            ),
-                                            alignment: Alignment.center,
-                                            child: Icon(
-                                              isFavorite
-                                                  ? Icons.favorite
-                                                  : Icons.favorite_border,
-                                              color: isFavorite
-                                                  ? Colors.red
-                                                  : Colors.grey,
-                                              size: 22.sp,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 18.h),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 24.w),
+                  Positioned.fill(
+                    child: Column(
+                      children: [
+                        ProductDetailsHeader(
+                          title: 'التفاصيل',
+                          isArabic: isArabic,
+                        ),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            padding: EdgeInsets.only(bottom: 140.h),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  widget.args.title,
-                                  style: TextStyle(
-                                    fontSize: 19.sp,
-                                    fontWeight: FontWeight.w800,
-                                    color: const Color(0xFF11385B),
-                                    height: 1.35,
-                                  ),
+                                ProductDetailsImageSection(
+                                  imagePath: imagePath,
+                                  product: product,
+                                  onFavoriteTap: () => _toggleFavorite(product),
                                 ),
-                                SizedBox(height: 14.h),
-                                Text(
-                                  widget.args.price,
-                                  style: TextStyle(
-                                    fontSize: 17.sp,
-                                    fontWeight: FontWeight.w700,
-                                    color: const Color(0xFF2C2C2C),
-                                  ),
+                                SizedBox(height: 12.h),
+
+                                ProductDetailsSummarySection(
+                                  sku: product.sku,
+                                  brand: brand,
+                                  title: title,
+                                  price: price,
+                                  oldPrice: oldPrice,
+                                  isInStock: isInStock,
                                 ),
-                                SizedBox(height: 28.h),
-                                Text(
-                                  LocaleKeys.productDetailsCategories.tr(),
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w700,
-                                    color: const Color(0xFF2C2C2C),
-                                  ),
+
+                                SizedBox(height: 10.h),
+
+                                ProductDetailsInfoSection(
+                                  product: product,
                                 ),
-                                SizedBox(height: 14.h),
-                                ProductDetailsCategoryChip(
-                                  title: widget.args.category,
-                                ),
-                                SizedBox(height: 36.h),
+
+                                SizedBox(height: 10.h),
+
                                 ProductDetailsDescriptionSection(
-                                  description: widget.args.description,
+                                  description: description,
                                 ),
-                                SizedBox(height: 34.h),
+
+                                SizedBox(height: 10.h),
+
                                 ProductDetailsRatingSection(
-                                  rating: widget.args.rating,
+                                  rating: rating,
                                 ),
-                                SizedBox(height: 34.h),
-                                ProductDetailsBottomAction(
-                                  quantity: state.quantity,
-                                  onIncrementTap: () {
-                                    context
-                                        .read<ProductDetailsCubit>()
-                                        .incrementQuantity();
-                                  },
-                                  onDecrementTap: () {
-                                    context
-                                        .read<ProductDetailsCubit>()
-                                        .decrementQuantity();
-                                  },
-                                  onAddToBasketTap: () {},
-                                ),
+
+                                SizedBox(height: 24.h),
                               ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Positioned(
+                    right: 16.w,
+                    left: 16.w,
+                    bottom: 16.h,
+                    child: ProductDetailsBottomAction(
+                      quantity: state.quantity,
+                      onIncrementTap: () {
+                        context.read<ProductDetailsCubit>().incrementQuantity();
+                      },
+                      onDecrementTap: () {
+                        context.read<ProductDetailsCubit>().decrementQuantity();
+                      },
+                      onAddToBasketTap: () {
+                        // TODO: connect add to cart / basket action here
+                      },
                     ),
                   ),
                 ],

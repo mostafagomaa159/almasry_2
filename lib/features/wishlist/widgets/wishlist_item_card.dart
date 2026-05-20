@@ -13,14 +13,10 @@ class WishlistItemCard extends StatelessWidget {
     context.push(
       AppRoutes.productDetails,
       extra: ProductDetailsArgs(
-        productId: product.id,
+        sku: product.id,
         imagePath: product.imagePath,
         title: product.title,
-        price: product.price,
-        oldPrice: product.oldPrice,
-        category: product.category,
-        description: product.description,
-        rating: 3.6,
+
       ),
     );
   }

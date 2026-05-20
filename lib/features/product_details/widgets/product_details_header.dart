@@ -13,51 +13,93 @@ class ProductDetailsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 64.h,
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      color: const Color(0xFFF7F7F7),
+      height: 92.h,
+      width: double.infinity,
+      padding: EdgeInsetsDirectional.only(
+        start: 12.w,
+        end: 20.w,
+        top: 10.h,
+        bottom: 14.h,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(24.r),
+          bottomRight: Radius.circular(24.r),
+        ),
+        border: Border.all(
+          color: const Color(0xFFD7262E),
+          width: 0.8,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Row(
         children: [
-          GestureDetector(
-            onTap: () => context.pop(),
-            behavior: HitTestBehavior.opaque,
-            child: Icon(
-              isArabic ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
-              color: const Color(0xFF2C2C2C),
-              size: 22.sp,
-            ),
-          ),
-          SizedBox(width: 14.w),
+          _buildLeadingLogo(),
           Expanded(
-            child: Text(
-              title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w700,
-                color: const Color(0xFF1D1D1D),
+            child: Center(
+              child: Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 17.sp,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF202020),
+                ),
               ),
             ),
           ),
-          Container(
-            width: 42.w,
-            height: 42.h,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(14.r),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.10),
-                  blurRadius: 14,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+          GestureDetector(
+            onTap: () => context.pop(),
+            behavior: HitTestBehavior.opaque,
+            child: Padding(
+              padding: EdgeInsets.all(6.w),
+              child: Icon(
+                isArabic ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
+                color: const Color(0xFF2C2C2C),
+                size: 22.sp,
+              ),
             ),
-            child: Icon(Icons.share_outlined, color: Colors.black, size: 22.sp),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildLeadingLogo() {
+    return SizedBox(
+      width: 64.w,
+      height: 64.h,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16.r),
+        child: Image.asset(
+          AppImages.profileDoctor,
+          fit: BoxFit.contain,
+          errorBuilder: (_, __, ___) {
+            return Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFFF5F5F5),
+                borderRadius: BorderRadius.circular(16.r),
+                border: Border.all(
+                  color: const Color(0xFFE5E5E5),
+                ),
+              ),
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.medical_services_outlined,
+                color: const Color(0xFF11385B),
+                size: 28.sp,
+              ),
+            );
+          },
+        ),
       ),
     );
   }

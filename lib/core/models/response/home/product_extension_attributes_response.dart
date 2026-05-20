@@ -7,6 +7,7 @@ class ProductExtensionAttributesResponse {
   final num priceBefore;
   final String stockStatus;
   final String sellableQuantity;
+  final String description;
 
   const ProductExtensionAttributesResponse({
     required this.urlBase,
@@ -15,6 +16,7 @@ class ProductExtensionAttributesResponse {
     required this.priceBefore,
     required this.stockStatus,
     required this.sellableQuantity,
+    required this.description,
   });
 
   factory ProductExtensionAttributesResponse.fromJson(
@@ -27,6 +29,7 @@ class ProductExtensionAttributesResponse {
       priceBefore: (json['price_before'] as num?) ?? 0,
       stockStatus: json['stock_status']?.toString() ?? '',
       sellableQuantity: json['sellable_quantity']?.toString() ?? '0',
+      description: json['description']?.toString() ?? '',
     );
   }
 }

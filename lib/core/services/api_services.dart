@@ -67,4 +67,10 @@ Future<void> setupServiceLocator() async {
       sl<ProductsRepository>(),
     ),
   );
+  sl.registerFactory<ProductDetailsCubit>(
+        () => ProductDetailsCubit(
+      sl<ProductsRepository>(),
+    ),
+  );
+
 }
