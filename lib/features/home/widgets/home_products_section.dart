@@ -25,10 +25,15 @@ class HomeProductsSection extends StatelessWidget {
         itemCount: products.length,
         itemBuilder: (context, index) {
           final product = products[index];
+          final hasNetworkImage = product.imageUrl.isNotEmpty;
+          final imagePath = hasNetworkImage
+              ? product.imageUrl
+              : AppImages.redBigCard;
 
           return ProductCard(
             productId: product.id.toString(),
-            imagePath: product.image.isNotEmpty ? product.image : AppImages.redBigCard,
+            imagePath: imagePath,
+            isNetworkImage: hasNetworkImage,
             title: product.name.isNotEmpty ? product.name : '-',
             price: product.price.toString(),
             oldPrice: '',
@@ -38,8 +43,8 @@ class HomeProductsSection extends StatelessWidget {
             pointsText: '',
             rating: 0,
           );
-
         },
+
       ),
     );
   }

@@ -186,15 +186,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                     SizedBox(height: 24.h),
                                   ],
 
-                                  if (state.bestSellerBlock != null && state.bestSellerProducts.isNotEmpty) ...[
+                                  if (state.bestSellerBlock != null) ...[
                                     HomeSectionHeader(
                                       title: LocaleKeys.homeBestSelling.tr(),
                                     ),
                                     SizedBox(height: 16.h),
-                                    HomeProductsSection(
-                                      isArabic: isArabic,
-                                      products: state.bestSellerProducts,
-                                    ),
+
+                                    if (state.bestSellerProducts.isEmpty)
+                                      const Center(child: Text('No bestseller products')),
+
+                                    if (state.bestSellerProducts.isNotEmpty)
+                                      HomeProductsSection(
+                                        isArabic: isArabic,
+                                        products: state.bestSellerProducts,
+                                      ),
+
                                     SizedBox(height: 24.h),
                                   ],
 
@@ -247,7 +253,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ],
 
 
-
                                   if (state.homeCareBlock != null && state.homeCareProducts.isNotEmpty) ...[
                                     HomeDynamicBlockSection(
                                       title: isArabic
@@ -284,6 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     SizedBox(height: 24.h),
                                   ],
+
 
 
                                   HomeServicesSection(

@@ -52,13 +52,19 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<ApiService>(
         () => ApiService(sl<Dio>()),
   );
+
   sl.registerLazySingleton<HomeRepository>(
         () => HomeRepository(sl<ApiService>()),
   );
 
-  sl.registerFactory<HomeCubit>(
-        () => HomeCubit(sl<HomeRepository>()),
+  sl.registerLazySingleton<ProductsRepository>(
+        () => ProductsRepository(sl<ApiService>()),
   );
 
-
+  sl.registerFactory<HomeCubit>(
+        () => HomeCubit(
+      sl<HomeRepository>(),
+      sl<ProductsRepository>(),
+    ),
+  );
 }
