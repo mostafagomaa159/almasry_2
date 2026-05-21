@@ -45,15 +45,11 @@ class ProductsRepository {
 
     final data = response.data;
 
-    print('SECTION PRODUCTS URL: $url');
-    print('SECTION PRODUCTS RESPONSE: $data');
+
 
     if (data is List) {
       if (data.isNotEmpty) {
-        print('FIRST PRODUCT JSON: ${data.first}');
-        print('FIRST PRODUCT ID: ${(data.first as Map<String, dynamic>)['id']}');
-        print('FIRST PRODUCT SKU: ${(data.first as Map<String, dynamic>)['sku']}');
-        print('FIRST PRODUCT NAME: ${(data.first as Map<String, dynamic>)['name']}');
+
       }
 
       return data
@@ -66,13 +62,7 @@ class ProductsRepository {
 
       if (items.isNotEmpty) {
         final first = items.first as Map<String, dynamic>;
-        print('FIRST PRODUCT JSON: $first');
-        print('FIRST PRODUCT ID: ${first['id']}');
-        print('FIRST PRODUCT SKU: ${first['sku']}');
-        print('FIRST PRODUCT NAME: ${first['name']}');
-        print('FIRST PRODUCT PRICE: ${first['price']}');
-        print('FIRST PRODUCT CUSTOM ATTRIBUTES: ${first['custom_attributes']}');
-        print('FIRST PRODUCT EXTENSION ATTRIBUTES: ${first['extension_attributes']}');
+
       }
 
       return items
@@ -99,10 +89,7 @@ class ProductsRepository {
 
       return ProductResponse.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
-      print('GET PRODUCT DETAILS ERROR');
-      print('Endpoint: $endPoint');
-      print('Status code: ${e.response?.statusCode}');
-      print('Response data: ${e.response?.data}');
+
       rethrow;
     }
   }

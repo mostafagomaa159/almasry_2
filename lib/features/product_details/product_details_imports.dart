@@ -15,7 +15,7 @@ import '../favorites/favorites_imports.dart';
 part 'view/product_details_view.dart';
 part 'view_model/product_details_cubit.dart';
 part 'widgets/product_details_bottom_action.dart';
-part 'widgets/product_details_category_chip.dart';
+// part 'widgets/product_details_category_chip.dart';
 part 'widgets/product_details_description_section.dart';
 part 'widgets/product_details_header.dart';
 part 'widgets/product_details_image_section.dart';

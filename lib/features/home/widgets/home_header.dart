@@ -5,58 +5,77 @@ class HomeHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 105.h,
-      padding: EdgeInsets.symmetric(horizontal: 14.w),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(28.r),
-          bottomRight: Radius.circular(28.r),
-        ),
-        border: Border.all(color: AppColors.primaryRed, width: 1),
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Row(
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 44.w,
-                  height: 44.h,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: AppColors.primaryRed.withOpacity(0.5),
+    return SizedBox(
+      height: 130.h,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            height: 105.h,
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(28.r),
+                bottomRight: Radius.circular(28.r),
+              ),
+              border: Border.all(
+                color: AppColors.primaryRed,
+                width: 1.2,
+              ),
+            ),
+            child: SafeArea(
+              bottom: false,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Center(
+                    child: Image.asset(
+                      AppLogo.asset(context),
+                      width: 135.w,
+                      fit: BoxFit.contain,
                     ),
                   ),
-                  child: ClipOval(
-                    child: Image.asset(AppImages.redBigCard, fit: BoxFit.cover),
+                  Positioned(
+                    right: 4.w,
+                    top: 18.h,
+                    child: Icon(
+                      Icons.menu,
+                      size: 28.sp,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          Positioned(
+            left: 2.w,
+            bottom: 0,
+            child: Container(
+              width: 74.w,
+              height: 74.w,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.white,
+                border: Border.all(
+                  color: AppColors.primaryRed.withOpacity(0.7),
+                  width: 1.2,
+                ),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(4.w),
+                child: ClipOval(
+                  child: Image.asset(
+                    AppImages.profileDoctor,
+                    fit: BoxFit.cover,
                   ),
                 ),
-                SizedBox(height: 4.h),
-                Text(
-                  LocaleKeys.homeTalkToDoctor.tr(),
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: AppColors.primaryRed,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
+              ),
             ),
-            const Spacer(),
-            Image.asset(
-              AppLogo.asset(context),
-              width: 120.w,
-              fit: BoxFit.contain,
-            ),
-            SizedBox(width: 18.w),
-            Icon(Icons.menu, size: 30.sp, color: AppColors.textPrimary),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

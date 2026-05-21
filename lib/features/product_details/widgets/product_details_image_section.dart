@@ -161,10 +161,10 @@ class _ProductDetailsImageSectionState
           ],
 
           SizedBox(height: 18.h),
-          Divider(
+        const  Divider(
             height: 1,
             thickness: 1,
-            color: const Color(0xFFE9E9E9),
+            color:  Color(0xFFE9E9E9),
           ),
         ],
       ),

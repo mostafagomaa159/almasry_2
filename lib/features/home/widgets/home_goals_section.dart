@@ -15,12 +15,13 @@ class HomeGoalsSection extends StatelessWidget {
     if (items.isEmpty) return const SizedBox.shrink();
 
     return SizedBox(
-      height: 102.h,
-      child: ListView.builder(
+      height: 84.h,
+      child: ListView.separated(
         scrollDirection: Axis.horizontal,
         reverse: isArabic,
-        padding: EdgeInsets.symmetric(horizontal: 4.w),
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
         itemCount: items.length,
+        separatorBuilder: (_, __) => SizedBox(width: 8.w),
         itemBuilder: (context, index) {
           final item = items[index];
 
@@ -28,6 +29,7 @@ class HomeGoalsSection extends StatelessWidget {
             title: item.name,
             imagePath: item.image,
             isNetworkImage: true,
+            backgroundColor: const Color(0xFFF9F3E6),
           );
         },
       ),

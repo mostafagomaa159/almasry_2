@@ -34,6 +34,7 @@ class HomeQuickActionCard extends StatelessWidget {
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
+                  height: 1.3,
                 ),
               ),
             ),

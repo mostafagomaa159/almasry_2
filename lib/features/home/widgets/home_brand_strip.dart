@@ -12,37 +12,57 @@ class BrandStrip extends StatelessWidget {
   Widget build(BuildContext context) {
     if (brands.isEmpty) return const SizedBox.shrink();
 
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 10.w),
-      padding: EdgeInsets.symmetric(horizontal: 14.w),
-      height: 74.h,
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: ListView.separated(
+    return SizedBox(
+      height: 180.h,
+      child: GridView.builder(
         scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
         itemCount: brands.length,
-        separatorBuilder: (_, __) => SizedBox(width: 12.w),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 12.h,
+          crossAxisSpacing: 12.w,
+          childAspectRatio: 1.25,
+        ),
         itemBuilder: (context, index) {
           final brand = brands[index];
 
-          return SizedBox(
-            width: 100.w,
-            child: Image.network(
-              brand.image,
-              fit: BoxFit.contain,
-              height: 28.h,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: Colors.grey.shade300,
-                  alignment: Alignment.center,
-                  child: const Icon(Icons.broken_image),
-                );
-              },
-            ),
-          );
+          return _BrandItem(brand: brand);
         },
+      ),
+    );
+  }
+}
+
+class _BrandItem extends StatelessWidget {
+  final HomeBrandResponse brand;
+
+  const _BrandItem({
+    required this.brand,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 100.w,
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: const Color(0xFFEAEAEA)),
+      ),
+      child: Center(
+        child: Image.network(
+          brand.image,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            return Icon(
+              Icons.broken_image_outlined,
+              color: Colors.grey.shade400,
+              size: 22.sp,
+            );
+          },
+        ),
       ),
     );
   }

@@ -67,11 +67,26 @@ class _HomeScreenState extends State<HomeScreen> {
             backgroundColor: const Color(0xFFF8F8F8),
             bottomNavigationBar: HomeBottomNavBar(
               selectedIndex: state.selectedBottomNavIndex,
+              cartCount: 10,
               onTap: (index) {
                 homeCubit.changeBottomNavIndex(index);
 
-                if (index == 0) {
-                  context.push(AppRoutes.profile, extra: widget.args);
+                switch (index) {
+                  case 0:
+                  // Home
+                    break;
+                  case 1:
+                  // Categories
+                    break;
+                  case 2:
+                  // Offers
+                    break;
+                  case 3:
+                  // Cart
+                    break;
+                  case 4:
+                    context.push(AppRoutes.profile, extra: widget.args);
+                    break;
                 }
               },
             ),
@@ -136,25 +151,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Row(
                                       children: [
                                         Expanded(
-                                          child: HomeQuickActionCard(
-                                            title: isArabic
-                                                ? 'تحليل البشرة'
-                                                : 'Skin Analysis',
-                                            iconPath: AppImages.redBigCard,
+                                          child:HomeQuickActionCard(
+                                            title: isArabic ? 'تحليل البشرة' : 'Skin Analysis',
+                                            iconPath: AppImages.mask,
                                             backgroundColor: const Color(0xFFFDEBEC),
                                             onTap: () {},
                                           ),
+
+
                                         ),
                                         SizedBox(width: 12.w),
                                         Expanded(
-                                          child: HomeQuickActionCard(
-                                            title: isArabic
-                                                ? 'الباحث الذكي'
-                                                : 'Smart Search',
-                                            iconPath: AppImages.redBigCard,
-                                            backgroundColor: const Color(0xFFEAF4FF),
+                                          child:HomeQuickActionCard(
+                                            title: isArabic ? 'البحث الذكي' : 'Smart Search',
+                                            iconPath: AppImages.ai,
+                                            backgroundColor: const Color(0xFFF3F0FF),
                                             onTap: () {},
                                           ),
+
                                         ),
                                       ],
                                     ),
