@@ -9,5 +9,9 @@ class ApiConstants {
   static const String homeCmsPage = '/crocoit/mobileCmsPage/5425';
   static const String products = '/products';
 
+  static const String guestRegister = '/guest/register';
+  static const String activateAccount = '/crocoit/auth/activate-account';
+  static const String authAfterOtp = '/auth-after-otp';
+
   static const String token = 'p75lojdwgxcfldke5czc7gjvgc8q1jj2';
 }

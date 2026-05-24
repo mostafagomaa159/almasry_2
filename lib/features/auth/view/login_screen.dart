@@ -213,7 +213,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: isRegularLoginSelected
                               ? _submitRegularLogin
                               : _submitPhoneLogin,
-                          isLoading: state.isLoading,
+                          isLoading: isRegularLoginSelected
+                              ? state.isLoading
+                              : state.isPhoneAuthLoading,
+
                         ),
 
                         SizedBox(height: 16.h),

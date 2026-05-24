@@ -72,5 +72,12 @@ Future<void> setupServiceLocator() async {
       sl<ProductsRepository>(),
     ),
   );
+  sl.registerLazySingleton<AuthRepository>(
+        () => AuthRepository(sl<ApiService>()),
+  );
+
+  // sl.registerFactory<AuthCubit>(
+  //       () => AuthCubit(sl<AuthRepository>()),
+  // );
 
 }
