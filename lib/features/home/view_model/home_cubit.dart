@@ -100,6 +100,7 @@ class ProductsRepository {
 
 
 class HomeCubit extends Cubit<HomeState> {
+
   final HomeRepository _repository;
   final ProductsRepository _productsRepository;
 
