@@ -76,8 +76,9 @@ Future<void> setupServiceLocator() async {
         () => AuthRepository(sl<ApiService>()),
   );
 
-  // sl.registerFactory<AuthCubit>(
-  //       () => AuthCubit(sl<AuthRepository>()),
-  // );
+  sl.registerFactory<AuthCubit>(
+        () => AuthCubit(sl<AuthRepository>()),
+  );
+
 
 }

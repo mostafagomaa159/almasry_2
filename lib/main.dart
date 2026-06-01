@@ -32,7 +32,9 @@ class BlinkApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<StartupCubit>(create: (_) => StartupCubit()),
-        BlocProvider<AuthCubit>(create: (_) => AuthCubit()),
+        BlocProvider<AuthCubit>(
+          create: (_) => sl<AuthCubit>(),
+        ),
         BlocProvider<FavoritesCubit>(
           create: (_) => FavoritesCubit()..loadFavorites(),
         ),

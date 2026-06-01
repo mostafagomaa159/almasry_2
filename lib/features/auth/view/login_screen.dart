@@ -99,10 +99,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _submitPhoneLogin() async {
+    print('submit phone login pressed');
+
     FocusHelper.unfocusKeyboard(context);
 
     final String phone = phoneController.text.trim();
+    print('phone: $phone');
+
     final String? phoneError = Validators.validatePhone(phone);
+    print('phoneError: $phoneError');
 
     context.read<AuthCubit>().setLoginValidationErrors(
       emailOrPhoneError: phoneError,
@@ -110,19 +115,33 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (phoneError != null) {
+      print('validation failed');
       phoneFocusNode.requestFocus();
       return;
     }
 
-    await context.read<AuthCubit>().sendVerificationCode();
+    print('calling sendVerificationCode...');
+    final bool success = await context.read<AuthCubit>().sendVerificationCode(
+      phone,
+    );
+    print('sendVerificationCode result: $success');
 
     if (!mounted) return;
 
-    context.go(
-      AppRoutes.home,
-      extra: ProfileArgs(phone: phone, source: 'login'),
+    if (!success) {
+      print('API failed, not navigating');
+      return;
+    }
+
+    print('navigating to otp screen');
+    final verificationPhone = context.read<AuthCubit>().state.verificationPhone ?? phone;
+
+    context.push(
+      AppRoutes.otpVerification,
+      extra: OtpVerificationArgs(phone: verificationPhone),
     );
   }
+
 
   void _goToRegisterScreen() {
     FocusHelper.unfocusKeyboard(context);
@@ -189,9 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             onSubmit: _submitPhoneLogin,
                             onClearErrors: _clearLoginErrors,
                           ),
-
                         SizedBox(height: 18.h),
-
                         if (isRegularLoginSelected)
                           Center(
                             child: Text(
@@ -203,9 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-
                         SizedBox(height: 28.h),
-
                         AppButton(
                           title: isRegularLoginSelected
                               ? LocaleKeys.signIn.tr()
@@ -216,9 +231,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           isLoading: isRegularLoginSelected
                               ? state.isLoading
                               : state.isPhoneAuthLoading,
-
                         ),
-
                         SizedBox(height: 16.h),
                         AppButton(
                           title: LocaleKeys.createAccount.tr(),

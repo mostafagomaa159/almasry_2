@@ -13,6 +13,7 @@ import 'package:go_router/go_router.dart';
 
 import '../profile/view_model/profile_args.dart';
 import '../splash/splash_imports.dart';
+import 'view_model/OtpVerificationArgs.dart';
 
 part 'view/login_screen.dart';
 part 'view/register_screen.dart';
@@ -25,3 +26,4 @@ part 'widgets/register_form.dart';
 part 'widgets/login_password_rules.dart';
 part 'widgets/login_underline_field.dart';
 part 'view_model/auth_state.dart';
+part 'view/otp_verification_screen.dart';

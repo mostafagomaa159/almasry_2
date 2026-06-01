@@ -16,6 +16,13 @@ class AppRouter {
         path: AppRoutes.login,
         builder: (context, state) => const LoginScreen(),
       ),
+      GoRoute(
+        path: AppRoutes.otpVerification,
+        builder: (context, state) {
+          final args = state.extra as OtpVerificationArgs;
+          return OtpVerificationScreen(args: args);
+        },
+      ),
 
       GoRoute(
         path: AppRoutes.signup,
