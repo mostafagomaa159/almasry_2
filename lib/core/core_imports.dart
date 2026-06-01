@@ -61,3 +61,4 @@ part 'models/response/register_customer_response.dart';
 part 'models/request/activate_account_request.dart';
 part 'models/request/auth_after_otp_request.dart';
 part 'models/request/register_customer_request.dart';
+part 'models/request/forget_password_request.dart';

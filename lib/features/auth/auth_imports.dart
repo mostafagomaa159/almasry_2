@@ -10,6 +10,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pinput/pinput.dart';
 
 import '../profile/view_model/profile_args.dart';
 import '../splash/splash_imports.dart';
@@ -27,3 +28,5 @@ part 'widgets/login_password_rules.dart';
 part 'widgets/login_underline_field.dart';
 part 'view_model/auth_state.dart';
 part 'view/otp_verification_screen.dart';
+part 'widgets/otp_pin_fields.dart';
+part 'widgets/otp_verify_button.dart';

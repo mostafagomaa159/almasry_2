@@ -1,7 +1,14 @@
 part of '../auth_imports.dart';
 
 class AuthHeader extends StatelessWidget {
-  const AuthHeader({super.key});
+  final VoidCallback? onBackPressed;
+  final bool showBackButton;
+
+  const AuthHeader({
+    super.key,
+    this.onBackPressed,
+    this.showBackButton = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +28,35 @@ class AuthHeader extends StatelessWidget {
               ),
             ),
           ),
+          if (showBackButton)
+            Positioned(
+              top: 56.h,
+              left: 20.w,
+              child: GestureDetector(
+                onTap: onBackPressed,
+                child: Container(
+                  width: 40.w,
+                  height: 40.h,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.06),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    size: 18.sp,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+            ),
           Align(
             alignment: Alignment.center,
             child: Padding(

@@ -5,17 +5,12 @@ class AuthRepository {
 
   AuthRepository(this._apiService);
 
-  Future<RegisterCustomerResponse> registerCustomer({
-    required RegisterCustomerRequest request,
+  Future<Map<String, dynamic>> forgetPassword({
+    required ForgetPasswordRequest request,
   }) async {
     try {
-      print('========== REGISTER CUSTOMER REQUEST ==========');
-      print('registerCustomer endpoint: ${ApiConstants.guestRegister}');
-      print('registerCustomer token: ${ApiConstants.token}');
-      print('registerCustomer body: ${request.toJson()}');
-
       final response = await _apiService.post(
-        endPoint: ApiConstants.guestRegister,
+        endPoint: ApiConstants.forgetPassword,
         data: request.toJson(),
         options: Options(
           headers: {
@@ -24,28 +19,10 @@ class AuthRepository {
         ),
       );
 
-      print('registerCustomer statusCode: ${response.statusCode}');
-      print('registerCustomer raw response: ${response.data}');
-      print('===============================================');
-
-      return RegisterCustomerResponse.fromJson(
-        response.data as Map<String, dynamic>,
-      );
-    } on DioException catch (e, s) {
-      print('========== REGISTER CUSTOMER DIO ERROR ==========');
-      print('message: ${e.message}');
-      print('type: ${e.type}');
-      print('statusCode: ${e.response?.statusCode}');
-      print('responseData: ${e.response?.data}');
-      print('responseHeaders: ${e.response?.headers}');
-      print('stackTrace: $s');
-      print('================================================');
+      return Map<String, dynamic>.from(response.data as Map);
+    } on DioException {
       rethrow;
-    } catch (e, s) {
-      print('======== REGISTER CUSTOMER UNKNOWN ERROR ========');
-      print('error: $e');
-      print('stackTrace: $s');
-      print('=================================================');
+    } catch (_) {
       rethrow;
     }
   }
@@ -54,11 +31,6 @@ class AuthRepository {
     required ActivateAccountRequest request,
   }) async {
     try {
-      print('========== ACTIVATE ACCOUNT REQUEST ==========');
-      print('activateAccount endpoint: ${ApiConstants.activateAccount}');
-      print('activateAccount token: ${ApiConstants.token}');
-      print('activateAccount body: ${request.toJson()}');
-
       final response = await _apiService.post(
         endPoint: ApiConstants.activateAccount,
         data: request.toJson(),
@@ -69,28 +41,12 @@ class AuthRepository {
         ),
       );
 
-      print('activateAccount statusCode: ${response.statusCode}');
-      print('activateAccount raw response: ${response.data}');
-      print('=============================================');
-
       return ActivateAccountResponse.fromJson(
         response.data as Map<String, dynamic>,
       );
-    } on DioException catch (e, s) {
-      print('========== ACTIVATE ACCOUNT DIO ERROR ==========');
-      print('message: ${e.message}');
-      print('type: ${e.type}');
-      print('statusCode: ${e.response?.statusCode}');
-      print('responseData: ${e.response?.data}');
-      print('responseHeaders: ${e.response?.headers}');
-      print('stackTrace: $s');
-      print('===============================================');
+    } on DioException {
       rethrow;
-    } catch (e, s) {
-      print('========= ACTIVATE ACCOUNT UNKNOWN ERROR =======');
-      print('error: $e');
-      print('stackTrace: $s');
-      print('===============================================');
+    } catch (_) {
       rethrow;
     }
   }
@@ -99,11 +55,6 @@ class AuthRepository {
     required AuthAfterOtpRequest request,
   }) async {
     try {
-      print('========== LOGIN AFTER OTP REQUEST ==========');
-      print('loginAfterOtp endpoint: ${ApiConstants.authAfterOtp}');
-      print('loginAfterOtp token: ${ApiConstants.token}');
-      print('loginAfterOtp body: ${request.toJson()}');
-
       final response = await _apiService.post(
         endPoint: ApiConstants.authAfterOtp,
         data: request.toJson(),
@@ -114,28 +65,12 @@ class AuthRepository {
         ),
       );
 
-      print('loginAfterOtp statusCode: ${response.statusCode}');
-      print('loginAfterOtp raw response: ${response.data}');
-      print('============================================');
-
       return AuthAfterOtpResponse.fromJson(
         response.data as Map<String, dynamic>,
       );
-    } on DioException catch (e, s) {
-      print('========== LOGIN AFTER OTP DIO ERROR ==========');
-      print('message: ${e.message}');
-      print('type: ${e.type}');
-      print('statusCode: ${e.response?.statusCode}');
-      print('responseData: ${e.response?.data}');
-      print('responseHeaders: ${e.response?.headers}');
-      print('stackTrace: $s');
-      print('===============================================');
+    } on DioException {
       rethrow;
-    } catch (e, s) {
-      print('========= LOGIN AFTER OTP UNKNOWN ERROR =======');
-      print('error: $e');
-      print('stackTrace: $s');
-      print('===============================================');
+    } catch (_) {
       rethrow;
     }
   }
@@ -146,15 +81,11 @@ class AuthCubit extends Cubit<AuthState> {
 
   AuthCubit(this._repository) : super(const AuthState());
 
-  static const String _generatedPhonePassword = 'Almasry@123456';
-
   void togglePasswordVisibility() {
-    print('togglePasswordVisibility called');
     emit(state.copyWith(isPasswordHidden: !state.isPasswordHidden));
   }
 
   void toggleConfirmPasswordVisibility() {
-    print('toggleConfirmPasswordVisibility called');
     emit(
       state.copyWith(
         isConfirmPasswordHidden: !state.isConfirmPasswordHidden,
@@ -163,7 +94,6 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void toggleRememberMe() {
-    print('toggleRememberMe called');
     emit(state.copyWith(rememberMe: !state.rememberMe));
   }
 
@@ -171,10 +101,6 @@ class AuthCubit extends Cubit<AuthState> {
     String? emailOrPhoneError,
     String? passwordError,
   }) {
-    print('setLoginValidationErrors called');
-    print('emailOrPhoneError: $emailOrPhoneError');
-    print('passwordError: $passwordError');
-
     emit(
       state.copyWith(
         emailOrPhoneError: emailOrPhoneError,
@@ -186,7 +112,6 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void clearLoginValidationErrors() {
-    print('clearLoginValidationErrors called');
     emit(
       state.copyWith(
         clearEmailOrPhoneError: true,
@@ -194,23 +119,6 @@ class AuthCubit extends Cubit<AuthState> {
         clearAuthErrorMessage: true,
       ),
     );
-  }
-  String _normalizePhone(String phone) {
-    final cleaned = phone.trim().replaceAll(' ', '');
-
-    if (cleaned.startsWith('+2')) {
-      return cleaned;
-    }
-
-    if (cleaned.startsWith('2')) {
-      return '+$cleaned';
-    }
-
-    if (cleaned.startsWith('0')) {
-      return '+2$cleaned';
-    }
-
-    return cleaned;
   }
 
   void setRegisterValidationErrors({
@@ -220,13 +128,6 @@ class AuthCubit extends Cubit<AuthState> {
     String? emailError,
     String? passwordError,
   }) {
-    print('setRegisterValidationErrors called');
-    print('firstNameError: $firstNameError');
-    print('lastNameError: $lastNameError');
-    print('phoneError: $phoneError');
-    print('emailError: $emailError');
-    print('passwordError: $passwordError');
-
     emit(
       state.copyWith(
         firstNameError: firstNameError,
@@ -239,7 +140,6 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void clearRegisterValidationErrors() {
-    print('clearRegisterValidationErrors called');
     emit(
       state.copyWith(
         clearFirstNameError: true,
@@ -253,7 +153,6 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void clearValidationErrors() {
-    print('clearValidationErrors called');
     emit(
       state.copyWith(
         clearNameError: true,
@@ -271,7 +170,6 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void setVerificationPhone(String phone) {
-    print('setVerificationPhone called with phone: $phone');
     emit(
       state.copyWith(
         verificationPhone: phone,
@@ -283,7 +181,6 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void clearOtpState() {
-    print('clearOtpState called');
     emit(
       state.copyWith(
         isPhoneAuthLoading: false,
@@ -300,7 +197,6 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void updateOtpCountdown(int seconds) {
-    print('updateOtpCountdown called with seconds: $seconds');
     emit(
       state.copyWith(
         otpCountdownSeconds: seconds,
@@ -309,60 +205,69 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
+  String _normalizePhone(String phone) {
+    final cleaned = phone.trim().replaceAll(' ', '');
+
+    if (cleaned.startsWith('+2')) return cleaned;
+    if (cleaned.startsWith('2')) return '+$cleaned';
+    if (cleaned.startsWith('0')) return '+2$cleaned';
+
+    return cleaned;
+  }
+
+  String _extractApiMessage(DioException e) {
+    final data = e.response?.data;
+
+    if (data is Map<String, dynamic>) {
+      final message = data['message'];
+      if (message is String && message.isNotEmpty) {
+        return message;
+      }
+    }
+
+    if (data is Map) {
+      final message = data['message'];
+      if (message is String && message.isNotEmpty) {
+        return message;
+      }
+    }
+
+    return e.message ?? 'حدث خطأ غير متوقع';
+  }
+
   Future<void> login() async {
-    print('========== LOGIN START ==========');
     emit(state.copyWith(isLoading: true, clearAuthErrorMessage: true));
 
     try {
-      print('login() simulating request...');
       await Future.delayed(const Duration(seconds: 1));
-      print('login() success');
-
       emit(state.copyWith(isLoading: false));
-      print('========== LOGIN END SUCCESS ==========');
-    } catch (e, s) {
-      print('login() error: $e');
-      print('login() stackTrace: $s');
-
+    } catch (e) {
       emit(
         state.copyWith(
           isLoading: false,
           authErrorMessage: e.toString(),
         ),
       );
-      print('========== LOGIN END FAILURE ==========');
     }
   }
 
   Future<void> register() async {
-    print('========== REGISTER START ==========');
     emit(state.copyWith(isLoading: true, clearAuthErrorMessage: true));
 
     try {
-      print('register() simulating request...');
       await Future.delayed(const Duration(seconds: 1));
-      print('register() success');
-
       emit(state.copyWith(isLoading: false));
-      print('========== REGISTER END SUCCESS ==========');
-    } catch (e, s) {
-      print('register() error: $e');
-      print('register() stackTrace: $s');
-
+    } catch (e) {
       emit(
         state.copyWith(
           isLoading: false,
           authErrorMessage: e.toString(),
         ),
       );
-      print('========== REGISTER END FAILURE ==========');
     }
   }
 
   Future<bool> startPhoneAuth(String phone) async {
-    print('========== START PHONE AUTH ==========');
-    print('phone: $phone');
-
     emit(
       state.copyWith(
         isPhoneAuthLoading: true,
@@ -375,28 +280,15 @@ class AuthCubit extends Cubit<AuthState> {
 
     try {
       final normalizedPhone = _normalizePhone(phone);
+      final request = ForgetPasswordRequest(identity: normalizedPhone);
 
-      print('original phone: $phone');
-      print('normalized phone: $normalizedPhone');
-
-      final request = RegisterCustomerRequest(
-        mobile: normalizedPhone,
-        password: _generatedPhonePassword,
-      );
-
-      print('generated request for startPhoneAuth: ${request.toJson()}');
-      print('calling repository.registerCustomer...');
-
-      final response = await _repository.registerCustomer(request: request);
-
-      print('registerCustomer success');
-      print('response.mobileNumber: ${response.mobileNumber}');
+      await _repository.forgetPassword(request: request);
 
       emit(
         state.copyWith(
           isPhoneAuthLoading: false,
           isPhoneAuthSuccess: true,
-          verificationPhone: response.mobileNumber ?? normalizedPhone,
+          verificationPhone: normalizedPhone,
           otpCountdownSeconds: 30,
           canResendOtp: false,
           clearOtpError: true,
@@ -404,37 +296,17 @@ class AuthCubit extends Cubit<AuthState> {
         ),
       );
 
-      print('startPhoneAuth emit success');
-      print('verificationPhone saved: ${response.mobileNumber ?? normalizedPhone}');
-      print('========== START PHONE AUTH SUCCESS ==========');
-
       return true;
-    } on DioException catch (e, s) {
-      print('========== START PHONE AUTH DIO ERROR ==========');
-      print('message: ${e.message}');
-      print('type: ${e.type}');
-      print('statusCode: ${e.response?.statusCode}');
-      print('responseData: ${e.response?.data}');
-      print('responseHeaders: ${e.response?.headers}');
-      print('stackTrace: $s');
-      print('================================================');
-
+    } on DioException catch (e) {
       emit(
         state.copyWith(
           isPhoneAuthLoading: false,
           isPhoneAuthSuccess: false,
-          authErrorMessage: e.response?.data.toString() ?? e.message,
+          authErrorMessage: _extractApiMessage(e),
         ),
       );
-
-      print('startPhoneAuth emit failure with DioException');
       return false;
-    } catch (e, s) {
-      print('========== START PHONE AUTH UNKNOWN ERROR ==========');
-      print('error: $e');
-      print('stackTrace: $s');
-      print('====================================================');
-
+    } catch (e) {
       emit(
         state.copyWith(
           isPhoneAuthLoading: false,
@@ -442,45 +314,25 @@ class AuthCubit extends Cubit<AuthState> {
           authErrorMessage: e.toString(),
         ),
       );
-
-      print('startPhoneAuth emit failure with unknown error');
       return false;
     }
   }
 
-
-  Future<bool> sendVerificationCode(String phone) async {
-    print('========== SEND VERIFICATION CODE ==========');
-    print('sendVerificationCode called with phone: $phone');
-
-    final result = await startPhoneAuth(phone);
-
-    print('sendVerificationCode result: $result');
-    print('===========================================');
-
-    return result;
+  Future<bool> sendVerificationCode(String phone) {
+    return startPhoneAuth(phone);
   }
 
   Future<bool> verifyOtpCode(String otp) async {
-    print('========== VERIFY OTP START ==========');
-    print('raw otp: $otp');
-
     final trimmedOtp = otp.trim();
-    print('trimmed otp: $trimmedOtp');
 
     if (trimmedOtp.length != 5) {
-      print('OTP validation failed: length is not 5');
-
       emit(state.copyWith(otpError: 'كود التحقق يجب أن يكون 5 أرقام'));
       return false;
     }
 
-    final String? phone = state.verificationPhone;
-    print('verificationPhone from state: $phone');
+    final phone = state.verificationPhone;
 
     if (phone == null || phone.isEmpty) {
-      print('verificationPhone missing from state');
-
       emit(
         state.copyWith(
           authErrorMessage: 'رقم الهاتف غير متوفر لإتمام التحقق',
@@ -503,27 +355,10 @@ class AuthCubit extends Cubit<AuthState> {
         customerId: trimmedOtp,
       );
 
-      print('activateAccount request body: ${activateRequest.toJson()}');
-      print('calling repository.activateAccount...');
+      await _repository.activateAccount(request: activateRequest);
 
-      final activateResponse = await _repository.activateAccount(
-        request: activateRequest,
-      );
-
-      print('activateAccount success: $activateResponse');
-
-      final loginRequest = AuthAfterOtpRequest(
-        mobile: phone,
-      );
-
-      print('loginAfterOtp request body: ${loginRequest.toJson()}');
-      print('calling repository.loginAfterOtp...');
-
-      final loginResponse = await _repository.loginAfterOtp(
-        request: loginRequest,
-      );
-
-      print('loginAfterOtp success: $loginResponse');
+      final loginRequest = AuthAfterOtpRequest(mobile: phone);
+      await _repository.loginAfterOtp(request: loginRequest);
 
       emit(
         state.copyWith(
@@ -534,36 +369,17 @@ class AuthCubit extends Cubit<AuthState> {
         ),
       );
 
-      print('verifyOtpCode emit success');
-      print('========== VERIFY OTP SUCCESS ==========');
-
       return true;
-    } on DioException catch (e, s) {
-      print('========== VERIFY OTP DIO ERROR ==========');
-      print('message: ${e.message}');
-      print('type: ${e.type}');
-      print('statusCode: ${e.response?.statusCode}');
-      print('responseData: ${e.response?.data}');
-      print('responseHeaders: ${e.response?.headers}');
-      print('stackTrace: $s');
-      print('=========================================');
-
+    } on DioException catch (e) {
       emit(
         state.copyWith(
           isOtpVerificationLoading: false,
           isOtpVerified: false,
-          authErrorMessage: e.response?.data.toString() ?? e.message,
+          authErrorMessage: _extractApiMessage(e),
         ),
       );
-
-      print('verifyOtpCode emit failure with DioException');
       return false;
-    } catch (e, s) {
-      print('========== VERIFY OTP UNKNOWN ERROR ==========');
-      print('error: $e');
-      print('stackTrace: $s');
-      print('=============================================');
-
+    } catch (e) {
       emit(
         state.copyWith(
           isOtpVerificationLoading: false,
@@ -571,21 +387,14 @@ class AuthCubit extends Cubit<AuthState> {
           authErrorMessage: e.toString(),
         ),
       );
-
-      print('verifyOtpCode emit failure with unknown error');
       return false;
     }
   }
 
   Future<bool> resendVerificationCode() async {
-    print('========== RESEND VERIFICATION CODE ==========');
-
-    final String? phone = state.verificationPhone;
-    print('verificationPhone from state: $phone');
+    final phone = state.verificationPhone;
 
     if (phone == null || phone.isEmpty) {
-      print('Cannot resend OTP: verificationPhone is missing');
-
       emit(
         state.copyWith(
           authErrorMessage: 'رقم الهاتف غير متوفر لإعادة الإرسال',
@@ -594,11 +403,6 @@ class AuthCubit extends Cubit<AuthState> {
       return false;
     }
 
-    final result = await startPhoneAuth(phone);
-
-    print('resendVerificationCode result: $result');
-    print('=============================================');
-
-    return result;
+    return startPhoneAuth(phone);
   }
 }
