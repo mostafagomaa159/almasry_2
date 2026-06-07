@@ -23,6 +23,16 @@ class AppRouter {
           return OtpVerificationScreen(args: args);
         },
       ),
+      // GoRoute(
+      //   path: AppRoutes.productList,
+      //   builder: (context, state) {
+      //     final args = state.extra as ProductListArgs;
+      //     return ProductListPage(
+      //       title: args.title,
+      //       categoryId: args.categoryId,
+      //     );
+      //   },
+      // ),
 
       GoRoute(
         path: AppRoutes.signup,
@@ -58,23 +68,22 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.orders,
         name: 'orders',
-        builder: (context, state) => BlocProvider(
-          create: (_) => OrdersCubit(),
-          child: const OrdersView(),
-        ),
+        builder: (context, state) {
+          final email = state.extra as String;
+          return OrdersPage(customerEmail: email);
+        },
       ),
       GoRoute(
-        path: '/order-details',
+        path: AppRoutes.orderDetails,
         name: 'orderDetails',
         builder: (context, state) {
           final args = state.extra as OrderDetailsArgs;
-
-          return BlocProvider(
-            create: (_) => OrderDetailsCubit()..loadOrderDetails(args.orderId),
-            child: const OrderDetailsView(),
-          );
+          return OrderDetailsPage(args: args);
         },
       ),
+
+
+
       GoRoute(
         path: AppRoutes.productDetails,
         builder: (context, state) {

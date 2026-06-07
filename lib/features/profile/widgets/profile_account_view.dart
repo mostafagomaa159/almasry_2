@@ -176,9 +176,17 @@ class _AccountProfileViewState extends State<AccountProfileView> {
                     ProfileMenuItem(
                       title: LocaleKeys.profileOrders.tr(),
                       onTap: () {
-                        context.pushNamed('orders');
+                        final email = currentProfile.email?.trim();
+
+                        if (email == null || email.isEmpty) return;
+
+                        context.pushNamed(
+                          'orders',
+                          extra: email,
+                        );
                       },
                     ),
+
                     ProfileMenuItem(
                       title: LocaleKeys.profileShippingData.tr(),
                       onTap: () {},

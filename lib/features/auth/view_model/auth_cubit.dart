@@ -1,85 +1,9 @@
 part of '../auth_imports.dart';
 
-class AuthRepository {
+class AuthCubit extends Cubit<AuthState> {
   final ApiService _apiService;
 
-  AuthRepository(this._apiService);
-
-  Future<Map<String, dynamic>> forgetPassword({
-    required ForgetPasswordRequest request,
-  }) async {
-    try {
-      final response = await _apiService.post(
-        endPoint: ApiConstants.forgetPassword,
-        data: request.toJson(),
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer ${ApiConstants.token}',
-          },
-        ),
-      );
-
-      return Map<String, dynamic>.from(response.data as Map);
-    } on DioException {
-      rethrow;
-    } catch (_) {
-      rethrow;
-    }
-  }
-
-  Future<ActivateAccountResponse> activateAccount({
-    required ActivateAccountRequest request,
-  }) async {
-    try {
-      final response = await _apiService.post(
-        endPoint: ApiConstants.activateAccount,
-        data: request.toJson(),
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer ${ApiConstants.token}',
-          },
-        ),
-      );
-
-      return ActivateAccountResponse.fromJson(
-        response.data as Map<String, dynamic>,
-      );
-    } on DioException {
-      rethrow;
-    } catch (_) {
-      rethrow;
-    }
-  }
-
-  Future<AuthAfterOtpResponse> loginAfterOtp({
-    required AuthAfterOtpRequest request,
-  }) async {
-    try {
-      final response = await _apiService.post(
-        endPoint: ApiConstants.authAfterOtp,
-        data: request.toJson(),
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer ${ApiConstants.token}',
-          },
-        ),
-      );
-
-      return AuthAfterOtpResponse.fromJson(
-        response.data as Map<String, dynamic>,
-      );
-    } on DioException {
-      rethrow;
-    } catch (_) {
-      rethrow;
-    }
-  }
-}
-
-class AuthCubit extends Cubit<AuthState> {
-  final AuthRepository _repository;
-
-  AuthCubit(this._repository) : super(const AuthState());
+  AuthCubit(this._apiService) : super(const AuthState());
 
   void togglePasswordVisibility() {
     emit(state.copyWith(isPasswordHidden: !state.isPasswordHidden));
@@ -192,6 +116,7 @@ class AuthCubit extends Cubit<AuthState> {
         clearOtpError: true,
         clearAuthErrorMessage: true,
         clearVerificationPhone: true,
+        clearVerificationCode: true,
       ),
     );
   }
@@ -233,6 +158,54 @@ class AuthCubit extends Cubit<AuthState> {
     }
 
     return e.message ?? 'حدث خطأ غير متوقع';
+  }
+
+  Options _authOptions() {
+    return Options(
+      headers: {
+        'Authorization': 'Bearer ${ApiConstants.token}',
+      },
+    );
+  }
+
+  Future<Map<String, dynamic>> _forgetPassword({
+    required ForgetPasswordRequest request,
+  }) async {
+    final response = await _apiService.post(
+      endPoint: ApiConstants.forgetPassword,
+      data: request.toJson(),
+      options: _authOptions(),
+    );
+
+    return Map<String, dynamic>.from(response.data as Map);
+  }
+
+  Future<ActivateAccountResponse> _activateAccount({
+    required ActivateAccountRequest request,
+  }) async {
+    final response = await _apiService.post(
+      endPoint: ApiConstants.activateAccount,
+      data: request.toJson(),
+      options: _authOptions(),
+    );
+
+    return ActivateAccountResponse.fromJson(
+      response.data as Map<String, dynamic>,
+    );
+  }
+
+  Future<AuthAfterOtpResponse> _loginAfterOtp({
+    required AuthAfterOtpRequest request,
+  }) async {
+    final response = await _apiService.post(
+      endPoint: ApiConstants.authAfterOtp,
+      data: request.toJson(),
+      options: _authOptions(),
+    );
+
+    return AuthAfterOtpResponse.fromJson(
+      response.data as Map<String, dynamic>,
+    );
   }
 
   Future<void> login() async {
@@ -282,13 +255,29 @@ class AuthCubit extends Cubit<AuthState> {
       final normalizedPhone = _normalizePhone(phone);
       final request = ForgetPasswordRequest(identity: normalizedPhone);
 
-      await _repository.forgetPassword(request: request);
+      final response = await _forgetPassword(request: request);
+
+      final status = (response['status'] ?? '').toString().toLowerCase();
+      final code = (response['code'] ?? '').toString();
+
+      if (status != 'success' || code.isEmpty) {
+        emit(
+          state.copyWith(
+            isPhoneAuthLoading: false,
+            isPhoneAuthSuccess: false,
+            authErrorMessage:
+            (response['message'] ?? 'فشل إرسال كود التحقق').toString(),
+          ),
+        );
+        return false;
+      }
 
       emit(
         state.copyWith(
           isPhoneAuthLoading: false,
           isPhoneAuthSuccess: true,
           verificationPhone: normalizedPhone,
+          verificationCode: code,
           otpCountdownSeconds: 30,
           canResendOtp: false,
           clearOtpError: true,
@@ -331,11 +320,31 @@ class AuthCubit extends Cubit<AuthState> {
     }
 
     final phone = state.verificationPhone;
+    final savedCode = state.verificationCode;
 
     if (phone == null || phone.isEmpty) {
       emit(
         state.copyWith(
           authErrorMessage: 'رقم الهاتف غير متوفر لإتمام التحقق',
+        ),
+      );
+      return false;
+    }
+
+    if (savedCode == null || savedCode.isEmpty) {
+      emit(
+        state.copyWith(
+          authErrorMessage: 'كود التحقق غير متوفر، أعد إرسال الكود مرة أخرى',
+        ),
+      );
+      return false;
+    }
+
+    if (trimmedOtp != savedCode) {
+      emit(
+        state.copyWith(
+          otpError: 'كود التحقق غير صحيح',
+          clearAuthErrorMessage: true,
         ),
       );
       return false;
@@ -352,13 +361,40 @@ class AuthCubit extends Cubit<AuthState> {
 
     try {
       final activateRequest = ActivateAccountRequest(
-        customerId: trimmedOtp,
+        customerId: savedCode,
       );
 
-      await _repository.activateAccount(request: activateRequest);
+      final activateResponse = await _activateAccount(
+        request: activateRequest,
+      );
+
+      if ((activateResponse.status ?? '').toLowerCase() != 'success') {
+        emit(
+          state.copyWith(
+            isOtpVerificationLoading: false,
+            isOtpVerified: false,
+            authErrorMessage: activateResponse.message ?? 'فشل تفعيل الحساب',
+          ),
+        );
+        return false;
+      }
 
       final loginRequest = AuthAfterOtpRequest(mobile: phone);
-      await _repository.loginAfterOtp(request: loginRequest);
+
+      final loginResponse = await _loginAfterOtp(
+        request: loginRequest,
+      );
+
+      if ((loginResponse.token ?? '').isEmpty) {
+        emit(
+          state.copyWith(
+            isOtpVerificationLoading: false,
+            isOtpVerified: false,
+            authErrorMessage: 'فشل تسجيل الدخول بعد التحقق',
+          ),
+        );
+        return false;
+      }
 
       emit(
         state.copyWith(

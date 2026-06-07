@@ -1,15 +1,40 @@
 part of '../orders_imports.dart';
 
-class OrdersState {
-  final List<OrderModel> orders;
-  final bool isLoading;
+enum OrdersStatus {
+  initial,
+  loading,
+  success,
+  error,
+}
 
-  const OrdersState({this.orders = const [], this.isLoading = false});
+class OrdersState extends Equatable {
+  final OrdersStatus status;
+  final List<OrderResponse> orders;
+  final String errorMessage;
 
-  OrdersState copyWith({List<OrderModel>? orders, bool? isLoading}) {
+  const OrdersState({
+    this.status = OrdersStatus.initial,
+    this.orders = const [],
+    this.errorMessage = '',
+  });
+
+  OrdersState copyWith({
+    OrdersStatus? status,
+    List<OrderResponse>? orders,
+    String? errorMessage,
+    bool clearErrorMessage = false,
+  }) {
     return OrdersState(
+      status: status ?? this.status,
       orders: orders ?? this.orders,
-      isLoading: isLoading ?? this.isLoading,
+      errorMessage: clearErrorMessage ? '' : (errorMessage ?? this.errorMessage),
     );
   }
+
+  @override
+  List<Object?> get props => [
+    status,
+    orders,
+    errorMessage,
+  ];
 }

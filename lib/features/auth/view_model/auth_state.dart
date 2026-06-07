@@ -24,6 +24,7 @@ class AuthState {
   final String? otpError;
   final String? authErrorMessage;
   final String? verificationPhone;
+  final String? verificationCode;
 
   final int otpCountdownSeconds;
   final bool canResendOtp;
@@ -48,6 +49,7 @@ class AuthState {
     this.otpError,
     this.authErrorMessage,
     this.verificationPhone,
+    this.verificationCode,
     this.otpCountdownSeconds = 30,
     this.canResendOtp = false,
   });
@@ -72,6 +74,7 @@ class AuthState {
     String? otpError,
     String? authErrorMessage,
     String? verificationPhone,
+    String? verificationCode,
     int? otpCountdownSeconds,
     bool? canResendOtp,
     bool clearNameError = false,
@@ -85,6 +88,7 @@ class AuthState {
     bool clearOtpError = false,
     bool clearAuthErrorMessage = false,
     bool clearVerificationPhone = false,
+    bool clearVerificationCode = false,
   }) {
     return AuthState(
       isPasswordHidden: isPasswordHidden ?? this.isPasswordHidden,
@@ -122,6 +126,9 @@ class AuthState {
       verificationPhone: clearVerificationPhone
           ? null
           : (verificationPhone ?? this.verificationPhone),
+      verificationCode: clearVerificationCode
+          ? null
+          : (verificationCode ?? this.verificationCode),
       otpCountdownSeconds: otpCountdownSeconds ?? this.otpCountdownSeconds,
       canResendOtp: canResendOtp ?? this.canResendOtp,
     );

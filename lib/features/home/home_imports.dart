@@ -6,6 +6,7 @@ import 'package:almasry_2/core/models/response/home/home_brand_response.dart';
 import 'package:almasry_2/core/models/response/home/home_sub_category_response.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/features/favorites/favorites_imports.dart';
+import 'package:almasry_2/features/product_list/product_list_imports.dart';
 import 'package:almasry_2/features/profile/view_model/profile_args.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';

@@ -1,7 +1,5 @@
 part of '../core_imports.dart';
 
-final GetIt sl = GetIt.instance;
-
 class ApiService {
   final Dio _dio;
 
@@ -32,53 +30,4 @@ class ApiService {
       options: options,
     );
   }
-}
-
-Future<void> setupServiceLocator() async {
-  sl.registerLazySingleton<Dio>(
-        () => Dio(
-      BaseOptions(
-        baseUrl: ApiConstants.baseUrl,
-        connectTimeout: const Duration(seconds: 20),
-        receiveTimeout: const Duration(seconds: 20),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-      ),
-    ),
-  );
-
-  sl.registerLazySingleton<ApiService>(
-        () => ApiService(sl<Dio>()),
-  );
-
-  sl.registerLazySingleton<HomeRepository>(
-        () => HomeRepository(sl<ApiService>()),
-  );
-
-  sl.registerLazySingleton<ProductsRepository>(
-        () => ProductsRepository(sl<ApiService>()),
-  );
-
-  sl.registerFactory<HomeCubit>(
-        () => HomeCubit(
-      sl<HomeRepository>(),
-      sl<ProductsRepository>(),
-    ),
-  );
-  sl.registerFactory<ProductDetailsCubit>(
-        () => ProductDetailsCubit(
-      sl<ProductsRepository>(),
-    ),
-  );
-  sl.registerLazySingleton<AuthRepository>(
-        () => AuthRepository(sl<ApiService>()),
-  );
-
-  sl.registerFactory<AuthCubit>(
-        () => AuthCubit(sl<AuthRepository>()),
-  );
-
-
 }

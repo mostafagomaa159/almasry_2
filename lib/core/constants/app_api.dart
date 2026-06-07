@@ -12,6 +12,7 @@ class ApiConstants {
   static const String forgetPassword = '/auth/forget-password';
   static const String activateAccount = '/crocoit/auth/activate-account';
   static const String authAfterOtp = '/auth-after-otp';
+  static const String orders = '/orders';
 
   static const String token = 'p75lojdwgxcfldke5czc7gjvgc8q1jj2';
 }

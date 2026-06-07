@@ -1,10 +1,53 @@
 part of '../product_details_imports.dart';
 
 class ProductDetailsCubit extends Cubit<ProductDetailsState> {
-  final ProductsRepository productsRepository;
+  final ApiService _apiService;
 
-  ProductDetailsCubit(this.productsRepository)
+  ProductDetailsCubit(this._apiService)
       : super(const ProductDetailsState());
+
+  Options _authOptions() {
+    return Options(
+      headers: {
+        'Authorization': 'Bearer ${ApiConstants.token}',
+      },
+    );
+  }
+
+  String _extractApiMessage(DioException e) {
+    final data = e.response?.data;
+
+    if (data is Map<String, dynamic>) {
+      final message = data['message'];
+      if (message is String && message.isNotEmpty) {
+        return message;
+      }
+    }
+
+    if (data is Map) {
+      final message = data['message'];
+      if (message is String && message.isNotEmpty) {
+        return message;
+      }
+    }
+
+    return e.message ?? 'حدث خطأ غير متوقع';
+  }
+
+  Future<ProductResponse> _fetchProductDetails({
+    required String sku,
+  }) async {
+    final endPoint = '${ApiConstants.products}/$sku';
+
+    final response = await _apiService.get(
+      endPoint: endPoint,
+      options: _authOptions(),
+    );
+
+    return ProductResponse.fromJson(
+      response.data as Map<String, dynamic>,
+    );
+  }
 
   Future<void> getProductDetails(String sku) async {
     emit(
@@ -15,15 +58,20 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
     );
 
     try {
-      final product = await productsRepository.getProductDetails(
-        sku: sku,
-      );
+      final product = await _fetchProductDetails(sku: sku);
 
       emit(
         state.copyWith(
           isLoading: false,
           product: product,
           clearErrorMessage: true,
+        ),
+      );
+    } on DioException catch (e) {
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: _extractApiMessage(e),
         ),
       );
     } catch (e) {
@@ -35,7 +83,6 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
       );
     }
   }
-
 
   void incrementQuantity() {
     emit(state.copyWith(quantity: state.quantity + 1));

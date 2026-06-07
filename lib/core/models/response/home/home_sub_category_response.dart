@@ -4,6 +4,7 @@ class HomeSubCategoryResponse {
   final String name;
   final String image;
   final String categoryColor;
+  final int productCount;
 
   const HomeSubCategoryResponse({
     required this.id,
@@ -11,6 +12,7 @@ class HomeSubCategoryResponse {
     required this.name,
     required this.image,
     required this.categoryColor,
+    required this.productCount,
   });
 
   factory HomeSubCategoryResponse.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class HomeSubCategoryResponse {
       name: json['name']?.toString() ?? '',
       image: json['image']?.toString() ?? '',
       categoryColor: json['category_color']?.toString() ?? '',
+      productCount: int.tryParse(json['productCount']?.toString() ?? '0') ?? 0,
     );
   }
 }

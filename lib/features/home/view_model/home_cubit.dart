@@ -1,111 +1,9 @@
 part of '../home_imports.dart';
 
-class HomeRepository {
-  final ApiService _apiService;
-
-  HomeRepository(this._apiService);
-
-  Future<List<HomeCmsResponse>> getHomeData() async {
-    final response = await _apiService.get(
-      endPoint: ApiConstants.homeCmsPage,
-      options: Options(
-        headers: {'Authorization': 'Bearer ${ApiConstants.token}'},
-      ),
-    );
-
-    final List<dynamic> data = response.data as List<dynamic>;
-
-    return data
-        .map((e) => HomeCmsResponse.fromJson(e as Map<String, dynamic>))
-        .toList();
-  }
-}
-
-class ProductsRepository {
-  final ApiService _apiService;
-
-  ProductsRepository(this._apiService);
-
-  Future<List<ProductResponse>> getSectionProducts({
-    required String seeAllQuery,
-  }) async {
-    final cleanedQuery = seeAllQuery.startsWith('?')
-        ? seeAllQuery.substring(1)
-        : seeAllQuery;
-
-    final url =
-        '${ApiConstants.products}?$cleanedQuery&searchCriteria[pageSize]=20&searchCriteria[currentPage]=1';
-
-    final response = await _apiService.get(
-      endPoint: url,
-      options: Options(
-        headers: {'Authorization': 'Bearer ${ApiConstants.token}'},
-      ),
-    );
-
-    final data = response.data;
-
-
-
-    if (data is List) {
-      if (data.isNotEmpty) {
-
-      }
-
-      return data
-          .map((e) => ProductResponse.fromJson(e as Map<String, dynamic>))
-          .toList();
-    }
-
-    if (data is Map<String, dynamic> && data['items'] is List) {
-      final List<dynamic> items = data['items'] as List<dynamic>;
-
-      if (items.isNotEmpty) {
-        final first = items.first as Map<String, dynamic>;
-
-      }
-
-      return items
-          .map((e) => ProductResponse.fromJson(e as Map<String, dynamic>))
-          .toList();
-    }
-
-    return [];
-  }
-
-
-  Future<ProductResponse> getProductDetails({
-    required String sku,
-  }) async {
-    final endPoint = '${ApiConstants.products}/$sku';
-
-    try {
-      final response = await _apiService.get(
-        endPoint: endPoint,
-        options: Options(
-          headers: {'Authorization': 'Bearer ${ApiConstants.token}'},
-        ),
-      );
-
-      return ProductResponse.fromJson(response.data as Map<String, dynamic>);
-    } on DioException catch (e) {
-
-      rethrow;
-    }
-  }
-
-
-
-}
-
-
 class HomeCubit extends Cubit<HomeState> {
+  final ApiService _apiService;
 
-  final HomeRepository _repository;
-  final ProductsRepository _productsRepository;
-
-  HomeCubit(this._repository, this._productsRepository)
-    : super(const HomeState());
+  HomeCubit(this._apiService) : super(const HomeState());
 
   void changeBannerIndex(int index) {
     emit(state.copyWith(currentBannerIndex: index));
@@ -119,11 +17,79 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(selectedBottomNavIndex: index));
   }
 
+  Options _authOptions() {
+    return Options(
+      headers: {
+        'Authorization': 'Bearer ${ApiConstants.token}',
+      },
+    );
+  }
+
+  Future<List<HomeCmsResponse>> _fetchHomeData() async {
+    final response = await _apiService.get(
+      endPoint: ApiConstants.homeCmsPage,
+      options: _authOptions(),
+    );
+
+    final List<dynamic> data = response.data as List<dynamic>;
+
+    return data
+        .map((e) => HomeCmsResponse.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<List<ProductResponse>> _getSectionProducts({
+    required String seeAllQuery,
+  }) async {
+    final cleanedQuery = seeAllQuery.startsWith('?')
+        ? seeAllQuery.substring(1)
+        : seeAllQuery;
+
+    final url =
+        '${ApiConstants.products}?$cleanedQuery&searchCriteria[pageSize]=20&searchCriteria[currentPage]=1';
+
+    final response = await _apiService.get(
+      endPoint: url,
+      options: _authOptions(),
+    );
+
+    final data = response.data;
+
+    if (data is List) {
+      return data
+          .map((e) => ProductResponse.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+
+    if (data is Map<String, dynamic> && data['items'] is List) {
+      final List<dynamic> items = data['items'] as List<dynamic>;
+
+      return items
+          .map((e) => ProductResponse.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+
+    return [];
+  }
+
+  Future<ProductResponse> getProductDetails({
+    required String sku,
+  }) async {
+    final endPoint = '${ApiConstants.products}/$sku';
+
+    final response = await _apiService.get(
+      endPoint: endPoint,
+      options: _authOptions(),
+    );
+
+    return ProductResponse.fromJson(response.data as Map<String, dynamic>);
+  }
+
   Future<void> getHomeData() async {
     emit(state.copyWith(status: HomeStatus.loading, errorMessage: ''));
 
     try {
-      final response = await _repository.getHomeData();
+      final response = await _fetchHomeData();
 
       List<HomeSliderItemResponse> banners = [];
       List<HomeSliderItemResponse> secondaryBanners = [];
@@ -212,14 +178,17 @@ class HomeCubit extends Cubit<HomeState> {
       );
     } catch (e) {
       emit(
-        state.copyWith(status: HomeStatus.error, errorMessage: e.toString()),
+        state.copyWith(
+          status: HomeStatus.error,
+          errorMessage: e.toString(),
+        ),
       );
     }
   }
 
   Future<List<ProductResponse>> _getProductsForBlock(
-    HomeMobileBlockResponse? block,
-  ) async {
+      HomeMobileBlockResponse? block,
+      ) async {
     final seeAllQuery = block?.seeAll.trim() ?? '';
 
     if (seeAllQuery.isEmpty) {
@@ -227,11 +196,7 @@ class HomeCubit extends Cubit<HomeState> {
     }
 
     try {
-      final products = await _productsRepository.getSectionProducts(
-        seeAllQuery: seeAllQuery,
-      );
-
-      return products;
+      return await _getSectionProducts(seeAllQuery: seeAllQuery);
     } catch (e) {
       return [];
     }
