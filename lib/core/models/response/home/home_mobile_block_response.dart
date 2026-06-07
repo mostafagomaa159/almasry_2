@@ -1,4 +1,5 @@
-part of '../../../core_imports.dart';
+
+import 'package:almasry_2/core/models/response/home/home_sub_category_response.dart';
 
 class HomeMobileBlockResponse {
   final String title;

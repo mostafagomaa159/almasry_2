@@ -1,4 +1,3 @@
-part of '../../../core_imports.dart';
 
 class ProductMediaGalleryEntryResponse {
   final int id;

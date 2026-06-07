@@ -1,4 +1,3 @@
-part of '../../../core_imports.dart';
 
 class ProductExtensionAttributesResponse {
   final String urlBase;

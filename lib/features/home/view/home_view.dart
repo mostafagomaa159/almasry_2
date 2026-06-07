@@ -306,9 +306,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
 
-                                  HomeServicesSection(
-                                    items: const [],
-                                  ),
+
                                 ],
                               ),
                             ),

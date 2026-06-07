@@ -1,3 +1,4 @@
+import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:almasry_2/core/core_imports.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/features/favorites/favorites_imports.dart';

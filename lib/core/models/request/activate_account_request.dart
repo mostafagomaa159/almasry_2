@@ -1,4 +1,3 @@
-part of '../../core_imports.dart';
 
 class ActivateAccountRequest {
   final String customerId;

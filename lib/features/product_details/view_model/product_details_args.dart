@@ -9,3 +9,4 @@ class ProductDetailsArgs {
     this.imagePath,
   });
 }
+

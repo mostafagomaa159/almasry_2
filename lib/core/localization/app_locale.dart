@@ -1,4 +1,5 @@
-part of '../core_imports.dart';
+
+import 'package:flutter/material.dart';
 
 class AppLocale {
   static const Locale english = Locale('en');

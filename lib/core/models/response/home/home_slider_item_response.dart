@@ -1,5 +1,6 @@
-part of '../../../core_imports.dart';
 
+
+import 'package:almasry_2/core/models/response/home/home_banner_url_response.dart';
 
 class HomeSliderItemResponse {
   final String name;

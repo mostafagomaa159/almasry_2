@@ -1,4 +1,7 @@
-part of '../../../core_imports.dart';
+
+import 'package:almasry_2/core/models/response/home/product_custom_attribute_response.dart';
+import 'package:almasry_2/core/models/response/home/product_extension_attributes_response.dart';
+import 'package:almasry_2/core/models/response/home/product_media_gallery_entry_response.dart';
 
 class ProductResponse {
   final int id;

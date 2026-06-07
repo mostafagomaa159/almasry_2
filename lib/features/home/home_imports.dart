@@ -1,10 +1,19 @@
 import 'dart:async';
 
+import 'package:almasry_2/core/base/locator/locator.dart';
+import 'package:almasry_2/core/constants/app_api.dart';
+import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:almasry_2/core/core_imports.dart';
 import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:almasry_2/core/models/response/home/home_brand_response.dart';
+import 'package:almasry_2/core/models/response/home/home_cms_response.dart';
+import 'package:almasry_2/core/models/response/home/home_mobile_block_response.dart';
+import 'package:almasry_2/core/models/response/home/home_slider_item_response.dart';
 import 'package:almasry_2/core/models/response/home/home_sub_category_response.dart';
+import 'package:almasry_2/core/models/response/home/product_response.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
+import 'package:almasry_2/core/services/api_services.dart';
+import 'package:almasry_2/core/utils/app_logo.dart';
 import 'package:almasry_2/features/favorites/favorites_imports.dart';
 import 'package:almasry_2/features/product_list/product_list_imports.dart';
 import 'package:almasry_2/features/profile/view_model/profile_args.dart';
@@ -17,7 +26,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/models/response/response_favorite_product.dart';
 import '../product_details/view_model/product_details_args.dart';
-import 'model/home_service_model.dart';
 import 'package:almasry_2/core/constants/app_images.dart';
 
 part 'view/home_view.dart';
@@ -40,7 +48,6 @@ part 'widgets/home_quick_action_card.dart';
 part 'widgets/home_search_bar.dart';
 part 'widgets/home_section_header.dart';
 part 'widgets/home_service_card.dart';
-part 'widgets/home_services_section.dart';
 part 'widgets/home_wide_info_card.dart';
 
 

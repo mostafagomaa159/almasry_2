@@ -1,10 +1,16 @@
+import 'package:almasry_2/core/base/locator/locator.dart';
+import 'package:almasry_2/core/constants/app_api.dart';
+import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:almasry_2/core/constants/app_images.dart';
 import 'package:almasry_2/core/core_imports.dart';
 import 'package:almasry_2/core/localization/locale_keys.dart';
+import 'package:almasry_2/core/models/response/home/product_response.dart';
+import 'package:almasry_2/core/services/api_services.dart';
 import 'package:almasry_2/features/home/home_imports.dart';
 import 'package:almasry_2/features/product_details/view_model/product_details_args.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';

@@ -1,6 +1,6 @@
 part of '../product_details_imports.dart';
 
-class ProductDetailsState {
+class ProductDetailsState extends Equatable {
   final bool isLoading;
   final ProductResponse? product;
   final String? errorMessage;
@@ -30,4 +30,12 @@ class ProductDetailsState {
       quantity: quantity ?? this.quantity,
     );
   }
+
+  @override
+  List<Object?> get props => [
+    isLoading,
+    product,
+    errorMessage,
+    quantity,
+  ];
 }

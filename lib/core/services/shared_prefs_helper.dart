@@ -1,4 +1,5 @@
-part of '../core_imports.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefsHelper {
   SharedPrefsHelper._();

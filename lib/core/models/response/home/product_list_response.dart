@@ -1,4 +1,5 @@
-part of '../../../core_imports.dart';
+
+import 'package:almasry_2/core/models/response/home/product_item_response.dart';
 
 class ProductListResponse {
   final List<ProductItemResponse> items;

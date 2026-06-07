@@ -1,4 +1,7 @@
-import 'package:almasry_2/core/core_imports.dart';
+import 'package:almasry_2/core/base/locator/locator.dart';
+import 'package:almasry_2/core/localization/app_locale.dart';
+import 'package:almasry_2/core/routing/app_router.dart';
+import 'package:almasry_2/core/services/shared_prefs_helper.dart';
 import 'package:almasry_2/features/favorites/favorites_imports.dart';
 import 'package:almasry_2/features/splash/splash_imports.dart';
 import 'package:easy_localization/easy_localization.dart';

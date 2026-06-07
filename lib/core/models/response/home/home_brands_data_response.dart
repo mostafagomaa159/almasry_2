@@ -1,4 +1,5 @@
-part of '../../../core_imports.dart';
+
+import 'home_brand_response.dart';
 
 class HomeBrandsDataResponse {
   final String title;

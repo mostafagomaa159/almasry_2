@@ -1,4 +1,3 @@
-part of '../../../core_imports.dart';
 class HomeBannerUrlResponse {
   final String key;
   final String value;

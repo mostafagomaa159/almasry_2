@@ -10,6 +10,21 @@ class ProductDetailsView extends StatefulWidget {
 }
 
 class _ProductDetailsViewState extends State<ProductDetailsView> {
+  late final ProductDetailsCubit _productDetailsCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _productDetailsCubit = sl<ProductDetailsCubit>()
+      ..getProductDetails(widget.args.sku);
+  }
+
+  @override
+  void dispose() {
+    _productDetailsCubit.close();
+    super.dispose();
+  }
+
   Future<void> _toggleFavorite(ProductResponse product) async {
     final favoriteProduct = FavoriteProductModel(
       id: product.id.toString(),
@@ -52,8 +67,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
   Widget build(BuildContext context) {
     final bool isArabic = context.locale.languageCode == 'ar';
 
-    return BlocProvider(
-      create: (_) => sl<ProductDetailsCubit>()..getProductDetails(widget.args.sku),
+    return BlocProvider.value(
+      value: _productDetailsCubit,
       child: BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
         builder: (context, state) {
           if (state.isLoading && state.product == null) {
@@ -100,7 +115,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
           final description = product.description ?? '';
           final price = _formatPrice(product.price);
 
-          /// Temporary / derived values
           final brand = _getCustomAttributeValue(product, 'brand');
           final oldPrice = '';
           final rating = 0.0;
@@ -130,7 +144,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                   onFavoriteTap: () => _toggleFavorite(product),
                                 ),
                                 SizedBox(height: 12.h),
-
                                 ProductDetailsSummarySection(
                                   sku: product.sku,
                                   brand: brand,
@@ -139,25 +152,18 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                   oldPrice: oldPrice,
                                   isInStock: isInStock,
                                 ),
-
                                 SizedBox(height: 10.h),
-
                                 ProductDetailsInfoSection(
                                   product: product,
                                 ),
-
                                 SizedBox(height: 10.h),
-
                                 ProductDetailsDescriptionSection(
                                   description: description,
                                 ),
-
                                 SizedBox(height: 10.h),
-
                                 ProductDetailsRatingSection(
                                   rating: rating,
                                 ),
-
                                 SizedBox(height: 24.h),
                               ],
                             ),
@@ -166,7 +172,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                       ],
                     ),
                   ),
-
                   Positioned(
                     right: 16.w,
                     left: 16.w,
@@ -180,7 +185,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                         context.read<ProductDetailsCubit>().decrementQuantity();
                       },
                       onAddToBasketTap: () {
-                        // TODO: connect add to cart / basket action here
+                        // TODO
                       },
                     ),
                   ),

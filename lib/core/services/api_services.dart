@@ -1,4 +1,5 @@
-part of '../core_imports.dart';
+
+import 'package:dio/dio.dart';
 
 class ApiService {
   final Dio _dio;

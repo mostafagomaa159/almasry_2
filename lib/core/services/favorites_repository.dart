@@ -1,4 +1,6 @@
-part of '../core_imports.dart';
+
+import 'package:almasry_2/core/models/response/response_favorite_product.dart';
+import 'package:almasry_2/core/services/favorites_db_helper.dart';
 
 class FavoritesRepository {
   FavoritesRepository._();

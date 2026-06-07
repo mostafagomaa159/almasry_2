@@ -1,5 +1,8 @@
-part of '../../../core_imports.dart';
 
+
+import 'package:almasry_2/core/models/response/home/home_brands_data_response.dart';
+import 'package:almasry_2/core/models/response/home/home_mobile_block_response.dart';
+import 'package:almasry_2/core/models/response/home/home_slider_item_response.dart';
 
 class HomeCmsResponse {
   final List<HomeSliderItemResponse> slider;

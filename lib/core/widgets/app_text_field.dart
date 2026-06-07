@@ -1,4 +1,6 @@
-part of '../core_imports.dart';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppTextField extends StatelessWidget {
   final TextEditingController controller;
