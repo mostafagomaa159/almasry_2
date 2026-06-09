@@ -1,61 +1,73 @@
 part of '../product_list_imports.dart';
-
 class _ProductListBody extends StatelessWidget {
-  const _ProductListBody();
+  final ScrollController scrollController;
+
+  const _ProductListBody({
+    required this.scrollController,
+  });
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProductListCubit, ProductListState>(
       builder: (context, state) {
-        if (state.status == ProductListStatus.loading) {
-          return const _ProductListLoading();
+        if (state.status == ProductListStatus.loading &&
+            state.products.isEmpty) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         }
 
-        if (state.status == ProductListStatus.error) {
+        if (state.status == ProductListStatus.error &&
+            state.products.isEmpty) {
           return Center(
-            child: Padding(
-              padding: EdgeInsets.all(24.w),
-              child: Text(
-                state.errorMessage,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  color: Colors.red,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
+            child: Text(state.errorMessage),
           );
         }
 
         if (state.products.isEmpty) {
-          return Center(
-            child: Text(
-              'No products found',
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black54,
-              ),
-            ),
+          return const Center(
+            child: Text('No products found'),
           );
         }
 
         return GridView.builder(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-          itemCount: state.products.length,
+          controller: scrollController,
+          padding: EdgeInsets.all(16.w),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: 14.w,
-            mainAxisSpacing: 16.h,
+            crossAxisSpacing: 12.w,
+            mainAxisSpacing: 12.h,
             childAspectRatio: 0.58,
           ),
+          itemCount: state.products.length + (state.isLoadingMore ? 1 : 0),
           itemBuilder: (context, index) {
+            if (index >= state.products.length) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
             final product = state.products[index];
-            return ProductListItem(product: product);
+            final sku = product.sku ?? '';
+            final quantity = state.quantities[sku] ?? 1;
+
+            return ProductListItem(
+              product: product,
+              quantity: state.quantities[sku] ?? 1,
+              onIncrement: sku.isEmpty
+                  ? () {}
+                  : () => context.read<ProductListCubit>().incrementQuantity(sku),
+              onDecrement: sku.isEmpty
+                  ? () {}
+                  : () => context.read<ProductListCubit>().decrementQuantity(sku),
+            );
+
+
           },
         );
       },
     );
   }
 }
+
+

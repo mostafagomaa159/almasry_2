@@ -2,10 +2,16 @@ part of '../product_list_imports.dart';
 
 class ProductListItem extends StatelessWidget {
   final ProductResponse product;
+  final int quantity;
+  final VoidCallback onIncrement;
+  final VoidCallback onDecrement;
 
   const ProductListItem({
     super.key,
     required this.product,
+    required this.quantity,
+    required this.onIncrement,
+    required this.onDecrement,
   });
 
   String _fullImageUrl() {
@@ -38,7 +44,8 @@ class ProductListItem extends StatelessWidget {
 
   bool _isOutOfStock() {
     final stock = product.extensionAttributes?.stockStatus?.toLowerCase() ?? '';
-    final qty = int.tryParse(product.extensionAttributes?.sellableQuantity ?? '0') ?? 0;
+    final qty =
+        int.tryParse(product.extensionAttributes?.sellableQuantity ?? '0') ?? 0;
 
     return stock.contains('out') || qty <= 0;
   }
@@ -193,19 +200,19 @@ class ProductListItem extends StatelessWidget {
                   child: Row(
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: onIncrement,
                         icon: const Icon(Icons.add),
                         visualDensity: VisualDensity.compact,
                       ),
                       Text(
-                        '1',
+                        '$quantity',
                         style: TextStyle(
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: quantity > 1 ? onDecrement : null,
                         icon: const Icon(Icons.remove),
                         visualDensity: VisualDensity.compact,
                       ),

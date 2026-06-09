@@ -4,6 +4,7 @@ import 'package:almasry_2/features/auth/view_model/OtpVerificationArgs.dart';
 import 'package:almasry_2/features/edit_profile/edit_profile_imports.dart';
 import 'package:almasry_2/features/edit_profile/view_model/edit_profile_args.dart';
 import 'package:almasry_2/features/home/home_imports.dart';
+import 'package:almasry_2/features/my_order_details/my_order_imports.dart';
 import 'package:almasry_2/features/orders/orders_imports.dart';
 import 'package:almasry_2/features/product_details/product_details_imports.dart';
 import 'package:almasry_2/features/product_details/view_model/product_details_args.dart';
@@ -85,7 +86,7 @@ class AppRouter {
         name: 'orders',
         builder: (context, state) {
           final email = state.extra as String;
-          return OrdersPage(customerEmail: email);
+          return OrdersView(customerEmail: email);
         },
       ),
       GoRoute(

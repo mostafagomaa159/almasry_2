@@ -1,4 +1,4 @@
-part of '../orders_imports.dart';
+part of '../my_order_imports.dart';
 
 class _OrderItemTile extends StatelessWidget {
   final OrderItemModel item;

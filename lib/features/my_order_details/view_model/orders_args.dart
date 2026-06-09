@@ -1,4 +1,4 @@
-part of '../orders_imports.dart';
+part of '../../orders/orders_imports.dart';
 
 class OrderDetailsArgs {
   final int orderId;

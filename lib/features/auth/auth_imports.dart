@@ -19,7 +19,6 @@ import 'package:almasry_2/features/auth/widgets/login_toggle_tabs.dart';
 import 'package:almasry_2/features/auth/widgets/login_remember_me_row.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:almasry_2/core/core_imports.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

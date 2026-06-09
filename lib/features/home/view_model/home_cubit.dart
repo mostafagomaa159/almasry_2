@@ -16,19 +16,19 @@ class HomeCubit extends Cubit<HomeState> {
   void changeBottomNavIndex(int index) {
     emit(state.copyWith(selectedBottomNavIndex: index));
   }
-
-  Options _authOptions() {
-    return Options(
-      headers: {
-        'Authorization': 'Bearer ${ApiConstants.token}',
-      },
-    );
-  }
+  //
+  // Options _authOptions() {
+  //   return Options(
+  //     headers: {
+  //       'Authorization': 'Bearer ${ApiConstants.token}',
+  //     },
+  //   );
+  // }
 
   Future<List<HomeCmsResponse>> _fetchHomeData() async {
     final response = await _apiService.get(
       endPoint: ApiConstants.homeCmsPage,
-      options: _authOptions(),
+      //options: _authOptions(),
     );
 
     final List<dynamic> data = response.data as List<dynamic>;
@@ -50,7 +50,7 @@ class HomeCubit extends Cubit<HomeState> {
 
     final response = await _apiService.get(
       endPoint: url,
-      options: _authOptions(),
+      //options: _authOptions(),
     );
 
     final data = response.data;
@@ -79,7 +79,7 @@ class HomeCubit extends Cubit<HomeState> {
 
     final response = await _apiService.get(
       endPoint: endPoint,
-      options: _authOptions(),
+     // options: _authOptions(),
     );
 
     return ProductResponse.fromJson(response.data as Map<String, dynamic>);

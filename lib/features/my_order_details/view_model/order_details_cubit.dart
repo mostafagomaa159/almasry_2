@@ -1,4 +1,4 @@
-part of '../orders_imports.dart';
+part of '../my_order_imports.dart';
 class OrderDetailsCubit extends Cubit<OrderDetailsState> {
   final ApiService _apiService;
 

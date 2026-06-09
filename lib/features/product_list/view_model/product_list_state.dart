@@ -13,6 +13,11 @@ class ProductListState extends Equatable {
   final String errorMessage;
   final String title;
   final String categoryId;
+  final int currentPage;
+  final bool isLoadingMore;
+  final bool hasMore;
+  final int totalCount;
+  final Map<String, int> quantities;
 
   const ProductListState({
     this.status = ProductListStatus.initial,
@@ -20,6 +25,11 @@ class ProductListState extends Equatable {
     this.errorMessage = '',
     this.title = '',
     this.categoryId = '',
+    this.currentPage = 1,
+    this.isLoadingMore = false,
+    this.hasMore = true,
+    this.totalCount = 0,
+    this.quantities = const {},
   });
 
   ProductListState copyWith({
@@ -28,14 +38,26 @@ class ProductListState extends Equatable {
     String? errorMessage,
     String? title,
     String? categoryId,
+    int? currentPage,
+    bool? isLoadingMore,
+    bool? hasMore,
+    int? totalCount,
+    Map<String, int>? quantities,
     bool clearErrorMessage = false,
+    bool resetProducts = false,
+    bool resetQuantities = false,
   }) {
     return ProductListState(
       status: status ?? this.status,
-      products: products ?? this.products,
+      products: resetProducts ? [] : (products ?? this.products),
       errorMessage: clearErrorMessage ? '' : (errorMessage ?? this.errorMessage),
       title: title ?? this.title,
       categoryId: categoryId ?? this.categoryId,
+      currentPage: currentPage ?? this.currentPage,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      hasMore: hasMore ?? this.hasMore,
+      totalCount: totalCount ?? this.totalCount,
+      quantities: resetQuantities ? {} : (quantities ?? this.quantities),
     );
   }
 
@@ -46,5 +68,10 @@ class ProductListState extends Equatable {
     errorMessage,
     title,
     categoryId,
+    currentPage,
+    isLoadingMore,
+    hasMore,
+    totalCount,
+    quantities,
   ];
 }

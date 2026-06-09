@@ -6,13 +6,13 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
   ProductDetailsCubit(this._apiService)
       : super(const ProductDetailsState());
 
-  Options _authOptions() {
-    return Options(
-      headers: {
-        'Authorization': 'Bearer ${ApiConstants.token}',
-      },
-    );
-  }
+  // Options _authOptions() {
+  //   return Options(
+  //     headers: {
+  //       'Authorization': 'Bearer ${ApiConstants.token}',
+  //     },
+  //   );
+  // }
 
   String _extractApiMessage(DioException e) {
     final data = e.response?.data;
@@ -41,7 +41,7 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
 
     final response = await _apiService.get(
       endPoint: endPoint,
-      options: _authOptions(),
+   //   options: _authOptions(),
     );
 
     return ProductResponse.fromJson(

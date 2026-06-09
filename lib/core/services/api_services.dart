@@ -1,10 +1,19 @@
-
+import 'package:almasry_2/core/constants/app_api.dart';
 import 'package:dio/dio.dart';
 
 class ApiService {
-  final Dio _dio;
-
-  ApiService(this._dio);
+  final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: ApiConstants.baseUrl,
+      connectTimeout: const Duration(seconds: 20),
+      receiveTimeout: const Duration(seconds: 20),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${ApiConstants.token}',
+      },
+    ),
+  );
 
   Future<Response> post({
     required String endPoint,

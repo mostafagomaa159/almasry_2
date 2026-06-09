@@ -160,13 +160,13 @@ class AuthCubit extends Cubit<AuthState> {
     return e.message ?? 'حدث خطأ غير متوقع';
   }
 
-  Options _authOptions() {
-    return Options(
-      headers: {
-        'Authorization': 'Bearer ${ApiConstants.token}',
-      },
-    );
-  }
+  // Options _authOptions() {
+  //   return Options(
+  //     headers: {
+  //       'Authorization': 'Bearer ${ApiConstants.token}',
+  //     },
+  //   );
+  // }
 
   Future<Map<String, dynamic>> _forgetPassword({
     required ForgetPasswordRequest request,
@@ -174,7 +174,7 @@ class AuthCubit extends Cubit<AuthState> {
     final response = await _apiService.post(
       endPoint: ApiConstants.forgetPassword,
       data: request.toJson(),
-      options: _authOptions(),
+    //  options: _authOptions(),
     );
 
     return Map<String, dynamic>.from(response.data as Map);
@@ -186,7 +186,7 @@ class AuthCubit extends Cubit<AuthState> {
     final response = await _apiService.post(
       endPoint: ApiConstants.activateAccount,
       data: request.toJson(),
-      options: _authOptions(),
+     // options: _authOptions(),
     );
 
     return ActivateAccountResponse.fromJson(
@@ -200,7 +200,7 @@ class AuthCubit extends Cubit<AuthState> {
     final response = await _apiService.post(
       endPoint: ApiConstants.authAfterOtp,
       data: request.toJson(),
-      options: _authOptions(),
+     // options: _authOptions(),
     );
 
     return AuthAfterOtpResponse.fromJson(

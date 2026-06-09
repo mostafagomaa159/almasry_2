@@ -17,6 +17,7 @@ class OrderItemResponse extends Equatable {
     required this.price,
     required this.originalPrice,
     required this.qtyOrdered,
+    
     required this.rowTotal,
     required this.productImage,
   });

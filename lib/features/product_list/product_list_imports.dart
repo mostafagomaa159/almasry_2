@@ -2,7 +2,9 @@ library;
 
 import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/constants/app_api.dart';
+import 'package:almasry_2/core/models/request/product_list_request/product_list_request.dart';
 import 'package:almasry_2/core/models/response/home/product_response.dart';
+import 'package:almasry_2/core/models/response/product_list/product_list_response.dart';
 import 'package:almasry_2/core/services/api_services.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
