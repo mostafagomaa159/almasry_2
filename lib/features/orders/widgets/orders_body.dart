@@ -2,12 +2,10 @@ part of '../orders_imports.dart';
 
 class OrdersBody extends StatelessWidget {
   final OrdersViewModel viewModel;
-  final Future<void> Function() onRefresh;
 
   const OrdersBody({
     super.key,
     required this.viewModel,
-    required this.onRefresh,
   });
 
   @override
@@ -23,7 +21,6 @@ class OrdersBody extends StatelessWidget {
 
           return OrdersListView(
             orders: state.data,
-            onRefresh: onRefresh,
           );
         }
 

@@ -13,7 +13,7 @@ class OrdersRequest {
 
   String get endPoint => ApiConstants.orders;
 
-  Map<String, dynamic> get queryParameters => {
+  Map<String, dynamic> toJson() => {
     'searchCriteria[filter_groups][0][filters][0][field]': 'customer_email',
     'searchCriteria[filter_groups][0][filters][0][value]': email,
     'searchCriteria[filter_groups][0][filters][0][condition_type]': 'eq',

@@ -25,12 +25,6 @@ class _OrdersViewState extends State<OrdersView> {
     });
   }
 
-  Future<void> _onRefresh() {
-    return _viewModel.refreshOrders(
-      email: widget.customerEmail,
-    );
-  }
-
   @override
   void dispose() {
     _viewModel.dispose();
@@ -44,7 +38,6 @@ class _OrdersViewState extends State<OrdersView> {
       appBar: const OrdersAppBar(),
       body: OrdersBody(
         viewModel: _viewModel,
-        onRefresh: _onRefresh,
       ),
     );
   }

@@ -7,7 +7,7 @@ class OrdersViewModel {
   Future<void> init({
     required String email,
   }) async {
-    await loadInitialOrders(email: email);
+    await _ordersApi(email);
   }
 
   /// Services
@@ -26,39 +26,8 @@ class OrdersViewModel {
           ordersCubit.state.data.length < (_totalItems ?? 0);
 
   /// Api Methods
-  Future<void> loadInitialOrders({
-    required String email,
-  }) async {
-    _page = 1;
-    _totalItems = null;
-    ordersCubit.reset([]);
-
-    await _loadOrders(
-      email: email,
-      isInitialLoad: true,
-    );
-  }
-
-  Future<void> refreshOrders({
-    required String email,
-  }) async {
-    await loadInitialOrders(email: email);
-  }
-
-  Future<void> loadMoreOrders({
-    required String email,
-  }) async {
-    await _loadOrders(
-      email: email,
-      isInitialLoad: false,
-    );
-  }
-
-  Future<void> _loadOrders({
-    required String email,
-    required bool isInitialLoad,
-  }) async {
-    if (_isFetching || (!canFetchMoreItems && !isInitialLoad)) return;
+  Future<void> _ordersApi(String email) async {
+    if (_isFetching || !canFetchMoreItems) return;
 
     _isFetching = true;
 
@@ -72,69 +41,35 @@ class OrdersViewModel {
 
       final response = await _apiService.get(
         endPoint: request.endPoint,
-        queryParameters: request.queryParameters,
+        queryParameters: request.toJson(),
       );
+
 
       final data = response.data;
 
+      final items = List<Map<String, dynamic>>.from(
+        (data is Map<String, dynamic>) ? (data['items'] ?? []) : [],
+      );
+
+      final list = items.map(OrderResponse.fromJson).toList();
+
       if (data is Map<String, dynamic>) {
-        final items = List<Map<String, dynamic>>.from(data['items'] ?? []);
-
-        final fetchedOrders = items
-            .map(OrderResponse.fromJson)
-            .toList();
-
         _totalItems =
-            int.tryParse(data['total_count']?.toString() ?? '') ??
-                fetchedOrders.length;
-
-        if (isInitialLoad) {
-          ordersCubit.update(fetchedOrders);
-        } else {
-          ordersCubit.update([
-            ...ordersCubit.state.data,
-            ...fetchedOrders,
-          ]);
-        }
-
-        if (fetchedOrders.isNotEmpty) {
-          _page++;
-        }
-      } else {
-        if (isInitialLoad) {
-          ordersCubit.update([]);
-        }
+            int.tryParse(data['total_count']?.toString() ?? '') ?? 0;
       }
-    } on DioException catch (e) {
-      debugPrint('Orders DioException: ${_extractApiMessage(e)}');
 
-      if (isInitialLoad) {
-        ordersCubit.update([]);
-      }
+      ordersCubit.onUpdateData([
+        ...ordersCubit.state.data,
+        ...list,
+      ]);
+
+      _page++;
     } catch (e) {
       debugPrint('Orders Error: $e');
-
-      if (isInitialLoad) {
-        ordersCubit.update([]);
-      }
     } finally {
       debugPrint('Orders fetched count: ${ordersCubit.state.data.length}');
       _isFetching = false;
     }
-  }
-
-  /// Helpers
-  String _extractApiMessage(DioException e) {
-    final data = e.response?.data;
-
-    if (data is Map<String, dynamic>) {
-      final message = data['message'];
-      if (message is String && message.isNotEmpty) {
-        return message;
-      }
-    }
-
-    return e.message ?? 'Something went wrong';
   }
 
   /// Dispose

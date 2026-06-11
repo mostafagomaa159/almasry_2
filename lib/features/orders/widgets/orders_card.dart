@@ -1,4 +1,5 @@
-part of '../my_order_imports.dart';
+part of '../orders_imports.dart';
+
 
 class OrderCard extends StatelessWidget {
   final OrderResponse order;
