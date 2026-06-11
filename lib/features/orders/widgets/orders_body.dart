@@ -12,28 +12,22 @@ class OrdersBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (viewModel.isLoading) {
-      return const OrdersLoadingView();
-    }
-
-    if (viewModel.errorMessage.isNotEmpty) {
-      return OrdersErrorView(message: viewModel.errorMessage);
-    }
-
     return BlocBuilder<GenericCubit<List<OrderResponse>>,
         GenericState<List<OrderResponse>>>(
       bloc: viewModel.ordersCubit,
       builder: (context, state) {
-        final orders = state.data;
+        if (state is GenericUpdateState<List<OrderResponse>>) {
+          if (state.data.isEmpty) {
+            return const OrdersEmptyView();
+          }
 
-        if (orders.isEmpty) {
-          return const OrdersEmptyView();
+          return OrdersListView(
+            orders: state.data,
+            onRefresh: onRefresh,
+          );
         }
 
-        return OrdersListView(
-          orders: orders,
-          onRefresh: onRefresh,
-        );
+        return const OrdersLoadingView();
       },
     );
   }

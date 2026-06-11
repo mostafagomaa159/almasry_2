@@ -1,4 +1,5 @@
 import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
+import 'package:almasry_2/core/base/bloc/generic_state.dart';
 import 'package:almasry_2/core/base/locator/locator.dart';
 
 import 'package:almasry_2/core/models/request/orders_request/orders_request.dart';

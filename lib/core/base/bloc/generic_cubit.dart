@@ -1,23 +1,14 @@
-import 'package:equatable/equatable.dart';
+import 'package:almasry_2/core/base/bloc/generic_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class GenericState<T> extends Equatable {
-  final T data;
-
-  const GenericState(this.data);
-
-  @override
-  List<Object?> get props => [data];
-}
-
 class GenericCubit<T> extends Cubit<GenericState<T>> {
-  GenericCubit(T initialData) : super(GenericState<T>(initialData));
+  GenericCubit(T initialData) : super(GenericInitialState<T>(initialData));
 
-  void update(T newData) {
-    emit(GenericState<T>(newData));
+  void update(T newData, {bool changed = true}) {
+    emit(GenericUpdateState<T>(newData, changed: changed));
   }
 
   void reset(T newData) {
-    emit(GenericState<T>(newData));
+    emit(GenericInitialState<T>(newData));
   }
 }
