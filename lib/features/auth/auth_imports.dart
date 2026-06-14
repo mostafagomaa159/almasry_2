@@ -1,3 +1,6 @@
+import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
+import 'package:almasry_2/core/base/bloc/generic_state.dart';
+import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/constants/app_api.dart';
 import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:almasry_2/core/constants/app_sizes.dart';
@@ -31,7 +34,7 @@ import 'view_model/OtpVerificationArgs.dart';
 
 part 'view/login_screen.dart';
 part 'view/register_screen.dart';
-part 'view_model/auth_cubit.dart';
+part 'view_model/auth_view_model.dart';
 part 'widgets/login_header.dart';
 part 'widgets/login_language_switch.dart';
 part 'widgets/login_phone_form.dart';
@@ -39,7 +42,7 @@ part 'widgets/login_regular_form.dart';
 part 'widgets/login_register_form.dart';
 part 'widgets/login_password_rules.dart';
 part 'widgets/login_underline_field.dart';
-part 'view_model/auth_state.dart';
+part 'view/auth_date.dart';
 part 'view/otp_verification_screen.dart';
 part 'widgets/login_otp_pin_fields.dart';
 part 'widgets/login_otp_verify_button.dart';

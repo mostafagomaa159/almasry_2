@@ -1,8 +1,8 @@
 part of '../auth_imports.dart';
 
 class RegularLoginForm extends StatelessWidget {
-  final AuthState state;
-  final AuthCubit authCubit;
+  final AuthData  state;
+  final AuthViewModel authCubit;
   final TextEditingController emailOrPhoneController;
   final TextEditingController passwordController;
   final FocusNode emailOrPhoneFocusNode;

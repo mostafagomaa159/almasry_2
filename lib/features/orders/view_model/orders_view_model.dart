@@ -1,29 +1,26 @@
 part of '../orders_imports.dart';
 
 class OrdersViewModel {
-  OrdersViewModel(this._apiService);
+
 
   /// Init
-  Future<void> init({
-    required String email,
-  }) async {
+  Future<void> init({required String email}) async {
     await _ordersApi(email);
   }
 
   /// Services
-  final ApiService _apiService;
+  final ApiService _apiService=sl<ApiService>();
 
   /// Get Orders
   final GenericCubit<List<OrderResponse>> ordersCubit =
-  GenericCubit<List<OrderResponse>>([]);
+      GenericCubit<List<OrderResponse>>([]);
 
   int _page = 1;
   bool _isFetching = false;
   int? _totalItems;
 
   bool get canFetchMoreItems =>
-      _totalItems == null ||
-          ordersCubit.state.data.length < (_totalItems ?? 0);
+      _totalItems == null || ordersCubit.state.data.length < (_totalItems ?? 0);
 
   /// Api Methods
   Future<void> _ordersApi(String email) async {
@@ -34,16 +31,12 @@ class OrdersViewModel {
     try {
       final decodedEmail = Uri.decodeComponent(email);
 
-      final request = OrdersRequest(
-        email: decodedEmail,
-        currentPage: _page,
-      );
+      final request = OrdersRequest(email: decodedEmail, currentPage: _page);
 
       final response = await _apiService.get(
         endPoint: request.endPoint,
         queryParameters: request.toJson(),
       );
-
 
       final data = response.data;
 
@@ -54,14 +47,10 @@ class OrdersViewModel {
       final list = items.map(OrderResponse.fromJson).toList();
 
       if (data is Map<String, dynamic>) {
-        _totalItems =
-            int.tryParse(data['total_count']?.toString() ?? '') ?? 0;
+        _totalItems = int.tryParse(data['total_count']?.toString() ?? '') ?? 0;
       }
 
-      ordersCubit.onUpdateData([
-        ...ordersCubit.state.data,
-        ...list,
-      ]);
+      ordersCubit.onUpdateData([...ordersCubit.state.data, ...list]);
 
       _page++;
     } catch (e) {
@@ -72,8 +61,5 @@ class OrdersViewModel {
     }
   }
 
-  /// Dispose
-  void dispose() {
-    ordersCubit.close();
-  }
+
 }

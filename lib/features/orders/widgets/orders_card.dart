@@ -1,13 +1,9 @@
 part of '../orders_imports.dart';
 
-
 class OrderCard extends StatelessWidget {
   final OrderResponse order;
 
-  const OrderCard({
-    super.key,
-    required this.order,
-  });
+  const OrderCard({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +44,7 @@ class OrderCard extends StatelessWidget {
           SizedBox(height: 10.h),
           Text(
             order.createdAt,
-            style: TextStyle(
-              fontSize: 13.sp,
-              color: Colors.grey.shade600,
-            ),
+            style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
           ),
           SizedBox(height: 12.h),
           if (firstItem != null)
@@ -68,11 +61,11 @@ class OrderCard extends StatelessWidget {
                   child: firstItem.productImage.isEmpty
                       ? const Icon(Icons.image_not_supported_outlined)
                       : Image.network(
-                    firstItem.productImage,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) =>
-                    const Icon(Icons.image_not_supported_outlined),
-                  ),
+                          firstItem.productImage,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) =>
+                              const Icon(Icons.image_not_supported_outlined),
+                        ),
                 ),
                 SizedBox(width: 12.w),
                 Expanded(
@@ -125,7 +118,6 @@ class OrderCard extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-
                 backgroundColor: AppColors.primaryRed,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(

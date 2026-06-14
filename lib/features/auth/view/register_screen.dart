@@ -52,8 +52,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
+  final AuthViewModel viewModel = sl<AuthViewModel>();
+
   void _clearRegisterErrors() {
-    context.read<AuthCubit>().clearRegisterValidationErrors();
+    viewModel.clearRegisterValidationErrors();
   }
 
   Future<void> _toggleLanguage() async {
@@ -79,7 +81,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final String? emailError = Validators.validateEmail(email);
     final String? passwordError = Validators.validateStrongPassword(password);
 
-    context.read<AuthCubit>().setRegisterValidationErrors(
+    viewModel.setRegisterValidationErrors(
       firstNameError: firstNameError,
       lastNameError: lastNameError,
       phoneError: phoneError,
@@ -112,7 +114,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    await context.read<AuthCubit>().register();
+    await viewModel.register();
 
     if (!mounted) return;
 
@@ -137,9 +139,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     final bool isArabic = context.locale.languageCode == 'ar';
 
-    return BlocBuilder<AuthCubit, AuthState>(
+    return BlocBuilder<GenericCubit<AuthData>, GenericState<AuthData>>(
       builder: (context, state) {
-        final AuthCubit authCubit = context.read<AuthCubit>();
+        final data = state.data;
 
         return Scaffold(
           body: SafeArea(
@@ -161,8 +163,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         SizedBox(height: 8.h),
                         RegisterForm(
-                          state: state,
-                          authCubit: authCubit,
+                          state: data,
+                          authCubit: viewModel,
                           firstNameController: firstNameController,
                           lastNameController: lastNameController,
                           phoneController: phoneController,

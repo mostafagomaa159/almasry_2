@@ -1,3 +1,4 @@
+import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
 import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/localization/app_locale.dart';
 import 'package:almasry_2/core/routing/app_router.dart';
@@ -32,11 +33,13 @@ class BlinkApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authViewModel = sl<AuthViewModel>();
+
     return MultiBlocProvider(
       providers: [
         BlocProvider<StartupCubit>(create: (_) => StartupCubit()),
-        BlocProvider<AuthCubit>(
-          create: (_) => sl<AuthCubit>(),
+        BlocProvider<GenericCubit<AuthData>>.value(
+          value: authViewModel.authCubit,
         ),
         BlocProvider<FavoritesCubit>(
           create: (_) => FavoritesCubit()..loadFavorites(),

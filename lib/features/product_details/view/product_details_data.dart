@@ -1,19 +1,20 @@
 part of '../product_details_imports.dart';
 
-class ProductDetailsState extends Equatable {
+
+class ProductDetailsData extends Equatable {
   final bool isLoading;
   final ProductResponse? product;
   final String? errorMessage;
   final int quantity;
 
-  const ProductDetailsState({
+  const ProductDetailsData({
     this.isLoading = false,
     this.product,
     this.errorMessage,
     this.quantity = 1,
   });
 
-  ProductDetailsState copyWith({
+  ProductDetailsData copyWith({
     bool? isLoading,
     ProductResponse? product,
     String? errorMessage,
@@ -21,12 +22,10 @@ class ProductDetailsState extends Equatable {
     bool clearProduct = false,
     bool clearErrorMessage = false,
   }) {
-    return ProductDetailsState(
+    return ProductDetailsData(
       isLoading: isLoading ?? this.isLoading,
       product: clearProduct ? null : (product ?? this.product),
-      errorMessage: clearErrorMessage
-          ? null
-          : (errorMessage ?? this.errorMessage),
+      errorMessage: clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
       quantity: quantity ?? this.quantity,
     );
   }

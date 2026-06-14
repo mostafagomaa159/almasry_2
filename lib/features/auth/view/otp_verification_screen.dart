@@ -27,6 +27,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     super.dispose();
   }
 
+  final AuthViewModel viewModel = sl<AuthViewModel>();
+
   String _maskPhone(String phone) {
     final cleaned = phone.replaceAll(' ', '');
     if (cleaned.length < 4) return phone;
@@ -41,10 +43,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
     final otp = otpController.text.trim();
 
-    final success = await context.read<AuthCubit>().verifyOtpCode(otp);
+    final success = await viewModel.verifyOtpCode(otp);
 
-    if (!mounted) return;
-    if (!success) return;
+    if (!mounted || !success) return;
 
     context.go(
       AppRoutes.home,
@@ -58,10 +59,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   Future<void> _resendCode() async {
     FocusScope.of(context).unfocus();
 
-    final success = await context.read<AuthCubit>().resendVerificationCode();
+    final success = await viewModel.resendVerificationCode();
 
-    if (!mounted) return;
-    if (!success) return;
+    if (!mounted || !success) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -74,11 +74,13 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   Widget build(BuildContext context) {
     final maskedPhone = _maskPhone(widget.args.phone);
 
-    return BlocBuilder<AuthCubit, AuthState>(
+    return BlocBuilder<GenericCubit<AuthData>, GenericState<AuthData>>(
       builder: (context, state) {
+        final data = state.data;
+
         final bool isVerifyEnabled =
             otpController.text.trim().length == 5 &&
-                !state.isOtpVerificationLoading;
+                !data.isOtpVerificationLoading;
 
         return Scaffold(
           backgroundColor: Colors.white,
@@ -89,7 +91,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   showBackButton: true,
                   onBackPressed: () => context.pop(),
                 ),
-
                 Expanded(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -128,7 +129,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                           controller: otpController,
                           length: 5,
                           keyboardType: TextInputType.number,
-                          forceErrorState: state.otpError != null && state.otpError!.isNotEmpty,
+                          forceErrorState: data.otpError != null &&
+                              data.otpError!.isNotEmpty,
                           onChanged: (_) => setState(() {}),
                           defaultPinTheme: PinTheme(
                             width: 58,
@@ -162,7 +164,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                               ),
                             ),
                           ),
-                          errorPinTheme: PinTheme (
+                          errorPinTheme: PinTheme(
                             width: 58,
                             height: 68,
                             textStyle: const TextStyle(
@@ -179,11 +181,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                             ),
                           ),
                         ),
-                        if (state.otpError != null &&
-                            state.otpError!.isNotEmpty) ...[
+                        if (data.otpError != null &&
+                            data.otpError!.isNotEmpty) ...[
                           const SizedBox(height: 12),
                           Text(
-                            state.otpError!,
+                            data.otpError!,
                             style: const TextStyle(
                               color: Colors.red,
                               fontSize: 13,
@@ -191,21 +193,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                             ),
                           ),
                         ],
-
-                        if (state.otpError != null &&
-                            state.otpError!.isNotEmpty) ...[
-                          const SizedBox(height: 12),
-                          Text(
-                            state.otpError!,
-                            style: const TextStyle(
-                              color: Colors.red,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                        if (state.authErrorMessage != null &&
-                            state.authErrorMessage!.isNotEmpty) ...[
+                        if (data.authErrorMessage != null &&
+                            data.authErrorMessage!.isNotEmpty) ...[
                           const SizedBox(height: 14),
                           Container(
                             width: double.infinity,
@@ -218,7 +207,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                               ),
                             ),
                             child: Text(
-                              state.authErrorMessage!,
+                              data.authErrorMessage!,
                               style: const TextStyle(
                                 color: Color(0xFFB42318),
                                 fontSize: 13,
@@ -228,16 +217,16 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         ],
                         const SizedBox(height: 32),
                         OtpVerifyButton(
-                          isLoading: state.isOtpVerificationLoading,
+                          isLoading: data.isOtpVerificationLoading,
                           isEnabled: isVerifyEnabled,
                           onPressed: _verifyOtp,
                         ),
                         const SizedBox(height: 36),
                         Center(
                           child: Text(
-                            state.canResendOtp
+                            data.canResendOtp
                                 ? 'Resend available now'
-                                : 'Resend available yet ${state.otpCountdownSeconds} seconds',
+                                : 'Resend available yet ${data.otpCountdownSeconds} seconds',
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               fontSize: 16,
@@ -249,14 +238,14 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         const SizedBox(height: 8),
                         Center(
                           child: TextButton(
-                            onPressed: state.canResendOtp &&
-                                !state.isPhoneAuthLoading
+                            onPressed: data.canResendOtp &&
+                                !data.isPhoneAuthLoading
                                 ? _resendCode
                                 : null,
                             style: TextButton.styleFrom(
                               foregroundColor: const Color(0xFFD62828),
                             ),
-                            child: state.isPhoneAuthLoading
+                            child: data.isPhoneAuthLoading
                                 ? const SizedBox(
                               height: 18,
                               width: 18,
@@ -269,7 +258,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w700,
-                                color: state.canResendOtp
+                                color: data.canResendOtp
                                     ? const Color(0xFFD62828)
                                     : const Color(0xFFBDBDBD),
                               ),

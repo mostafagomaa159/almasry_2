@@ -1,8 +1,12 @@
 part of '../my_order_imports.dart';
-class OrderDetailsCubit extends Cubit<OrderDetailsState> {
-  final ApiService _apiService;
 
-  OrderDetailsCubit(this._apiService) : super(const OrderDetailsState());
+class OrderDetailsViewModel {
+  /// Services
+  final ApiService _apiService = sl<ApiService>();
+
+  /// Cubit
+  final GenericCubit<OrderDetailsData> orderDetailsCubit =
+  GenericCubit<OrderDetailsData>(const OrderDetailsData());
 
   String _extractApiMessage(DioException e) {
     final data = e.response?.data;
@@ -17,12 +21,18 @@ class OrderDetailsCubit extends Cubit<OrderDetailsState> {
     return e.message ?? 'Something went wrong';
   }
 
+  Future<void> init({required String orderId}) async {
+    await loadOrderDetails(orderId: orderId);
+  }
+
   Future<void> loadOrderDetails({
     required String orderId,
   }) async {
-    emit(
-      state.copyWith(
-        status: OrderDetailsStatus.loading,
+    final current = orderDetailsCubit.state.data;
+
+    orderDetailsCubit.onUpdateData(
+      current.copyWith(
+        isLoading: true,
         clearErrorMessage: true,
       ),
     );
@@ -35,35 +45,38 @@ class OrderDetailsCubit extends Cubit<OrderDetailsState> {
       final data = response.data;
 
       if (data is Map<String, dynamic>) {
-        emit(
-          state.copyWith(
-            status: OrderDetailsStatus.success,
+        orderDetailsCubit.onUpdateData(
+          orderDetailsCubit.state.data.copyWith(
+            isLoading: false,
             order: OrderModel.fromJson(data),
+            clearErrorMessage: true,
           ),
         );
         return;
       }
 
-      emit(
-        state.copyWith(
-          status: OrderDetailsStatus.error,
+      orderDetailsCubit.onUpdateData(
+        orderDetailsCubit.state.data.copyWith(
+          isLoading: false,
           errorMessage: 'Invalid response format',
         ),
       );
     } on DioException catch (e) {
-      emit(
-        state.copyWith(
-          status: OrderDetailsStatus.error,
+      orderDetailsCubit.onUpdateData(
+        orderDetailsCubit.state.data.copyWith(
+          isLoading: false,
           errorMessage: _extractApiMessage(e),
         ),
       );
     } catch (e) {
-      emit(
-        state.copyWith(
-          status: OrderDetailsStatus.error,
+      orderDetailsCubit.onUpdateData(
+        orderDetailsCubit.state.data.copyWith(
+          isLoading: false,
           errorMessage: e.toString(),
         ),
       );
     }
   }
+
+
 }

@@ -1,6 +1,6 @@
 part of '../auth_imports.dart';
 
-class AuthState {
+class AuthData {
   final bool isPasswordHidden;
   final bool isConfirmPasswordHidden;
   final bool rememberMe;
@@ -29,7 +29,7 @@ class AuthState {
   final int otpCountdownSeconds;
   final bool canResendOtp;
 
-  const AuthState({
+  const AuthData({
     this.isPasswordHidden = true,
     this.isConfirmPasswordHidden = true,
     this.rememberMe = false,
@@ -54,7 +54,7 @@ class AuthState {
     this.canResendOtp = false,
   });
 
-  AuthState copyWith({
+  AuthData copyWith({
     bool? isPasswordHidden,
     bool? isConfirmPasswordHidden,
     bool? rememberMe,
@@ -90,7 +90,7 @@ class AuthState {
     bool clearVerificationPhone = false,
     bool clearVerificationCode = false,
   }) {
-    return AuthState(
+    return AuthData(
       isPasswordHidden: isPasswordHidden ?? this.isPasswordHidden,
       isConfirmPasswordHidden:
       isConfirmPasswordHidden ?? this.isConfirmPasswordHidden,

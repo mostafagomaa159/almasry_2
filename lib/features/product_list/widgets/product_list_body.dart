@@ -1,30 +1,36 @@
 part of '../product_list_imports.dart';
+
 class _ProductListBody extends StatelessWidget {
   final ScrollController scrollController;
+  final ProductListViewModel viewModel;
 
   const _ProductListBody({
     required this.scrollController,
+    required this.viewModel,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProductListCubit, ProductListState>(
+    return BlocBuilder<
+        GenericCubit<ProductListData>,
+        GenericState<ProductListData>>(
+      bloc: viewModel.productListCubit,
       builder: (context, state) {
-        if (state.status == ProductListStatus.loading &&
-            state.products.isEmpty) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+        final data = state.data;
+
+        if (data.status == ProductListStatus.loading &&
+            data.products.isEmpty) {
+          return const _ProductListLoading();
         }
 
-        if (state.status == ProductListStatus.error &&
-            state.products.isEmpty) {
+        if (data.status == ProductListStatus.error &&
+            data.products.isEmpty) {
           return Center(
-            child: Text(state.errorMessage),
+            child: Text(data.errorMessage),
           );
         }
 
-        if (state.products.isEmpty) {
+        if (data.products.isEmpty) {
           return const Center(
             child: Text('No products found'),
           );
@@ -39,35 +45,32 @@ class _ProductListBody extends StatelessWidget {
             mainAxisSpacing: 12.h,
             childAspectRatio: 0.58,
           ),
-          itemCount: state.products.length + (state.isLoadingMore ? 1 : 0),
+          itemCount: data.products.length + (data.isLoadingMore ? 1 : 0),
           itemBuilder: (context, index) {
-            if (index >= state.products.length) {
+            if (index >= data.products.length) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
             }
 
-            final product = state.products[index];
+            final product = data.products[index];
             final sku = product.sku ?? '';
-            final quantity = state.quantities[sku] ?? 1;
+            final quantity = data.quantities[sku] ?? 1;
 
             return ProductListItem(
               product: product,
-              quantity: state.quantities[sku] ?? 1,
+              quantity: quantity,
               onIncrement: sku.isEmpty
                   ? () {}
-                  : () => context.read<ProductListCubit>().incrementQuantity(sku),
+                  : () => viewModel.incrementQuantity(sku),
               onDecrement: sku.isEmpty
                   ? () {}
-                  : () => context.read<ProductListCubit>().decrementQuantity(sku),
+                  : () => viewModel.decrementQuantity(sku),
+              onTap: () => viewModel.navToProductDetails(context, product),
             );
-
-
           },
         );
       },
     );
   }
 }
-
-

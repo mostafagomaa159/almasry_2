@@ -18,17 +18,11 @@ class _OrdersViewState extends State<OrdersView> {
   @override
   void initState() {
     super.initState();
-    _viewModel = sl<OrdersViewModel>();
+    _viewModel  =OrdersViewModel();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _viewModel.init(email: widget.customerEmail);
     });
-  }
-
-  @override
-  void dispose() {
-    _viewModel.dispose();
-    super.dispose();
   }
 
   @override

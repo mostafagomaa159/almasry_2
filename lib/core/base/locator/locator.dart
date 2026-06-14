@@ -16,28 +16,30 @@ Future<void> setupServiceLocator() async {
         () => ApiService(),
   );
 
-  sl.registerFactory<HomeCubit>(
-        () => HomeCubit(sl<ApiService>()),
-  );
+  // sl.registerFactory<HomeCubit>(
+  //       () => HomeCubit(sl<ApiService>()),
+  // );
 
-  sl.registerFactory<ProductDetailsCubit>(
-        () => ProductDetailsCubit(sl<ApiService>()),
-  );
+  // sl.registerFactory<ProductDetailsCubit>(
+  //       () => ProductDetailsCubit(sl<ApiService>()),
+  // );
+  sl.registerLazySingleton<AuthViewModel>(() => AuthViewModel());
 
-  sl.registerFactory<AuthCubit>(
-        () => AuthCubit(sl<ApiService>()),
-  );
+  // sl.registerFactory<AuthCubit>(
+  //       () => AuthCubit(sl<ApiService>()),
+  // );
+  //
+  // sl.registerFactory<ProductListCubit>(
+  //       () => ProductListCubit(sl<ApiService>()),
+  // );
+  sl.registerLazySingleton<OrdersViewModel>(() => OrdersViewModel());
 
-  sl.registerFactory<ProductListCubit>(
-        () => ProductListCubit(sl<ApiService>()),
-  );
+  // sl.registerFactory<OrdersViewModel>(
+  //       () => OrdersViewModel(sl<ApiService>()),
+  // );
 
-  sl.registerFactory<OrdersViewModel>(
-        () => OrdersViewModel(sl<ApiService>()),
-  );
-
-  sl.registerFactory<OrderDetailsCubit>(
-        () => OrderDetailsCubit(sl<ApiService>()),
-  );
+  // sl.registerFactory<OrderDetailsCubit>(
+  //       () => OrderDetailsCubit(sl<ApiService>()),
+  // );
 
 }

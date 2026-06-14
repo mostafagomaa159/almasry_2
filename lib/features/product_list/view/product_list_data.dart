@@ -7,7 +7,7 @@ enum ProductListStatus {
   error,
 }
 
-class ProductListState extends Equatable {
+class ProductListData extends Equatable {
   final ProductListStatus status;
   final List<ProductResponse> products;
   final String errorMessage;
@@ -19,7 +19,7 @@ class ProductListState extends Equatable {
   final int totalCount;
   final Map<String, int> quantities;
 
-  const ProductListState({
+  const ProductListData({
     this.status = ProductListStatus.initial,
     this.products = const [],
     this.errorMessage = '',
@@ -32,7 +32,7 @@ class ProductListState extends Equatable {
     this.quantities = const {},
   });
 
-  ProductListState copyWith({
+  ProductListData copyWith({
     ProductListStatus? status,
     List<ProductResponse>? products,
     String? errorMessage,
@@ -47,7 +47,7 @@ class ProductListState extends Equatable {
     bool resetProducts = false,
     bool resetQuantities = false,
   }) {
-    return ProductListState(
+    return ProductListData(
       status: status ?? this.status,
       products: resetProducts ? [] : (products ?? this.products),
       errorMessage: clearErrorMessage ? '' : (errorMessage ?? this.errorMessage),

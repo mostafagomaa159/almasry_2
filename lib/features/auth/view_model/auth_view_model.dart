@@ -1,32 +1,41 @@
 part of '../auth_imports.dart';
 
-class AuthCubit extends Cubit<AuthState> {
-  final ApiService _apiService;
+class AuthViewModel {
+  final ApiService _apiService = sl<ApiService>();
 
-  AuthCubit(this._apiService) : super(const AuthState());
+  final GenericCubit<AuthData> authCubit =
+  GenericCubit<AuthData>(const AuthData());
 
   void togglePasswordVisibility() {
-    emit(state.copyWith(isPasswordHidden: !state.isPasswordHidden));
+    authCubit.onUpdateData(
+      authCubit.state.data.copyWith(
+        isPasswordHidden: !authCubit.state.data.isPasswordHidden,
+      ),
+    );
   }
 
   void toggleConfirmPasswordVisibility() {
-    emit(
-      state.copyWith(
-        isConfirmPasswordHidden: !state.isConfirmPasswordHidden,
+    authCubit.onUpdateData(
+      authCubit.state.data.copyWith(
+        isConfirmPasswordHidden: !authCubit.state.data.isConfirmPasswordHidden,
       ),
     );
   }
 
   void toggleRememberMe() {
-    emit(state.copyWith(rememberMe: !state.rememberMe));
+    authCubit.onUpdateData(
+      authCubit.state.data.copyWith(
+        rememberMe: !authCubit.state.data.rememberMe,
+      ),
+    );
   }
 
   void setLoginValidationErrors({
     String? emailOrPhoneError,
     String? passwordError,
   }) {
-    emit(
-      state.copyWith(
+    authCubit.onUpdateData(
+      authCubit.state.data.copyWith(
         emailOrPhoneError: emailOrPhoneError,
         passwordError: passwordError,
         clearNameError: true,
@@ -36,8 +45,8 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void clearLoginValidationErrors() {
-    emit(
-      state.copyWith(
+    authCubit.onUpdateData(
+      authCubit.state.data.copyWith(
         clearEmailOrPhoneError: true,
         clearPasswordError: true,
         clearAuthErrorMessage: true,
@@ -52,8 +61,8 @@ class AuthCubit extends Cubit<AuthState> {
     String? emailError,
     String? passwordError,
   }) {
-    emit(
-      state.copyWith(
+    authCubit.onUpdateData(
+      authCubit.state.data.copyWith(
         firstNameError: firstNameError,
         lastNameError: lastNameError,
         phoneError: phoneError,
@@ -64,8 +73,8 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void clearRegisterValidationErrors() {
-    emit(
-      state.copyWith(
+    authCubit.onUpdateData(
+      authCubit.state.data.copyWith(
         clearFirstNameError: true,
         clearLastNameError: true,
         clearPhoneError: true,
@@ -77,8 +86,8 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void clearValidationErrors() {
-    emit(
-      state.copyWith(
+    authCubit.onUpdateData(
+      authCubit.state.data.copyWith(
         clearNameError: true,
         clearEmailOrPhoneError: true,
         clearPasswordError: true,
@@ -94,8 +103,8 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void setVerificationPhone(String phone) {
-    emit(
-      state.copyWith(
+    authCubit.onUpdateData(
+      authCubit.state.data.copyWith(
         verificationPhone: phone,
         isPhoneAuthSuccess: true,
         clearOtpError: true,
@@ -105,8 +114,8 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void clearOtpState() {
-    emit(
-      state.copyWith(
+    authCubit.onUpdateData(
+      authCubit.state.data.copyWith(
         isPhoneAuthLoading: false,
         isOtpVerificationLoading: false,
         isPhoneAuthSuccess: false,
@@ -122,8 +131,8 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void updateOtpCountdown(int seconds) {
-    emit(
-      state.copyWith(
+    authCubit.onUpdateData(
+      authCubit.state.data.copyWith(
         otpCountdownSeconds: seconds,
         canResendOtp: seconds == 0,
       ),
@@ -160,21 +169,12 @@ class AuthCubit extends Cubit<AuthState> {
     return e.message ?? 'حدث خطأ غير متوقع';
   }
 
-  // Options _authOptions() {
-  //   return Options(
-  //     headers: {
-  //       'Authorization': 'Bearer ${ApiConstants.token}',
-  //     },
-  //   );
-  // }
-
   Future<Map<String, dynamic>> _forgetPassword({
     required ForgetPasswordRequest request,
   }) async {
     final response = await _apiService.post(
       endPoint: ApiConstants.forgetPassword,
       data: request.toJson(),
-    //  options: _authOptions(),
     );
 
     return Map<String, dynamic>.from(response.data as Map);
@@ -186,7 +186,6 @@ class AuthCubit extends Cubit<AuthState> {
     final response = await _apiService.post(
       endPoint: ApiConstants.activateAccount,
       data: request.toJson(),
-     // options: _authOptions(),
     );
 
     return ActivateAccountResponse.fromJson(
@@ -200,7 +199,6 @@ class AuthCubit extends Cubit<AuthState> {
     final response = await _apiService.post(
       endPoint: ApiConstants.authAfterOtp,
       data: request.toJson(),
-     // options: _authOptions(),
     );
 
     return AuthAfterOtpResponse.fromJson(
@@ -209,14 +207,24 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> login() async {
-    emit(state.copyWith(isLoading: true, clearAuthErrorMessage: true));
+    authCubit.onUpdateData(
+      authCubit.state.data.copyWith(
+        isLoading: true,
+        clearAuthErrorMessage: true,
+      ),
+    );
 
     try {
       await Future.delayed(const Duration(seconds: 1));
-      emit(state.copyWith(isLoading: false));
+
+      authCubit.onUpdateData(
+        authCubit.state.data.copyWith(
+          isLoading: false,
+        ),
+      );
     } catch (e) {
-      emit(
-        state.copyWith(
+      authCubit.onUpdateData(
+        authCubit.state.data.copyWith(
           isLoading: false,
           authErrorMessage: e.toString(),
         ),
@@ -225,14 +233,24 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> register() async {
-    emit(state.copyWith(isLoading: true, clearAuthErrorMessage: true));
+    authCubit.onUpdateData(
+      authCubit.state.data.copyWith(
+        isLoading: true,
+        clearAuthErrorMessage: true,
+      ),
+    );
 
     try {
       await Future.delayed(const Duration(seconds: 1));
-      emit(state.copyWith(isLoading: false));
+
+      authCubit.onUpdateData(
+        authCubit.state.data.copyWith(
+          isLoading: false,
+        ),
+      );
     } catch (e) {
-      emit(
-        state.copyWith(
+      authCubit.onUpdateData(
+        authCubit.state.data.copyWith(
           isLoading: false,
           authErrorMessage: e.toString(),
         ),
@@ -241,8 +259,8 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<bool> startPhoneAuth(String phone) async {
-    emit(
-      state.copyWith(
+    authCubit.onUpdateData(
+      authCubit.state.data.copyWith(
         isPhoneAuthLoading: true,
         isPhoneAuthSuccess: false,
         isOtpVerified: false,
@@ -261,8 +279,8 @@ class AuthCubit extends Cubit<AuthState> {
       final code = (response['code'] ?? '').toString();
 
       if (status != 'success' || code.isEmpty) {
-        emit(
-          state.copyWith(
+        authCubit.onUpdateData(
+          authCubit.state.data.copyWith(
             isPhoneAuthLoading: false,
             isPhoneAuthSuccess: false,
             authErrorMessage:
@@ -272,8 +290,8 @@ class AuthCubit extends Cubit<AuthState> {
         return false;
       }
 
-      emit(
-        state.copyWith(
+      authCubit.onUpdateData(
+        authCubit.state.data.copyWith(
           isPhoneAuthLoading: false,
           isPhoneAuthSuccess: true,
           verificationPhone: normalizedPhone,
@@ -287,8 +305,8 @@ class AuthCubit extends Cubit<AuthState> {
 
       return true;
     } on DioException catch (e) {
-      emit(
-        state.copyWith(
+      authCubit.onUpdateData(
+        authCubit.state.data.copyWith(
           isPhoneAuthLoading: false,
           isPhoneAuthSuccess: false,
           authErrorMessage: _extractApiMessage(e),
@@ -296,8 +314,8 @@ class AuthCubit extends Cubit<AuthState> {
       );
       return false;
     } catch (e) {
-      emit(
-        state.copyWith(
+      authCubit.onUpdateData(
+        authCubit.state.data.copyWith(
           isPhoneAuthLoading: false,
           isPhoneAuthSuccess: false,
           authErrorMessage: e.toString(),
@@ -315,16 +333,20 @@ class AuthCubit extends Cubit<AuthState> {
     final trimmedOtp = otp.trim();
 
     if (trimmedOtp.length != 5) {
-      emit(state.copyWith(otpError: 'كود التحقق يجب أن يكون 5 أرقام'));
+      authCubit.onUpdateData(
+        authCubit.state.data.copyWith(
+          otpError: 'كود التحقق يجب أن يكون 5 أرقام',
+        ),
+      );
       return false;
     }
 
-    final phone = state.verificationPhone;
-    final savedCode = state.verificationCode;
+    final phone = authCubit.state.data.verificationPhone;
+    final savedCode = authCubit.state.data.verificationCode;
 
     if (phone == null || phone.isEmpty) {
-      emit(
-        state.copyWith(
+      authCubit.onUpdateData(
+        authCubit.state.data.copyWith(
           authErrorMessage: 'رقم الهاتف غير متوفر لإتمام التحقق',
         ),
       );
@@ -332,8 +354,8 @@ class AuthCubit extends Cubit<AuthState> {
     }
 
     if (savedCode == null || savedCode.isEmpty) {
-      emit(
-        state.copyWith(
+      authCubit.onUpdateData(
+        authCubit.state.data.copyWith(
           authErrorMessage: 'كود التحقق غير متوفر، أعد إرسال الكود مرة أخرى',
         ),
       );
@@ -341,8 +363,8 @@ class AuthCubit extends Cubit<AuthState> {
     }
 
     if (trimmedOtp != savedCode) {
-      emit(
-        state.copyWith(
+      authCubit.onUpdateData(
+        authCubit.state.data.copyWith(
           otpError: 'كود التحقق غير صحيح',
           clearAuthErrorMessage: true,
         ),
@@ -350,8 +372,8 @@ class AuthCubit extends Cubit<AuthState> {
       return false;
     }
 
-    emit(
-      state.copyWith(
+    authCubit.onUpdateData(
+      authCubit.state.data.copyWith(
         isOtpVerificationLoading: true,
         isOtpVerified: false,
         clearOtpError: true,
@@ -369,8 +391,8 @@ class AuthCubit extends Cubit<AuthState> {
       );
 
       if ((activateResponse.status ?? '').toLowerCase() != 'success') {
-        emit(
-          state.copyWith(
+        authCubit.onUpdateData(
+          authCubit.state.data.copyWith(
             isOtpVerificationLoading: false,
             isOtpVerified: false,
             authErrorMessage: activateResponse.message ?? 'فشل تفعيل الحساب',
@@ -386,8 +408,8 @@ class AuthCubit extends Cubit<AuthState> {
       );
 
       if ((loginResponse.token ?? '').isEmpty) {
-        emit(
-          state.copyWith(
+        authCubit.onUpdateData(
+          authCubit.state.data.copyWith(
             isOtpVerificationLoading: false,
             isOtpVerified: false,
             authErrorMessage: 'فشل تسجيل الدخول بعد التحقق',
@@ -396,8 +418,8 @@ class AuthCubit extends Cubit<AuthState> {
         return false;
       }
 
-      emit(
-        state.copyWith(
+      authCubit.onUpdateData(
+        authCubit.state.data.copyWith(
           isOtpVerificationLoading: false,
           isOtpVerified: true,
           clearOtpError: true,
@@ -407,8 +429,8 @@ class AuthCubit extends Cubit<AuthState> {
 
       return true;
     } on DioException catch (e) {
-      emit(
-        state.copyWith(
+      authCubit.onUpdateData(
+        authCubit.state.data.copyWith(
           isOtpVerificationLoading: false,
           isOtpVerified: false,
           authErrorMessage: _extractApiMessage(e),
@@ -416,8 +438,8 @@ class AuthCubit extends Cubit<AuthState> {
       );
       return false;
     } catch (e) {
-      emit(
-        state.copyWith(
+      authCubit.onUpdateData(
+        authCubit.state.data.copyWith(
           isOtpVerificationLoading: false,
           isOtpVerified: false,
           authErrorMessage: e.toString(),
@@ -428,11 +450,11 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<bool> resendVerificationCode() async {
-    final phone = state.verificationPhone;
+    final phone = authCubit.state.data.verificationPhone;
 
     if (phone == null || phone.isEmpty) {
-      emit(
-        state.copyWith(
+      authCubit.onUpdateData(
+        authCubit.state.data.copyWith(
           authErrorMessage: 'رقم الهاتف غير متوفر لإعادة الإرسال',
         ),
       );
@@ -441,4 +463,5 @@ class AuthCubit extends Cubit<AuthState> {
 
     return startPhoneAuth(phone);
   }
+
 }

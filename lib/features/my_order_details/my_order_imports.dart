@@ -1,3 +1,5 @@
+import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
+import 'package:almasry_2/core/base/bloc/generic_state.dart';
 import 'package:almasry_2/core/constants/app_api.dart';
 import 'package:almasry_2/core/services/api_services.dart';
 import 'package:almasry_2/features/orders/orders_imports.dart';
@@ -11,6 +13,6 @@ import 'package:almasry_2/core/base/locator/locator.dart';
 part 'widgets/order_address_section.dart';
 part 'widgets/order_item_tile.dart';
 part 'widgets/order_status_chip.dart';
-part 'view_model/order_details_state.dart';
-part 'view_model/order_details_cubit.dart';
+part 'view_model/order_details_view_model.dart';
 part 'view/order_details_view.dart';
+part 'view/order_details_data.dart';

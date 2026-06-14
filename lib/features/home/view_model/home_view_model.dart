@@ -1,34 +1,34 @@
 part of '../home_imports.dart';
 
-class HomeCubit extends Cubit<HomeState> {
-  final ApiService _apiService;
+class HomeViewModel {
+  /// Services
+  final ApiService _apiService = sl<ApiService>();
 
-  HomeCubit(this._apiService) : super(const HomeState());
+  /// Cubit
+  final GenericCubit<HomeData> homeCubit =
+  GenericCubit<HomeData>(const HomeData());
 
   void changeBannerIndex(int index) {
-    emit(state.copyWith(currentBannerIndex: index));
+    homeCubit.onUpdateData(
+      homeCubit.state.data.copyWith(currentBannerIndex: index),
+    );
   }
 
   void changeOfferTab(int index) {
-    emit(state.copyWith(selectedOfferTabIndex: index));
+    homeCubit.onUpdateData(
+      homeCubit.state.data.copyWith(selectedOfferTabIndex: index),
+    );
   }
 
   void changeBottomNavIndex(int index) {
-    emit(state.copyWith(selectedBottomNavIndex: index));
+    homeCubit.onUpdateData(
+      homeCubit.state.data.copyWith(selectedBottomNavIndex: index),
+    );
   }
-  //
-  // Options _authOptions() {
-  //   return Options(
-  //     headers: {
-  //       'Authorization': 'Bearer ${ApiConstants.token}',
-  //     },
-  //   );
-  // }
 
   Future<List<HomeCmsResponse>> _fetchHomeData() async {
     final response = await _apiService.get(
       endPoint: ApiConstants.homeCmsPage,
-      //options: _authOptions(),
     );
 
     final List<dynamic> data = response.data as List<dynamic>;
@@ -50,7 +50,6 @@ class HomeCubit extends Cubit<HomeState> {
 
     final response = await _apiService.get(
       endPoint: url,
-      //options: _authOptions(),
     );
 
     final data = response.data;
@@ -72,21 +71,35 @@ class HomeCubit extends Cubit<HomeState> {
     return [];
   }
 
-  Future<ProductResponse> getProductDetails({
-    required String sku,
-  }) async {
-    final endPoint = '${ApiConstants.products}/$sku';
+  Future<List<ProductResponse>> _getProductsForBlock(
+      HomeMobileBlockResponse? block,
+      ) async {
+    final seeAllQuery = block?.seeAll.trim() ?? '';
 
-    final response = await _apiService.get(
-      endPoint: endPoint,
-     // options: _authOptions(),
-    );
+    if (seeAllQuery.isEmpty) {
+      return [];
+    }
 
-    return ProductResponse.fromJson(response.data as Map<String, dynamic>);
+    try {
+      return await _getSectionProducts(seeAllQuery: seeAllQuery);
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<void> init() async {
+    await getHomeData();
   }
 
   Future<void> getHomeData() async {
-    emit(state.copyWith(status: HomeStatus.loading, errorMessage: ''));
+    final current = homeCubit.state.data;
+
+    homeCubit.onUpdateData(
+      current.copyWith(
+        isLoading: true,
+        clearErrorMessage: true,
+      ),
+    );
 
     try {
       final response = await _fetchHomeData();
@@ -148,15 +161,13 @@ class HomeCubit extends Cubit<HomeState> {
       final bestSellerProducts = await _getProductsForBlock(bestSellerBlock);
       final momBabyProducts = await _getProductsForBlock(momBabyBlock);
       final homeCareProducts = await _getProductsForBlock(homeCareBlock);
-      final feminineCareProducts = await _getProductsForBlock(
-        feminineCareBlock,
-      );
+      final feminineCareProducts = await _getProductsForBlock(feminineCareBlock);
       final menCareProducts = await _getProductsForBlock(menCareBlock);
 
-      emit(
-        state.copyWith(
-          status: HomeStatus.success,
-          errorMessage: '',
+      homeCubit.onUpdateData(
+        homeCubit.state.data.copyWith(
+          isLoading: false,
+          clearErrorMessage: true,
           banners: banners,
           secondaryBanners: secondaryBanners,
           offers: offers,
@@ -177,28 +188,14 @@ class HomeCubit extends Cubit<HomeState> {
         ),
       );
     } catch (e) {
-      emit(
-        state.copyWith(
-          status: HomeStatus.error,
+      homeCubit.onUpdateData(
+        homeCubit.state.data.copyWith(
+          isLoading: false,
           errorMessage: e.toString(),
         ),
       );
     }
   }
 
-  Future<List<ProductResponse>> _getProductsForBlock(
-      HomeMobileBlockResponse? block,
-      ) async {
-    final seeAllQuery = block?.seeAll.trim() ?? '';
 
-    if (seeAllQuery.isEmpty) {
-      return [];
-    }
-
-    try {
-      return await _getSectionProducts(seeAllQuery: seeAllQuery);
-    } catch (e) {
-      return [];
-    }
-  }
 }

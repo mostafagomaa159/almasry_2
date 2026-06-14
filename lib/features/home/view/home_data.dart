@@ -1,19 +1,12 @@
 part of '../home_imports.dart';
 
-enum HomeStatus {
-  initial,
-  loading,
-  success,
-  error,
-}
-
-class HomeState {
+class HomeData {
   final int currentBannerIndex;
   final int selectedOfferTabIndex;
   final int selectedBottomNavIndex;
 
-  final HomeStatus status;
-  final String errorMessage;
+  final bool isLoading;
+  final String? errorMessage;
 
   final List<HomeSliderItemResponse> banners;
   final List<HomeSliderItemResponse> secondaryBanners;
@@ -36,12 +29,12 @@ class HomeState {
   final List<ProductResponse> feminineCareProducts;
   final List<ProductResponse> menCareProducts;
 
-  const HomeState({
+  const HomeData({
     this.currentBannerIndex = 0,
     this.selectedOfferTabIndex = 0,
     this.selectedBottomNavIndex = 3,
-    this.status = HomeStatus.initial,
-    this.errorMessage = '',
+    this.isLoading = false,
+    this.errorMessage,
     this.banners = const [],
     this.secondaryBanners = const [],
     this.offers = const [],
@@ -61,12 +54,13 @@ class HomeState {
     this.menCareProducts = const [],
   });
 
-  HomeState copyWith({
+  HomeData copyWith({
     int? currentBannerIndex,
     int? selectedOfferTabIndex,
     int? selectedBottomNavIndex,
-    HomeStatus? status,
+    bool? isLoading,
     String? errorMessage,
+    bool clearErrorMessage = false,
     List<HomeSliderItemResponse>? banners,
     List<HomeSliderItemResponse>? secondaryBanners,
     List<HomeSubCategoryResponse>? offers,
@@ -85,14 +79,15 @@ class HomeState {
     List<ProductResponse>? feminineCareProducts,
     List<ProductResponse>? menCareProducts,
   }) {
-    return HomeState(
+    return HomeData(
       currentBannerIndex: currentBannerIndex ?? this.currentBannerIndex,
       selectedOfferTabIndex:
       selectedOfferTabIndex ?? this.selectedOfferTabIndex,
       selectedBottomNavIndex:
       selectedBottomNavIndex ?? this.selectedBottomNavIndex,
-      status: status ?? this.status,
-      errorMessage: errorMessage ?? this.errorMessage,
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage:
+      clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
       banners: banners ?? this.banners,
       secondaryBanners: secondaryBanners ?? this.secondaryBanners,
       offers: offers ?? this.offers,

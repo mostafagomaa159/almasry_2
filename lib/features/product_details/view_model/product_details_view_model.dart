@@ -1,18 +1,12 @@
 part of '../product_details_imports.dart';
 
-class ProductDetailsCubit extends Cubit<ProductDetailsState> {
-  final ApiService _apiService;
+class ProductDetailsViewModel {
+  /// Services
+  final ApiService _apiService = sl<ApiService>();
 
-  ProductDetailsCubit(this._apiService)
-      : super(const ProductDetailsState());
-
-  // Options _authOptions() {
-  //   return Options(
-  //     headers: {
-  //       'Authorization': 'Bearer ${ApiConstants.token}',
-  //     },
-  //   );
-  // }
+  /// Cubit
+  final GenericCubit<ProductDetailsData> productDetailsCubit =
+  GenericCubit<ProductDetailsData>(const ProductDetailsData());
 
   String _extractApiMessage(DioException e) {
     final data = e.response?.data;
@@ -41,7 +35,6 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
 
     final response = await _apiService.get(
       endPoint: endPoint,
-   //   options: _authOptions(),
     );
 
     return ProductResponse.fromJson(
@@ -49,9 +42,15 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
     );
   }
 
+  Future<void> init({required String sku}) async {
+    await getProductDetails(sku);
+  }
+
   Future<void> getProductDetails(String sku) async {
-    emit(
-      state.copyWith(
+    final current = productDetailsCubit.state.data;
+
+    productDetailsCubit.onUpdateData(
+      current.copyWith(
         isLoading: true,
         clearErrorMessage: true,
       ),
@@ -60,23 +59,23 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
     try {
       final product = await _fetchProductDetails(sku: sku);
 
-      emit(
-        state.copyWith(
+      productDetailsCubit.onUpdateData(
+        productDetailsCubit.state.data.copyWith(
           isLoading: false,
           product: product,
           clearErrorMessage: true,
         ),
       );
     } on DioException catch (e) {
-      emit(
-        state.copyWith(
+      productDetailsCubit.onUpdateData(
+        productDetailsCubit.state.data.copyWith(
           isLoading: false,
           errorMessage: _extractApiMessage(e),
         ),
       );
     } catch (e) {
-      emit(
-        state.copyWith(
+      productDetailsCubit.onUpdateData(
+        productDetailsCubit.state.data.copyWith(
           isLoading: false,
           errorMessage: e.toString(),
         ),
@@ -85,12 +84,22 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
   }
 
   void incrementQuantity() {
-    emit(state.copyWith(quantity: state.quantity + 1));
+    final current = productDetailsCubit.state.data;
+
+    productDetailsCubit.onUpdateData(
+      current.copyWith(quantity: current.quantity + 1),
+    );
   }
 
   void decrementQuantity() {
-    if (state.quantity > 1) {
-      emit(state.copyWith(quantity: state.quantity - 1));
+    final current = productDetailsCubit.state.data;
+
+    if (current.quantity > 1) {
+      productDetailsCubit.onUpdateData(
+        current.copyWith(quantity: current.quantity - 1),
+      );
     }
   }
+
+
 }

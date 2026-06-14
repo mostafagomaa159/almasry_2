@@ -1,7 +1,7 @@
 part of '../auth_imports.dart';
 
 class PhoneLoginForm extends StatelessWidget {
-  final AuthState state;
+  final AuthData  state;
   final TextEditingController phoneController;
   final FocusNode phoneFocusNode;
   final VoidCallback onSubmit;

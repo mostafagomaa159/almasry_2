@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
+import 'package:almasry_2/core/base/bloc/generic_state.dart';
 import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/constants/app_api.dart';
 import 'package:almasry_2/core/constants/app_colors.dart';
@@ -29,8 +31,7 @@ import '../product_details/view_model/product_details_args.dart';
 import 'package:almasry_2/core/constants/app_images.dart';
 
 part 'view/home_view.dart';
-part 'view_model/home_cubit.dart';
-part 'view_model/home_state.dart';
+part 'view_model/home_view_model.dart';
 
 part 'widgets/home_banner_slider.dart';
 part 'widgets/home_bottom_nav_bar.dart';
@@ -49,5 +50,5 @@ part 'widgets/home_search_bar.dart';
 part 'widgets/home_section_header.dart';
 part 'widgets/home_service_card.dart';
 part 'widgets/home_wide_info_card.dart';
-
+part 'view/home_data.dart';
 

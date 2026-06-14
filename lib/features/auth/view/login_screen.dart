@@ -42,17 +42,19 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  final AuthViewModel viewModel = sl<AuthViewModel>();
+
   void _onTabChanged(bool isLoginSelected) {
     setState(() {
       isRegularLoginSelected = isLoginSelected;
     });
 
     FocusHelper.unfocusKeyboard(context);
-    context.read<AuthCubit>().clearLoginValidationErrors();
+    viewModel.clearLoginValidationErrors();
   }
 
   void _clearLoginErrors() {
-    context.read<AuthCubit>().clearLoginValidationErrors();
+    viewModel.clearLoginValidationErrors();
   }
 
   Future<void> _submitRegularLogin() async {
@@ -66,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
     final String? passwordError = Validators.validatePassword(password);
 
-    context.read<AuthCubit>().setLoginValidationErrors(
+    viewModel.setLoginValidationErrors(
       emailOrPhoneError: emailOrPhoneError,
       passwordError: passwordError,
     );
@@ -81,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    await context.read<AuthCubit>().login();
+    await viewModel.login();
     await context.read<StartupCubit>().saveLoggedIn();
 
     if (!mounted) return;
@@ -99,49 +101,32 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _submitPhoneLogin() async {
-    print('submit phone login pressed');
-
     FocusHelper.unfocusKeyboard(context);
 
     final String phone = phoneController.text.trim();
-    print('phone: $phone');
-
     final String? phoneError = Validators.validatePhone(phone);
-    print('phoneError: $phoneError');
 
-    context.read<AuthCubit>().setLoginValidationErrors(
+    viewModel.setLoginValidationErrors(
       emailOrPhoneError: phoneError,
       passwordError: null,
     );
 
     if (phoneError != null) {
-      print('validation failed');
       phoneFocusNode.requestFocus();
       return;
     }
 
-    print('calling sendVerificationCode...');
-    final bool success = await context.read<AuthCubit>().sendVerificationCode(
-      phone,
-    );
-    print('sendVerificationCode result: $success');
+    final bool success = await viewModel.sendVerificationCode(phone);
 
-    if (!mounted) return;
+    if (!mounted || !success) return;
 
-    if (!success) {
-      print('API failed, not navigating');
-      return;
-    }
-
-    print('navigating to otp screen');
-    final verificationPhone = context.read<AuthCubit>().state.verificationPhone ?? phone;
+    final verificationPhone = viewModel.authCubit.state.data.verificationPhone ?? phone;
 
     context.push(
       AppRoutes.otpVerification,
       extra: OtpVerificationArgs(phone: verificationPhone),
     );
   }
-
 
   void _goToRegisterScreen() {
     FocusHelper.unfocusKeyboard(context);
@@ -158,9 +143,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthCubit, AuthState>(
+    return BlocBuilder<GenericCubit<AuthData>, GenericState<AuthData>>(
       builder: (context, state) {
-        final AuthCubit authCubit = context.read<AuthCubit>();
+        final data = state.data;
 
         return Scaffold(
           backgroundColor: const Color(0xFFF5F5F5),
@@ -191,8 +176,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(height: 30.h),
                         if (isRegularLoginSelected)
                           RegularLoginForm(
-                            state: state,
-                            authCubit: authCubit,
+                            state: data,
+                            authCubit: viewModel,
                             emailOrPhoneController: emailOrPhoneController,
                             passwordController: passwordController,
                             emailOrPhoneFocusNode: emailOrPhoneFocusNode,
@@ -202,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           )
                         else
                           PhoneLoginForm(
-                            state: state,
+                            state: data,
                             phoneController: phoneController,
                             phoneFocusNode: phoneFocusNode,
                             onSubmit: _submitPhoneLogin,
@@ -229,8 +214,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               ? _submitRegularLogin
                               : _submitPhoneLogin,
                           isLoading: isRegularLoginSelected
-                              ? state.isLoading
-                              : state.isPhoneAuthLoading,
+                              ? data.isLoading
+                              : data.isPhoneAuthLoading,
                         ),
                         SizedBox(height: 16.h),
                         AppButton(

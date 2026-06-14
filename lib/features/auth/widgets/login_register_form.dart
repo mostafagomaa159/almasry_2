@@ -1,8 +1,8 @@
 part of '../auth_imports.dart';
 
 class RegisterForm extends StatelessWidget {
-  final AuthState state;
-  final AuthCubit authCubit;
+  final AuthData  state;
+  final AuthViewModel authCubit;
 
   final TextEditingController firstNameController;
   final TextEditingController lastNameController;

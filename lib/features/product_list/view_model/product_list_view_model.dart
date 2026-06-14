@@ -1,9 +1,12 @@
 part of '../product_list_imports.dart';
 
-class ProductListCubit extends Cubit<ProductListState> {
-  final ApiService _apiService;
+class ProductListViewModel {
+  /// Services
+  final ApiService _apiService = sl<ApiService>();
 
-  ProductListCubit(this._apiService) : super(const ProductListState());
+  /// Cubit
+  final GenericCubit<ProductListData> productListCubit =
+  GenericCubit<ProductListData>(const ProductListData());
 
   String _extractApiMessage(DioException e) {
     final data = e.response?.data;
@@ -46,12 +49,24 @@ class ProductListCubit extends Cubit<ProductListState> {
     return const ProductListPageModel(items: [], totalCount: 0);
   }
 
+  Future<void> init({
+    required String title,
+    required String categoryId,
+  }) async {
+    await loadInitialProducts(
+      title: title,
+      categoryId: categoryId,
+    );
+  }
+
   Future<void> loadInitialProducts({
     required String title,
     required String categoryId,
   }) async {
-    emit(
-      state.copyWith(
+    final current = productListCubit.state.data;
+
+    productListCubit.onUpdateData(
+      current.copyWith(
         status: ProductListStatus.loading,
         title: title,
         categoryId: categoryId,
@@ -61,6 +76,7 @@ class ProductListCubit extends Cubit<ProductListState> {
         totalCount: 0,
         clearErrorMessage: true,
         resetProducts: true,
+        resetQuantities: true,
       ),
     );
 
@@ -74,8 +90,8 @@ class ProductListCubit extends Cubit<ProductListState> {
 
       final hasMore = result.items.length < result.totalCount;
 
-      emit(
-        state.copyWith(
+      productListCubit.onUpdateData(
+        productListCubit.state.data.copyWith(
           status: ProductListStatus.success,
           products: result.items,
           currentPage: 1,
@@ -85,16 +101,16 @@ class ProductListCubit extends Cubit<ProductListState> {
         ),
       );
     } on DioException catch (e) {
-      emit(
-        state.copyWith(
+      productListCubit.onUpdateData(
+        productListCubit.state.data.copyWith(
           status: ProductListStatus.error,
           errorMessage: _extractApiMessage(e),
           isLoadingMore: false,
         ),
       );
     } catch (e) {
-      emit(
-        state.copyWith(
+      productListCubit.onUpdateData(
+        productListCubit.state.data.copyWith(
           status: ProductListStatus.error,
           errorMessage: e.toString(),
           isLoadingMore: false,
@@ -104,52 +120,65 @@ class ProductListCubit extends Cubit<ProductListState> {
   }
 
   int getProductQuantity(String sku) {
-    return state.quantities[sku] ?? 1;
+    return productListCubit.state.data.quantities[sku] ?? 1;
   }
 
   void incrementQuantity(String sku) {
-    final updatedQuantities = Map<String, int>.from(state.quantities);
+    final current = productListCubit.state.data;
+    final updatedQuantities = Map<String, int>.from(current.quantities);
     final currentQuantity = updatedQuantities[sku] ?? 1;
 
     updatedQuantities[sku] = currentQuantity + 1;
 
-    emit(state.copyWith(quantities: updatedQuantities));
+    productListCubit.onUpdateData(
+      current.copyWith(quantities: updatedQuantities),
+    );
   }
 
   void decrementQuantity(String sku) {
-    final updatedQuantities = Map<String, int>.from(state.quantities);
+    final current = productListCubit.state.data;
+    final updatedQuantities = Map<String, int>.from(current.quantities);
     final currentQuantity = updatedQuantities[sku] ?? 1;
 
     if (currentQuantity > 1) {
       updatedQuantities[sku] = currentQuantity - 1;
-      emit(state.copyWith(quantities: updatedQuantities));
+
+      productListCubit.onUpdateData(
+        current.copyWith(quantities: updatedQuantities),
+      );
     }
   }
 
   Future<void> loadMoreProducts() async {
-    if (state.status != ProductListStatus.success) return;
-    if (state.isLoadingMore) return;
-    if (!state.hasMore) return;
-    if (state.categoryId.isEmpty) return;
+    final current = productListCubit.state.data;
 
-    emit(state.copyWith(isLoadingMore: true, clearErrorMessage: true));
+    if (current.status != ProductListStatus.success) return;
+    if (current.isLoadingMore) return;
+    if (!current.hasMore) return;
+    if (current.categoryId.isEmpty) return;
 
-    final nextPage = state.currentPage + 1;
+    productListCubit.onUpdateData(
+      current.copyWith(
+        isLoadingMore: true,
+        clearErrorMessage: true,
+      ),
+    );
+
+    final nextPage = current.currentPage + 1;
 
     try {
       final request = ProductListRequest(
-        categoryId: state.categoryId,
+        categoryId: current.categoryId,
         page: nextPage,
       );
 
       final result = await _fetchProducts(request);
 
-      final updatedProducts = [...state.products, ...result.items];
-
+      final updatedProducts = [...current.products, ...result.items];
       final hasMore = updatedProducts.length < result.totalCount;
 
-      emit(
-        state.copyWith(
+      productListCubit.onUpdateData(
+        productListCubit.state.data.copyWith(
           status: ProductListStatus.success,
           products: updatedProducts,
           currentPage: nextPage,
@@ -159,14 +188,36 @@ class ProductListCubit extends Cubit<ProductListState> {
         ),
       );
     } on DioException catch (e) {
-      emit(
-        state.copyWith(
+      productListCubit.onUpdateData(
+        productListCubit.state.data.copyWith(
           isLoadingMore: false,
           errorMessage: _extractApiMessage(e),
         ),
       );
     } catch (e) {
-      emit(state.copyWith(isLoadingMore: false, errorMessage: e.toString()));
+      productListCubit.onUpdateData(
+        productListCubit.state.data.copyWith(
+          isLoadingMore: false,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
+
+  void navToProductDetails(BuildContext context, ProductResponse product) {
+    final sku = product.sku ?? '';
+    if (sku.isEmpty) return;
+
+    context.push(
+      AppRoutes.productDetails,
+      extra: ProductDetailsArgs(
+        sku: sku,
+        title: product.name,
+        imagePath: product.extensionAttributes?.thumbnail,
+      ),
+    );
+  }
+
+
+
 }

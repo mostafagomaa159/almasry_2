@@ -10,20 +10,15 @@ class ProductDetailsView extends StatefulWidget {
 }
 
 class _ProductDetailsViewState extends State<ProductDetailsView> {
-  late final ProductDetailsCubit _productDetailsCubit;
+  late final ProductDetailsViewModel viewModel;
 
   @override
   void initState() {
     super.initState();
-    _productDetailsCubit = sl<ProductDetailsCubit>()
-      ..getProductDetails(widget.args.sku);
+    viewModel = ProductDetailsViewModel()..init(sku: widget.args.sku);
   }
 
-  @override
-  void dispose() {
-    _productDetailsCubit.close();
-    super.dispose();
-  }
+
 
   Future<void> _toggleFavorite(ProductResponse product) async {
     final favoriteProduct = FavoriteProductModel(
@@ -67,134 +62,132 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
   Widget build(BuildContext context) {
     final bool isArabic = context.locale.languageCode == 'ar';
 
-    return BlocProvider.value(
-      value: _productDetailsCubit,
-      child: BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
-        builder: (context, state) {
-          if (state.isLoading && state.product == null) {
-            return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
+    return BlocBuilder<
+        GenericCubit<ProductDetailsData>,
+        GenericState<ProductDetailsData>>(
+      bloc: viewModel.productDetailsCubit,
+      builder: (context, state) {
+        final data = state.data;
 
-          if (state.errorMessage != null && state.product == null) {
-            return Scaffold(
-              backgroundColor: const Color(0xFFF7F7F7),
-              body: Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.w),
-                  child: Text(
-                    state.errorMessage!,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            );
-          }
+        if (data.isLoading && data.product == null) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
 
-          final product = state.product;
-
-          if (product == null) {
-            return const Scaffold(
-              body: Center(
-                child: Text('No product found'),
-              ),
-            );
-          }
-
-          final imagePath = product.imageUrl.isNotEmpty
-              ? product.imageUrl
-              : (widget.args.imagePath ?? '');
-
-          final title = product.name.isNotEmpty
-              ? product.name
-              : (widget.args.title ?? '');
-
-          final description = product.description ?? '';
-          final price = _formatPrice(product.price);
-
-          final brand = _getCustomAttributeValue(product, 'brand');
-          final oldPrice = '';
-          final rating = 0.0;
-          final isInStock = true;
-
+        if (data.errorMessage != null && data.product == null) {
           return Scaffold(
             backgroundColor: const Color(0xFFF7F7F7),
-            body: SafeArea(
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Column(
-                      children: [
-                        ProductDetailsHeader(
-                          title: 'التفاصيل',
-                          isArabic: isArabic,
-                        ),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            padding: EdgeInsets.only(bottom: 140.h),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ProductDetailsImageSection(
-                                  imagePath: imagePath,
-                                  product: product,
-                                  onFavoriteTap: () => _toggleFavorite(product),
-                                ),
-                                SizedBox(height: 12.h),
-                                ProductDetailsSummarySection(
-                                  sku: product.sku,
-                                  brand: brand,
-                                  title: title,
-                                  price: price,
-                                  oldPrice: oldPrice,
-                                  isInStock: isInStock,
-                                ),
-                                SizedBox(height: 10.h),
-                                ProductDetailsInfoSection(
-                                  product: product,
-                                ),
-                                SizedBox(height: 10.h),
-                                ProductDetailsDescriptionSection(
-                                  description: description,
-                                ),
-                                SizedBox(height: 10.h),
-                                ProductDetailsRatingSection(
-                                  rating: rating,
-                                ),
-                                SizedBox(height: 24.h),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    right: 16.w,
-                    left: 16.w,
-                    bottom: 16.h,
-                    child: ProductDetailsBottomAction(
-                      quantity: state.quantity,
-                      onIncrementTap: () {
-                        context.read<ProductDetailsCubit>().incrementQuantity();
-                      },
-                      onDecrementTap: () {
-                        context.read<ProductDetailsCubit>().decrementQuantity();
-                      },
-                      onAddToBasketTap: () {
-                        // TODO
-                      },
-                    ),
-                  ),
-                ],
+            body: Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                child: Text(
+                  data.errorMessage!,
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
           );
-        },
-      ),
+        }
+
+        final product = data.product;
+
+        if (product == null) {
+          return const Scaffold(
+            body: Center(
+              child: Text('No product found'),
+            ),
+          );
+        }
+
+        final imagePath = product.imageUrl.isNotEmpty
+            ? product.imageUrl
+            : (widget.args.imagePath ?? '');
+
+        final title = product.name.isNotEmpty
+            ? product.name
+            : (widget.args.title ?? '');
+
+        final description = product.description ?? '';
+        final price = _formatPrice(product.price);
+
+        final brand = _getCustomAttributeValue(product, 'brand');
+        final oldPrice = '';
+        final rating = 0.0;
+        final isInStock = true;
+
+        return Scaffold(
+          backgroundColor: const Color(0xFFF7F7F7),
+          body: SafeArea(
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: Column(
+                    children: [
+                      ProductDetailsHeader(
+                        title: 'التفاصيل',
+                        isArabic: isArabic,
+                      ),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          padding: EdgeInsets.only(bottom: 140.h),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ProductDetailsImageSection(
+                                imagePath: imagePath,
+                                product: product,
+                                onFavoriteTap: () => _toggleFavorite(product),
+                              ),
+                              SizedBox(height: 12.h),
+                              ProductDetailsSummarySection(
+                                sku: product.sku,
+                                brand: brand,
+                                title: title,
+                                price: price,
+                                oldPrice: oldPrice,
+                                isInStock: isInStock,
+                              ),
+                              SizedBox(height: 10.h),
+                              ProductDetailsInfoSection(
+                                product: product,
+                              ),
+                              SizedBox(height: 10.h),
+                              ProductDetailsDescriptionSection(
+                                description: description,
+                              ),
+                              SizedBox(height: 10.h),
+                              ProductDetailsRatingSection(
+                                rating: rating,
+                              ),
+                              SizedBox(height: 24.h),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  right: 16.w,
+                  left: 16.w,
+                  bottom: 16.h,
+                  child: ProductDetailsBottomAction(
+                    quantity: data.quantity,
+                    onIncrementTap: viewModel.incrementQuantity,
+                    onDecrementTap: viewModel.decrementQuantity,
+                    onAddToBasketTap: () {
+                      // TODO
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
