@@ -1,19 +1,19 @@
 
-class ProductMediaGalleryEntryResponse {
+class ProductMediaGalleryEntryModel {
   final int id;
   final String file;
   final String mediaType;
 
-  const ProductMediaGalleryEntryResponse({
+  const ProductMediaGalleryEntryModel({
     required this.id,
     required this.file,
     required this.mediaType,
   });
 
-  factory ProductMediaGalleryEntryResponse.fromJson(
+  factory ProductMediaGalleryEntryModel.fromJson(
       Map<String, dynamic> json,
       ) {
-    return ProductMediaGalleryEntryResponse(
+    return ProductMediaGalleryEntryModel(
       id: (json['id'] as num?)?.toInt() ?? 0,
       file: json['file']?.toString() ?? '',
       mediaType: json['media_type']?.toString() ?? '',

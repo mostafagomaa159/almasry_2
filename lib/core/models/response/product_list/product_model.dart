@@ -1,18 +1,18 @@
 
-import 'package:almasry_2/core/models/response/home/product_custom_attribute_response.dart';
-import 'package:almasry_2/core/models/response/home/product_extension_attributes_response.dart';
-import 'package:almasry_2/core/models/response/home/product_media_gallery_entry_response.dart';
+import 'package:almasry_2/core/models/response/home/product_custom_attribute_model.dart';
+import 'package:almasry_2/core/models/response/home/product_extension_attributes_model.dart';
+import 'package:almasry_2/core/models/response/home/product_media_gallery_entry_model.dart';
 
-class ProductResponse {
+class ProductModel {
   final int id;
   final String sku;
   final String name;
   final double price;
-  final ProductExtensionAttributesResponse? extensionAttributes;
-  final List<ProductCustomAttributeResponse> customAttributes;
-  final List<ProductMediaGalleryEntryResponse> mediaGalleryEntries;
+  final ProductExtensionAttributesModel? extensionAttributes;
+  final List<ProductCustomAttributeModel> customAttributes;
+  final List<ProductMediaGalleryEntryModel> mediaGalleryEntries;
 
-  const ProductResponse({
+  const ProductModel({
     required this.id,
     required this.sku,
     required this.name,
@@ -22,16 +22,16 @@ class ProductResponse {
     required this.mediaGalleryEntries,
   });
 
-  factory ProductResponse.fromJson(Map<String, dynamic> json) {
+  factory ProductModel.fromJson(Map<String, dynamic> json) {
     final extensionAttributes = json['extension_attributes'] != null
-        ? ProductExtensionAttributesResponse.fromJson(
+        ? ProductExtensionAttributesModel.fromJson(
       json['extension_attributes'] as Map<String, dynamic>,
     )
         : null;
 
     final customAttributes = (json['custom_attributes'] as List<dynamic>?)
         ?.map(
-          (e) => ProductCustomAttributeResponse.fromJson(
+          (e) => ProductCustomAttributeModel.fromJson(
         e as Map<String, dynamic>,
       ),
     )
@@ -40,14 +40,14 @@ class ProductResponse {
 
     final mediaGalleryEntries = (json['media_gallery_entries'] as List<dynamic>?)
         ?.map(
-          (e) => ProductMediaGalleryEntryResponse.fromJson(
+          (e) => ProductMediaGalleryEntryModel.fromJson(
         e as Map<String, dynamic>,
       ),
     )
         .toList() ??
         [];
 
-    return ProductResponse(
+    return ProductModel(
       id: (json['id'] as num?)?.toInt() ?? 0,
       sku: json['sku']?.toString() ?? '',
       name: json['name']?.toString() ?? '',

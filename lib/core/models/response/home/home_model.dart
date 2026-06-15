@@ -8,26 +8,26 @@ class HomeData {
   final bool isLoading;
   final String? errorMessage;
 
-  final List<HomeSliderItemResponse> banners;
-  final List<HomeSliderItemResponse> secondaryBanners;
+  final List<HomeSliderItemModel> banners;
+  final List<HomeSliderItemModel> secondaryBanners;
 
-  final List<HomeSubCategoryResponse> offers;
-  final List<HomeSubCategoryResponse> categories;
-  final List<HomeSubCategoryResponse> goals;
-  final List<HomeSubCategoryResponse> concerns;
-  final List<HomeBrandResponse> brands;
+  final List<HomeSubCategoryModel> offers;
+  final List<HomeSubCategoryModel> categories;
+  final List<HomeSubCategoryModel> goals;
+  final List<HomeSubCategoryModel> concerns;
+  final List<HomeBrandModel> brands;
 
-  final HomeMobileBlockResponse? bestSellerBlock;
-  final HomeMobileBlockResponse? momBabyBlock;
-  final HomeMobileBlockResponse? homeCareBlock;
-  final HomeMobileBlockResponse? feminineCareBlock;
-  final HomeMobileBlockResponse? menCareBlock;
+  final HomeMobileBlockModel? bestSellerBlock;
+  final HomeMobileBlockModel? momBabyBlock;
+  final HomeMobileBlockModel? homeCareBlock;
+  final HomeMobileBlockModel? feminineCareBlock;
+  final HomeMobileBlockModel? menCareBlock;
 
-  final List<ProductResponse> bestSellerProducts;
-  final List<ProductResponse> momBabyProducts;
-  final List<ProductResponse> homeCareProducts;
-  final List<ProductResponse> feminineCareProducts;
-  final List<ProductResponse> menCareProducts;
+  final List<ProductModel> bestSellerProducts;
+  final List<ProductModel> momBabyProducts;
+  final List<ProductModel> homeCareProducts;
+  final List<ProductModel> feminineCareProducts;
+  final List<ProductModel> menCareProducts;
 
   const HomeData({
     this.currentBannerIndex = 0,
@@ -61,23 +61,23 @@ class HomeData {
     bool? isLoading,
     String? errorMessage,
     bool clearErrorMessage = false,
-    List<HomeSliderItemResponse>? banners,
-    List<HomeSliderItemResponse>? secondaryBanners,
-    List<HomeSubCategoryResponse>? offers,
-    List<HomeSubCategoryResponse>? categories,
-    List<HomeSubCategoryResponse>? goals,
-    List<HomeSubCategoryResponse>? concerns,
-    List<HomeBrandResponse>? brands,
-    HomeMobileBlockResponse? bestSellerBlock,
-    HomeMobileBlockResponse? momBabyBlock,
-    HomeMobileBlockResponse? homeCareBlock,
-    HomeMobileBlockResponse? feminineCareBlock,
-    HomeMobileBlockResponse? menCareBlock,
-    List<ProductResponse>? bestSellerProducts,
-    List<ProductResponse>? momBabyProducts,
-    List<ProductResponse>? homeCareProducts,
-    List<ProductResponse>? feminineCareProducts,
-    List<ProductResponse>? menCareProducts,
+    List<HomeSliderItemModel>? banners,
+    List<HomeSliderItemModel>? secondaryBanners,
+    List<HomeSubCategoryModel>? offers,
+    List<HomeSubCategoryModel>? categories,
+    List<HomeSubCategoryModel>? goals,
+    List<HomeSubCategoryModel>? concerns,
+    List<HomeBrandModel>? brands,
+    HomeMobileBlockModel? bestSellerBlock,
+    HomeMobileBlockModel? momBabyBlock,
+    HomeMobileBlockModel? homeCareBlock,
+    HomeMobileBlockModel? feminineCareBlock,
+    HomeMobileBlockModel? menCareBlock,
+    List<ProductModel>? bestSellerProducts,
+    List<ProductModel>? momBabyProducts,
+    List<ProductModel>? homeCareProducts,
+    List<ProductModel>? feminineCareProducts,
+    List<ProductModel>? menCareProducts,
   }) {
     return HomeData(
       currentBannerIndex: currentBannerIndex ?? this.currentBannerIndex,

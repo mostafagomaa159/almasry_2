@@ -1,5 +1,5 @@
 
-class ProductExtensionAttributesResponse {
+class ProductExtensionAttributesModel {
   final String urlBase;
   final String thumbnail;
   final num priceAfter;
@@ -8,7 +8,7 @@ class ProductExtensionAttributesResponse {
   final String sellableQuantity;
   final String description;
 
-  const ProductExtensionAttributesResponse({
+  const ProductExtensionAttributesModel({
     required this.urlBase,
     required this.thumbnail,
     required this.priceAfter,
@@ -18,10 +18,10 @@ class ProductExtensionAttributesResponse {
     required this.description,
   });
 
-  factory ProductExtensionAttributesResponse.fromJson(
+  factory ProductExtensionAttributesModel.fromJson(
       Map<String, dynamic> json,
       ) {
-    return ProductExtensionAttributesResponse(
+    return ProductExtensionAttributesModel(
       urlBase: json['url_base']?.toString() ?? '',
       thumbnail: json['thumbnail']?.toString() ?? '',
       priceAfter: (json['price_after'] as num?) ?? 0,

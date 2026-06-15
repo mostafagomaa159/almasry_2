@@ -3,7 +3,7 @@ part of '../product_details_imports.dart';
 
 class ProductDetailsData extends Equatable {
   final bool isLoading;
-  final ProductResponse? product;
+  final ProductModel? product;
   final String? errorMessage;
   final int quantity;
 
@@ -16,7 +16,7 @@ class ProductDetailsData extends Equatable {
 
   ProductDetailsData copyWith({
     bool? isLoading,
-    ProductResponse? product,
+    ProductModel? product,
     String? errorMessage,
     int? quantity,
     bool clearProduct = false,

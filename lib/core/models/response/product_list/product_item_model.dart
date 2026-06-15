@@ -1,18 +1,18 @@
 
-import 'package:almasry_2/core/models/response/home/product_custom_attribute_response.dart';
-import 'package:almasry_2/core/models/response/home/product_extension_attributes_response.dart';
-import 'package:almasry_2/core/models/response/home/product_media_gallery_entry_response.dart';
+import 'package:almasry_2/core/models/response/home/product_custom_attribute_model.dart';
+import 'package:almasry_2/core/models/response/home/product_extension_attributes_model.dart';
+import 'package:almasry_2/core/models/response/home/product_media_gallery_entry_model.dart';
 
-class ProductItemResponse {
+class ProductItemModel {
   final int id;
   final String sku;
   final String name;
   final num price;
-  final ProductExtensionAttributesResponse? extensionAttributes;
-  final List<ProductCustomAttributeResponse> customAttributes;
-  final List<ProductMediaGalleryEntryResponse> mediaGalleryEntries;
+  final ProductExtensionAttributesModel? extensionAttributes;
+  final List<ProductCustomAttributeModel> customAttributes;
+  final List<ProductMediaGalleryEntryModel> mediaGalleryEntries;
 
-  const ProductItemResponse({
+  const ProductItemModel({
     required this.id,
     required this.sku,
     required this.name,
@@ -22,22 +22,22 @@ class ProductItemResponse {
     required this.mediaGalleryEntries,
   });
 
-  factory ProductItemResponse.fromJson(Map<String, dynamic> json) {
-    return ProductItemResponse(
+  factory ProductItemModel.fromJson(Map<String, dynamic> json) {
+    return ProductItemModel(
       id: (json['id'] as num?)?.toInt() ?? 0,
       sku: json['sku']?.toString() ?? '',
       name: json['name']?.toString() ?? '',
       price: (json['price'] as num?) ?? 0,
       extensionAttributes: json['extension_attributes'] != null
-          ? ProductExtensionAttributesResponse.fromJson(
+          ? ProductExtensionAttributesModel.fromJson(
         json['extension_attributes'],
       )
           : null,
       customAttributes: (json['custom_attributes'] as List<dynamic>? ?? [])
-          .map((e) => ProductCustomAttributeResponse.fromJson(e))
+          .map((e) => ProductCustomAttributeModel.fromJson(e))
           .toList(),
       mediaGalleryEntries: (json['media_gallery_entries'] as List<dynamic>? ?? [])
-          .map((e) => ProductMediaGalleryEntryResponse.fromJson(e))
+          .map((e) => ProductMediaGalleryEntryModel.fromJson(e))
           .toList(),
     );
   }

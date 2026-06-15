@@ -1,15 +1,15 @@
 
-class ProductCustomAttributeResponse {
+class ProductCustomAttributeModel {
   final String attributeCode;
   final dynamic value;
 
-  const ProductCustomAttributeResponse({
+  const ProductCustomAttributeModel({
     required this.attributeCode,
     required this.value,
   });
 
-  factory ProductCustomAttributeResponse.fromJson(Map<String, dynamic> json) {
-    return ProductCustomAttributeResponse(
+  factory ProductCustomAttributeModel.fromJson(Map<String, dynamic> json) {
+    return ProductCustomAttributeModel(
       attributeCode: json['attribute_code']?.toString() ?? '',
       value: json['value'],
     );

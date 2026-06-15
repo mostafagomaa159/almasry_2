@@ -9,7 +9,7 @@ enum ProductListStatus {
 
 class ProductListData extends Equatable {
   final ProductListStatus status;
-  final List<ProductResponse> products;
+  final List<ProductModel> products;
   final String errorMessage;
   final String title;
   final String categoryId;
@@ -34,7 +34,7 @@ class ProductListData extends Equatable {
 
   ProductListData copyWith({
     ProductListStatus? status,
-    List<ProductResponse>? products,
+    List<ProductModel>? products,
     String? errorMessage,
     String? title,
     String? categoryId,

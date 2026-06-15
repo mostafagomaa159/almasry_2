@@ -1,15 +1,15 @@
 
-class ActivateAccountResponse {
+class ActivateAccountModel {
   final String? status;
   final String? message;
 
-  ActivateAccountResponse({
+  ActivateAccountModel({
     this.status,
     this.message,
   });
 
-  factory ActivateAccountResponse.fromJson(Map<String, dynamic> json) {
-    return ActivateAccountResponse(
+  factory ActivateAccountModel.fromJson(Map<String, dynamic> json) {
+    return ActivateAccountModel(
       status: json['status']?.toString(),
       message: json['message']?.toString(),
     );
