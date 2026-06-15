@@ -1,8 +1,8 @@
 
 import 'package:equatable/equatable.dart';
 
-class OrderExtensionResponse extends Equatable {
-  const OrderExtensionResponse();
+class OrderExtensionModel extends Equatable {
+  const OrderExtensionModel();
 
   @override
   List<Object?> get props => [];

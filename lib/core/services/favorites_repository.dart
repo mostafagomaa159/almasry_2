@@ -1,5 +1,5 @@
 
-import 'package:almasry_2/core/models/response/response_favorite_product.dart';
+import 'package:almasry_2/core/models/response/favorite/favorite_product_model.dart';
 import 'package:almasry_2/core/services/favorites_db_helper.dart';
 
 class FavoritesRepository {

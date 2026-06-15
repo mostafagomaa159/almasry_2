@@ -8,12 +8,12 @@ class OrdersBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<
-      GenericCubit<List<OrderResponse>>,
-      GenericState<List<OrderResponse>>
+      GenericCubit<List<OrderModel>>,
+      GenericState<List<OrderModel>>
     >(
       bloc: viewModel.ordersCubit,
       builder: (context, state) {
-        if (state is GenericUpdateState<List<OrderResponse>>) {
+        if (state is GenericUpdateState<List<OrderModel>>) {
           if (state.data.isEmpty) {
             return const OrdersEmptyView();
           }

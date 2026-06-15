@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-class ShippingAssignmentResponse extends Equatable {
-  const ShippingAssignmentResponse();
+class ShippingAssignmentModel extends Equatable {
+  const ShippingAssignmentModel();
 
   @override
   List<Object?> get props => [];

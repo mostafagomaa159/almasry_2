@@ -1,6 +1,6 @@
-part of '../auth_imports.dart';
+part of '../../../../features/auth/auth_imports.dart';
 
-class AuthData {
+class UserModel {
   final bool isPasswordHidden;
   final bool isConfirmPasswordHidden;
   final bool rememberMe;
@@ -29,7 +29,7 @@ class AuthData {
   final int otpCountdownSeconds;
   final bool canResendOtp;
 
-  const AuthData({
+  const UserModel({
     this.isPasswordHidden = true,
     this.isConfirmPasswordHidden = true,
     this.rememberMe = false,
@@ -54,7 +54,7 @@ class AuthData {
     this.canResendOtp = false,
   });
 
-  AuthData copyWith({
+  UserModel copyWith({
     bool? isPasswordHidden,
     bool? isConfirmPasswordHidden,
     bool? rememberMe,
@@ -90,7 +90,7 @@ class AuthData {
     bool clearVerificationPhone = false,
     bool clearVerificationCode = false,
   }) {
-    return AuthData(
+    return UserModel(
       isPasswordHidden: isPasswordHidden ?? this.isPasswordHidden,
       isConfirmPasswordHidden:
       isConfirmPasswordHidden ?? this.isConfirmPasswordHidden,

@@ -1,14 +1,14 @@
-class HomeBannerUrlResponse {
+class HomeBannerUrlModel {
   final String key;
   final String value;
 
-  const HomeBannerUrlResponse({
+  const HomeBannerUrlModel({
     required this.key,
     required this.value,
   });
 
-  factory HomeBannerUrlResponse.fromJson(Map<String, dynamic> json) {
-    return HomeBannerUrlResponse(
+  factory HomeBannerUrlModel.fromJson(Map<String, dynamic> json) {
+    return HomeBannerUrlModel(
       key: json['key']?.toString() ?? '',
       value: json['value']?.toString() ?? '',
     );

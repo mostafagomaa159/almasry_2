@@ -2,7 +2,7 @@ part of '../home_imports.dart';
 
 class HomeConcernsSection extends StatelessWidget {
   final bool isArabic;
-  final List<HomeSubCategoryResponse> items;
+  final List<HomeSubCategoryModel> items;
 
   const HomeConcernsSection({
     super.key,

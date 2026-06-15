@@ -5,8 +5,8 @@ class OrderDetailsViewModel {
   final ApiService _apiService = sl<ApiService>();
 
   /// Cubit
-  final GenericCubit<OrderDetailsData> orderDetailsCubit =
-  GenericCubit<OrderDetailsData>(const OrderDetailsData());
+  final GenericCubit<OrderDetailsModel> orderDetailsCubit =
+      GenericCubit<OrderDetailsModel>(const OrderDetailsModel());
 
   String _extractApiMessage(DioException e) {
     final data = e.response?.data;
@@ -25,16 +25,11 @@ class OrderDetailsViewModel {
     await loadOrderDetails(orderId: orderId);
   }
 
-  Future<void> loadOrderDetails({
-    required String orderId,
-  }) async {
+  Future<void> loadOrderDetails({required String orderId}) async {
     final current = orderDetailsCubit.state.data;
 
     orderDetailsCubit.onUpdateData(
-      current.copyWith(
-        isLoading: true,
-        clearErrorMessage: true,
-      ),
+      current.copyWith(isLoading: true, clearErrorMessage: true),
     );
 
     try {
@@ -77,6 +72,4 @@ class OrderDetailsViewModel {
       );
     }
   }
-
-
 }

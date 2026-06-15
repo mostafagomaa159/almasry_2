@@ -1,15 +1,16 @@
-class LoginRequest {
-  final String email;
+
+class RegisterCustomerModel {
+  final String mobile;
   final String password;
 
-  const LoginRequest({
-    required this.email,
+  const RegisterCustomerModel({
+    required this.mobile,
     required this.password,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'email': email,
+      'mobile': mobile,
       'password': password,
     };
   }

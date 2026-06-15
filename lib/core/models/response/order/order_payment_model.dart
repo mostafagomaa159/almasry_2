@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-class OrderPaymentResponse extends Equatable {
-  const OrderPaymentResponse();
+class OrderPaymentModel extends Equatable {
+  const OrderPaymentModel();
 
   @override
   List<Object?> get props => [];

@@ -1,18 +1,21 @@
 part of '../auth_imports.dart';
 
-class OtpVerificationScreen extends StatefulWidget {
-  final OtpVerificationArgs args;
+class OtpVerificationArgs {
+  final String phone;
 
-  const OtpVerificationScreen({
-    super.key,
-    required this.args,
-  });
-
-  @override
-  State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
+  const OtpVerificationArgs({required this.phone});
 }
 
-class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
+class OtpVerificationView extends StatefulWidget {
+  final OtpVerificationArgs args;
+
+  const OtpVerificationView({super.key, required this.args});
+
+  @override
+  State<OtpVerificationView> createState() => _OtpVerificationViewState();
+}
+
+class _OtpVerificationViewState extends State<OtpVerificationView> {
   late final TextEditingController otpController;
 
   @override
@@ -49,10 +52,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
     context.go(
       AppRoutes.home,
-      extra: ProfileArgs(
-        phone: widget.args.phone,
-        source: 'otp_login',
-      ),
+      extra: ProfileArgs(phone: widget.args.phone, source: 'otp_login'),
     );
   }
 
@@ -63,24 +63,22 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
     if (!mounted || !success) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Verification code resent'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Verification code resent')));
   }
 
   @override
   Widget build(BuildContext context) {
     final maskedPhone = _maskPhone(widget.args.phone);
 
-    return BlocBuilder<GenericCubit<AuthData>, GenericState<AuthData>>(
+    return BlocBuilder<GenericCubit<UserModel>, GenericState<UserModel>>(
       builder: (context, state) {
         final data = state.data;
 
         final bool isVerifyEnabled =
             otpController.text.trim().length == 5 &&
-                !data.isOtpVerificationLoading;
+            !data.isOtpVerificationLoading;
 
         return Scaffold(
           backgroundColor: Colors.white,
@@ -129,7 +127,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                           controller: otpController,
                           length: 5,
                           keyboardType: TextInputType.number,
-                          forceErrorState: data.otpError != null &&
+                          forceErrorState:
+                              data.otpError != null &&
                               data.otpError!.isNotEmpty,
                           onChanged: (_) => setState(() {}),
                           defaultPinTheme: PinTheme(
@@ -175,9 +174,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                             decoration: BoxDecoration(
                               color: const Color(0xFFFFF5F5),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: Colors.red,
-                              ),
+                              border: Border.all(color: Colors.red),
                             ),
                           ),
                         ),
@@ -238,8 +235,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         const SizedBox(height: 8),
                         Center(
                           child: TextButton(
-                            onPressed: data.canResendOtp &&
-                                !data.isPhoneAuthLoading
+                            onPressed:
+                                data.canResendOtp && !data.isPhoneAuthLoading
                                 ? _resendCode
                                 : null,
                             style: TextButton.styleFrom(
@@ -247,22 +244,22 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                             ),
                             child: data.isPhoneAuthLoading
                                 ? const SizedBox(
-                              height: 18,
-                              width: 18,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                              ),
-                            )
+                                    height: 18,
+                                    width: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
                                 : Text(
-                              'Resend',
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                color: data.canResendOtp
-                                    ? const Color(0xFFD62828)
-                                    : const Color(0xFFBDBDBD),
-                              ),
-                            ),
+                                    'Resend',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w700,
+                                      color: data.canResendOtp
+                                          ? const Color(0xFFD62828)
+                                          : const Color(0xFFBDBDBD),
+                                    ),
+                                  ),
                           ),
                         ),
                         const SizedBox(height: 24),

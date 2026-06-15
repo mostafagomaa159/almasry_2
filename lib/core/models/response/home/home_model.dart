@@ -1,6 +1,6 @@
-part of '../home_imports.dart';
+part of '../../../../features/home/home_imports.dart';
 
-class HomeData {
+class HomeModel {
   final int currentBannerIndex;
   final int selectedOfferTabIndex;
   final int selectedBottomNavIndex;
@@ -29,7 +29,7 @@ class HomeData {
   final List<ProductModel> feminineCareProducts;
   final List<ProductModel> menCareProducts;
 
-  const HomeData({
+  const HomeModel({
     this.currentBannerIndex = 0,
     this.selectedOfferTabIndex = 0,
     this.selectedBottomNavIndex = 3,
@@ -54,7 +54,7 @@ class HomeData {
     this.menCareProducts = const [],
   });
 
-  HomeData copyWith({
+  HomeModel copyWith({
     int? currentBannerIndex,
     int? selectedOfferTabIndex,
     int? selectedBottomNavIndex,
@@ -79,7 +79,7 @@ class HomeData {
     List<ProductModel>? feminineCareProducts,
     List<ProductModel>? menCareProducts,
   }) {
-    return HomeData(
+    return HomeModel(
       currentBannerIndex: currentBannerIndex ?? this.currentBannerIndex,
       selectedOfferTabIndex:
       selectedOfferTabIndex ?? this.selectedOfferTabIndex,

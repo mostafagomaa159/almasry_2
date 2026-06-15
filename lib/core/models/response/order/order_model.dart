@@ -1,7 +1,7 @@
-import 'package:almasry_2/core/models/response/order/order_item_response.dart';
+import 'package:almasry_2/core/models/response/order/order_item_model.dart';
 import 'package:equatable/equatable.dart';
 
-class OrderResponse extends Equatable {
+class OrderModel extends Equatable {
   final int entityId;
   final String incrementId;
   final String createdAt;
@@ -13,9 +13,9 @@ class OrderResponse extends Equatable {
   final int totalItemCount;
   final double totalQtyOrdered;
   final String shippingDescription;
-  final List<OrderItemResponse> items;
+  final List<OrderItemModel> items;
 
-  const OrderResponse({
+  const OrderModel({
     required this.entityId,
     required this.incrementId,
     required this.createdAt,
@@ -30,10 +30,10 @@ class OrderResponse extends Equatable {
     required this.items,
   });
 
-  factory OrderResponse.fromJson(Map<String, dynamic> json) {
+  factory OrderModel.fromJson(Map<String, dynamic> json) {
     final itemsJson = json['items'] as List<dynamic>? ?? [];
 
-    return OrderResponse(
+    return OrderModel(
       entityId: int.tryParse(json['entity_id']?.toString() ?? '0') ?? 0,
       incrementId: json['increment_id']?.toString() ?? '',
       createdAt: json['created_at']?.toString() ?? '',
@@ -49,12 +49,12 @@ class OrderResponse extends Equatable {
       double.tryParse(json['total_qty_ordered']?.toString() ?? '0') ?? 0,
       shippingDescription: json['shipping_description']?.toString() ?? '',
       items: itemsJson
-          .map((e) => OrderItemResponse.fromJson(e as Map<String, dynamic>))
+          .map((e) => OrderItemModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
   }
 
-  OrderItemResponse? get firstItem => items.isEmpty ? null : items.first;
+  OrderItemModel? get firstItem => items.isEmpty ? null : items.first;
 
   @override
   List<Object?> get props => [

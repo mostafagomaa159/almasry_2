@@ -8,20 +8,26 @@ class StartupGate extends StatefulWidget {
 }
 
 class _StartupGateState extends State<StartupGate> {
+  StartupViewModel get viewModel => sl<StartupViewModel>();
+
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      context.read<StartupCubit>().checkAppStart();
+      viewModel.checkAppStart();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<StartupCubit, StartupState>(
+    return BlocListener<
+        GenericCubit<StartupData>,
+        GenericState<StartupData>>(
+      bloc: viewModel.startupCubit,
       listener: (context, state) {
-        switch (state.status) {
+        switch (state.data.status) {
           case StartupStatus.firstTime:
             context.go(AppRoutes.splash);
             break;
@@ -35,7 +41,11 @@ class _StartupGateState extends State<StartupGate> {
             break;
         }
       },
-      child: const Scaffold(body: Center(child: CircularProgressIndicator())),
+      child: const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
     );
   }
 }

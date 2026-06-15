@@ -1,7 +1,7 @@
 part of '../orders_imports.dart';
 
 class OrdersListView extends StatelessWidget {
-  final List<OrderResponse> orders;
+  final List<OrderModel> orders;
 
   const OrdersListView({
     super.key,

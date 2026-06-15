@@ -1,4 +1,6 @@
-class EditProfileState {
+part of '../../../../features/edit_profile/edit_profile_imports.dart';
+
+class EditProfileModel {
   final String firstName;
   final String lastName;
   final String email;
@@ -13,7 +15,7 @@ class EditProfileState {
   final String? errorMessage;
   final bool saveSuccess;
 
-  const EditProfileState({
+  const EditProfileModel({
     required this.firstName,
     required this.lastName,
     required this.email,
@@ -29,8 +31,8 @@ class EditProfileState {
     required this.saveSuccess,
   });
 
-  factory EditProfileState.initial() {
-    return const EditProfileState(
+  factory EditProfileModel.initial() {
+    return const EditProfileModel(
       firstName: '',
       lastName: '',
       email: '',
@@ -47,7 +49,7 @@ class EditProfileState {
     );
   }
 
-  EditProfileState copyWith({
+  EditProfileModel copyWith({
     String? firstName,
     String? lastName,
     String? email,
@@ -63,7 +65,7 @@ class EditProfileState {
     bool clearErrorMessage = false,
     bool? saveSuccess,
   }) {
-    return EditProfileState(
+    return EditProfileModel(
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       email: email ?? this.email,

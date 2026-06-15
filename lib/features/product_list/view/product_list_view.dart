@@ -1,20 +1,29 @@
 part of '../product_list_imports.dart';
-
-class ProductListPage extends StatefulWidget {
+class ProductListArgs {
   final String title;
   final String categoryId;
 
-  const ProductListPage({
+  const ProductListArgs({
+    required this.title,
+    required this.categoryId,
+  });
+}
+
+class ProductListView extends StatefulWidget {
+  final String title;
+  final String categoryId;
+
+  const ProductListView({
     super.key,
     required this.title,
     required this.categoryId,
   });
 
   @override
-  State<ProductListPage> createState() => _ProductListPageState();
+  State<ProductListView> createState() => _ProductListViewState();
 }
 
-class _ProductListPageState extends State<ProductListPage> {
+class _ProductListViewState extends State<ProductListView> {
   late final ProductListViewModel _viewModel;
   late final ScrollController _scrollController;
 

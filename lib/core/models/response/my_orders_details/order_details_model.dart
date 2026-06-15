@@ -1,24 +1,24 @@
-part of '../my_order_imports.dart';
+part of '../../../../features/my_order_details/my_order_imports.dart';
 
-class OrderDetailsData extends Equatable {
+class OrderDetailsModel extends Equatable {
   final bool isLoading;
   final OrderModel? order;
   final String? errorMessage;
 
-  const OrderDetailsData({
+  const OrderDetailsModel({
     this.isLoading = false,
     this.order,
     this.errorMessage,
   });
 
-  OrderDetailsData copyWith({
+  OrderDetailsModel copyWith({
     bool? isLoading,
     OrderModel? order,
     String? errorMessage,
     bool clearErrorMessage = false,
     bool clearOrder = false,
   }) {
-    return OrderDetailsData(
+    return OrderDetailsModel(
       isLoading: isLoading ?? this.isLoading,
       order: clearOrder ? null : (order ?? this.order),
       errorMessage: clearErrorMessage ? null : (errorMessage ?? this.errorMessage),

@@ -5,8 +5,8 @@ class HomeViewModel {
   final ApiService _apiService = sl<ApiService>();
 
   /// Cubit
-  final GenericCubit<HomeData> homeCubit =
-  GenericCubit<HomeData>(const HomeData());
+  final GenericCubit<HomeModel> homeCubit =
+  GenericCubit<HomeModel>(const HomeModel());
 
   void changeBannerIndex(int index) {
     homeCubit.onUpdateData(
@@ -26,7 +26,7 @@ class HomeViewModel {
     );
   }
 
-  Future<List<HomeCmsResponse>> _fetchHomeData() async {
+  Future<List<HomeCmsModel>> _fetchHomeData() async {
     final response = await _apiService.get(
       endPoint: ApiConstants.homeCmsPage,
     );
@@ -34,11 +34,11 @@ class HomeViewModel {
     final List<dynamic> data = response.data as List<dynamic>;
 
     return data
-        .map((e) => HomeCmsResponse.fromJson(e as Map<String, dynamic>))
+        .map((e) => HomeCmsModel.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
-  Future<List<ProductResponse>> _getSectionProducts({
+  Future<List<ProductModel>> _getSectionProducts({
     required String seeAllQuery,
   }) async {
     final cleanedQuery = seeAllQuery.startsWith('?')
@@ -56,7 +56,7 @@ class HomeViewModel {
 
     if (data is List) {
       return data
-          .map((e) => ProductResponse.fromJson(e as Map<String, dynamic>))
+          .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
           .toList();
     }
 
@@ -64,15 +64,15 @@ class HomeViewModel {
       final List<dynamic> items = data['items'] as List<dynamic>;
 
       return items
-          .map((e) => ProductResponse.fromJson(e as Map<String, dynamic>))
+          .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
           .toList();
     }
 
     return [];
   }
 
-  Future<List<ProductResponse>> _getProductsForBlock(
-      HomeMobileBlockResponse? block,
+  Future<List<ProductModel>> _getProductsForBlock(
+      HomeMobileBlockModel? block,
       ) async {
     final seeAllQuery = block?.seeAll.trim() ?? '';
 
@@ -104,20 +104,20 @@ class HomeViewModel {
     try {
       final response = await _fetchHomeData();
 
-      List<HomeSliderItemResponse> banners = [];
-      List<HomeSliderItemResponse> secondaryBanners = [];
+      List<HomeSliderItemModel> banners = [];
+      List<HomeSliderItemModel> secondaryBanners = [];
 
-      List<HomeSubCategoryResponse> offers = [];
-      List<HomeSubCategoryResponse> categories = [];
-      List<HomeSubCategoryResponse> goals = [];
-      List<HomeSubCategoryResponse> concerns = [];
-      List<HomeBrandResponse> brands = [];
+      List<HomeSubCategoryModel> offers = [];
+      List<HomeSubCategoryModel> categories = [];
+      List<HomeSubCategoryModel> goals = [];
+      List<HomeSubCategoryModel> concerns = [];
+      List<HomeBrandModel> brands = [];
 
-      HomeMobileBlockResponse? bestSellerBlock;
-      HomeMobileBlockResponse? momBabyBlock;
-      HomeMobileBlockResponse? homeCareBlock;
-      HomeMobileBlockResponse? feminineCareBlock;
-      HomeMobileBlockResponse? menCareBlock;
+      HomeMobileBlockModel? bestSellerBlock;
+      HomeMobileBlockModel? momBabyBlock;
+      HomeMobileBlockModel? homeCareBlock;
+      HomeMobileBlockModel? feminineCareBlock;
+      HomeMobileBlockModel? menCareBlock;
 
       for (final item in response) {
         if (item.slider.isNotEmpty) {

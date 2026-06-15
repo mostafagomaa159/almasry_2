@@ -1,30 +1,30 @@
 
 
-import 'package:almasry_2/core/models/response/home/home_brands_data_response.dart';
-import 'package:almasry_2/core/models/response/home/home_mobile_block_response.dart';
-import 'package:almasry_2/core/models/response/home/home_slider_item_response.dart';
+import 'package:almasry_2/core/models/response/home/home_brands_data_model.dart';
+import 'package:almasry_2/core/models/response/home/home_mobile_block_model.dart';
+import 'package:almasry_2/core/models/response/home/home_slider_item_model.dart';
 
-class HomeCmsResponse {
-  final List<HomeSliderItemResponse> slider;
-  final HomeMobileBlockResponse? mobileBlock;
-  final HomeBrandsDataResponse? brandsData;
+class HomeCmsModel {
+  final List<HomeSliderItemModel> slider;
+  final HomeMobileBlockModel? mobileBlock;
+  final HomeBrandsDataModel? brandsData;
 
-  const HomeCmsResponse({
+  const HomeCmsModel({
     required this.slider,
     this.mobileBlock,
     this.brandsData,
   });
 
-  factory HomeCmsResponse.fromJson(Map<String, dynamic> json) {
-    return HomeCmsResponse(
+  factory HomeCmsModel.fromJson(Map<String, dynamic> json) {
+    return HomeCmsModel(
       slider: (json['slider'] as List<dynamic>? ?? [])
-          .map((e) => HomeSliderItemResponse.fromJson(e))
+          .map((e) => HomeSliderItemModel.fromJson(e))
           .toList(),
       mobileBlock: json['mobileBlock'] != null
-          ? HomeMobileBlockResponse.fromJson(json['mobileBlock'])
+          ? HomeMobileBlockModel.fromJson(json['mobileBlock'])
           : null,
       brandsData: json['brandsData'] != null
-          ? HomeBrandsDataResponse.fromJson(json['brandsData'])
+          ? HomeBrandsDataModel.fromJson(json['brandsData'])
           : null,
     );
   }

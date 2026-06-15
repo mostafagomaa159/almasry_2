@@ -1,7 +1,7 @@
 part of '../product_details_imports.dart';
 
 class ProductDetailsInfoSection extends StatelessWidget {
-  final ProductResponse product;
+  final ProductModel product;
 
   const ProductDetailsInfoSection({
     super.key,
@@ -47,7 +47,7 @@ class ProductDetailsInfoSection extends StatelessWidget {
     );
   }
 
-  List<_ProductInfoItem> _buildAttributes(ProductResponse product) {
+  List<_ProductInfoItem> _buildAttributes(ProductModel product) {
     final items = <_ProductInfoItem>[
       _ProductInfoItem(
         label: 'علامة تجارية',
@@ -103,13 +103,13 @@ class ProductDetailsInfoSection extends StatelessWidget {
     return items.where((e) => e.value.trim().isNotEmpty).toList();
   }
 
-  String _getCustomAttributeValue(ProductResponse product, String code) {
+  String _getCustomAttributeValue(ProductModel product, String code) {
     try {
-      final attribute = product.customAttributes?.firstWhere(
+      final attribute = product.customAttributes.firstWhere(
             (item) => item.attributeCode == code,
       );
 
-      final value = attribute?.value;
+      final value = attribute.value;
       if (value == null) return '';
 
       if (value is List) {

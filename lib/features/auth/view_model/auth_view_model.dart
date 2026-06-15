@@ -3,8 +3,8 @@ part of '../auth_imports.dart';
 class AuthViewModel {
   final ApiService _apiService = sl<ApiService>();
 
-  final GenericCubit<AuthData> authCubit =
-  GenericCubit<AuthData>(const AuthData());
+  final GenericCubit<UserModel> authCubit =
+  GenericCubit<UserModel>(const UserModel());
 
   void togglePasswordVisibility() {
     authCubit.onUpdateData(
@@ -170,7 +170,7 @@ class AuthViewModel {
   }
 
   Future<Map<String, dynamic>> _forgetPassword({
-    required ForgetPasswordRequest request,
+    required ForgetPasswordModel request,
   }) async {
     final response = await _apiService.post(
       endPoint: ApiConstants.forgetPassword,
@@ -180,7 +180,7 @@ class AuthViewModel {
     return Map<String, dynamic>.from(response.data as Map);
   }
 
-  Future<ActivateAccountResponse> _activateAccount({
+  Future<ActivateAccountModel> _activateAccount({
     required ActivateAccountRequest request,
   }) async {
     final response = await _apiService.post(
@@ -188,20 +188,20 @@ class AuthViewModel {
       data: request.toJson(),
     );
 
-    return ActivateAccountResponse.fromJson(
+    return ActivateAccountModel.fromJson(
       response.data as Map<String, dynamic>,
     );
   }
 
-  Future<AuthAfterOtpResponse> _loginAfterOtp({
-    required AuthAfterOtpRequest request,
+  Future<RegisterCustomerOtpModel> _loginAfterOtp({
+    required AuthAfterOtpModel request,
   }) async {
     final response = await _apiService.post(
       endPoint: ApiConstants.authAfterOtp,
       data: request.toJson(),
     );
 
-    return AuthAfterOtpResponse.fromJson(
+    return RegisterCustomerOtpModel.fromJson(
       response.data as Map<String, dynamic>,
     );
   }
@@ -271,7 +271,7 @@ class AuthViewModel {
 
     try {
       final normalizedPhone = _normalizePhone(phone);
-      final request = ForgetPasswordRequest(identity: normalizedPhone);
+      final request = ForgetPasswordModel(identity: normalizedPhone);
 
       final response = await _forgetPassword(request: request);
 
@@ -401,7 +401,7 @@ class AuthViewModel {
         return false;
       }
 
-      final loginRequest = AuthAfterOtpRequest(mobile: phone);
+      final loginRequest = AuthAfterOtpModel(mobile: phone);
 
       final loginResponse = await _loginAfterOtp(
         request: loginRequest,

@@ -1,7 +1,7 @@
 part of '../home_imports.dart';
 
 class BrandStrip extends StatelessWidget {
-  final List<HomeBrandResponse> brands;
+  final List<HomeBrandModel> brands;
 
   const BrandStrip({
     super.key,
@@ -35,7 +35,7 @@ class BrandStrip extends StatelessWidget {
 }
 
 class _BrandItem extends StatelessWidget {
-  final HomeBrandResponse brand;
+  final HomeBrandModel brand;
 
   const _BrandItem({
     required this.brand,

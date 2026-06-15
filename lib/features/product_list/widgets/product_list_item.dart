@@ -1,7 +1,7 @@
 part of '../product_list_imports.dart';
 
 class ProductListItem extends StatelessWidget {
-  final ProductResponse product;
+  final ProductModel product;
   final int quantity;
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;

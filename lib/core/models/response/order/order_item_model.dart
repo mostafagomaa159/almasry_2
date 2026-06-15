@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-class OrderItemResponse extends Equatable {
+class OrderItemModel extends Equatable {
   final int itemId;
   final String name;
   final String sku;
@@ -10,7 +10,7 @@ class OrderItemResponse extends Equatable {
   final double rowTotal;
   final String productImage;
 
-  const OrderItemResponse({
+  const OrderItemModel({
     required this.itemId,
     required this.name,
     required this.sku,
@@ -22,11 +22,11 @@ class OrderItemResponse extends Equatable {
     required this.productImage,
   });
 
-  factory OrderItemResponse.fromJson(Map<String, dynamic> json) {
+  factory OrderItemModel.fromJson(Map<String, dynamic> json) {
     final extensionAttributes =
         json['extension_attributes'] as Map<String, dynamic>? ?? {};
 
-    return OrderItemResponse(
+    return OrderItemModel(
       itemId: int.tryParse(json['item_id']?.toString() ?? '0') ?? 0,
       name: json['name']?.toString() ?? '',
       sku: json['sku']?.toString() ?? '',

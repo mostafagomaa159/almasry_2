@@ -1,20 +1,20 @@
 
-import 'home_brand_response.dart';
+import 'home_brand_model.dart';
 
-class HomeBrandsDataResponse {
+class HomeBrandsDataModel {
   final String title;
-  final List<HomeBrandResponse> brands;
+  final List<HomeBrandModel> brands;
 
-  const HomeBrandsDataResponse({
+  const HomeBrandsDataModel({
     required this.title,
     required this.brands,
   });
 
-  factory HomeBrandsDataResponse.fromJson(Map<String, dynamic> json) {
-    return HomeBrandsDataResponse(
+  factory HomeBrandsDataModel.fromJson(Map<String, dynamic> json) {
+    return HomeBrandsDataModel(
       title: json['title']?.toString() ?? '',
       brands: (json['brands'] as List<dynamic>? ?? [])
-          .map((e) => HomeBrandResponse.fromJson(e))
+          .map((e) => HomeBrandModel.fromJson(e))
           .toList(),
     );
   }

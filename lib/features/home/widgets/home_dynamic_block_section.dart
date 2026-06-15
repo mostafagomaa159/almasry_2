@@ -3,9 +3,9 @@ part of '../home_imports.dart';
 class HomeDynamicBlockSection extends StatefulWidget {
   final String title;
   final bool isArabic;
-  final HomeMobileBlockResponse block;
-  final List<ProductResponse> products;
-  final List<HomeSubCategoryResponse>? overrideSubCategories;
+  final HomeMobileBlockModel block;
+  final List<ProductModel> products;
+  final List<HomeSubCategoryModel>? overrideSubCategories;
 
   const HomeDynamicBlockSection({
     super.key,

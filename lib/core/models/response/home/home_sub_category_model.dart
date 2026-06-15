@@ -1,4 +1,4 @@
-class HomeSubCategoryResponse {
+class HomeSubCategoryModel {
   final String id;
   final String parentId;
   final String name;
@@ -6,7 +6,7 @@ class HomeSubCategoryResponse {
   final String categoryColor;
   final int productCount;
 
-  const HomeSubCategoryResponse({
+  const HomeSubCategoryModel({
     required this.id,
     required this.parentId,
     required this.name,
@@ -15,8 +15,8 @@ class HomeSubCategoryResponse {
     required this.productCount,
   });
 
-  factory HomeSubCategoryResponse.fromJson(Map<String, dynamic> json) {
-    return HomeSubCategoryResponse(
+  factory HomeSubCategoryModel.fromJson(Map<String, dynamic> json) {
+    return HomeSubCategoryModel(
       id: json['id']?.toString() ?? '',
       parentId: json['parentId']?.toString() ?? '',
       name: json['name']?.toString() ?? '',

@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-class PaymentInfoResponse extends Equatable {
-  const PaymentInfoResponse();
+class PaymentInfoModel extends Equatable {
+  const PaymentInfoModel();
 
   @override
   List<Object?> get props => [];

@@ -6,7 +6,7 @@ class ProductListViewModel {
 
   /// Cubit
   final GenericCubit<ProductListData> productListCubit =
-  GenericCubit<ProductListData>(const ProductListData());
+      GenericCubit<ProductListData>(const ProductListData.ProductListModel());
 
   String _extractApiMessage(DioException e) {
     final data = e.response?.data;
@@ -28,10 +28,8 @@ class ProductListViewModel {
     return e.message ?? 'Something went wrong';
   }
 
-  Future<ProductListPageModel> _fetchProducts(ProductListRequest request) async {
-    final response = await _apiService.get(
-      endPoint: request.endPoint,
-    );
+  Future<ProductListModel> _fetchProducts(ProductListRequest request) async {
+    final response = await _apiService.get(endPoint: request.endPoint);
 
     final data = response.data;
 
@@ -40,23 +38,17 @@ class ProductListViewModel {
       final totalCount = (data['total_count'] as num?)?.toInt() ?? 0;
 
       final items = itemsJson
-          .map((e) => ProductResponse.fromJson(e as Map<String, dynamic>))
+          .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
           .toList();
 
-      return ProductListPageModel(items: items, totalCount: totalCount);
+      return ProductListModel(items: items, totalCount: totalCount);
     }
 
-    return const ProductListPageModel(items: [], totalCount: 0);
+    return const ProductListModel(items: [], totalCount: 0);
   }
 
-  Future<void> init({
-    required String title,
-    required String categoryId,
-  }) async {
-    await loadInitialProducts(
-      title: title,
-      categoryId: categoryId,
-    );
+  Future<void> init({required String title, required String categoryId}) async {
+    await loadInitialProducts(title: title, categoryId: categoryId);
   }
 
   Future<void> loadInitialProducts({
@@ -81,10 +73,7 @@ class ProductListViewModel {
     );
 
     try {
-      final request = ProductListRequest(
-        categoryId: categoryId,
-        page: 1,
-      );
+      final request = ProductListRequest(categoryId: categoryId, page: 1);
 
       final result = await _fetchProducts(request);
 
@@ -158,10 +147,7 @@ class ProductListViewModel {
     if (current.categoryId.isEmpty) return;
 
     productListCubit.onUpdateData(
-      current.copyWith(
-        isLoadingMore: true,
-        clearErrorMessage: true,
-      ),
+      current.copyWith(isLoadingMore: true, clearErrorMessage: true),
     );
 
     final nextPage = current.currentPage + 1;
@@ -204,7 +190,7 @@ class ProductListViewModel {
     }
   }
 
-  void navToProductDetails(BuildContext context, ProductResponse product) {
+  void navToProductDetails(BuildContext context, ProductModel product) {
     final sku = product.sku ?? '';
     if (sku.isEmpty) return;
 
@@ -217,7 +203,4 @@ class ProductListViewModel {
       ),
     );
   }
-
-
-
 }

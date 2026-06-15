@@ -1,7 +1,7 @@
 
-import 'package:almasry_2/core/models/response/home/product_custom_attribute_model.dart';
-import 'package:almasry_2/core/models/response/home/product_extension_attributes_model.dart';
-import 'package:almasry_2/core/models/response/home/product_media_gallery_entry_model.dart';
+import 'package:almasry_2/core/models/response/product_list/product_custom_attribute_model.dart';
+import 'package:almasry_2/core/models/response/product_list/product_extension_attributes_model.dart';
+import 'package:almasry_2/core/models/response/product_list/product_media_gallery_entry_model.dart';
 
 class ProductModel {
   final int id;

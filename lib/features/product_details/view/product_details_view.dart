@@ -1,5 +1,13 @@
 part of '../product_details_imports.dart';
 
+class ProductDetailsArgs {
+  final String sku;
+  final String? title;
+  final String? imagePath;
+
+  const ProductDetailsArgs({required this.sku, this.title, this.imagePath});
+}
+
 class ProductDetailsView extends StatefulWidget {
   final ProductDetailsArgs args;
 
@@ -18,9 +26,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     viewModel = ProductDetailsViewModel()..init(sku: widget.args.sku);
   }
 
-
-
-  Future<void> _toggleFavorite(ProductResponse product) async {
+  Future<void> _toggleFavorite(ProductModel product) async {
     final favoriteProduct = FavoriteProductModel(
       id: product.id.toString(),
       title: product.name,
@@ -31,7 +37,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
       description: product.description,
     );
 
-    await context.read<FavoritesCubit>().toggleFavorite(favoriteProduct);
+    await sl<FavoritesViewModel>().toggleFavorite(favoriteProduct);
   }
 
   String _formatPrice(num? price) {
@@ -39,10 +45,10 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     return '${price.toStringAsFixed(2)} ${LocaleKeys.currency.tr()}';
   }
 
-  String _getCustomAttributeValue(ProductResponse product, String code) {
+  String _getCustomAttributeValue(ProductModel product, String code) {
     try {
       final attribute = product.customAttributes?.firstWhere(
-            (item) => item.attributeCode == code,
+        (item) => item.attributeCode == code,
       );
 
       final value = attribute?.value;
@@ -63,17 +69,16 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     final bool isArabic = context.locale.languageCode == 'ar';
 
     return BlocBuilder<
-        GenericCubit<ProductDetailsData>,
-        GenericState<ProductDetailsData>>(
+      GenericCubit<ProductDetailsModel>,
+      GenericState<ProductDetailsModel>
+    >(
       bloc: viewModel.productDetailsCubit,
       builder: (context, state) {
         final data = state.data;
 
         if (data.isLoading && data.product == null) {
           return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
+            body: Center(child: CircularProgressIndicator()),
           );
         }
 
@@ -83,10 +88,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
             body: Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24.w),
-                child: Text(
-                  data.errorMessage!,
-                  textAlign: TextAlign.center,
-                ),
+                child: Text(data.errorMessage!, textAlign: TextAlign.center),
               ),
             ),
           );
@@ -95,11 +97,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
         final product = data.product;
 
         if (product == null) {
-          return const Scaffold(
-            body: Center(
-              child: Text('No product found'),
-            ),
-          );
+          return const Scaffold(body: Center(child: Text('No product found')));
         }
 
         final imagePath = product.imageUrl.isNotEmpty
@@ -151,17 +149,13 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                 isInStock: isInStock,
                               ),
                               SizedBox(height: 10.h),
-                              ProductDetailsInfoSection(
-                                product: product,
-                              ),
+                              ProductDetailsInfoSection(product: product),
                               SizedBox(height: 10.h),
                               ProductDetailsDescriptionSection(
                                 description: description,
                               ),
                               SizedBox(height: 10.h),
-                              ProductDetailsRatingSection(
-                                rating: rating,
-                              ),
+                              ProductDetailsRatingSection(rating: rating),
                               SizedBox(height: 24.h),
                             ],
                           ),

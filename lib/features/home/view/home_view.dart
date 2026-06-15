@@ -1,15 +1,15 @@
 part of '../home_imports.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeView extends StatefulWidget {
   final ProfileArgs? args;
 
-  const HomeScreen({super.key, this.args});
+  const HomeView({super.key, this.args});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeViewState extends State<HomeView> {
   late final PageController bannerController;
   late final HomeViewModel viewModel;
   Timer? bannerTimer;
@@ -49,8 +49,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final bool isArabic = context.locale.languageCode == 'ar';
 
     return BlocConsumer<
-        GenericCubit<HomeData>,
-        GenericState<HomeData>>(
+        GenericCubit<HomeModel>,
+        GenericState<HomeModel>>(
       bloc: viewModel.homeCubit,
       listener: (context, state) {
         final data = state.data;

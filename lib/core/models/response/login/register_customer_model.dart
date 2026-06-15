@@ -1,5 +1,5 @@
 
-class RegisterCustomerResponse {
+class RegisterCustomerModel {
   final String? token;
   final String? cartId;
   final String? activationCode;
@@ -7,7 +7,7 @@ class RegisterCustomerResponse {
   final bool? isVerified;
   final int? customerId;
 
-  const RegisterCustomerResponse({
+  const RegisterCustomerModel({
     this.token,
     this.cartId,
     this.activationCode,
@@ -16,10 +16,10 @@ class RegisterCustomerResponse {
     this.customerId,
   });
 
-  factory RegisterCustomerResponse.fromJson(Map<String, dynamic> json) {
+  factory RegisterCustomerModel.fromJson(Map<String, dynamic> json) {
     final customer = json['customer'] as Map<String, dynamic>?;
 
-    return RegisterCustomerResponse(
+    return RegisterCustomerModel(
       token: json['token']?.toString(),
       cartId: json['cart_id']?.toString(),
       activationCode: json['activation_code']?.toString(),

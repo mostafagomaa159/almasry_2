@@ -1,7 +1,7 @@
 part of '../orders_imports.dart';
 
 class OrderCard extends StatelessWidget {
-  final OrderResponse order;
+  final OrderModel order;
 
   const OrderCard({super.key, required this.order});
 

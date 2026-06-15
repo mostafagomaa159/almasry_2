@@ -1,11 +1,11 @@
-class RegisterRequest {
+class RegisterModel {
   final String name;
   final String email;
   final String phone;
   final String password;
   final String confirmPassword;
 
-  const RegisterRequest({
+  const RegisterModel({
     required this.name,
     required this.email,
     required this.phone,

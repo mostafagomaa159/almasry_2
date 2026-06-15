@@ -1,13 +1,13 @@
 part of '../auth_imports.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class RegisterCustomerView extends StatefulWidget {
+  const RegisterCustomerView({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<RegisterCustomerView> createState() => _RegisterCustomerViewState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterCustomerViewState extends State<RegisterCustomerView> {
   late final TextEditingController firstNameController;
   late final TextEditingController lastNameController;
   late final TextEditingController phoneController;
@@ -139,7 +139,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     final bool isArabic = context.locale.languageCode == 'ar';
 
-    return BlocBuilder<GenericCubit<AuthData>, GenericState<AuthData>>(
+    return BlocBuilder<GenericCubit<UserModel>, GenericState<UserModel>>(
       builder: (context, state) {
         final data = state.data;
 

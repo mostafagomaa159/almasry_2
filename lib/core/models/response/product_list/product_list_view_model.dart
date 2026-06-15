@@ -1,4 +1,4 @@
-part of '../product_list_imports.dart';
+part of '../../../../features/product_list/product_list_imports.dart';
 
 enum ProductListStatus {
   initial,
@@ -19,7 +19,7 @@ class ProductListData extends Equatable {
   final int totalCount;
   final Map<String, int> quantities;
 
-  const ProductListData({
+  const ProductListData.ProductListModel({
     this.status = ProductListStatus.initial,
     this.products = const [],
     this.errorMessage = '',
@@ -47,7 +47,7 @@ class ProductListData extends Equatable {
     bool resetProducts = false,
     bool resetQuantities = false,
   }) {
-    return ProductListData(
+    return ProductListData.ProductListModel(
       status: status ?? this.status,
       products: resetProducts ? [] : (products ?? this.products),
       errorMessage: clearErrorMessage ? '' : (errorMessage ?? this.errorMessage),

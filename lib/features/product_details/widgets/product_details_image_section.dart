@@ -2,7 +2,7 @@ part of '../product_details_imports.dart';
 
 class ProductDetailsImageSection extends StatefulWidget {
   final String imagePath;
-  final ProductResponse product;
+  final ProductModel product;
   final VoidCallback onFavoriteTap;
 
   const ProductDetailsImageSection({
@@ -36,12 +36,6 @@ class _ProductDetailsImageSectionState
       images.add(widget.imagePath);
     }
 
-    /// If later your product model supports gallery images,
-    /// append them here while avoiding duplicates.
-    ///
-    /// Example:
-    /// images.addAll(widget.product.galleryImages);
-
     return images.toSet().toList();
   }
 
@@ -51,8 +45,7 @@ class _ProductDetailsImageSectionState
 
   @override
   Widget build(BuildContext context) {
-    final currentImage =
-    _images.isNotEmpty ? _images[_selectedIndex] : '';
+    final currentImage = _images.isNotEmpty ? _images[_selectedIndex] : '';
 
     return Container(
       width: double.infinity,
@@ -72,7 +65,6 @@ class _ProductDetailsImageSectionState
                   ),
                 ),
 
-                /// Right actions
                 PositionedDirectional(
                   end: 0,
                   top: 48.h,
@@ -88,17 +80,21 @@ class _ProductDetailsImageSectionState
                         onTap: () {},
                       ),
                       SizedBox(height: 12.h),
-                      BlocBuilder<FavoritesCubit, FavoritesState>(
-                        builder: (context, favoritesState) {
-                          final isFavorite = favoritesState
-                              .isFavorite(widget.product.id.toString());
+                      BlocBuilder<
+                          GenericCubit<FavoritesModel>,
+                          GenericState<FavoritesModel>>(
+                        builder: (context, state) {
+                          final data = state.data;
+                          final isFavorite =
+                          data.isFavorite(widget.product.id.toString());
 
                           return _ActionButton(
                             icon: isFavorite
                                 ? Icons.favorite
                                 : Icons.favorite_border,
-                            iconColor:
-                            isFavorite ? Colors.red : const Color(0xFF202020),
+                            iconColor: isFavorite
+                                ? Colors.red
+                                : const Color(0xFF202020),
                             onTap: widget.onFavoriteTap,
                           );
                         },
@@ -107,7 +103,6 @@ class _ProductDetailsImageSectionState
                   ),
                 ),
 
-                /// Left compare button
                 PositionedDirectional(
                   start: 0,
                   top: 110.h,
@@ -161,10 +156,10 @@ class _ProductDetailsImageSectionState
           ],
 
           SizedBox(height: 18.h),
-        const  Divider(
+          const Divider(
             height: 1,
             thickness: 1,
-            color:  Color(0xFFE9E9E9),
+            color: Color(0xFFE9E9E9),
           ),
         ],
       ),

@@ -1,10 +1,10 @@
-import 'package:almasry_2/core/models/response/home/product_response.dart';
+import 'package:almasry_2/core/models/response/product_list/product_model.dart';
 
-class ProductListPageModel {
-  final List<ProductResponse> items;
+class ProductListModel {
+  final List<ProductModel> items;
   final int totalCount;
 
-  const ProductListPageModel({
+  const ProductListModel({
     required this.items,
     required this.totalCount,
   });

@@ -1,8 +1,8 @@
 
-class AuthAfterOtpRequest {
+class AuthAfterOtpModel {
   final String mobile;
 
-  const AuthAfterOtpRequest({
+  const AuthAfterOtpModel({
     required this.mobile,
   });
 

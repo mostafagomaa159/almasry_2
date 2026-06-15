@@ -2,7 +2,7 @@ part of '../home_imports.dart';
 
 class HomeProductsSection extends StatefulWidget {
   final bool isArabic;
-  final List<ProductResponse> products;
+  final List<ProductModel> products;
 
   const HomeProductsSection({
     super.key,

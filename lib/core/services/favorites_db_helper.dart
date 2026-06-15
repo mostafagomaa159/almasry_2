@@ -1,7 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../models/response/response_favorite_product.dart';
+import '../models/response/favorite/favorite_product_model.dart';
 
 class FavoritesDbHelper {
   FavoritesDbHelper._();

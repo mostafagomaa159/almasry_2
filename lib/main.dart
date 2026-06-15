@@ -1,10 +1,11 @@
 import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
 import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/localization/app_locale.dart';
+import 'package:almasry_2/core/models/response/favorite/favorites_model.dart';
 import 'package:almasry_2/core/routing/app_router.dart';
 import 'package:almasry_2/core/services/shared_prefs_helper.dart';
-import 'package:almasry_2/features/favorites/favorites_imports.dart';
 import 'package:almasry_2/features/splash/splash_imports.dart';
+import 'package:almasry_2/features/wishlist/wishlist_imports.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,16 +35,21 @@ class BlinkApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authViewModel = sl<AuthViewModel>();
+    final startupViewModel = sl<StartupViewModel>();
+    final favoritesViewModel = sl<FavoritesViewModel>();
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<StartupCubit>(create: (_) => StartupCubit()),
-        BlocProvider<GenericCubit<AuthData>>.value(
+        BlocProvider<GenericCubit<StartupData>>.value(
+          value: startupViewModel.startupCubit,
+        ),
+        BlocProvider<GenericCubit<UserModel>>.value(
           value: authViewModel.authCubit,
         ),
-        BlocProvider<FavoritesCubit>(
-          create: (_) => FavoritesCubit()..loadFavorites(),
+        BlocProvider<GenericCubit<FavoritesModel>>.value(
+          value: favoritesViewModel.favoritesCubit,
         ),
+
       ],
       child: ScreenUtilInit(
         designSize: const Size(430, 932),

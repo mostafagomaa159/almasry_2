@@ -4,7 +4,7 @@ class HomeBannerSlider extends StatelessWidget {
   final PageController controller;
   final int currentIndex;
   final ValueChanged<int> onPageChanged;
-  final List<HomeSliderItemResponse> banners;
+  final List<HomeSliderItemModel> banners;
 
   const HomeBannerSlider({
     super.key,

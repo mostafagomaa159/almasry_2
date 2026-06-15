@@ -2,8 +2,13 @@ part of '../profile_imports.dart';
 
 class AccountProfileView extends StatefulWidget {
   final ProfileArgs? args;
+  final ProfileViewModel viewModel;
 
-  const AccountProfileView({super.key, this.args});
+  const AccountProfileView({
+    super.key,
+    this.args,
+    required this.viewModel,
+  });
 
   @override
   State<AccountProfileView> createState() => _AccountProfileViewState();
@@ -128,12 +133,7 @@ class _AccountProfileViewState extends State<AccountProfileView> {
   }
 
   Future<void> _logout() async {
-    // Clear saved session data here if needed
-    // Example:
-    // await CacheHelper.removeData(key: 'token');
-    // await CacheHelper.removeData(key: 'user');
-    // await CacheHelper.removeData(key: 'isLoggedIn');
-    await context.read<StartupCubit>().logout();
+    await sl<StartupViewModel>().logout();
 
     if (!mounted) return;
 
@@ -149,6 +149,7 @@ class _AccountProfileViewState extends State<AccountProfileView> {
     final String birthDate = _buildBirthDate();
     final String hasPregnancy = _buildPregnancy();
     final String chronicDisease = _buildChronicDisease();
+    final viewModel = widget.viewModel;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
@@ -186,7 +187,6 @@ class _AccountProfileViewState extends State<AccountProfileView> {
                         );
                       },
                     ),
-
                     ProfileMenuItem(
                       title: LocaleKeys.profileShippingData.tr(),
                       onTap: () {},
@@ -206,7 +206,7 @@ class _AccountProfileViewState extends State<AccountProfileView> {
                     ProfileMenuItem(
                       title: LocaleKeys.changeLanguage.tr(),
                       onTap: () {
-                        context.read<ProfileCubit>().toggleLanguage(context);
+                        viewModel.toggleLanguage(context);
                       },
                     ),
                     ProfileMenuItem(

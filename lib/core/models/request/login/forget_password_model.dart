@@ -1,9 +1,9 @@
 
-class ForgetPasswordRequest {
+class ForgetPasswordModel {
 
   final String identity;
 
-  ForgetPasswordRequest({
+  ForgetPasswordModel({
     required this.identity,
   });
 

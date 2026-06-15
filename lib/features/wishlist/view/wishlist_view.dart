@@ -1,38 +1,45 @@
 part of '../../wishlist/wishlist_imports.dart';
 
-class WishlistScreen extends StatefulWidget {
-  const WishlistScreen({super.key});
+class WishlistView extends StatefulWidget {
+  const WishlistView({super.key});
 
   @override
-  State<WishlistScreen> createState() => _WishlistScreenState();
+  State<WishlistView> createState() => _WishlistViewState();
 }
 
-class _WishlistScreenState extends State<WishlistScreen> {
+class _WishlistViewState extends State<WishlistView> {
   @override
   void initState() {
     super.initState();
-    context.read<FavoritesCubit>().loadFavorites();
+    sl<FavoritesViewModel>().loadFavorites();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Wishlist'), centerTitle: true),
-      body: BlocBuilder<FavoritesCubit, FavoritesState>(
+      appBar: AppBar(
+        title: const Text('Wishlist'),
+        centerTitle: true,
+      ),
+      body: BlocBuilder<
+          GenericCubit<FavoritesModel>,
+          GenericState<FavoritesModel>>(
         builder: (context, state) {
-          if (state.isLoading) {
+          final data = state.data;
+
+          if (data.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (state.favorites.isEmpty) {
+          if (data.favorites.isEmpty) {
             return const WishlistEmptyView();
           }
 
           return ListView.builder(
             padding: EdgeInsets.all(16.w),
-            itemCount: state.favorites.length,
+            itemCount: data.favorites.length,
             itemBuilder: (context, index) {
-              final product = state.favorites[index];
+              final product = data.favorites[index];
 
               return WishlistItemCard(product: product);
             },

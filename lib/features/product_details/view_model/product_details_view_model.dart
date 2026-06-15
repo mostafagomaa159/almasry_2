@@ -5,8 +5,8 @@ class ProductDetailsViewModel {
   final ApiService _apiService = sl<ApiService>();
 
   /// Cubit
-  final GenericCubit<ProductDetailsData> productDetailsCubit =
-  GenericCubit<ProductDetailsData>(const ProductDetailsData());
+  final GenericCubit<ProductDetailsModel> productDetailsCubit =
+  GenericCubit<ProductDetailsModel>(const ProductDetailsModel());
 
   String _extractApiMessage(DioException e) {
     final data = e.response?.data;
@@ -28,7 +28,7 @@ class ProductDetailsViewModel {
     return e.message ?? 'حدث خطأ غير متوقع';
   }
 
-  Future<ProductResponse> _fetchProductDetails({
+  Future<ProductModel> _fetchProductDetails({
     required String sku,
   }) async {
     final endPoint = '${ApiConstants.products}/$sku';
@@ -37,7 +37,7 @@ class ProductDetailsViewModel {
       endPoint: endPoint,
     );
 
-    return ProductResponse.fromJson(
+    return ProductModel.fromJson(
       response.data as Map<String, dynamic>,
     );
   }

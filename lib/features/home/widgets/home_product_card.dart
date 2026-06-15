@@ -54,7 +54,7 @@ class _ProductCardState extends State<ProductCard> {
       description: widget.description,
     );
 
-    await context.read<FavoritesCubit>().toggleFavorite(product);
+    await sl<FavoritesViewModel>().toggleFavorite(product);
   }
 
   void _incrementQuantity() {
@@ -127,7 +127,8 @@ class _ProductCardState extends State<ProductCard> {
                                 widget.imagePath,
                                 height: 110.h,
                                 fit: BoxFit.contain,
-                                errorBuilder: (context, error, stackTrace) {
+                                errorBuilder:
+                                    (context, error, stackTrace) {
                                   return Container(
                                     height: 100.h,
                                     width: 100.w,
@@ -151,10 +152,12 @@ class _ProductCardState extends State<ProductCard> {
 
                           Align(
                             alignment: AlignmentDirectional.topEnd,
-                            child: BlocBuilder<FavoritesCubit, FavoritesState>(
-                              builder: (context, favoritesState) {
+                            child: BlocBuilder<
+                                GenericCubit<FavoritesModel>,
+                                GenericState<FavoritesModel>>(
+                              builder: (context, state) {
                                 final isFavorite =
-                                favoritesState.isFavorite(widget.sku);
+                                state.data.isFavorite(widget.sku);
 
                                 return Material(
                                   color: Colors.transparent,
@@ -166,13 +169,16 @@ class _ProductCardState extends State<ProductCard> {
                                       height: 32.h,
                                       decoration: BoxDecoration(
                                         color: Colors.white,
-                                        borderRadius: BorderRadius.circular(10.r),
+                                        borderRadius:
+                                        BorderRadius.circular(10.r),
                                         border: Border.all(
                                           color: const Color(0xFFEAEAEA),
                                         ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.black.withValues(alpha: 0.04),
+                                            color: Colors.black.withValues(
+                                              alpha: 0.04,
+                                            ),
                                             blurRadius: 6,
                                             offset: const Offset(0, 2),
                                           ),
@@ -369,7 +375,9 @@ class _ProductCardState extends State<ProductCard> {
             color: isDisabled ? _disabledBgColor : Colors.white,
             borderRadius: BorderRadius.circular(8.r),
             border: Border.all(
-              color: isDisabled ? _disabledBorderColor : const Color(0xFFE6E6E6),
+              color: isDisabled
+                  ? _disabledBorderColor
+                  : const Color(0xFFE6E6E6),
             ),
           ),
           child: Icon(

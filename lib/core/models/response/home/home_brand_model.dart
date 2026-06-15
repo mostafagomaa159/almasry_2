@@ -1,16 +1,16 @@
-class HomeBrandResponse {
+class HomeBrandModel {
   final String id;
   final String name;
   final String image;
 
-  const HomeBrandResponse({
+  const HomeBrandModel({
     required this.id,
     required this.name,
     required this.image,
   });
 
-  factory HomeBrandResponse.fromJson(Map<String, dynamic> json) {
-    return HomeBrandResponse(
+  factory HomeBrandModel.fromJson(Map<String, dynamic> json) {
+    return HomeBrandModel(
       id: json['id']?.toString() ?? '',
       name: (json['Name']?.toString().isNotEmpty ?? false)
           ? json['Name'].toString()

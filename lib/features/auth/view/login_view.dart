@@ -1,13 +1,13 @@
 part of '../auth_imports.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class LoginView extends StatefulWidget {
+  const LoginView({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginViewState extends State<LoginView> {
   late final TextEditingController emailOrPhoneController;
   late final TextEditingController passwordController;
   late final TextEditingController phoneController;
@@ -84,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     await viewModel.login();
-    await context.read<StartupCubit>().saveLoggedIn();
+    await sl<StartupViewModel>().saveLoggedIn();
 
     if (!mounted) return;
 
@@ -143,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GenericCubit<AuthData>, GenericState<AuthData>>(
+    return BlocBuilder<GenericCubit<UserModel>, GenericState<UserModel>>(
       builder: (context, state) {
         final data = state.data;
 

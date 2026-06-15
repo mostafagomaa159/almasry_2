@@ -6,8 +6,9 @@ class WishlistItemCard extends StatelessWidget {
   const WishlistItemCard({super.key, required this.product});
 
   Future<void> _removeFromWishlist(BuildContext context) async {
-    await context.read<FavoritesCubit>().removeFavorite(product.id);
+    await sl<FavoritesViewModel>().removeFavorite(product.id);
   }
+
 
   void _openDetails(BuildContext context) {
     context.push(
