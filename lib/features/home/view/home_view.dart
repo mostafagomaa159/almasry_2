@@ -70,16 +70,18 @@ class _HomeViewState extends State<HomeView> {
             selectedIndex: data.selectedBottomNavIndex,
             cartCount: 10,
             onTap: (index) {
-              viewModel.changeBottomNavIndex(index);
-
               switch (index) {
                 case 0:
+                  viewModel.changeBottomNavIndex(index);
                   break;
                 case 1:
+                  context.push(AppRoutes.categories);
                   break;
                 case 2:
+                  viewModel.changeBottomNavIndex(index);
                   break;
                 case 3:
+                  viewModel.changeBottomNavIndex(index);
                   break;
                 case 4:
                   context.push(AppRoutes.profile, extra: widget.args);
@@ -87,6 +89,7 @@ class _HomeViewState extends State<HomeView> {
               }
             },
           ),
+
           body: SafeArea(
             top: false,
             child: Column(

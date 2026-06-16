@@ -1,5 +1,6 @@
 import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/features/auth/auth_imports.dart';
+import 'package:almasry_2/features/categories/categories_imports.dart';
 import 'package:almasry_2/features/edit_profile/edit_profile_imports.dart';
 import 'package:almasry_2/features/home/home_imports.dart';
 import 'package:almasry_2/features/my_order_details/my_order_imports.dart';
@@ -73,8 +74,14 @@ class AppRouter {
 
           return EditProfileView(args: args);
         },
-      )
-      ,
+      ),
+      GoRoute(
+        path: '/categories',
+        name: 'categories',
+        builder: (context, state) => const CategoriesView(),
+      ),
+
+
       GoRoute(
         path: AppRoutes.orders,
         name: 'orders',

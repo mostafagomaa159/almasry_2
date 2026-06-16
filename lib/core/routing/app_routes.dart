@@ -13,6 +13,8 @@ class AppRoutes {
   static const orderDetails = '/orderDetails';
   static const String productDetails = '/product-details';
   static const String productList = '/productList';
+  static const String categories = '/categories';
+
 
   static const String wishlist = '/wishlist';
 }
