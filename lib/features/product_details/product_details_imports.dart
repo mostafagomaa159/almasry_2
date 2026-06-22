@@ -7,6 +7,7 @@ import 'package:almasry_2/core/constants/app_images.dart';
 
 import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:almasry_2/core/models/response/favorite/favorites_model.dart';
+import 'package:almasry_2/core/models/response/product_details/product_details_args_model.dart';
 import 'package:almasry_2/core/models/response/product_list/product_model.dart';
 import 'package:almasry_2/core/services/api_services.dart';
 import 'package:almasry_2/features/wishlist/wishlist_imports.dart';

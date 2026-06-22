@@ -1,12 +1,5 @@
 part of '../product_details_imports.dart';
 
-class ProductDetailsArgs {
-  final String sku;
-  final String? title;
-  final String? imagePath;
-
-  const ProductDetailsArgs({required this.sku, this.title, this.imagePath});
-}
 
 class ProductDetailsView extends StatefulWidget {
   final ProductDetailsArgs args;

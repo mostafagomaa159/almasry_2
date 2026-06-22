@@ -7,17 +7,17 @@ enum StartupStatus {
   unauthenticated,
 }
 
-class StartupData {
+class SplashData {
   final StartupStatus status;
 
-  const StartupData({
+  const SplashData({
     this.status = StartupStatus.initial,
   });
 
-  StartupData copyWith({
+  SplashData copyWith({
     StartupStatus? status,
   }) {
-    return StartupData(
+    return SplashData(
       status: status ?? this.status,
     );
   }

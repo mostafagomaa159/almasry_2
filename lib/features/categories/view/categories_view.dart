@@ -9,15 +9,23 @@ class CategoriesView extends StatefulWidget {
 
 class _CategoriesViewState extends State<CategoriesView> {
   late final CategoriesViewModel viewModel;
+  late final TextEditingController searchController;
 
   @override
   void initState() {
     super.initState();
     viewModel = sl<CategoriesViewModel>();
+    searchController = TextEditingController();
 
     if (viewModel.categoriesCubit.state.data.rootCategory == null) {
       viewModel.loadCategories();
     }
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -57,11 +65,52 @@ class _CategoriesViewState extends State<CategoriesView> {
                 CategoriesSidebar(
                   categories: data.parentCategories,
                   selectedIndex: data.selectedParentIndex,
-                  onSelect: viewModel.selectParentCategory,
+                  onSelect: (index) {
+                    searchController.clear();
+                    viewModel.selectParentCategory(index);
+                  },
                 ),
                 Expanded(
-                  child: CategoriesChildrenSection(
-                    parentCategory: data.selectedParentCategory,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: searchController,
+                          onChanged: viewModel.updateSearchQuery,
+                          decoration: InputDecoration(
+                            hintText: 'Search subcategories...',
+                            prefixIcon: const Icon(Icons.search),
+                            suffixIcon: data.searchQuery.isNotEmpty
+                                ? IconButton(
+                              onPressed: () {
+                                searchController.clear();
+                                viewModel.clearSearch();
+                              },
+                              icon: const Icon(Icons.close),
+                            )
+                                : null,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Expanded(
+                          child: CategoriesChildrenSection(
+                            parentCategory: data.selectedParentCategory,
+                            childrenCategories: data.filteredChildren,
+                            searchQuery: data.searchQuery,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

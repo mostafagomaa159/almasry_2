@@ -3,12 +3,14 @@ part of '../../wishlist/wishlist_imports.dart';
 class WishlistItemCard extends StatelessWidget {
   final FavoriteProductModel product;
 
-  const WishlistItemCard({super.key, required this.product});
+  const WishlistItemCard({
+    super.key,
+    required this.product,
+  });
 
   Future<void> _removeFromWishlist(BuildContext context) async {
     await sl<FavoritesViewModel>().removeFavorite(product.id);
   }
-
 
   void _openDetails(BuildContext context) {
     context.push(
@@ -17,7 +19,50 @@ class WishlistItemCard extends StatelessWidget {
         sku: product.id,
         imagePath: product.imagePath,
         title: product.title,
+      ),
+    );
+  }
 
+  bool _isNetworkImage(String path) {
+    return path.startsWith('http://') || path.startsWith('https://');
+  }
+
+  Widget _buildImage(BuildContext context) {
+    final imagePath = product.imagePath.trim();
+
+    if (imagePath.isEmpty) {
+      return _imagePlaceholder();
+    }
+
+    if (_isNetworkImage(imagePath)) {
+      return Image.network(
+        imagePath,
+        width: 90.w,
+        height: 90.h,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => _imagePlaceholder(),
+      );
+    }
+
+    return Image.asset(
+      imagePath,
+      width: 90.w,
+      height: 90.h,
+      fit: BoxFit.cover,
+      errorBuilder: (_, __, ___) => _imagePlaceholder(),
+    );
+  }
+
+  Widget _imagePlaceholder() {
+    return Container(
+      width: 90.w,
+      height: 90.h,
+      color: Colors.grey.shade100,
+      alignment: Alignment.center,
+      child: Icon(
+        Icons.image_not_supported_outlined,
+        color: Colors.grey,
+        size: 24.sp,
       ),
     );
   }
@@ -36,20 +81,17 @@ class WishlistItemCard extends StatelessWidget {
           border: Border.all(color: const Color(0xFFECECEC)),
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12.r),
-              child: Image.asset(
-                product.imagePath,
-                width: 90.w,
-                height: 90.h,
-                fit: BoxFit.cover,
-              ),
+              child: _buildImage(context),
             ),
             SizedBox(width: 12.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     product.title,
@@ -74,6 +116,8 @@ class WishlistItemCard extends StatelessWidget {
                   SizedBox(height: 8.h),
                   Text(
                     product.price,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w800,
@@ -83,6 +127,8 @@ class WishlistItemCard extends StatelessWidget {
                   SizedBox(height: 4.h),
                   Text(
                     product.oldPrice,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 12.sp,
                       color: Colors.grey,
@@ -103,6 +149,7 @@ class WishlistItemCard extends StatelessWidget {
                   color: Color(0xFFFFF1F1),
                   shape: BoxShape.circle,
                 ),
+                alignment: Alignment.center,
                 child: Icon(
                   Icons.favorite,
                   color: AppColors.primaryRed,

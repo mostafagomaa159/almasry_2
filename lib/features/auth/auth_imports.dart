@@ -11,6 +11,7 @@ import 'package:almasry_2/core/models/request/login/auth_after_otp_model.dart';
 import 'package:almasry_2/core/models/request/login/forget_password_model.dart';
 import 'package:almasry_2/core/models/response/login/activate_account_model.dart';
 import 'package:almasry_2/core/models/response/login/register_customer_otp_model.dart';
+import 'package:almasry_2/core/models/response/profile/profile_args_model.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/core/services/api_services.dart';
 import 'package:almasry_2/core/utils/app_logo.dart';

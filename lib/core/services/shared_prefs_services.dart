@@ -1,8 +1,8 @@
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedPrefsHelper {
-  SharedPrefsHelper._();
+class SharedPrefsServices {
+  SharedPrefsServices._();
 
   static SharedPreferences? _prefs;
 

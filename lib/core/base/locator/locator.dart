@@ -16,8 +16,8 @@ Future<void> setupServiceLocator() async {
         () => AuthViewModel(),
   );
 
-  sl.registerLazySingleton<StartupViewModel>(
-        () => StartupViewModel(),
+  sl.registerLazySingleton<SplashViewModel>(
+        () => SplashViewModel(),
   );
 
   sl.registerLazySingleton<CategoriesViewModel>(

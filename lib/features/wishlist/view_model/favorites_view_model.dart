@@ -10,7 +10,7 @@ class FavoritesViewModel {
       favoritesCubit.state.data.copyWith(isLoading: true),
     );
 
-    final favorites = await FavoritesRepository.instance.getFavorites();
+    final favorites = await DbServices.instance.getFavorites();
 
     favoritesCubit.onUpdateData(
       favoritesCubit.state.data.copyWith(
@@ -21,12 +21,12 @@ class FavoritesViewModel {
   }
 
   Future<void> toggleFavorite(FavoriteProductModel product) async {
-    await FavoritesRepository.instance.toggleFavorite(product);
+    await DbServices.instance.toggleFavorite(product);
     await loadFavorites();
   }
 
   Future<void> removeFavorite(String productId) async {
-    await FavoritesRepository.instance.removeFavorite(productId);
+    await DbServices.instance.removeFavorite(productId);
     await loadFavorites();
   }
 

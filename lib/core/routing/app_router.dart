@@ -1,3 +1,7 @@
+import 'package:almasry_2/core/models/response/edit_profile/edit_profile_args_model.dart';
+import 'package:almasry_2/core/models/response/product_details/product_details_args_model.dart';
+import 'package:almasry_2/core/models/response/product_list/product_list_args_model.dart';
+import 'package:almasry_2/core/models/response/profile/profile_args_model.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/features/auth/auth_imports.dart';
 import 'package:almasry_2/features/categories/categories_imports.dart';
@@ -10,17 +14,12 @@ import 'package:almasry_2/features/product_list/product_list_imports.dart';
 import 'package:almasry_2/features/profile/profile_imports.dart';
 import 'package:almasry_2/features/splash/splash_imports.dart';
 import 'package:almasry_2/features/wishlist/wishlist_imports.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: AppRoutes.startup,
+    initialLocation: AppRoutes.splash,
     routes: [
-      GoRoute(
-        path: AppRoutes.startup,
-        builder: (context, state) => const StartupGate(),
-      ),
       GoRoute(
         path: AppRoutes.splash,
         builder: (context, state) => const SplashView(),
@@ -67,7 +66,7 @@ class AppRouter {
         },
       ),
       GoRoute(
-        path: '/edit-profile',
+        path:  AppRoutes.editProfile,
         name: 'editProfile',
         builder: (context, state) {
           final args = state.extra as EditProfileArgs?;
@@ -76,7 +75,7 @@ class AppRouter {
         },
       ),
       GoRoute(
-        path: '/categories',
+        path:  AppRoutes.categories,
         name: 'categories',
         builder: (context, state) => const CategoriesView(),
       ),
@@ -108,6 +107,7 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.wishlist,
+        name: 'wishlist',
         builder: (context, state) => const WishlistView(),
       ),
     ],

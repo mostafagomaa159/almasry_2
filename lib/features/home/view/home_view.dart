@@ -41,16 +41,11 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     final bool isArabic = context.locale.languageCode == 'ar';
 
-    return BlocConsumer<
-        GenericCubit<HomeModel>,
-        GenericState<HomeModel>>(
+    return BlocConsumer<GenericCubit<HomeModel>, GenericState<HomeModel>>(
       bloc: viewModel.homeCubit,
       listener: (context, state) {
         final data = state.data;
@@ -99,9 +94,7 @@ class _HomeViewState extends State<HomeView> {
                   child: Builder(
                     builder: (_) {
                       if (data.isLoading) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
+                        return const Center(child: CircularProgressIndicator());
                       }
 
                       if (data.errorMessage != null &&
@@ -129,7 +122,9 @@ class _HomeViewState extends State<HomeView> {
                                 SizedBox(height: 10.h),
 
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 14.w),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 14.w,
+                                  ),
                                   child: const HomeSearchBar(),
                                 ),
 
@@ -146,7 +141,9 @@ class _HomeViewState extends State<HomeView> {
                                 ],
 
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 14.w),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 14.w,
+                                  ),
                                   child: Row(
                                     children: [
                                       Expanded(
@@ -155,7 +152,9 @@ class _HomeViewState extends State<HomeView> {
                                               ? 'تحليل البشرة'
                                               : 'Skin Analysis',
                                           iconPath: AppImages.mask,
-                                          backgroundColor: const Color(0xFFFDEBEC),
+                                          backgroundColor: const Color(
+                                            0xFFFDEBEC,
+                                          ),
                                           onTap: () {},
                                         ),
                                       ),
@@ -166,7 +165,9 @@ class _HomeViewState extends State<HomeView> {
                                               ? 'البحث الذكي'
                                               : 'Smart Search',
                                           iconPath: AppImages.ai,
-                                          backgroundColor: const Color(0xFFF3F0FF),
+                                          backgroundColor: const Color(
+                                            0xFFF3F0FF,
+                                          ),
                                           onTap: () {},
                                         ),
                                       ),
@@ -207,7 +208,9 @@ class _HomeViewState extends State<HomeView> {
                                   SizedBox(height: 16.h),
 
                                   if (data.bestSellerProducts.isEmpty)
-                                    const Center(child: Text('No bestseller products')),
+                                    const Center(
+                                      child: Text('No bestseller products'),
+                                    ),
 
                                   if (data.bestSellerProducts.isNotEmpty)
                                     HomeProductsSection(
@@ -220,12 +223,12 @@ class _HomeViewState extends State<HomeView> {
 
                                 if (data.brands.isNotEmpty) ...[
                                   HomeSectionHeader(
-                                    title: isArabic ? 'العلامات التجارية' : 'Brands',
+                                    title: isArabic
+                                        ? 'العلامات التجارية'
+                                        : 'Brands',
                                   ),
                                   SizedBox(height: 12.h),
-                                  BrandStrip(
-                                    brands: data.brands,
-                                  ),
+                                  BrandStrip(brands: data.brands),
                                   SizedBox(height: 24.h),
                                 ],
 

@@ -88,6 +88,7 @@ class LocaleKeys {
 
   static const String profileOrders = 'profile_orders';
   static const String profileShippingData = 'profile_shipping_data';
+
   static const String profilePaymentMethods = 'profile_payment_methods';
   static const String profileNews = 'profile_news';
   static const String profilePointsProgram = 'profile_points_program';

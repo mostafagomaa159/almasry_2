@@ -41,7 +41,5 @@ class ProfileViewModel {
     await changeLanguage(context, newLanguageCode);
   }
 
-  void dispose() {
-    profileCubit.close();
-  }
+
 }

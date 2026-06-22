@@ -3,7 +3,7 @@ import 'package:almasry_2/core/base/bloc/generic_state.dart';
 import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/constants/app_api.dart';
 import 'package:almasry_2/core/models/response/categorie/category_model.dart';
-import 'package:almasry_2/core/models/response/categorie/category_response_model.dart';
+import 'package:almasry_2/core/models/response/categorie/category_data_model.dart';
 import 'package:almasry_2/core/services/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

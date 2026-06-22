@@ -3,10 +3,10 @@ import 'package:sqflite/sqflite.dart';
 
 import '../models/response/favorite/favorite_product_model.dart';
 
-class FavoritesDbHelper {
-  FavoritesDbHelper._();
+class DbServices {
+  DbServices._();
 
-  static final FavoritesDbHelper instance = FavoritesDbHelper._();
+  static final DbServices instance = DbServices._();
 
   static Database? _database;
 

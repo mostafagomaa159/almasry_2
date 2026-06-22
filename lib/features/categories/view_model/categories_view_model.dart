@@ -17,9 +17,7 @@ class CategoriesViewModel {
     );
 
     try {
-      final response = await apiService.get(
-        endPoint: ApiConstants.categories,
-      );
+      final response = await apiService.get(endPoint: ApiConstants.categories);
 
       final category = CategoryModel.fromJson(response.data);
 
@@ -28,6 +26,7 @@ class CategoriesViewModel {
           isLoading: false,
           rootCategory: category,
           selectedParentIndex: 0,
+          searchQuery: '',
           clearError: true,
         ),
       );
@@ -45,11 +44,20 @@ class CategoriesViewModel {
     categoriesCubit.onUpdateData(
       categoriesCubit.state.data.copyWith(
         selectedParentIndex: index,
+        searchQuery: '',
       ),
     );
   }
 
-  void dispose() {
-    categoriesCubit.close();
+  void updateSearchQuery(String value) {
+    categoriesCubit.onUpdateData(
+      categoriesCubit.state.data.copyWith(searchQuery: value),
+    );
+  }
+
+  void clearSearch() {
+    categoriesCubit.onUpdateData(
+      categoriesCubit.state.data.copyWith(searchQuery: ''),
+    );
   }
 }

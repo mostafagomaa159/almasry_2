@@ -13,9 +13,8 @@ class _SplashViewState extends State<SplashView>
   late final Animation<double> _fadeAnimation;
   late final Animation<double> _scaleAnimation;
   late final Animation<Offset> _slideAnimation;
-  Timer? _timer;
 
-  StartupViewModel get viewModel => sl<StartupViewModel>();
+  SplashViewModel get viewModel => sl<SplashViewModel>();
 
   @override
   void initState() {
@@ -58,21 +57,10 @@ class _SplashViewState extends State<SplashView>
 
     _controller.forward();
 
-    _timer = Timer(const Duration(seconds: 3), () async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-
-      await viewModel.completeFirstTime();
-
-      if (!mounted) return;
-      context.go(AppRoutes.login);
+      viewModel.checkAppStart();
     });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
@@ -80,20 +68,50 @@ class _SplashViewState extends State<SplashView>
     final bool isArabic = context.locale.languageCode == 'ar';
     final String logoPath = isArabic ? AppImages.logoAr : AppImages.logoEn;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Center(
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: SlideTransition(
-              position: _slideAnimation,
-              child: ScaleTransition(
-                scale: _scaleAnimation,
-                child: Image.asset(
-                  logoPath,
-                  width: 220,
-                  fit: BoxFit.contain,
+    return BlocListener<
+        GenericCubit<SplashData>,
+        GenericState<SplashData>>(
+      bloc: viewModel.splashCubit,
+      listener: (context, state) async {
+        switch (state.data.status) {
+          case StartupStatus.firstTime:
+            await Future.delayed(const Duration(seconds: 3));
+            await viewModel.completeFirstTime();
+            if (!mounted) return;
+            context.go(AppRoutes.login);
+            break;
+
+          case StartupStatus.authenticated:
+            await Future.delayed(const Duration(seconds: 3));
+            if (!mounted) return;
+            context.go(AppRoutes.home);
+            break;
+
+          case StartupStatus.unauthenticated:
+            await Future.delayed(const Duration(seconds: 3));
+            if (!mounted) return;
+            context.go(AppRoutes.login);
+            break;
+
+          case StartupStatus.initial:
+            break;
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Center(
+            child: FadeTransition(
+              opacity: _fadeAnimation,
+              child: SlideTransition(
+                position: _slideAnimation,
+                child: ScaleTransition(
+                  scale: _scaleAnimation,
+                  child: Image.asset(
+                    logoPath,
+                    width: 220,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
             ),

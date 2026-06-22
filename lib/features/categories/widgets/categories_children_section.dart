@@ -2,10 +2,14 @@ part of '../categories_imports.dart';
 
 class CategoriesChildrenSection extends StatelessWidget {
   final CategoryModel? parentCategory;
+  final List<CategoryModel> childrenCategories;
+  final String searchQuery;
 
   const CategoriesChildrenSection({
     super.key,
     required this.parentCategory,
+    required this.childrenCategories,
+    required this.searchQuery,
   });
 
   @override
@@ -15,8 +19,6 @@ class CategoriesChildrenSection extends StatelessWidget {
         child: Text('No category selected'),
       );
     }
-
-    final children = parentCategory!.childrenData;
 
     return Padding(
       padding: EdgeInsets.all(16.w),
@@ -40,12 +42,16 @@ class CategoriesChildrenSection extends StatelessWidget {
           ),
           SizedBox(height: 16.h),
           Expanded(
-            child: children.isEmpty
-                ? const Center(
-              child: Text('No subcategories found'),
+            child: childrenCategories.isEmpty
+                ? Center(
+              child: Text(
+                searchQuery.trim().isNotEmpty
+                    ? 'No matching subcategories found'
+                    : 'No subcategories found',
+              ),
             )
                 : GridView.builder(
-              itemCount: children.length,
+              itemCount: childrenCategories.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 12.w,
@@ -53,7 +59,9 @@ class CategoriesChildrenSection extends StatelessWidget {
                 childAspectRatio: 0.82,
               ),
               itemBuilder: (context, index) {
-                return CategoryGridItem(category: children[index]);
+                return CategoryGridItem(
+                  category: childrenCategories[index],
+                );
               },
             ),
           ),

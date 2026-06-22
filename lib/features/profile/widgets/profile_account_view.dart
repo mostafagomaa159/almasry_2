@@ -4,11 +4,7 @@ class AccountProfileView extends StatefulWidget {
   final ProfileArgs? args;
   final ProfileViewModel viewModel;
 
-  const AccountProfileView({
-    super.key,
-    this.args,
-    required this.viewModel,
-  });
+  const AccountProfileView({super.key, this.args, required this.viewModel});
 
   @override
   State<AccountProfileView> createState() => _AccountProfileViewState();
@@ -133,7 +129,7 @@ class _AccountProfileViewState extends State<AccountProfileView> {
   }
 
   Future<void> _logout() async {
-    await sl<StartupViewModel>().logout();
+    await sl<SplashViewModel>().logout();
 
     if (!mounted) return;
 
@@ -181,15 +177,14 @@ class _AccountProfileViewState extends State<AccountProfileView> {
 
                         if (email == null || email.isEmpty) return;
 
-                        context.pushNamed(
-                          'orders',
-                          extra: email,
-                        );
+                        context.pushNamed('orders', extra: email);
                       },
                     ),
                     ProfileMenuItem(
-                      title: LocaleKeys.profileShippingData.tr(),
-                      onTap: () {},
+                      title: LocaleKeys.wishlist.tr(),
+                      onTap: () {
+                        context.pushNamed('wishlist');
+                      },
                     ),
                     ProfileMenuItem(
                       title: LocaleKeys.profilePaymentMethods.tr(),

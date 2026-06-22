@@ -3,7 +3,7 @@ import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/localization/app_locale.dart';
 import 'package:almasry_2/core/models/response/favorite/favorites_model.dart';
 import 'package:almasry_2/core/routing/app_router.dart';
-import 'package:almasry_2/core/services/shared_prefs_helper.dart';
+import 'package:almasry_2/core/services/shared_prefs_services.dart';
 import 'package:almasry_2/features/splash/splash_imports.dart';
 import 'package:almasry_2/features/wishlist/wishlist_imports.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -16,7 +16,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setupServiceLocator();
   await EasyLocalization.ensureInitialized();
-  await SharedPrefsHelper.init();
+  await SharedPrefsServices.init();
 
   runApp(
     EasyLocalization(
@@ -35,13 +35,13 @@ class BlinkApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authViewModel = sl<AuthViewModel>();
-    final startupViewModel = sl<StartupViewModel>();
+    final startupViewModel = sl<SplashViewModel>();
     final favoritesViewModel = sl<FavoritesViewModel>();
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<GenericCubit<StartupData>>.value(
-          value: startupViewModel.startupCubit,
+        BlocProvider<GenericCubit<SplashData>>.value(
+          value: startupViewModel.splashCubit,
         ),
         BlocProvider<GenericCubit<UserModel>>.value(
           value: authViewModel.authCubit,

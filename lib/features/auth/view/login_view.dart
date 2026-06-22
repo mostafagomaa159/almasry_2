@@ -84,7 +84,7 @@ class _LoginViewState extends State<LoginView> {
     }
 
     await viewModel.login();
-    await sl<StartupViewModel>().saveLoggedIn();
+    await sl<SplashViewModel>().saveLoggedIn();
 
     if (!mounted) return;
 
