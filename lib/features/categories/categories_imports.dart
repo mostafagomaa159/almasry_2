@@ -16,3 +16,5 @@ part 'widgets/categories_error_view.dart';
 part 'widgets/categories_loading_view.dart';
 part 'widgets/categories_sidebar.dart';
 part 'widgets/category_grid_item.dart';
+part 'widgets/categories_search_field.dart';
+part 'widgets/categories_content_view.dart';

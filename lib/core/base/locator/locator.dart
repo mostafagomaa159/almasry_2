@@ -20,9 +20,6 @@ Future<void> setupServiceLocator() async {
         () => SplashViewModel(),
   );
 
-  sl.registerLazySingleton<CategoriesViewModel>(
-        () => CategoriesViewModel(sl<ApiService>()),
-  );
 
   sl.registerLazySingleton<FavoritesViewModel>(
         () => FavoritesViewModel(),
