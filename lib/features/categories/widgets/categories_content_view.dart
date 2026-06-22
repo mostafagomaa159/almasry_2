@@ -1,7 +1,11 @@
 part of '../categories_imports.dart';
 
 class CategoriesContentView extends StatelessWidget {
-  final CategoriesData data;
+  final List<CategoryModel> categories;
+  final CategoryModel? selectedParentCategory;
+  final List<CategoryModel> filteredChildren;
+  final String searchQuery;
+  final int selectedParentIndex;
   final TextEditingController searchController;
   final ValueChanged<int> onParentSelected;
   final ValueChanged<String> onSearchChanged;
@@ -9,7 +13,11 @@ class CategoriesContentView extends StatelessWidget {
 
   const CategoriesContentView({
     super.key,
-    required this.data,
+    required this.categories,
+    required this.selectedParentCategory,
+    required this.filteredChildren,
+    required this.searchQuery,
+    required this.selectedParentIndex,
     required this.searchController,
     required this.onParentSelected,
     required this.onSearchChanged,
@@ -21,8 +29,8 @@ class CategoriesContentView extends StatelessWidget {
     return Row(
       children: [
         CategoriesSidebar(
-          categories: data.parentCategories,
-          selectedIndex: data.selectedParentIndex,
+          categories: categories,
+          selectedIndex: selectedParentIndex,
           onSelect: onParentSelected,
         ),
         Expanded(
@@ -32,16 +40,16 @@ class CategoriesContentView extends StatelessWidget {
               children: [
                 CategoriesSearchField(
                   controller: searchController,
-                  searchQuery: data.searchQuery,
+                  searchQuery: searchQuery,
                   onChanged: onSearchChanged,
                   onClear: onClearSearch,
                 ),
                 const SizedBox(height: 12),
                 Expanded(
                   child: CategoriesChildrenSection(
-                    parentCategory: data.selectedParentCategory,
-                    childrenCategories: data.filteredChildren,
-                    searchQuery: data.searchQuery,
+                    parentCategory: selectedParentCategory,
+                    childrenCategories: filteredChildren,
+                    searchQuery: searchQuery,
                   ),
                 ),
               ],
