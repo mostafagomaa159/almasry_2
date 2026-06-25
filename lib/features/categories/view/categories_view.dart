@@ -34,12 +34,6 @@ class _CategoriesViewState extends State<CategoriesView> {
         bloc: vm.categoriesCubit,
         builder: (context, state) {
           if (state is GenericUpdateState<List<CategoryModel>>) {
-            if (vm.errorMessage != null && state.data.isEmpty) {
-              return CategoriesErrorView(
-                message: vm.errorMessage!,
-                onRetry: vm.getCategories,
-              );
-            }
 
             if (state.data.isEmpty) {
               return const Center(

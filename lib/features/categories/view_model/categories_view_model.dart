@@ -2,27 +2,19 @@ part of '../categories_imports.dart';
 
 class CategoriesViewModel {
   /// init
-
   void init() {
     getCategoriesSearch();
   }
 
-  void dispose() {
-    searchController.dispose();
-  }
-
   /// services
-
   final ApiService _apiService = sl<ApiService>();
 
   /// controllers
-
-  final  searchController = TextEditingController();
+  final searchController = TextEditingController();
 
   /// cubits
-
   final GenericCubit<List<CategoryModel>> categoriesCubit =
-  GenericCubit<List<CategoryModel>>([]);
+      GenericCubit<List<CategoryModel>>([]);
 
   /// state values
 
@@ -69,9 +61,7 @@ class CategoriesViewModel {
     errorMessage = null;
 
     try {
-      final response = await _apiService.get(
-        endPoint: ApiConstants.categories,
-      );
+      final response = await _apiService.get(endPoint: ApiConstants.categories);
 
       final rootCategory = CategoryModel.fromJson(response.data);
       final parentCategories = rootCategory.childrenData;
@@ -112,5 +102,9 @@ class CategoriesViewModel {
 
   String _mapErrorToMessage(Object error) {
     return 'Something went wrong';
+  }
+
+  void dispose() {
+    searchController.dispose();
   }
 }

@@ -32,7 +32,7 @@ class HomeModel {
   const HomeModel({
     this.currentBannerIndex = 0,
     this.selectedOfferTabIndex = 0,
-    this.selectedBottomNavIndex = 3,
+    this.selectedBottomNavIndex = 0,
     this.isLoading = false,
     this.errorMessage,
     this.banners = const [],

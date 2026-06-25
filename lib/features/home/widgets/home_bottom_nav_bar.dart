@@ -27,11 +27,7 @@ class HomeBottomNavBar extends StatelessWidget {
         activeIcon: Icons.grid_view_rounded,
         label: isArabic ? 'الأقسام' : 'Categories',
       ),
-      _NavBarItemData(
-        icon: Icons.local_offer_outlined,
-        activeIcon: Icons.local_offer_rounded,
-        label: isArabic ? 'العروض' : 'Offers',
-      ),
+
       _NavBarItemData(
         icon: Icons.shopping_cart_outlined,
         activeIcon: Icons.shopping_cart_rounded,
