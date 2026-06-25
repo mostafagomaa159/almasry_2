@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class ComingSoonPage extends StatelessWidget {
+class ComingSoonView extends StatelessWidget {
   final String title;
 
-   ComingSoonPage({required this.title});
+  const ComingSoonView({required this.title});
 
   @override
   Widget build(BuildContext context) {

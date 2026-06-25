@@ -68,23 +68,7 @@ class _HomeViewState extends State<HomeView> {
 
         return Scaffold(
           backgroundColor: const Color(0xFFF8F8F8),
-          bottomNavigationBar: HomeBottomNavBar(
-            selectedIndex: data.selectedBottomNavIndex,
-            cartCount: 10,
-            onTap: viewModel.changeBottomNavIndex,
-          ),
-          body: IndexedStack(
-            index: data.selectedBottomNavIndex,
-            children: [
-              _buildHomeContent(data, isArabic),
-              const CategoriesView(),
-
-               ComingSoonPage(title: 'Cart'),
-              ProfileView(args: widget.args),
-            ],
-          ),
-
-
+          body: _buildHomeContent(data, isArabic),
         );
       },
     );
@@ -126,12 +110,10 @@ class _HomeViewState extends State<HomeView> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           SizedBox(height: 10.h),
-
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 14.w),
                             child: const HomeSearchBar(),
                           ),
-
                           SizedBox(height: 16.h),
 
                           if (data.banners.isNotEmpty) ...[
@@ -150,9 +132,7 @@ class _HomeViewState extends State<HomeView> {
                               children: [
                                 Expanded(
                                   child: HomeQuickActionCard(
-                                    title: isArabic
-                                        ? 'تحليل البشرة'
-                                        : 'Skin Analysis',
+                                    title: isArabic ? 'تحليل البشرة' : 'Skin Analysis',
                                     iconPath: AppImages.mask,
                                     backgroundColor: const Color(0xFFFDEBEC),
                                     onTap: () {},
@@ -161,9 +141,7 @@ class _HomeViewState extends State<HomeView> {
                                 SizedBox(width: 12.w),
                                 Expanded(
                                   child: HomeQuickActionCard(
-                                    title: isArabic
-                                        ? 'البحث الذكي'
-                                        : 'Smart Search',
+                                    title: isArabic ? 'البحث الذكي' : 'Smart Search',
                                     iconPath: AppImages.ai,
                                     backgroundColor: const Color(0xFFF3F0FF),
                                     onTap: () {},
@@ -204,26 +182,19 @@ class _HomeViewState extends State<HomeView> {
                               title: LocaleKeys.homeBestSelling.tr(),
                             ),
                             SizedBox(height: 16.h),
-
                             if (data.bestSellerProducts.isEmpty)
-                              const Center(
-                                child: Text('No bestseller products'),
-                              ),
-
+                              const Center(child: Text('No bestseller products')),
                             if (data.bestSellerProducts.isNotEmpty)
                               HomeProductsSection(
                                 isArabic: isArabic,
                                 products: data.bestSellerProducts,
                               ),
-
                             SizedBox(height: 24.h),
                           ],
 
                           if (data.brands.isNotEmpty) ...[
                             HomeSectionHeader(
-                              title: isArabic
-                                  ? 'العلامات التجارية'
-                                  : 'Brands',
+                              title: isArabic ? 'العلامات التجارية' : 'Brands',
                             ),
                             SizedBox(height: 12.h),
                             BrandStrip(brands: data.brands),
@@ -270,9 +241,7 @@ class _HomeViewState extends State<HomeView> {
                           if (data.homeCareBlock != null &&
                               data.homeCareProducts.isNotEmpty) ...[
                             HomeDynamicBlockSection(
-                              title: isArabic
-                                  ? 'العناية بالمنزل'
-                                  : 'Home Care',
+                              title: isArabic ? 'العناية بالمنزل' : 'Home Care',
                               isArabic: isArabic,
                               block: data.homeCareBlock!,
                               products: data.homeCareProducts,
@@ -296,9 +265,7 @@ class _HomeViewState extends State<HomeView> {
                           if (data.menCareBlock != null &&
                               data.menCareProducts.isNotEmpty) ...[
                             HomeDynamicBlockSection(
-                              title: isArabic
-                                  ? 'العناية للرجال'
-                                  : 'Men Care',
+                              title: isArabic ? 'العناية للرجال' : 'Men Care',
                               isArabic: isArabic,
                               block: data.menCareBlock!,
                               products: data.menCareProducts,

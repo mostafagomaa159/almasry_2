@@ -153,7 +153,15 @@ class _AccountProfileViewState extends State<AccountProfileView> {
         top: false,
         child: Column(
           children: [
-            ProfileHeader(onBackTap: () => context.pop()),
+            ProfileHeader(
+              onBackTap: () {
+                if (context.canPop()) {
+                  context.pop();
+                } else {
+                  context.go(AppRoutes.home);
+                }
+              },
+            ),
             Expanded(
               child: SingleChildScrollView(
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),

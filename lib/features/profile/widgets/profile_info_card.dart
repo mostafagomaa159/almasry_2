@@ -111,22 +111,22 @@ class ProfileInfoCard extends StatelessWidget {
                 _buildInfoRow(
                   context: context,
                   label: LocaleKeys.profileGenderLabel.tr(),
-                  value: gender.tr(),
+                  value: gender,
                 ),
                 _buildInfoRow(
                   context: context,
                   label: LocaleKeys.profileBirthDateLabel.tr(),
-                  value: birthDate.tr(),
+                  value: birthDate,
                 ),
                 _buildInfoRow(
                   context: context,
                   label: LocaleKeys.profilePregnancyLabel.tr(),
-                  value: hasPregnancy.tr(),
+                  value: hasPregnancy,
                 ),
                 _buildInfoRow(
                   context: context,
                   label: LocaleKeys.profileChronicDiseaseLabel.tr(),
-                  value: chronicDisease.tr(),
+                  value: chronicDisease,
                 ),
               ],
             ),

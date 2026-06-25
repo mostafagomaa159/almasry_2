@@ -56,4 +56,5 @@ part 'widgets/home_section_header.dart';
 part 'widgets/home_service_card.dart';
 part 'widgets/home_wide_info_card.dart';
 part '../../core/models/response/home/home_model.dart';
+part 'widgets/home_main_shell_view.dart';
 

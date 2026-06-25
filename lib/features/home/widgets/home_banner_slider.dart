@@ -44,7 +44,16 @@ class HomeBannerSlider extends StatelessWidget {
                         child: const Icon(Icons.broken_image),
                       );
                     },
-                  ),
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        color: Colors.grey.shade200,
+                        alignment: Alignment.center,
+                        child: const CircularProgressIndicator(),
+                      );
+                    },
+                  )
+
                 ),
               );
             },
