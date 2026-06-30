@@ -32,13 +32,14 @@ class HomeOffersSection extends StatelessWidget {
             onTap: () {
               if (item.id.trim().isEmpty) return;
 
-              context.push(
-                AppRoutes.productList,
+              context.pushNamed(
+                'productList',
                 extra: ProductListArgs(
                   title: item.name,
                   categoryId: item.id,
                 ),
               );
+
             },
           );
 

@@ -56,5 +56,11 @@ part 'widgets/home_section_header.dart';
 part 'widgets/home_service_card.dart';
 part 'widgets/home_wide_info_card.dart';
 part '../../core/models/response/home/home_model.dart';
-part 'widgets/home_main_shell_view.dart';
+part '../layout/view/layout_shell_view.dart';
 
+part 'widgets/home_body_view.dart';
+part 'widgets/home_loading_view.dart';
+part 'widgets/home_error_view.dart';
+part 'widgets/home_success_content.dart';
+part 'widgets/home_quick_actions_section.dart';
+part 'widgets/home_section_view.dart';

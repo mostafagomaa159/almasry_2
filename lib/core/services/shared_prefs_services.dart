@@ -1,4 +1,3 @@
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefsServices {
@@ -16,6 +15,14 @@ class SharedPrefsServices {
 
   static bool getBool(String key, {bool defaultValue = false}) {
     return _prefs?.getBool(key) ?? defaultValue;
+  }
+
+  static Future<bool> setString(String key, String value) async {
+    return await _prefs!.setString(key, value);
+  }
+
+  static String getString(String key, {String defaultValue = ''}) {
+    return _prefs?.getString(key) ?? defaultValue;
   }
 
   static Future<bool> remove(String key) async {

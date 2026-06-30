@@ -85,19 +85,19 @@ class _LoginViewState extends State<LoginView> {
 
     await viewModel.login();
     await sl<SplashViewModel>().saveLoggedIn();
+    await SharedPrefsServices.setBool(PrefKeys.isLoggedIn, true);
+
+    if (emailOrPhone.contains('@')) {
+      await SharedPrefsServices.setString(PrefKeys.email, emailOrPhone);
+      await SharedPrefsServices.remove(PrefKeys.phone);
+    } else {
+      await SharedPrefsServices.setString(PrefKeys.phone, emailOrPhone);
+      await SharedPrefsServices.remove(PrefKeys.email);
+    }
 
     if (!mounted) return;
 
-    context.go(
-      AppRoutes.home,
-      extra: ProfileArgs(
-        firstName: null,
-        lastName: null,
-        email: emailOrPhone.contains('@') ? emailOrPhone : null,
-        phone: emailOrPhone.contains('@') ? null : emailOrPhone,
-        source: 'login',
-      ),
-    );
+    context.go(AppRoutes.home);
   }
 
   Future<void> _submitPhoneLogin() async {

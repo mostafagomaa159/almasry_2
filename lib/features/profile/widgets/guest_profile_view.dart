@@ -26,6 +26,8 @@ class _GuestProfileViewState extends State<GuestProfileView> {
   Future<void> _loadAppVersion() async {
     final packageInfo = await PackageInfo.fromPlatform();
 
+    if (!mounted) return;
+
     setState(() {
       appVersion = packageInfo.version;
     });
@@ -35,9 +37,9 @@ class _GuestProfileViewState extends State<GuestProfileView> {
   Widget build(BuildContext context) {
     final viewModel = widget.viewModel;
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F7),
-      body: SafeArea(
+    return Container(
+      color: const Color(0xFFF7F7F7),
+      child: SafeArea(
         top: false,
         child: Column(
           children: [

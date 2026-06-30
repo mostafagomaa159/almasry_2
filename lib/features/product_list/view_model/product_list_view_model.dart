@@ -194,13 +194,14 @@ class ProductListViewModel {
     final sku = product.sku ?? '';
     if (sku.isEmpty) return;
 
-    context.push(
-      AppRoutes.productDetails,
+    context.pushNamed(
+      'productDetails',
       extra: ProductDetailsArgs(
         sku: sku,
         title: product.name,
         imagePath: product.extensionAttributes?.thumbnail,
       ),
     );
+
   }
 }

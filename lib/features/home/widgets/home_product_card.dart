@@ -68,14 +68,15 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   void _openProductDetails() {
-    context.push(
-      AppRoutes.productDetails,
+    context.pushNamed(
+      'productDetails',
       extra: ProductDetailsArgs(
         sku: widget.sku,
         title: widget.title,
         imagePath: widget.imagePath,
       ),
     );
+
   }
 
   @override

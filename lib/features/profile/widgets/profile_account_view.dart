@@ -4,7 +4,11 @@ class AccountProfileView extends StatefulWidget {
   final ProfileArgs? args;
   final ProfileViewModel viewModel;
 
-  const AccountProfileView({super.key, this.args, required this.viewModel});
+  const AccountProfileView({
+    super.key,
+    this.args,
+    required this.viewModel,
+  });
 
   @override
   State<AccountProfileView> createState() => _AccountProfileViewState();
@@ -28,6 +32,42 @@ class _AccountProfileViewState extends State<AccountProfileView> {
       diseaseType: widget.args?.diseaseType,
       source: '',
     );
+
+    _loadSavedProfileData();
+  }
+
+  Future<void> _loadSavedProfileData() async {
+    final String savedEmail = SharedPrefsServices.getString(PrefKeys.email);
+    final String savedPhone = SharedPrefsServices.getString(PrefKeys.phone);
+    final String savedFirstName =
+    SharedPrefsServices.getString(PrefKeys.firstName);
+    final String savedLastName =
+    SharedPrefsServices.getString(PrefKeys.lastName);
+
+    if (!mounted) return;
+
+    setState(() {
+      currentProfile = ProfileArgs(
+        firstName: currentProfile.firstName?.trim().isNotEmpty == true
+            ? currentProfile.firstName
+            : (savedFirstName.isNotEmpty ? savedFirstName : null),
+        lastName: currentProfile.lastName?.trim().isNotEmpty == true
+            ? currentProfile.lastName
+            : (savedLastName.isNotEmpty ? savedLastName : null),
+        email: currentProfile.email?.trim().isNotEmpty == true
+            ? currentProfile.email
+            : (savedEmail.isNotEmpty ? savedEmail : null),
+        phone: currentProfile.phone?.trim().isNotEmpty == true
+            ? currentProfile.phone
+            : (savedPhone.isNotEmpty ? savedPhone : null),
+        gender: currentProfile.gender,
+        birthDate: currentProfile.birthDate,
+        hasPregnancy: currentProfile.hasPregnancy,
+        chronicDisease: currentProfile.chronicDisease,
+        diseaseType: currentProfile.diseaseType,
+        source: currentProfile.source,
+      );
+    });
   }
 
   String _buildDisplayName() {
@@ -111,6 +151,23 @@ class _AccountProfileViewState extends State<AccountProfileView> {
     );
 
     if (result is EditProfileArgs) {
+      await SharedPrefsServices.setString(
+        PrefKeys.firstName,
+        result.firstName ?? '',
+      );
+      await SharedPrefsServices.setString(
+        PrefKeys.lastName,
+        result.lastName ?? '',
+      );
+      await SharedPrefsServices.setString(
+        PrefKeys.email,
+        result.email ?? '',
+      );
+      await SharedPrefsServices.setString(
+        PrefKeys.phone,
+        result.phone ?? '',
+      );
+
       setState(() {
         currentProfile = ProfileArgs(
           firstName: result.firstName,
@@ -129,6 +186,12 @@ class _AccountProfileViewState extends State<AccountProfileView> {
   }
 
   Future<void> _logout() async {
+    await SharedPrefsServices.remove(PrefKeys.isLoggedIn);
+    await SharedPrefsServices.remove(PrefKeys.email);
+    await SharedPrefsServices.remove(PrefKeys.phone);
+    await SharedPrefsServices.remove(PrefKeys.firstName);
+    await SharedPrefsServices.remove(PrefKeys.lastName);
+
     await sl<SplashViewModel>().logout();
 
     if (!mounted) return;
@@ -147,9 +210,9 @@ class _AccountProfileViewState extends State<AccountProfileView> {
     final String chronicDisease = _buildChronicDisease();
     final viewModel = widget.viewModel;
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF6F6F6),
-      body: SafeArea(
+    return Container(
+      color: const Color(0xFFF6F6F6),
+      child: SafeArea(
         top: false,
         child: Column(
           children: [

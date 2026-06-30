@@ -6,6 +6,8 @@ import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:almasry_2/core/models/response/edit_profile/edit_profile_args_model.dart';
 import 'package:almasry_2/core/models/response/profile/profile_args_model.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
+import 'package:almasry_2/core/services/pref_keys.dart';
+import 'package:almasry_2/core/services/shared_prefs_services.dart';
 import 'package:almasry_2/features/edit_profile/edit_profile_imports.dart';
 import 'package:almasry_2/features/profile/widgets/profile_menu_item.dart';
 import 'package:almasry_2/features/splash/splash_imports.dart';

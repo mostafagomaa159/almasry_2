@@ -24,38 +24,47 @@ class _CategoriesViewState extends State<CategoriesView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Categories'),
-        centerTitle: true,
-      ),
-      body: BlocBuilder<GenericCubit<List<CategoryModel>>,
-          GenericState<List<CategoryModel>>>(
-        bloc: vm.categoriesCubit,
-        builder: (context, state) {
-          if (state is GenericUpdateState<List<CategoryModel>>) {
+    return Container(
+      color: const Color(0xFFF8F8F8),
+      child: SafeArea(
+        child: Column(
+          children: [
+            AppBar(
+              title: const Text('Categories'),
+              centerTitle: true,
+              automaticallyImplyLeading: false,
+            ),
+            Expanded(
+              child: BlocBuilder<GenericCubit<List<CategoryModel>>,
+                  GenericState<List<CategoryModel>>>(
+                bloc: vm.categoriesCubit,
+                builder: (context, state) {
+                  if (state is GenericUpdateState<List<CategoryModel>>) {
+                    if (state.data.isEmpty) {
+                      return const Center(
+                        child: Text('No categories found'),
+                      );
+                    }
 
-            if (state.data.isEmpty) {
-              return const Center(
-                child: Text('No categories found'),
-              );
-            }
-
-            return CategoriesContentView(
-              categories: state.data,
-              selectedParentCategory: vm.selectedParentCategory,
-              filteredChildren: vm.filteredChildren,
-              searchQuery: vm.searchQuery,
-              selectedParentIndex: vm.selectedParentIndex,
-              searchController: vm.searchController,
-              onParentSelected: vm.selectParentCategory,
-              onSearchChanged: vm.updateSearchQuery,
-              onClearSearch: vm.clearSearch,
-            );
-          } else {
-            return const CategoriesLoadingView();
-          }
-        },
+                    return CategoriesContentView(
+                      categories: state.data,
+                      selectedParentCategory: vm.selectedParentCategory,
+                      filteredChildren: vm.filteredChildren,
+                      searchQuery: vm.searchQuery,
+                      selectedParentIndex: vm.selectedParentIndex,
+                      searchController: vm.searchController,
+                      onParentSelected: vm.selectParentCategory,
+                      onSearchChanged: vm.updateSearchQuery,
+                      onClearSearch: vm.clearSearch,
+                    );
+                  } else {
+                    return const CategoriesLoadingView();
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

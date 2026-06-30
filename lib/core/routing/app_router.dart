@@ -36,88 +36,111 @@ class AppRouter {
           return OtpVerificationView(args: args);
         },
       ),
-
-
       GoRoute(
         path: AppRoutes.signup,
         name: 'signup',
         builder: (context, state) => const RegisterCustomerView(),
       ),
 
-      ShellRoute(
-        builder: (context, state, child) {
-          return MainShellView(child: child);
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return LayoutShellView(navigationShell: navigationShell);
         },
-        routes: [
-          GoRoute(
-            path: AppRoutes.home,
-            builder: (context, state) {
-              final ProfileArgs? args = state.extra as ProfileArgs?;
-              return HomeView(args: args);
-            },
-          ),
-          GoRoute(
-            path: AppRoutes.comingsoonview,
-            builder: (context, state) => const ComingSoonView(title: 'Cart'),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.home,
+                builder: (context, state) {
+                  final ProfileArgs? args = state.extra as ProfileArgs?;
+                  return HomeView(args: args);
+                },
+                routes: [
+                  GoRoute(
+                    path: 'productList',
+                    name: 'productList',
+                    builder: (context, state) {
+                      final args = state.extra as ProductListArgs;
+                      return ProductListView(
+                        title: args.title,
+                        categoryId: args.categoryId,
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'productDetails',
+                    name: 'productDetails',
+                    builder: (context, state) {
+                      final args = state.extra as ProductDetailsArgs;
+                      return ProductDetailsView(args: args);
+                    },
+                  ),
+                ],
+              ),
+            ],
           ),
 
-          GoRoute(
-            path: AppRoutes.categories,
-            name: 'categories',
-            builder: (context, state) => const CategoriesView(),
+
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.categories,
+                name: 'categories',
+                builder: (context, state) => const CategoriesView(),
+              ),
+            ],
           ),
-          GoRoute(
-            path: AppRoutes.profile,
-            builder: (context, state) {
-              final ProfileArgs? args = state.extra as ProfileArgs?;
-              return ProfileView(args: args);
-            },
+
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.comingsoonview,
+                builder: (context, state) => const ComingSoonView(title: 'Cart'),
+              ),
+            ],
           ),
-          GoRoute(
-            path: AppRoutes.productList,
-            builder: (context, state) {
-              final args = state.extra as ProductListArgs;
-              return ProductListView(
-                title: args.title,
-                categoryId: args.categoryId,
-              );
-            },
-          ),
-          GoRoute(
-            path: AppRoutes.productDetails,
-            builder: (context, state) {
-              final args = state.extra as ProductDetailsArgs;
-              return ProductDetailsView(args: args);
-            },
-          ),
-          GoRoute(
-            path: AppRoutes.orders,
-            name: 'orders',
-            builder: (context, state) {
-              final email = state.extra as String;
-              return OrdersView(customerEmail: email);
-            },
-          ),
-          GoRoute(
-            path: AppRoutes.orderDetails,
-            name: 'orderDetails',
-            builder: (context, state) {
-              final args = state.extra as OrderDetailsArgs;
-              return OrderDetailsView(args: args);
-            },
-          ),
-          GoRoute(
-            path: AppRoutes.wishlist,
-            name: 'wishlist',
-            builder: (context, state) => const WishlistView(),
-          ),
-          GoRoute(
-            path: AppRoutes.editProfile,
-            name: 'editProfile',
-            builder: (context, state) {
-              final args = state.extra as EditProfileArgs?;
-              return EditProfileView(args: args);
-            },
+
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.profile,
+                builder: (context, state) {
+                  final ProfileArgs? args = state.extra as ProfileArgs?;
+                  return ProfileView(args: args);
+                },
+                routes: [
+                  GoRoute(
+                    path: AppRoutes.orders.replaceFirst('/', ''),
+                    name: 'orders',
+                    builder: (context, state) {
+                      final email = state.extra as String;
+                      return OrdersView(customerEmail: email);
+                    },
+                  ),
+                  GoRoute(
+                    path: AppRoutes.orderDetails.replaceFirst('/', ''),
+                    name: 'orderDetails',
+                    builder: (context, state) {
+                      final args = state.extra as OrderDetailsArgs;
+                      return OrderDetailsView(args: args);
+                    },
+                  ),
+                  GoRoute(
+                    path: AppRoutes.wishlist.replaceFirst('/', ''),
+                    name: 'wishlist',
+                    builder: (context, state) => const WishlistView(),
+                  ),
+                  GoRoute(
+                    path: AppRoutes.editProfile.replaceFirst('/', ''),
+                    name: 'editProfile',
+                    builder: (context, state) {
+                      final args = state.extra as EditProfileArgs?;
+                      return EditProfileView(args: args);
+                    },
+                  ),
+                ],
+              ),
+            ],
           ),
         ],
       ),
