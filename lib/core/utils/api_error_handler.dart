@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:dio/dio.dart';
 
 class ApiErrorHandler {
@@ -9,7 +11,7 @@ class ApiErrorHandler {
         final data = error.response?.data;
 
         if (data is Map<String, dynamic>) {
-          return data['message']?.toString() ?? 'Server error';
+          return data['message']?.toString() ?? LocaleKeys.serverError.tr();
         }
 
         return 'Server error';

@@ -1,5 +1,7 @@
-part of '../../../../features/auth/auth_imports.dart';
-
+/// Shared auth state carried by `AuthSessionService`'s cubit.
+///
+/// A standalone library rather than a `part`, because the login, register and
+/// otp_verification features all need it and a `part` can only belong to one.
 class UserModel {
   final bool isPasswordHidden;
   final bool isConfirmPasswordHidden;
@@ -93,12 +95,12 @@ class UserModel {
     return UserModel(
       isPasswordHidden: isPasswordHidden ?? this.isPasswordHidden,
       isConfirmPasswordHidden:
-      isConfirmPasswordHidden ?? this.isConfirmPasswordHidden,
+          isConfirmPasswordHidden ?? this.isConfirmPasswordHidden,
       rememberMe: rememberMe ?? this.rememberMe,
       isLoading: isLoading ?? this.isLoading,
       isPhoneAuthLoading: isPhoneAuthLoading ?? this.isPhoneAuthLoading,
       isOtpVerificationLoading:
-      isOtpVerificationLoading ?? this.isOtpVerificationLoading,
+          isOtpVerificationLoading ?? this.isOtpVerificationLoading,
       isPhoneAuthSuccess: isPhoneAuthSuccess ?? this.isPhoneAuthSuccess,
       isOtpVerified: isOtpVerified ?? this.isOtpVerified,
       nameError: clearNameError ? null : (nameError ?? this.nameError),

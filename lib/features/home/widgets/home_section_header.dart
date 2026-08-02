@@ -16,15 +16,18 @@ class HomeSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isArabic = context.locale.languageCode == 'ar';
-    final String resolvedActionTitle =
-        actionTitle ?? (isArabic ? 'المزيد' : 'More');
+    final String resolvedActionTitle = actionTitle ?? LocaleKeys.homeMore.tr();
 
+    // No manual mirroring anywhere in here: `Row` lays its children out along
+    // the ambient text direction, `TextAlign.start` follows it, and
+    // `Icons.chevron_right` sets `matchTextDirection`, so it flips to point
+    // left in Arabic on its own. Branching on the locale would flip a second
+    // time and put everything back on the wrong side.
     Widget titleWidget = Text(
       title,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
-      textAlign: isArabic ? TextAlign.right : TextAlign.left,
+      textAlign: TextAlign.start,
       style: TextStyle(
         fontSize: 22.sp,
         fontWeight: FontWeight.w800,
@@ -40,12 +43,6 @@ class HomeSectionHeader extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (isArabic)
-              Icon(
-                Icons.chevron_left,
-                size: 16.sp,
-                color: const Color(0xFFC4C4C4),
-              ),
             Text(
               resolvedActionTitle,
               style: TextStyle(
@@ -54,12 +51,11 @@ class HomeSectionHeader extends StatelessWidget {
                 color: const Color(0xFFC4C4C4),
               ),
             ),
-            if (!isArabic)
-              Icon(
-                Icons.chevron_right,
-                size: 16.sp,
-                color: const Color(0xFFC4C4C4),
-              ),
+            Icon(
+              Icons.chevron_right,
+              size: 16.sp,
+              color: const Color(0xFFC4C4C4),
+            ),
           ],
         ),
       ),
@@ -69,12 +65,7 @@ class HomeSectionHeader extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: isArabic
-            ? [
-          if (showAction) actionWidget,
-          Flexible(child: titleWidget),
-        ]
-            : [
+        children: [
           Flexible(child: titleWidget),
           if (showAction) actionWidget,
         ],

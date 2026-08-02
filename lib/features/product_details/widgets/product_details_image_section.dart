@@ -70,23 +70,19 @@ class _ProductDetailsImageSectionState
                   top: 48.h,
                   child: Column(
                     children: [
-                      _ActionButton(
-                        icon: Icons.share_outlined,
-                        onTap: () {},
-                      ),
+                      _ActionButton(icon: Icons.share_outlined, onTap: () {}),
                       SizedBox(height: 12.h),
-                      _ActionButton(
-                        icon: Icons.chat_outlined,
-                        onTap: () {},
-                      ),
+                      _ActionButton(icon: Icons.chat_outlined, onTap: () {}),
                       SizedBox(height: 12.h),
                       BlocBuilder<
-                          GenericCubit<FavoritesModel>,
-                          GenericState<FavoritesModel>>(
+                        GenericCubit<FavoritesModel>,
+                        GenericState<FavoritesModel>
+                      >(
                         builder: (context, state) {
                           final data = state.data;
-                          final isFavorite =
-                          data.isFavorite(widget.product.id.toString());
+                          final isFavorite = data.isFavorite(
+                            widget.product.id.toString(),
+                          );
 
                           return _ActionButton(
                             icon: isFavorite
@@ -156,11 +152,7 @@ class _ProductDetailsImageSectionState
           ],
 
           SizedBox(height: 18.h),
-          const Divider(
-            height: 1,
-            thickness: 1,
-            color: Color(0xFFE9E9E9),
-          ),
+          const Divider(height: 1, thickness: 1, color: Color(0xFFE9E9E9)),
         ],
       ),
     );
@@ -169,19 +161,11 @@ class _ProductDetailsImageSectionState
   Widget _buildMainImage(String imagePath) {
     return SizedBox(
       width: double.infinity,
-      child: _buildImage(
-        imagePath,
-        fit: BoxFit.contain,
-        height: 250.h,
-      ),
+      child: _buildImage(imagePath, fit: BoxFit.contain, height: 250.h),
     );
   }
 
-  Widget _buildImage(
-      String path, {
-        BoxFit fit = BoxFit.cover,
-        double? height,
-      }) {
+  Widget _buildImage(String path, {BoxFit fit = BoxFit.cover, double? height}) {
     if (_isNetworkImage(path)) {
       return Image.network(
         path,

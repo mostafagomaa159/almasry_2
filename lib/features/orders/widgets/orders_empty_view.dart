@@ -5,8 +5,6 @@ class OrdersEmptyView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('No orders found'),
-    );
+    return Center(child: Text(LocaleKeys.ordersNotFound.tr()));
   }
 }

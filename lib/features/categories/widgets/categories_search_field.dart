@@ -1,36 +1,25 @@
 part of '../categories_imports.dart';
 
 class CategoriesSearchField extends StatelessWidget {
-  final TextEditingController controller;
-  final String searchQuery;
-  final ValueChanged<String> onChanged;
-  final VoidCallback onClear;
+  final CategoriesViewModel vm;
 
-  const CategoriesSearchField({
-    super.key,
-    required this.controller,
-    required this.searchQuery,
-    required this.onChanged,
-    required this.onClear,
-  });
+  const CategoriesSearchField({super.key, required this.vm});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: controller,
-      onChanged: onChanged,
+      controller: vm._searchController,
+      onChanged: vm._updateSearchQuery,
       decoration: InputDecoration(
-        hintText: 'Search subcategories...',
+        hintText: LocaleKeys.categoriesSearchHint.tr(),
         prefixIcon: const Icon(Icons.search),
-        suffixIcon: searchQuery.isNotEmpty
+        suffixIcon: vm._searchQuery.isNotEmpty
             ? IconButton(
-          onPressed: onClear,
-          icon: const Icon(Icons.close),
-        )
+                onPressed: vm._clearSearch,
+                icon: const Icon(Icons.close),
+              )
             : null,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),

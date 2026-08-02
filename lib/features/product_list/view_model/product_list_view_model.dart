@@ -1,12 +1,111 @@
 part of '../product_list_imports.dart';
 
+/// Per-screen view model for [ProductListView].
+///
+/// Owns the paging scroll controller as well as the data, so the view no longer
+/// has to wire a listener up to `loadMoreProducts`.
 class ProductListViewModel {
   /// Services
-  final ApiService _apiService = sl<ApiService>();
 
-  /// Cubit
-  final GenericCubit<ProductListData> productListCubit =
+  final ApiService _apiService = sl<ApiService>();
+  final NavigationService _nav = sl<NavigationService>();
+
+  /// Variables
+
+  final GenericCubit<ProductListData> _productListCubit =
       GenericCubit<ProductListData>(const ProductListData.ProductListModel());
+
+  late final ScrollController _scrollController;
+
+  /// Set synchronously by [_init] so the app bar has it on the first build,
+  /// before the products request resolves.
+  String _title = '';
+
+  ProductListData get _data => _productListCubit.state.data;
+
+  /// Init
+
+  Future<void> _init({
+    required String title,
+    required String categoryId,
+  }) async {
+    _title = title;
+
+    _scrollController = ScrollController()..addListener(_onScroll);
+
+    await _loadInitialProducts(title: title, categoryId: categoryId);
+  }
+
+  void _dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    _productListCubit.close();
+  }
+
+  /// Form state
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+
+    final currentOffset = _scrollController.position.pixels;
+    final maxOffset = _scrollController.position.maxScrollExtent;
+
+    if (currentOffset >= maxOffset - 200) {
+      _loadMoreProducts();
+    }
+  }
+
+  int _getProductQuantity(String sku) {
+    return _productListCubit.state.data.quantities[sku] ?? 1;
+  }
+
+  void _incrementQuantity(String sku) {
+    final current = _productListCubit.state.data;
+    final updatedQuantities = Map<String, int>.from(current.quantities);
+    final currentQuantity = updatedQuantities[sku] ?? 1;
+
+    updatedQuantities[sku] = currentQuantity + 1;
+
+    _productListCubit.onUpdateData(
+      current.copyWith(quantities: updatedQuantities),
+    );
+  }
+
+  void _decrementQuantity(String sku) {
+    final current = _productListCubit.state.data;
+    final updatedQuantities = Map<String, int>.from(current.quantities);
+    final currentQuantity = updatedQuantities[sku] ?? 1;
+
+    if (currentQuantity > 1) {
+      updatedQuantities[sku] = currentQuantity - 1;
+
+      _productListCubit.onUpdateData(
+        current.copyWith(quantities: updatedQuantities),
+      );
+    }
+  }
+
+  /// Actions
+
+  void _goBack() {
+    _nav.pop();
+  }
+
+  void _navToProductDetails(ProductModel product) {
+    final sku = product.sku ?? '';
+    if (sku.isEmpty) return;
+
+    _nav.pushNamed(
+      RouteNames.productDetails,
+      extra: ProductDetailsArgs(
+        sku: sku,
+        title: product.name,
+        imagePath: product.extensionAttributes?.thumbnail,
+      ),
+    );
+  }
+
+  /// Helpers
 
   String _extractApiMessage(DioException e) {
     final data = e.response?.data;
@@ -25,8 +124,10 @@ class ProductListViewModel {
       }
     }
 
-    return e.message ?? 'Something went wrong';
+    return e.message ?? LocaleKeys.somethingWentWrong.tr();
   }
+
+  /// Api
 
   Future<ProductListModel> _fetchProducts(ProductListRequest request) async {
     final response = await _apiService.get(endPoint: request.endPoint);
@@ -47,17 +148,13 @@ class ProductListViewModel {
     return const ProductListModel(items: [], totalCount: 0);
   }
 
-  Future<void> init({required String title, required String categoryId}) async {
-    await loadInitialProducts(title: title, categoryId: categoryId);
-  }
-
-  Future<void> loadInitialProducts({
+  Future<void> _loadInitialProducts({
     required String title,
     required String categoryId,
   }) async {
-    final current = productListCubit.state.data;
+    final current = _productListCubit.state.data;
 
-    productListCubit.onUpdateData(
+    _productListCubit.onUpdateData(
       current.copyWith(
         status: ProductListStatus.loading,
         title: title,
@@ -79,8 +176,8 @@ class ProductListViewModel {
 
       final hasMore = result.items.length < result.totalCount;
 
-      productListCubit.onUpdateData(
-        productListCubit.state.data.copyWith(
+      _productListCubit.onUpdateData(
+        _productListCubit.state.data.copyWith(
           status: ProductListStatus.success,
           products: result.items,
           currentPage: 1,
@@ -90,16 +187,16 @@ class ProductListViewModel {
         ),
       );
     } on DioException catch (e) {
-      productListCubit.onUpdateData(
-        productListCubit.state.data.copyWith(
+      _productListCubit.onUpdateData(
+        _productListCubit.state.data.copyWith(
           status: ProductListStatus.error,
           errorMessage: _extractApiMessage(e),
           isLoadingMore: false,
         ),
       );
     } catch (e) {
-      productListCubit.onUpdateData(
-        productListCubit.state.data.copyWith(
+      _productListCubit.onUpdateData(
+        _productListCubit.state.data.copyWith(
           status: ProductListStatus.error,
           errorMessage: e.toString(),
           isLoadingMore: false,
@@ -108,45 +205,15 @@ class ProductListViewModel {
     }
   }
 
-  int getProductQuantity(String sku) {
-    return productListCubit.state.data.quantities[sku] ?? 1;
-  }
-
-  void incrementQuantity(String sku) {
-    final current = productListCubit.state.data;
-    final updatedQuantities = Map<String, int>.from(current.quantities);
-    final currentQuantity = updatedQuantities[sku] ?? 1;
-
-    updatedQuantities[sku] = currentQuantity + 1;
-
-    productListCubit.onUpdateData(
-      current.copyWith(quantities: updatedQuantities),
-    );
-  }
-
-  void decrementQuantity(String sku) {
-    final current = productListCubit.state.data;
-    final updatedQuantities = Map<String, int>.from(current.quantities);
-    final currentQuantity = updatedQuantities[sku] ?? 1;
-
-    if (currentQuantity > 1) {
-      updatedQuantities[sku] = currentQuantity - 1;
-
-      productListCubit.onUpdateData(
-        current.copyWith(quantities: updatedQuantities),
-      );
-    }
-  }
-
-  Future<void> loadMoreProducts() async {
-    final current = productListCubit.state.data;
+  Future<void> _loadMoreProducts() async {
+    final current = _productListCubit.state.data;
 
     if (current.status != ProductListStatus.success) return;
     if (current.isLoadingMore) return;
     if (!current.hasMore) return;
     if (current.categoryId.isEmpty) return;
 
-    productListCubit.onUpdateData(
+    _productListCubit.onUpdateData(
       current.copyWith(isLoadingMore: true, clearErrorMessage: true),
     );
 
@@ -163,8 +230,8 @@ class ProductListViewModel {
       final updatedProducts = [...current.products, ...result.items];
       final hasMore = updatedProducts.length < result.totalCount;
 
-      productListCubit.onUpdateData(
-        productListCubit.state.data.copyWith(
+      _productListCubit.onUpdateData(
+        _productListCubit.state.data.copyWith(
           status: ProductListStatus.success,
           products: updatedProducts,
           currentPage: nextPage,
@@ -174,34 +241,19 @@ class ProductListViewModel {
         ),
       );
     } on DioException catch (e) {
-      productListCubit.onUpdateData(
-        productListCubit.state.data.copyWith(
+      _productListCubit.onUpdateData(
+        _productListCubit.state.data.copyWith(
           isLoadingMore: false,
           errorMessage: _extractApiMessage(e),
         ),
       );
     } catch (e) {
-      productListCubit.onUpdateData(
-        productListCubit.state.data.copyWith(
+      _productListCubit.onUpdateData(
+        _productListCubit.state.data.copyWith(
           isLoadingMore: false,
           errorMessage: e.toString(),
         ),
       );
     }
-  }
-
-  void navToProductDetails(BuildContext context, ProductModel product) {
-    final sku = product.sku ?? '';
-    if (sku.isEmpty) return;
-
-    context.pushNamed(
-      'productDetails',
-      extra: ProductDetailsArgs(
-        sku: sku,
-        title: product.name,
-        imagePath: product.extensionAttributes?.thumbnail,
-      ),
-    );
-
   }
 }

@@ -48,22 +48,19 @@ class WideInfoCard extends StatelessWidget {
               height: 58.h,
               child: isNetworkImage
                   ? Image.network(
-                imagePath,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  color: Colors.grey.shade200,
-                  alignment: Alignment.center,
-                  child: Icon(
-                    Icons.broken_image_outlined,
-                    size: 20.sp,
-                    color: Colors.grey.shade400,
-                  ),
-                ),
-              )
-                  : Image.asset(
-                imagePath,
-                fit: BoxFit.cover,
-              ),
+                      imagePath,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        color: Colors.grey.shade200,
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.broken_image_outlined,
+                          size: 20.sp,
+                          color: Colors.grey.shade400,
+                        ),
+                      ),
+                    )
+                  : Image.asset(imagePath, fit: BoxFit.cover),
             ),
           ),
         ],

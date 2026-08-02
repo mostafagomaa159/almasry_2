@@ -1,19 +1,14 @@
 part of '../categories_imports.dart';
 
 class CategoriesSidebar extends StatelessWidget {
-  final List<CategoryModel> categories;
-  final int selectedIndex;
-  final ValueChanged<int> onSelect;
+  final CategoriesViewModel vm;
 
-  const CategoriesSidebar({
-    super.key,
-    required this.categories,
-    required this.selectedIndex,
-    required this.onSelect,
-  });
+  const CategoriesSidebar({super.key, required this.vm});
 
   @override
   Widget build(BuildContext context) {
+    final categories = vm._categories;
+
     return Container(
       width: 110.w,
       color: const Color(0xFFF7F7F7),
@@ -21,10 +16,10 @@ class CategoriesSidebar extends StatelessWidget {
         itemCount: categories.length,
         itemBuilder: (context, index) {
           final item = categories[index];
-          final isSelected = index == selectedIndex;
+          final isSelected = index == vm._selectedParentIndex;
 
           return InkWell(
-            onTap: () => onSelect(index),
+            onTap: () => vm._selectParentCategory(index),
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 12.h),
               color: isSelected ? Colors.white : const Color(0xFFF7F7F7),
@@ -41,12 +36,12 @@ class CategoriesSidebar extends StatelessWidget {
                     child: item.image.trim().isEmpty
                         ? const Icon(Icons.image_outlined)
                         : Image.network(
-                      item.imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) {
-                        return const Icon(Icons.image_outlined);
-                      },
-                    ),
+                            item.imageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) {
+                              return const Icon(Icons.image_outlined);
+                            },
+                          ),
                   ),
                   SizedBox(height: 8.h),
                   Text(
@@ -56,8 +51,9 @@ class CategoriesSidebar extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 11.sp,
-                      fontWeight:
-                      isSelected ? FontWeight.w700 : FontWeight.w500,
+                      fontWeight: isSelected
+                          ? FontWeight.w700
+                          : FontWeight.w500,
                     ),
                   ),
                 ],

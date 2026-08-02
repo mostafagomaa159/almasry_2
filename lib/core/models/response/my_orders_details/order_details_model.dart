@@ -21,14 +21,12 @@ class OrderDetailsModel extends Equatable {
     return OrderDetailsModel(
       isLoading: isLoading ?? this.isLoading,
       order: clearOrder ? null : (order ?? this.order),
-      errorMessage: clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
+      errorMessage: clearErrorMessage
+          ? null
+          : (errorMessage ?? this.errorMessage),
     );
   }
 
   @override
-  List<Object?> get props => [
-    isLoading,
-    order,
-    errorMessage,
-  ];
+  List<Object?> get props => [isLoading, order, errorMessage];
 }

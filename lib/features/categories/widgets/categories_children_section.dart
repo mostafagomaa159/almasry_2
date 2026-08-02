@@ -1,24 +1,19 @@
 part of '../categories_imports.dart';
 
 class CategoriesChildrenSection extends StatelessWidget {
-  final CategoryModel? parentCategory;
-  final List<CategoryModel> childrenCategories;
-  final String searchQuery;
+  final CategoriesViewModel vm;
 
-  const CategoriesChildrenSection({
-    super.key,
-    required this.parentCategory,
-    required this.childrenCategories,
-    required this.searchQuery,
-  });
+  const CategoriesChildrenSection({super.key, required this.vm});
 
   @override
   Widget build(BuildContext context) {
+    final parentCategory = vm._selectedParentCategory;
+
     if (parentCategory == null) {
-      return const Center(
-        child: Text('No category selected'),
-      );
+      return Center(child: Text(LocaleKeys.categoriesNoSelection.tr()));
     }
+
+    final childrenCategories = vm._filteredChildren;
 
     return Padding(
       padding: EdgeInsets.all(16.w),
@@ -26,44 +21,40 @@ class CategoriesChildrenSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            parentCategory!.name,
-            style: TextStyle(
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w700,
-            ),
+            parentCategory.name,
+            style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w700),
           ),
           SizedBox(height: 6.h),
           Text(
-            '${parentCategory!.productCount} products',
-            style: TextStyle(
-              fontSize: 12.sp,
-              color: Colors.grey,
+            LocaleKeys.productsCount.tr(
+              args: ['${parentCategory.productCount}'],
             ),
+            style: TextStyle(fontSize: 12.sp, color: Colors.grey),
           ),
           SizedBox(height: 16.h),
           Expanded(
             child: childrenCategories.isEmpty
                 ? Center(
-              child: Text(
-                searchQuery.trim().isNotEmpty
-                    ? 'No matching subcategories found'
-                    : 'No subcategories found',
-              ),
-            )
+                    child: Text(
+                      vm._searchQuery.trim().isNotEmpty
+                          ? LocaleKeys.categoriesNoMatchingSub.tr()
+                          : LocaleKeys.categoriesNoSub.tr(),
+                    ),
+                  )
                 : GridView.builder(
-              itemCount: childrenCategories.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12.w,
-                mainAxisSpacing: 12.h,
-                childAspectRatio: 0.82,
-              ),
-              itemBuilder: (context, index) {
-                return CategoryGridItem(
-                  category: childrenCategories[index],
-                );
-              },
-            ),
+                    itemCount: childrenCategories.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 12.w,
+                      mainAxisSpacing: 12.h,
+                      childAspectRatio: 0.82,
+                    ),
+                    itemBuilder: (context, index) {
+                      return CategoryGridItem(
+                        category: childrenCategories[index],
+                      );
+                    },
+                  ),
           ),
         ],
       ),

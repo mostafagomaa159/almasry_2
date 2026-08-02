@@ -1,4 +1,4 @@
-part of '../../wishlist/wishlist_imports.dart';
+part of '../wishlist_imports.dart';
 
 class WishlistEmptyView extends StatelessWidget {
   const WishlistEmptyView({super.key});
@@ -14,7 +14,7 @@ class WishlistEmptyView extends StatelessWidget {
             Icon(Icons.favorite_border, size: 70.sp, color: Colors.grey),
             SizedBox(height: 16.h),
             Text(
-              'No favorites yet',
+              LocaleKeys.wishlistEmptyTitle.tr(),
               style: TextStyle(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w700,
@@ -23,7 +23,7 @@ class WishlistEmptyView extends StatelessWidget {
             ),
             SizedBox(height: 8.h),
             Text(
-              'Products you mark as favorite will appear here.',
+              LocaleKeys.wishlistEmptyDesc.tr(),
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade600),
             ),

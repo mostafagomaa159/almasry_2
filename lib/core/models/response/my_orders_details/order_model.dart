@@ -1,10 +1,4 @@
-enum OrderStatus {
-  pending,
-  delivered,
-  processing,
-  canceled,
-  unknown,
-}
+enum OrderStatus { pending, delivered, processing, canceled, unknown }
 
 OrderStatus parseOrderStatus(String? status) {
   switch (status?.toLowerCase()) {
@@ -73,7 +67,7 @@ class OrderItemModel {
     return OrderItemModel(
       name: json['name']?.toString() ?? '',
       imagePath:
-      json['extension_attributes']?['product_image']?.toString() ?? '',
+          json['extension_attributes']?['product_image']?.toString() ?? '',
       price: (json['price'] as num?)?.toDouble() ?? 0.0,
       qtyOrdered: (json['qty_ordered'] as num?)?.toInt() ?? 0,
       sku: json['sku']?.toString() ?? '',

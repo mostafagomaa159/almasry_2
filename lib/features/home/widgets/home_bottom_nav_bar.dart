@@ -14,34 +14,39 @@ class HomeBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isArabic = context.locale.languageCode == 'ar';
+    // `.tr()` resolves against a static singleton, so it registers no
+    // dependency on the locale. Reading `context.locale` subscribes this
+    // element to locale changes; without it the shell never rebuilds the bar
+    // and the labels keep the previous language until the app is restarted.
+    final Locale locale = context.locale;
 
     final items = [
       _NavBarItemData(
         icon: Icons.home_outlined,
         activeIcon: Icons.home_rounded,
-        label: isArabic ? 'الرئيسية' : 'Home',
+        label: LocaleKeys.blinkHomeTitle.tr(),
       ),
       _NavBarItemData(
         icon: Icons.grid_view_outlined,
         activeIcon: Icons.grid_view_rounded,
-        label: isArabic ? 'الأقسام' : 'Categories',
+        label: LocaleKeys.categories.tr(),
       ),
 
       _NavBarItemData(
         icon: Icons.shopping_cart_outlined,
         activeIcon: Icons.shopping_cart_rounded,
-        label: isArabic ? 'السلة' : 'Cart',
+        label: LocaleKeys.cart.tr(),
         badgeCount: cartCount,
       ),
       _NavBarItemData(
         icon: Icons.person_outline_rounded,
         activeIcon: Icons.person_rounded,
-        label: isArabic ? 'الملف الشخصي' : 'Profile',
+        label: LocaleKeys.profile.tr(),
       ),
     ];
 
     return Container(
+      key: ValueKey<String>(locale.languageCode),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -52,10 +57,7 @@ class HomeBottomNavBar extends StatelessWidget {
           ),
         ],
         border: Border(
-          top: BorderSide(
-            color: const Color(0xFFF0F0F0),
-            width: 1.w,
-          ),
+          top: BorderSide(color: const Color(0xFFF0F0F0), width: 1.w),
         ),
       ),
       padding: EdgeInsets.only(
@@ -67,7 +69,7 @@ class HomeBottomNavBar extends StatelessWidget {
         child: Row(
           children: List.generate(
             items.length,
-                (index) => _HomeBottomNavItem(
+            (index) => _HomeBottomNavItem(
               data: items[index],
               isSelected: selectedIndex == index,
               onTap: () => onTap(index),

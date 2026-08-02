@@ -1,4 +1,3 @@
-
 class ProductCustomAttributeModel {
   final String attributeCode;
   final dynamic value;

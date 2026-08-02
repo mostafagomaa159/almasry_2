@@ -3,10 +3,7 @@ part of '../product_details_imports.dart';
 class ProductDetailsInfoSection extends StatelessWidget {
   final ProductModel product;
 
-  const ProductDetailsInfoSection({
-    super.key,
-    required this.product,
-  });
+  const ProductDetailsInfoSection({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +21,7 @@ class ProductDetailsInfoSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'المعلومات',
+            LocaleKeys.productDetailsInfo.tr(),
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w800,
@@ -33,7 +30,7 @@ class ProductDetailsInfoSection extends StatelessWidget {
           ),
           SizedBox(height: 14.h),
           ...attributes.map(
-                (item) => Padding(
+            (item) => Padding(
               padding: EdgeInsets.only(bottom: 10.h),
               child: _ProductInfoRow(
                 label: item.label,
@@ -50,52 +47,52 @@ class ProductDetailsInfoSection extends StatelessWidget {
   List<_ProductInfoItem> _buildAttributes(ProductModel product) {
     final items = <_ProductInfoItem>[
       _ProductInfoItem(
-        label: 'علامة تجارية',
+        label: LocaleKeys.attrBrand.tr(),
         value: _getCustomAttributeValue(product, 'brand'),
         highlightValue: true,
       ),
       _ProductInfoItem(
-        label: 'اسم الشركة',
+        label: LocaleKeys.attrCompanyName.tr(),
         value: _getCustomAttributeValue(product, 'manufacturer'),
       ),
       _ProductInfoItem(
-        label: 'شكل المنتج',
+        label: LocaleKeys.attrProductForm.tr(),
         value: _getCustomAttributeValue(product, 'product_form'),
       ),
       _ProductInfoItem(
-        label: 'الباركود الدولي',
+        label: LocaleKeys.attrBarcode.tr(),
         value: _getCustomAttributeValue(product, 'barcode'),
       ),
       _ProductInfoItem(
-        label: 'نوع المنتج',
+        label: LocaleKeys.attrProductType.tr(),
         value: _getCustomAttributeValue(product, 'product_type'),
       ),
       _ProductInfoItem(
-        label: 'النوع',
+        label: LocaleKeys.attrGender.tr(),
         value: _getCustomAttributeValue(product, 'gender'),
       ),
       _ProductInfoItem(
-        label: 'المكونات',
+        label: LocaleKeys.attrIngredients.tr(),
         value: _getCustomAttributeValue(product, 'ingredients'),
       ),
       _ProductInfoItem(
-        label: 'تسوق حسب أهدافك',
+        label: LocaleKeys.attrShopByGoal.tr(),
         value: _getCustomAttributeValue(product, 'shop_by_goal'),
       ),
       _ProductInfoItem(
-        label: 'التخصصات',
+        label: LocaleKeys.attrSpecialties.tr(),
         value: _getCustomAttributeValue(product, 'specialties'),
       ),
       _ProductInfoItem(
-        label: 'التحذيرات',
+        label: LocaleKeys.attrWarnings.tr(),
         value: _getCustomAttributeValue(product, 'warnings'),
       ),
       _ProductInfoItem(
-        label: 'تسوق حسب ما يقلقك',
+        label: LocaleKeys.attrShopByConcern.tr(),
         value: _getCustomAttributeValue(product, 'shop_by_concern'),
       ),
       _ProductInfoItem(
-        label: 'اللون',
+        label: LocaleKeys.attrColor.tr(),
         value: _getCustomAttributeValue(product, 'color'),
       ),
     ];
@@ -106,7 +103,7 @@ class ProductDetailsInfoSection extends StatelessWidget {
   String _getCustomAttributeValue(ProductModel product, String code) {
     try {
       final attribute = product.customAttributes.firstWhere(
-            (item) => item.attributeCode == code,
+        (item) => item.attributeCode == code,
       );
 
       final value = attribute.value;
@@ -152,9 +149,7 @@ class _ProductInfoRow extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFFF7F7F7),
         borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(
-          color: const Color(0xFFE3E3E3),
-        ),
+        border: Border.all(color: const Color(0xFFE3E3E3)),
       ),
       child: IntrinsicHeight(
         child: Row(
@@ -162,10 +157,7 @@ class _ProductInfoRow extends StatelessWidget {
             Expanded(
               flex: 5,
               child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 12.w,
-                  vertical: 14.h,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
                 child: Text(
                   value,
                   textAlign: TextAlign.center,
@@ -180,20 +172,14 @@ class _ProductInfoRow extends StatelessWidget {
                 ),
               ),
             ),
-            Container(
-              width: 1,
-              color: const Color(0xFFE3E3E3),
-            ),
+            Container(width: 1, color: const Color(0xFFE3E3E3)),
             Expanded(
               flex: 4,
               child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 12.w,
-                  vertical: 14.h,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
                 child: Text(
                   '$label:',
-                  textAlign: TextAlign.right,
+                  textAlign: TextAlign.start,
                   style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w700,

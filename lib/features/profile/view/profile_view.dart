@@ -10,44 +10,47 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-  late final ProfileViewModel viewModel;
+  late final ProfileViewModel vm;
 
   @override
   void initState() {
     super.initState();
-    viewModel = ProfileViewModel(args: widget.args);
+    vm = ProfileViewModel(args: widget.args);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    viewModel.initialize(context);
+    vm._initLanguage(context);
+  }
+
+  @override
+  void dispose() {
+    vm._dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<GenericCubit<ProfileData>>.value(
-      value: viewModel.profileCubit,
+      value: vm._profileCubit,
       child: BlocBuilder<GenericCubit<ProfileData>, GenericState<ProfileData>>(
         builder: (context, state) {
-          final data = state.data;
+          final data = vm._data;
 
           if (data.isGuest) {
             return GuestProfileView(
               key: ValueKey('guest_${data.currentLanguageCode}'),
-              args: widget.args,
-              viewModel: viewModel,
+              vm: vm,
             );
           }
 
           return AccountProfileView(
             key: ValueKey('account_${data.currentLanguageCode}'),
-            args: widget.args,
-            viewModel: viewModel,
+            vm: vm,
           );
         },
       ),
     );
-
   }
 }

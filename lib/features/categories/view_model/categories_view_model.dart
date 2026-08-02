@@ -1,44 +1,43 @@
 part of '../categories_imports.dart';
 
+/// Per-screen view model for [CategoriesView].
 class CategoriesViewModel {
-  /// init
-  void init() {
-    getCategoriesSearch();
-  }
+  /// Services
 
-  /// services
   final ApiService _apiService = sl<ApiService>();
 
-  /// controllers
-  final searchController = TextEditingController();
+  /// Variables
 
-  /// cubits
-  final GenericCubit<List<CategoryModel>> categoriesCubit =
+  final TextEditingController _searchController = TextEditingController();
+
+  final GenericCubit<List<CategoryModel>> _categoriesCubit =
       GenericCubit<List<CategoryModel>>([]);
 
-  /// state values
+  int _selectedParentIndex = 0;
+  String _searchQuery = '';
 
-  int selectedParentIndex = 0;
-  String searchQuery = '';
+  /// Kept public: nothing reads it yet, but it is what the unwired
+  /// [CategoriesErrorView] is meant to display.
   String? errorMessage;
 
-  /// getters
+  /// Getters
 
-  List<CategoryModel> get categories => categoriesCubit.state.data;
+  List<CategoryModel> get _categories => _categoriesCubit.state.data;
 
-  CategoryModel? get selectedParentCategory {
-    if (categories.isEmpty) return null;
-    if (selectedParentIndex < 0 || selectedParentIndex >= categories.length) {
-      return categories.first;
+  CategoryModel? get _selectedParentCategory {
+    if (_categories.isEmpty) return null;
+    if (_selectedParentIndex < 0 ||
+        _selectedParentIndex >= _categories.length) {
+      return _categories.first;
     }
-    return categories[selectedParentIndex];
+    return _categories[_selectedParentIndex];
   }
 
-  List<CategoryModel> get filteredChildren {
+  List<CategoryModel> get _filteredChildren {
     final List<CategoryModel> children =
-        selectedParentCategory?.childrenData ?? <CategoryModel>[];
+        _selectedParentCategory?.childrenData ?? <CategoryModel>[];
 
-    final query = searchQuery.trim().toLowerCase();
+    final query = _searchQuery.trim().toLowerCase();
 
     if (query.isEmpty) {
       return children;
@@ -49,15 +48,52 @@ class CategoriesViewModel {
     }).toList();
   }
 
-  /// api
+  /// Init
 
-  Future<void> getCategoriesSearch() async {
-    if (categoriesCubit.state.data.isEmpty) {
-      await getCategories();
+  void _init() {
+    _getCategoriesSearch();
+  }
+
+  void _dispose() {
+    _searchController.dispose();
+    _categoriesCubit.close();
+  }
+
+  /// Actions
+
+  void _selectParentCategory(int index) {
+    _selectedParentIndex = index;
+    _searchQuery = '';
+    _searchController.clear();
+    _categoriesCubit.onUpdateData(List<CategoryModel>.from(_categories));
+  }
+
+  void _updateSearchQuery(String value) {
+    _searchQuery = value;
+    _categoriesCubit.onUpdateData(List<CategoryModel>.from(_categories));
+  }
+
+  void _clearSearch() {
+    _searchQuery = '';
+    _searchController.clear();
+    _categoriesCubit.onUpdateData(List<CategoryModel>.from(_categories));
+  }
+
+  /// Helpers
+
+  String _mapErrorToMessage(Object error) {
+    return 'Something went wrong';
+  }
+
+  /// Api
+
+  Future<void> _getCategoriesSearch() async {
+    if (_categoriesCubit.state.data.isEmpty) {
+      await _getCategories();
     }
   }
 
-  Future<void> getCategories() async {
+  Future<void> _getCategories() async {
     errorMessage = null;
 
     try {
@@ -66,45 +102,15 @@ class CategoriesViewModel {
       final rootCategory = CategoryModel.fromJson(response.data);
       final parentCategories = rootCategory.childrenData;
 
-      selectedParentIndex = 0;
-      searchQuery = '';
-      searchController.clear();
+      _selectedParentIndex = 0;
+      _searchQuery = '';
+      _searchController.clear();
       errorMessage = null;
 
-      categoriesCubit.onUpdateData(parentCategories);
+      _categoriesCubit.onUpdateData(parentCategories);
     } catch (e) {
       errorMessage = _mapErrorToMessage(e);
-      categoriesCubit.onUpdateData(<CategoryModel>[]);
+      _categoriesCubit.onUpdateData(<CategoryModel>[]);
     }
-  }
-
-  /// actions
-
-  void selectParentCategory(int index) {
-    selectedParentIndex = index;
-    searchQuery = '';
-    searchController.clear();
-    categoriesCubit.onUpdateData(List<CategoryModel>.from(categories));
-  }
-
-  void updateSearchQuery(String value) {
-    searchQuery = value;
-    categoriesCubit.onUpdateData(List<CategoryModel>.from(categories));
-  }
-
-  void clearSearch() {
-    searchQuery = '';
-    searchController.clear();
-    categoriesCubit.onUpdateData(List<CategoryModel>.from(categories));
-  }
-
-  /// helpers
-
-  String _mapErrorToMessage(Object error) {
-    return 'Something went wrong';
-  }
-
-  void dispose() {
-    searchController.dispose();
   }
 }

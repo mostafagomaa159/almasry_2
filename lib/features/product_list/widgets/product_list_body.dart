@@ -1,43 +1,34 @@
 part of '../product_list_imports.dart';
 
 class _ProductListBody extends StatelessWidget {
-  final ScrollController scrollController;
-  final ProductListViewModel viewModel;
+  final ProductListViewModel vm;
 
-  const _ProductListBody({
-    required this.scrollController,
-    required this.viewModel,
-  });
+  const _ProductListBody({required this.vm});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<
-        GenericCubit<ProductListData>,
-        GenericState<ProductListData>>(
-      bloc: viewModel.productListCubit,
+      GenericCubit<ProductListData>,
+      GenericState<ProductListData>
+    >(
+      bloc: vm._productListCubit,
       builder: (context, state) {
-        final data = state.data;
+        final data = vm._data;
 
-        if (data.status == ProductListStatus.loading &&
-            data.products.isEmpty) {
+        if (data.status == ProductListStatus.loading && data.products.isEmpty) {
           return const _ProductListLoading();
         }
 
-        if (data.status == ProductListStatus.error &&
-            data.products.isEmpty) {
-          return Center(
-            child: Text(data.errorMessage),
-          );
+        if (data.status == ProductListStatus.error && data.products.isEmpty) {
+          return Center(child: Text(data.errorMessage));
         }
 
         if (data.products.isEmpty) {
-          return const Center(
-            child: Text('No products found'),
-          );
+          return Center(child: Text(LocaleKeys.noProductsFound.tr()));
         }
 
         return GridView.builder(
-          controller: scrollController,
+          controller: vm._scrollController,
           padding: EdgeInsets.all(16.w),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
@@ -48,26 +39,10 @@ class _ProductListBody extends StatelessWidget {
           itemCount: data.products.length + (data.isLoadingMore ? 1 : 0),
           itemBuilder: (context, index) {
             if (index >= data.products.length) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
 
-            final product = data.products[index];
-            final sku = product.sku ?? '';
-            final quantity = data.quantities[sku] ?? 1;
-
-            return ProductListItem(
-              product: product,
-              quantity: quantity,
-              onIncrement: sku.isEmpty
-                  ? () {}
-                  : () => viewModel.incrementQuantity(sku),
-              onDecrement: sku.isEmpty
-                  ? () {}
-                  : () => viewModel.decrementQuantity(sku),
-              onTap: () => viewModel.navToProductDetails(context, product),
-            );
+            return ProductListItem(vm: vm, product: data.products[index]);
           },
         );
       },

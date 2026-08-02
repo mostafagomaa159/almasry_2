@@ -1,9 +1,10 @@
 part of '../orders_imports.dart';
 
 class OrderCard extends StatelessWidget {
+  final OrdersViewModel vm;
   final OrderModel order;
 
-  const OrderCard({super.key, required this.order});
+  const OrderCard({super.key, required this.vm, required this.order});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class OrderCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  'Order #${order.incrementId}',
+                  '${LocaleKeys.orderNumber.tr()}${order.incrementId}',
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w700,
@@ -87,7 +88,7 @@ class OrderCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  '${order.totalItemCount} item(s)',
+                  LocaleKeys.itemsCount.tr(args: ['${order.totalItemCount}']),
                   style: TextStyle(
                     fontSize: 13.sp,
                     color: Colors.grey.shade700,
@@ -95,7 +96,7 @@ class OrderCard extends StatelessWidget {
                 ),
               ),
               Text(
-                'L.E ${order.grandTotal.toStringAsFixed(2)}',
+                '${LocaleKeys.currencyShort.tr()} ${order.grandTotal.toStringAsFixed(2)}',
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
@@ -108,15 +109,7 @@ class OrderCard extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {
-                context.push(
-                  AppRoutes.orderDetails,
-                  extra: OrderDetailsArgs(
-                    orderId: order.entityId,
-                    incrementId: order.incrementId,
-                  ),
-                );
-              },
+              onPressed: () => vm._openOrderDetails(order),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryRed,
                 foregroundColor: Colors.white,
@@ -126,7 +119,7 @@ class OrderCard extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 12.h),
                 elevation: 0,
               ),
-              child: const Text('Details'),
+              child: Text(LocaleKeys.details.tr()),
             ),
           ),
         ],

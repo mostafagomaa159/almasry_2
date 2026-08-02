@@ -1,4 +1,3 @@
-
 import 'package:almasry_2/core/constants/app_api.dart';
 
 class CategoryModel {

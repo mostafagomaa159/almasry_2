@@ -2,13 +2,10 @@ part of '../product_details_imports.dart';
 
 class ProductDetailsHeader extends StatelessWidget {
   final String title;
-  final bool isArabic;
 
-  const ProductDetailsHeader({
-    super.key,
-    required this.title,
-    required this.isArabic,
-  });
+  const ProductDetailsHeader({super.key, required this.title});
+
+  NavigationService get _nav => sl<NavigationService>();
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +24,7 @@ class ProductDetailsHeader extends StatelessWidget {
           bottomLeft: Radius.circular(24.r),
           bottomRight: Radius.circular(24.r),
         ),
-        border: Border.all(
-          color: const Color(0xFFD7262E),
-          width: 0.8,
-        ),
+        border: Border.all(color: const Color(0xFFD7262E), width: 0.8),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -39,9 +33,24 @@ class ProductDetailsHeader extends StatelessWidget {
           ),
         ],
       ),
+      // The back control is the first child so it sits at the leading edge in
+      // both directions — left in English, right in Arabic. The icon is not
+      // swapped by locale: `arrow_back_ios_new` sets `matchTextDirection`, so
+      // Flutter already points it right under RTL.
       child: Row(
         children: [
-          _buildLeadingLogo(),
+          GestureDetector(
+            onTap: () => _nav.pop(),
+            behavior: HitTestBehavior.opaque,
+            child: Padding(
+              padding: EdgeInsets.all(6.w),
+              child: Icon(
+                Icons.arrow_back_ios_new,
+                color: const Color(0xFF2C2C2C),
+                size: 22.sp,
+              ),
+            ),
+          ),
           Expanded(
             child: Center(
               child: Text(
@@ -56,24 +65,13 @@ class ProductDetailsHeader extends StatelessWidget {
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () => context.pop(),
-            behavior: HitTestBehavior.opaque,
-            child: Padding(
-              padding: EdgeInsets.all(6.w),
-              child: Icon(
-                isArabic ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
-                color: const Color(0xFF2C2C2C),
-                size: 22.sp,
-              ),
-            ),
-          ),
+          _buildAvatar(),
         ],
       ),
     );
   }
 
-  Widget _buildLeadingLogo() {
+  Widget _buildAvatar() {
     return SizedBox(
       width: 64.w,
       height: 64.h,
@@ -87,9 +85,7 @@ class ProductDetailsHeader extends StatelessWidget {
               decoration: BoxDecoration(
                 color: const Color(0xFFF5F5F5),
                 borderRadius: BorderRadius.circular(16.r),
-                border: Border.all(
-                  color: const Color(0xFFE5E5E5),
-                ),
+                border: Border.all(color: const Color(0xFFE5E5E5)),
               ),
               alignment: Alignment.center,
               child: Icon(

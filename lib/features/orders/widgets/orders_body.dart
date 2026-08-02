@@ -1,9 +1,9 @@
 part of '../orders_imports.dart';
 
 class OrdersBody extends StatelessWidget {
-  final OrdersViewModel viewModel;
+  final OrdersViewModel vm;
 
-  const OrdersBody({super.key, required this.viewModel});
+  const OrdersBody({super.key, required this.vm});
 
   @override
   Widget build(BuildContext context) {
@@ -11,13 +11,13 @@ class OrdersBody extends StatelessWidget {
       GenericCubit<List<OrderModel>>,
       GenericState<List<OrderModel>>
     >(
-      bloc: viewModel.ordersCubit,
+      bloc: vm._ordersCubit,
       builder: (context, state) {
         if (state is GenericUpdateState<List<OrderModel>>) {
           if (state.data.isEmpty) {
             return const OrdersEmptyView();
           }
-          return OrdersListView(orders: state.data);
+          return OrdersListView(vm: vm, orders: state.data);
         }
         return const OrdersLoadingView();
       },

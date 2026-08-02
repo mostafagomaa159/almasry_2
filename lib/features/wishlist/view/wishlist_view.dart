@@ -1,4 +1,4 @@
-part of '../../wishlist/wishlist_imports.dart';
+part of '../wishlist_imports.dart';
 
 class WishlistView extends StatefulWidget {
   const WishlistView({super.key});
@@ -8,44 +8,19 @@ class WishlistView extends StatefulWidget {
 }
 
 class _WishlistViewState extends State<WishlistView> {
+  final WishlistViewModel vm = WishlistViewModel();
+
   @override
   void initState() {
     super.initState();
-    sl<FavoritesViewModel>().loadFavorites();
+    vm._init();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Wishlist'),
-        centerTitle: true,
-      ),
-      body: BlocBuilder<
-          GenericCubit<FavoritesModel>,
-          GenericState<FavoritesModel>>(
-        builder: (context, state) {
-          final data = state.data;
-
-          if (data.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (data.favorites.isEmpty) {
-            return const WishlistEmptyView();
-          }
-
-          return ListView.builder(
-            padding: EdgeInsets.all(16.w),
-            itemCount: data.favorites.length,
-            itemBuilder: (context, index) {
-              final product = data.favorites[index];
-
-              return WishlistItemCard(product: product);
-            },
-          );
-        },
-      ),
+      appBar: AppBar(title: Text(LocaleKeys.wishlist.tr()), centerTitle: true),
+      body: WishlistBody(vm: vm),
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
 
 class ComingSoonView extends StatelessWidget {
@@ -28,13 +30,10 @@ class ComingSoonView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Coming soon',
+              Text(
+                LocaleKeys.comingSoon.tr(),
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
+                style: const TextStyle(fontSize: 16, color: Colors.grey),
               ),
             ],
           ),

@@ -6,7 +6,7 @@ class OrdersAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: const Text('My Orders'),
+      title: Text(LocaleKeys.myOrders.tr()),
       centerTitle: true,
       backgroundColor: Colors.white,
       elevation: 0,

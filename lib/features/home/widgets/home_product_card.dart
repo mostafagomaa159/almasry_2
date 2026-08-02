@@ -1,6 +1,7 @@
 part of '../home_imports.dart';
 
 class ProductCard extends StatefulWidget {
+  final HomeViewModel vm;
   final String sku;
   final String imagePath;
   final String title;
@@ -15,6 +16,7 @@ class ProductCard extends StatefulWidget {
 
   const ProductCard({
     super.key,
+    required this.vm,
     required this.sku,
     required this.imagePath,
     required this.title,
@@ -54,7 +56,7 @@ class _ProductCardState extends State<ProductCard> {
       description: widget.description,
     );
 
-    await sl<FavoritesViewModel>().toggleFavorite(product);
+    await widget.vm._toggleFavorite(product);
   }
 
   void _incrementQuantity() {
@@ -68,15 +70,11 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   void _openProductDetails() {
-    context.pushNamed(
-      'productDetails',
-      extra: ProductDetailsArgs(
-        sku: widget.sku,
-        title: widget.title,
-        imagePath: widget.imagePath,
-      ),
+    widget.vm._openProductDetails(
+      sku: widget.sku,
+      title: widget.title,
+      imagePath: widget.imagePath,
     );
-
   }
 
   @override
@@ -125,81 +123,87 @@ class _ProductCardState extends State<ProductCard> {
                             child: Center(
                               child: widget.isNetworkImage
                                   ? Image.network(
-                                widget.imagePath,
-                                height: 110.h,
-                                fit: BoxFit.contain,
-                                errorBuilder:
-                                    (context, error, stackTrace) {
-                                  return Container(
-                                    height: 100.h,
-                                    width: 100.w,
-                                    color: Colors.grey.shade100,
-                                    alignment: Alignment.center,
-                                    child: Icon(
-                                      Icons.broken_image_outlined,
-                                      color: Colors.grey,
-                                      size: 26.sp,
-                                    ),
-                                  );
-                                },
-                              )
+                                      widget.imagePath,
+                                      height: 110.h,
+                                      fit: BoxFit.contain,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                            return Container(
+                                              height: 100.h,
+                                              width: 100.w,
+                                              color: Colors.grey.shade100,
+                                              alignment: Alignment.center,
+                                              child: Icon(
+                                                Icons.broken_image_outlined,
+                                                color: Colors.grey,
+                                                size: 26.sp,
+                                              ),
+                                            );
+                                          },
+                                    )
                                   : Image.asset(
-                                widget.imagePath,
-                                height: 110.h,
-                                fit: BoxFit.contain,
-                              ),
+                                      widget.imagePath,
+                                      height: 110.h,
+                                      fit: BoxFit.contain,
+                                    ),
                             ),
                           ),
 
                           Align(
                             alignment: AlignmentDirectional.topEnd,
-                            child: BlocBuilder<
-                                GenericCubit<FavoritesModel>,
-                                GenericState<FavoritesModel>>(
-                              builder: (context, state) {
-                                final isFavorite =
-                                state.data.isFavorite(widget.sku);
+                            child:
+                                BlocBuilder<
+                                  GenericCubit<FavoritesModel>,
+                                  GenericState<FavoritesModel>
+                                >(
+                                  builder: (context, state) {
+                                    final isFavorite = state.data.isFavorite(
+                                      widget.sku,
+                                    );
 
-                                return Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    onTap: _toggleFavorite,
-                                    borderRadius: BorderRadius.circular(10.r),
-                                    child: Container(
-                                      width: 32.w,
-                                      height: 32.h,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius:
-                                        BorderRadius.circular(10.r),
-                                        border: Border.all(
-                                          color: const Color(0xFFEAEAEA),
+                                    return Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        onTap: _toggleFavorite,
+                                        borderRadius: BorderRadius.circular(
+                                          10.r,
                                         ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withValues(
-                                              alpha: 0.04,
+                                        child: Container(
+                                          width: 32.w,
+                                          height: 32.h,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(
+                                              10.r,
                                             ),
-                                            blurRadius: 6,
-                                            offset: const Offset(0, 2),
+                                            border: Border.all(
+                                              color: const Color(0xFFEAEAEA),
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black.withValues(
+                                                  alpha: 0.04,
+                                                ),
+                                                blurRadius: 6,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ],
                                           ),
-                                        ],
+                                          alignment: Alignment.center,
+                                          child: Icon(
+                                            isFavorite
+                                                ? Icons.favorite
+                                                : Icons.favorite_border,
+                                            color: isFavorite
+                                                ? AppColors.primaryRed
+                                                : const Color(0xFFC8C8C8),
+                                            size: 18.sp,
+                                          ),
+                                        ),
                                       ),
-                                      alignment: Alignment.center,
-                                      child: Icon(
-                                        isFavorite
-                                            ? Icons.favorite
-                                            : Icons.favorite_border,
-                                        color: isFavorite
-                                            ? AppColors.primaryRed
-                                            : const Color(0xFFC8C8C8),
-                                        size: 18.sp,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
+                                    );
+                                  },
+                                ),
                           ),
                         ],
                       ),

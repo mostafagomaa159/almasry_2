@@ -6,11 +6,20 @@ class ProductDetailsModel extends Equatable {
   final String? errorMessage;
   final int quantity;
 
+  /// True once the user has asked to be notified about this product.
+  final bool isNotifySubscribed;
+
+  /// True while the notify-me request is in flight, so the button can show a
+  /// spinner and reject a second tap.
+  final bool isNotifyLoading;
+
   const ProductDetailsModel({
     this.isLoading = false,
     this.product,
     this.errorMessage,
     this.quantity = 1,
+    this.isNotifySubscribed = false,
+    this.isNotifyLoading = false,
   });
 
   ProductDetailsModel copyWith({
@@ -18,6 +27,8 @@ class ProductDetailsModel extends Equatable {
     ProductModel? product,
     String? errorMessage,
     int? quantity,
+    bool? isNotifySubscribed,
+    bool? isNotifyLoading,
     bool clearProduct = false,
     bool clearErrorMessage = false,
   }) {
@@ -28,9 +39,18 @@ class ProductDetailsModel extends Equatable {
           ? null
           : (errorMessage ?? this.errorMessage),
       quantity: quantity ?? this.quantity,
+      isNotifySubscribed: isNotifySubscribed ?? this.isNotifySubscribed,
+      isNotifyLoading: isNotifyLoading ?? this.isNotifyLoading,
     );
   }
 
   @override
-  List<Object?> get props => [isLoading, product, errorMessage, quantity];
+  List<Object?> get props => [
+    isLoading,
+    product,
+    errorMessage,
+    quantity,
+    isNotifySubscribed,
+    isNotifyLoading,
+  ];
 }

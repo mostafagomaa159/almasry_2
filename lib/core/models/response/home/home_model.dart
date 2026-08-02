@@ -82,12 +82,13 @@ class HomeModel {
     return HomeModel(
       currentBannerIndex: currentBannerIndex ?? this.currentBannerIndex,
       selectedOfferTabIndex:
-      selectedOfferTabIndex ?? this.selectedOfferTabIndex,
+          selectedOfferTabIndex ?? this.selectedOfferTabIndex,
       selectedBottomNavIndex:
-      selectedBottomNavIndex ?? this.selectedBottomNavIndex,
+          selectedBottomNavIndex ?? this.selectedBottomNavIndex,
       isLoading: isLoading ?? this.isLoading,
-      errorMessage:
-      clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
+      errorMessage: clearErrorMessage
+          ? null
+          : (errorMessage ?? this.errorMessage),
       banners: banners ?? this.banners,
       secondaryBanners: secondaryBanners ?? this.secondaryBanners,
       offers: offers ?? this.offers,
@@ -103,8 +104,7 @@ class HomeModel {
       bestSellerProducts: bestSellerProducts ?? this.bestSellerProducts,
       momBabyProducts: momBabyProducts ?? this.momBabyProducts,
       homeCareProducts: homeCareProducts ?? this.homeCareProducts,
-      feminineCareProducts:
-      feminineCareProducts ?? this.feminineCareProducts,
+      feminineCareProducts: feminineCareProducts ?? this.feminineCareProducts,
       menCareProducts: menCareProducts ?? this.menCareProducts,
     );
   }

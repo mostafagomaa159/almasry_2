@@ -3,10 +3,7 @@ part of '../product_details_imports.dart';
 class ProductDetailsRatingSection extends StatelessWidget {
   final double rating;
 
-  const ProductDetailsRatingSection({
-    super.key,
-    required this.rating,
-  });
+  const ProductDetailsRatingSection({super.key, required this.rating});
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +31,7 @@ class ProductDetailsRatingSection extends StatelessWidget {
             decoration: BoxDecoration(
               color: const Color(0xFFF7F7F7),
               borderRadius: BorderRadius.circular(14.r),
-              border: Border.all(
-                color: const Color(0xFFE6E6E6),
-              ),
+              border: Border.all(color: const Color(0xFFE6E6E6)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -47,9 +42,7 @@ class ProductDetailsRatingSection extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(14.r),
-                    border: Border.all(
-                      color: const Color(0xFFE6E6E6),
-                    ),
+                    border: Border.all(color: const Color(0xFFE6E6E6)),
                   ),
                   alignment: Alignment.center,
                   child: Text(
@@ -70,7 +63,7 @@ class ProductDetailsRatingSection extends StatelessWidget {
                         spacing: 2.w,
                         children: List.generate(
                           5,
-                              (index) => Icon(
+                          (index) => Icon(
                             index < filledStars
                                 ? Icons.star_rounded
                                 : Icons.star_border_rounded,
@@ -82,8 +75,8 @@ class ProductDetailsRatingSection extends StatelessWidget {
                       SizedBox(height: 8.h),
                       Text(
                         hasRating
-                            ? 'تقييم المستخدمين لهذا المنتج'
-                            : 'لا توجد تقييمات لهذا المنتج حالياً',
+                            ? LocaleKeys.productDetailsRatingHas.tr()
+                            : LocaleKeys.productDetailsRatingNone.tr(),
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,

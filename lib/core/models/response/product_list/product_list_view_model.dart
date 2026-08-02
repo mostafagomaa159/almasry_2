@@ -1,11 +1,6 @@
 part of '../../../../features/product_list/product_list_imports.dart';
 
-enum ProductListStatus {
-  initial,
-  loading,
-  success,
-  error,
-}
+enum ProductListStatus { initial, loading, success, error }
 
 class ProductListData extends Equatable {
   final ProductListStatus status;
@@ -50,7 +45,9 @@ class ProductListData extends Equatable {
     return ProductListData.ProductListModel(
       status: status ?? this.status,
       products: resetProducts ? [] : (products ?? this.products),
-      errorMessage: clearErrorMessage ? '' : (errorMessage ?? this.errorMessage),
+      errorMessage: clearErrorMessage
+          ? ''
+          : (errorMessage ?? this.errorMessage),
       title: title ?? this.title,
       categoryId: categoryId ?? this.categoryId,
       currentPage: currentPage ?? this.currentPage,

@@ -1,16 +1,16 @@
 part of '../home_imports.dart';
 
 class HomeDynamicBlockSection extends StatefulWidget {
+  final HomeViewModel vm;
   final String title;
-  final bool isArabic;
   final HomeMobileBlockModel block;
   final List<ProductModel> products;
   final List<HomeSubCategoryModel>? overrideSubCategories;
 
   const HomeDynamicBlockSection({
     super.key,
+    required this.vm,
     required this.title,
-    required this.isArabic,
     required this.block,
     required this.products,
     this.overrideSubCategories,
@@ -40,7 +40,6 @@ class _HomeDynamicBlockSectionState extends State<HomeDynamicBlockSection> {
             height: 42.h,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              reverse: widget.isArabic,
               padding: EdgeInsets.symmetric(horizontal: 14.w),
               itemCount: subCategories.length,
               separatorBuilder: (_, __) => SizedBox(width: 8.w),
@@ -87,10 +86,7 @@ class _HomeDynamicBlockSectionState extends State<HomeDynamicBlockSection> {
           SizedBox(height: 16.h),
         ],
 
-        HomeProductsSection(
-          isArabic: widget.isArabic,
-          products: widget.products,
-        ),
+        HomeProductsSection(vm: widget.vm, products: widget.products),
       ],
     );
   }

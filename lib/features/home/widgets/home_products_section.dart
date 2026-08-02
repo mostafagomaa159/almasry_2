@@ -1,12 +1,12 @@
 part of '../home_imports.dart';
 
 class HomeProductsSection extends StatefulWidget {
-  final bool isArabic;
+  final HomeViewModel vm;
   final List<ProductModel> products;
 
   const HomeProductsSection({
     super.key,
-    required this.isArabic,
+    required this.vm,
     required this.products,
   });
 
@@ -15,6 +15,8 @@ class HomeProductsSection extends StatefulWidget {
 }
 
 class _HomeProductsSectionState extends State<HomeProductsSection> {
+  /// Per-instance lazy-reveal state: several of these lists are on screen at
+  /// once, so how far each has been scrolled is view state, not app state.
   final ScrollController _scrollController = ScrollController();
   int visibleCount = 5;
   bool isLoadingMore = false;
@@ -81,7 +83,6 @@ class _HomeProductsSectionState extends State<HomeProductsSection> {
       child: ListView.builder(
         controller: _scrollController,
         scrollDirection: Axis.horizontal,
-        reverse: widget.isArabic,
         padding: EdgeInsets.symmetric(horizontal: 4.w),
         itemCount: visibleProducts.length,
         itemBuilder: (context, index) {
@@ -92,6 +93,7 @@ class _HomeProductsSectionState extends State<HomeProductsSection> {
               : AppImages.redBigCard;
 
           return ProductCard(
+            vm: widget.vm,
             sku: product.sku,
             imagePath: imagePath,
             isNetworkImage: hasNetworkImage,

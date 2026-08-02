@@ -42,11 +42,11 @@ class OrderModel extends Equatable {
       grandTotal: double.tryParse(json['grand_total']?.toString() ?? '0') ?? 0,
       subtotal: double.tryParse(json['subtotal']?.toString() ?? '0') ?? 0,
       shippingAmount:
-      double.tryParse(json['shipping_amount']?.toString() ?? '0') ?? 0,
+          double.tryParse(json['shipping_amount']?.toString() ?? '0') ?? 0,
       totalItemCount:
-      int.tryParse(json['total_item_count']?.toString() ?? '0') ?? 0,
+          int.tryParse(json['total_item_count']?.toString() ?? '0') ?? 0,
       totalQtyOrdered:
-      double.tryParse(json['total_qty_ordered']?.toString() ?? '0') ?? 0,
+          double.tryParse(json['total_qty_ordered']?.toString() ?? '0') ?? 0,
       shippingDescription: json['shipping_description']?.toString() ?? '',
       items: itemsJson
           .map((e) => OrderItemModel.fromJson(e as Map<String, dynamic>))

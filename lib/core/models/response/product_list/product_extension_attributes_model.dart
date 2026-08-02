@@ -1,4 +1,3 @@
-
 class ProductExtensionAttributesModel {
   final String urlBase;
   final String thumbnail;
@@ -18,9 +17,7 @@ class ProductExtensionAttributesModel {
     required this.description,
   });
 
-  factory ProductExtensionAttributesModel.fromJson(
-      Map<String, dynamic> json,
-      ) {
+  factory ProductExtensionAttributesModel.fromJson(Map<String, dynamic> json) {
     return ProductExtensionAttributesModel(
       urlBase: json['url_base']?.toString() ?? '',
       thumbnail: json['thumbnail']?.toString() ?? '',

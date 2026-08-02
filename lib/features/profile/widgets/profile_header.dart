@@ -7,8 +7,6 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isArabic = context.locale.languageCode == 'ar';
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Color(0xFFFF2D2D),
@@ -41,7 +39,9 @@ class ProfileHeader extends StatelessWidget {
                   end: 18.w,
                   top: 12.h,
                   child: Image.asset(
-                    AppImages.profileLeft,
+                    // Was a fixed asset, which left the Arabic logo showing on
+                    // the English screens.
+                    AppLogo.asset(context),
                     width: 45.w,
                     fit: BoxFit.contain,
                   ),
@@ -83,10 +83,10 @@ class ProfileHeader extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        // `arrow_back_ios_new` mirrors itself under RTL, so it
+                        // already points right in Arabic.
                         Icon(
-                          isArabic
-                              ? Icons.arrow_forward_ios
-                              : Icons.arrow_back_ios_new,
+                          Icons.arrow_back_ios_new,
                           size: 16.sp,
                           color: const Color(0xFF7A7A7A),
                         ),

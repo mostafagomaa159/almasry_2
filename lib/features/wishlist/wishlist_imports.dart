@@ -1,19 +1,21 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
 import 'package:almasry_2/core/base/bloc/generic_state.dart';
 import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/constants/app_colors.dart';
+import 'package:almasry_2/core/models/response/favorite/favorite_product_model.dart';
 import 'package:almasry_2/core/models/response/favorite/favorites_model.dart';
 import 'package:almasry_2/core/models/response/product_details/product_details_args_model.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
-import 'package:almasry_2/core/services/db_services.dart';
-import 'package:almasry_2/features/product_details/product_details_imports.dart';
+import 'package:almasry_2/core/services/favorites_service.dart';
+import 'package:almasry_2/core/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:almasry_2/core/models/response/favorite/favorite_product_model.dart';
 
 part 'view/wishlist_view.dart';
+part 'view_model/wishlist_view_model.dart';
+part 'widgets/wishlist_body.dart';
 part 'widgets/wishlist_empty_view.dart';
 part 'widgets/wishlist_item_card.dart';
-part 'view_model/favorites_view_model.dart';

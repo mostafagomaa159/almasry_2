@@ -27,8 +27,8 @@ class AppImages {
   static const String profilePlaceholder =
       '$_imagesPath/profile_placeholder.png';
 
-  static const String ai ='$_imagesPath/aiicon.png';
-  static const String mask ='$_imagesPath/maskgroup.png';
+  static const String ai = '$_imagesPath/aiicon.png';
+  static const String mask = '$_imagesPath/maskgroup.png';
 
   // Icons
   static const String heartIcon = '$_iconsPath/heart.png';

@@ -49,15 +49,13 @@ class _ProductDetailsDescriptionSectionState
             decoration: BoxDecoration(
               color: const Color(0xFFF7F7F7),
               borderRadius: BorderRadius.circular(14.r),
-              border: Border.all(
-                color: const Color(0xFFE6E6E6),
-              ),
+              border: Border.all(color: const Color(0xFFE6E6E6)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'الوصف',
+                  LocaleKeys.productDetailsDescriptionTitle.tr(),
                   style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w700,
@@ -72,9 +70,7 @@ class _ProductDetailsDescriptionSectionState
                     child: ConstrainedBox(
                       constraints: _expanded
                           ? const BoxConstraints()
-                          : BoxConstraints(
-                        maxHeight: 120.h,
-                      ),
+                          : BoxConstraints(maxHeight: 120.h),
                       child: Html(
                         data: widget.description,
                         style: {
@@ -90,9 +86,7 @@ class _ProductDetailsDescriptionSectionState
                             color: const Color(0xFF8C8C8C),
                             lineHeight: LineHeight.number(1.7),
                           ),
-                          "p": Style(
-                            margin: Margins.only(bottom: 10),
-                          ),
+                          "p": Style(margin: Margins.only(bottom: 10)),
                           "h1": Style(
                             fontSize: FontSize(20),
                             fontWeight: FontWeight.w700,
@@ -146,7 +140,9 @@ class _ProductDetailsDescriptionSectionState
                     },
                     behavior: HitTestBehavior.opaque,
                     child: Text(
-                      _expanded ? 'عرض أقل' : 'عرض المزيد',
+                      _expanded
+                          ? LocaleKeys.productDetailsShowLess.tr()
+                          : LocaleKeys.productDetailsShowMore.tr(),
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w700,

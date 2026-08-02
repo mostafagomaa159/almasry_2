@@ -1,9 +1,7 @@
-
 import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:almasry_2/core/constants/app_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 
 class AppButton extends StatelessWidget {
   final String title;

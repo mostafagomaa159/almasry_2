@@ -1,23 +1,36 @@
 part of '../product_details_imports.dart';
 
+/// The bar pinned to the bottom of the product details screen.
+///
+/// Shows the quantity stepper and Add to Cart for an in-stock product, and
+/// replaces both with "Notify Me When Available" when the product is out of
+/// stock — there is nothing to add to the basket in that case.
 class ProductDetailsBottomAction extends StatelessWidget {
-  final int quantity;
-  final VoidCallback onIncrementTap;
-  final VoidCallback onDecrementTap;
-  final VoidCallback onAddToBasketTap;
+  final ProductDetailsViewModel vm;
 
-  const ProductDetailsBottomAction({
-    super.key,
-    required this.quantity,
-    required this.onIncrementTap,
-    required this.onDecrementTap,
-    required this.onAddToBasketTap,
-  });
+  const ProductDetailsBottomAction({super.key, required this.vm});
 
   @override
   Widget build(BuildContext context) {
-    final bool isDecrementEnabled = quantity > 1;
+    final ProductModel? product = vm._data.product;
 
+    if (product == null) return const SizedBox.shrink();
+
+    return _BottomActionCard(
+      child: product.isInStock
+          ? _AddToBasketRow(vm: vm)
+          : _NotifyMeButton(vm: vm, product: product),
+    );
+  }
+}
+
+class _BottomActionCard extends StatelessWidget {
+  final Widget child;
+
+  const _BottomActionCard({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(12.w),
@@ -31,58 +44,151 @@ class ProductDetailsBottomAction extends StatelessWidget {
             offset: const Offset(0, 6),
           ),
         ],
-        border: Border.all(
-          color: const Color(0xFFF0F0F0),
-        ),
+        border: Border.all(color: const Color(0xFFF0F0F0)),
       ),
-      child: Row(
-        children: [
-          _QuantityControl(
-            quantity: quantity,
-            onIncrementTap: onIncrementTap,
-            onDecrementTap: isDecrementEnabled ? onDecrementTap : null,
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: SizedBox(
-              height: 58.h,
-              child: ElevatedButton(
-                onPressed: onAddToBasketTap,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryRed,
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.r),
-                  ),
+      child: child,
+    );
+  }
+}
+
+class _AddToBasketRow extends StatelessWidget {
+  final ProductDetailsViewModel vm;
+
+  const _AddToBasketRow({required this.vm});
+
+  @override
+  Widget build(BuildContext context) {
+    final int quantity = vm._data.quantity;
+    final VoidCallback onIncrementTap = vm._incrementQuantity;
+    final VoidCallback onDecrementTap = vm._decrementQuantity;
+    final VoidCallback onAddToBasketTap = vm._addToBasket;
+
+    final bool isDecrementEnabled = quantity > 1;
+
+    return Row(
+      children: [
+        _QuantityControl(
+          quantity: quantity,
+          onIncrementTap: onIncrementTap,
+          onDecrementTap: isDecrementEnabled ? onDecrementTap : null,
+        ),
+        SizedBox(width: 12.w),
+        Expanded(
+          child: SizedBox(
+            height: 58.h,
+            child: ElevatedButton(
+              onPressed: onAddToBasketTap,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryRed,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.shopping_basket_outlined,
-                      size: 22.sp,
-                      color: Colors.white,
-                    ),
-                    SizedBox(width: 8.w),
-                    Flexible(
-                      child: Text(
-                        LocaleKeys.productDetailsAddToBasket.tr(),
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.shopping_basket_outlined,
+                    size: 22.sp,
+                    color: Colors.white,
+                  ),
+                  SizedBox(width: 8.w),
+                  Flexible(
+                    child: Text(
+                      LocaleKeys.productDetailsAddToBasket.tr(),
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
-        ],
+        ),
+      ],
+    );
+  }
+}
+
+class _NotifyMeButton extends StatelessWidget {
+  final ProductDetailsViewModel vm;
+  final ProductModel product;
+
+  const _NotifyMeButton({required this.vm, required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isSubscribed = vm._data.isNotifySubscribed;
+    final bool isLoading = vm._data.isNotifyLoading;
+
+    // Once subscribed the button becomes a confirmation, so a second tap
+    // cannot re-arm the alert.
+    final bool isEnabled = !isSubscribed && !isLoading;
+
+    return SizedBox(
+      width: double.infinity,
+      height: 58.h,
+      child: ElevatedButton(
+        onPressed: isEnabled
+            ? () => vm._notifyWhenAvailable(context, product)
+            : null,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isSubscribed
+              ? const Color(0xFF43A047)
+              : AppColors.primaryRed,
+          foregroundColor: Colors.white,
+          disabledBackgroundColor: isSubscribed
+              ? const Color(0xFF43A047)
+              : const Color(0xFFBDBDBD),
+          disabledForegroundColor: Colors.white,
+          elevation: 0,
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+        ),
+        child: isLoading
+            ? SizedBox(
+                width: 22.w,
+                height: 22.w,
+                child: const CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    isSubscribed
+                        ? Icons.notifications_active
+                        : Icons.notifications_none,
+                    size: 22.sp,
+                    color: Colors.white,
+                  ),
+                  SizedBox(width: 8.w),
+                  Flexible(
+                    child: Text(
+                      isSubscribed
+                          ? LocaleKeys.productDetailsNotifyMeSubscribed.tr()
+                          : LocaleKeys.productDetailsNotifyMe.tr(),
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }
@@ -109,9 +215,7 @@ class _QuantityControl extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFFF8F8F8),
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: const Color(0xFFE7E7E7),
-        ),
+        border: Border.all(color: const Color(0xFFE7E7E7)),
       ),
       child: Row(
         children: [
@@ -140,8 +244,9 @@ class _QuantityControl extends StatelessWidget {
             iconColor: canDecrement
                 ? const Color(0xFF11385B)
                 : const Color(0xFFBDBDBD),
-            backgroundColor:
-            canDecrement ? Colors.white : const Color(0xFFF3F3F3),
+            backgroundColor: canDecrement
+                ? Colors.white
+                : const Color(0xFFF3F3F3),
           ),
         ],
       ),
@@ -173,16 +278,10 @@ class _QtyIconButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: backgroundColor ?? Colors.white,
           borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(
-            color: const Color(0xFFE6E6E6),
-          ),
+          border: Border.all(color: const Color(0xFFE6E6E6)),
         ),
         alignment: Alignment.center,
-        child: Icon(
-          icon,
-          size: 20.sp,
-          color: iconColor,
-        ),
+        child: Icon(icon, size: 20.sp, color: iconColor),
       ),
     );
   }

@@ -20,14 +20,11 @@ class CategoriesErrorView extends StatelessWidget {
           children: [
             const Icon(Icons.error_outline, size: 50),
             SizedBox(height: 12.h),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-            ),
+            Text(message, textAlign: TextAlign.center),
             SizedBox(height: 16.h),
             ElevatedButton(
               onPressed: onRetry,
-              child: const Text('Retry'),
+              child: Text(LocaleKeys.retry.tr()),
             ),
           ],
         ),

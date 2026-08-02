@@ -1,4 +1,3 @@
-
 class RegisterCustomerModel {
   final String? token;
   final String? cartId;

@@ -1,26 +1,9 @@
 part of '../profile_imports.dart';
 
 class ProfileInfoCard extends StatelessWidget {
-  final String name;
-  final String email;
-  final String phone;
-  final String gender;
-  final String birthDate;
-  final String hasPregnancy;
-  final String chronicDisease;
-  final VoidCallback onEditTap;
+  final ProfileViewModel vm;
 
-  const ProfileInfoCard({
-    super.key,
-    required this.name,
-    required this.email,
-    required this.phone,
-    required this.gender,
-    required this.birthDate,
-    required this.hasPregnancy,
-    required this.chronicDisease,
-    required this.onEditTap,
-  });
+  const ProfileInfoCard({super.key, required this.vm});
 
   Widget _buildInfoRow({
     required BuildContext context,
@@ -61,6 +44,13 @@ class ProfileInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<GenericCubit<ProfileArgs>, GenericState<ProfileArgs>>(
+      bloc: vm._currentProfileCubit,
+      builder: (context, state) => _buildCard(context),
+    );
+  }
+
+  Widget _buildCard(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: EdgeInsetsDirectional.fromSTEB(18.w, 14.h, 18.w, 16.h),
@@ -84,7 +74,7 @@ class ProfileInfoCard extends StatelessWidget {
               children: [
                 SizedBox(height: 4.h),
                 Text(
-                  name,
+                  vm._displayName,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24.sp,
@@ -94,7 +84,7 @@ class ProfileInfoCard extends StatelessWidget {
                 ),
                 SizedBox(height: 2.h),
                 Text(
-                  email,
+                  vm._displayEmail,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16.sp,
@@ -106,27 +96,27 @@ class ProfileInfoCard extends StatelessWidget {
                 _buildInfoRow(
                   context: context,
                   label: LocaleKeys.profilePhoneLabel.tr(),
-                  value: phone,
+                  value: vm._displayPhone,
                 ),
                 _buildInfoRow(
                   context: context,
                   label: LocaleKeys.profileGenderLabel.tr(),
-                  value: gender,
+                  value: vm._displayGender,
                 ),
                 _buildInfoRow(
                   context: context,
                   label: LocaleKeys.profileBirthDateLabel.tr(),
-                  value: birthDate,
+                  value: vm._displayBirthDate,
                 ),
                 _buildInfoRow(
                   context: context,
                   label: LocaleKeys.profilePregnancyLabel.tr(),
-                  value: hasPregnancy,
+                  value: vm._displayPregnancy,
                 ),
                 _buildInfoRow(
                   context: context,
                   label: LocaleKeys.profileChronicDiseaseLabel.tr(),
-                  value: chronicDisease,
+                  value: vm._displayChronicDisease,
                 ),
               ],
             ),
@@ -135,7 +125,7 @@ class ProfileInfoCard extends StatelessWidget {
             top: 0,
             start: 0,
             child: InkWell(
-              onTap: onEditTap,
+              onTap: vm._openEditProfile,
               borderRadius: BorderRadius.circular(18.r),
               child: Container(
                 width: 34.w,

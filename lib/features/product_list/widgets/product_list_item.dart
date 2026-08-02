@@ -1,22 +1,10 @@
 part of '../product_list_imports.dart';
 
 class ProductListItem extends StatelessWidget {
+  final ProductListViewModel vm;
   final ProductModel product;
-  final int quantity;
-  final VoidCallback onIncrement;
-  final VoidCallback onDecrement;
-  final VoidCallback? onTap;
 
-
-  const ProductListItem({
-    super.key,
-    required this.product,
-    required this.quantity,
-    required this.onIncrement,
-    required this.onDecrement,
-    this.onTap,
-
-  });
+  const ProductListItem({super.key, required this.vm, required this.product});
 
   String _fullImageUrl() {
     final base = product.extensionAttributes?.urlBase ?? '';
@@ -62,10 +50,13 @@ class ProductListItem extends StatelessWidget {
     final discount = _discountPercent();
     final isOutOfStock = _isOutOfStock();
 
+    final sku = product.sku ?? '';
+    final quantity = vm._getProductQuantity(sku);
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onTap,
+        onTap: () => vm._navToProductDetails(product),
         borderRadius: BorderRadius.circular(16.r),
         child: Container(
           decoration: BoxDecoration(
@@ -107,19 +98,19 @@ class ProductListItem extends StatelessWidget {
                   child: Center(
                     child: imageUrl.isEmpty
                         ? Icon(
-                      Icons.image_not_supported_outlined,
-                      size: 42.sp,
-                      color: Colors.grey.shade400,
-                    )
+                            Icons.image_not_supported_outlined,
+                            size: 42.sp,
+                            color: Colors.grey.shade400,
+                          )
                         : Image.network(
-                      imageUrl,
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => Icon(
-                        Icons.image_not_supported_outlined,
-                        size: 42.sp,
-                        color: Colors.grey.shade400,
-                      ),
-                    ),
+                            imageUrl,
+                            fit: BoxFit.contain,
+                            errorBuilder: (_, __, ___) => Icon(
+                              Icons.image_not_supported_outlined,
+                              size: 42.sp,
+                              color: Colors.grey.shade400,
+                            ),
+                          ),
                   ),
                 ),
                 SizedBox(height: 8.h),
@@ -132,7 +123,7 @@ class ProductListItem extends StatelessWidget {
                       borderRadius: BorderRadius.circular(6.r),
                     ),
                     child: Text(
-                      'Get a discount $discount%',
+                      LocaleKeys.getDiscount.tr(args: ['$discount']),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 12.sp,
@@ -155,7 +146,7 @@ class ProductListItem extends StatelessWidget {
                 ),
                 SizedBox(height: 10.h),
                 Text(
-                  'L.E ${currentPrice.toStringAsFixed(2)}',
+                  '${LocaleKeys.currencyShort.tr()} ${currentPrice.toStringAsFixed(2)}',
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w700,
@@ -165,7 +156,7 @@ class ProductListItem extends StatelessWidget {
                 SizedBox(height: 4.h),
                 if (oldPrice != null && oldPrice > currentPrice)
                   Text(
-                    'L.E ${oldPrice.toStringAsFixed(2)}',
+                    '${LocaleKeys.currencyShort.tr()} ${oldPrice.toStringAsFixed(2)}',
                     style: TextStyle(
                       fontSize: 14.sp,
                       color: Colors.grey,
@@ -176,60 +167,68 @@ class ProductListItem extends StatelessWidget {
                 SizedBox(height: 10.h),
                 isOutOfStock
                     ? Container(
-                  width: double.infinity,
-                  height: 40.h,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFBDBDBD),
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Out Of Stock',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                )
+                        width: double.infinity,
+                        height: 40.h,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFBDBDBD),
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          LocaleKeys.outOfStock.tr(),
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
                     : Row(
-                  children: [
-                    Icon(
-                      Icons.shopping_cart_outlined,
-                      color: const Color(0xFF18314F),
-                      size: 20.sp,
-                    ),
-                    const Spacer(),
-                    Container(
-                      height: 40.h,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xFFD9D9D9)),
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      child: Row(
                         children: [
-                          IconButton(
-                            onPressed: onIncrement,
-                            icon: const Icon(Icons.add),
-                            visualDensity: VisualDensity.compact,
+                          Icon(
+                            Icons.shopping_cart_outlined,
+                            color: const Color(0xFF18314F),
+                            size: 20.sp,
                           ),
-                          Text(
-                            '$quantity',
-                            style: TextStyle(
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.w700,
+                          const Spacer(),
+                          Container(
+                            height: 40.h,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: const Color(0xFFD9D9D9),
+                              ),
+                              borderRadius: BorderRadius.circular(12.r),
                             ),
-                          ),
-                          IconButton(
-                            onPressed: quantity > 1 ? onDecrement : null,
-                            icon: const Icon(Icons.remove),
-                            visualDensity: VisualDensity.compact,
+                            child: Row(
+                              children: [
+                                IconButton(
+                                  onPressed: sku.isEmpty
+                                      ? () {}
+                                      : () => vm._incrementQuantity(sku),
+                                  icon: const Icon(Icons.add),
+                                  visualDensity: VisualDensity.compact,
+                                ),
+                                Text(
+                                  '$quantity',
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: quantity > 1
+                                      ? (sku.isEmpty
+                                            ? () {}
+                                            : () => vm._decrementQuantity(sku))
+                                      : null,
+                                  icon: const Icon(Icons.remove),
+                                  visualDensity: VisualDensity.compact,
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
               ],
             ),
           ),

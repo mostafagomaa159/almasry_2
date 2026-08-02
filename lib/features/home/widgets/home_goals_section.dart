@@ -1,14 +1,9 @@
 part of '../home_imports.dart';
 
 class HomeGoalsSection extends StatelessWidget {
-  final bool isArabic;
   final List<HomeSubCategoryModel> items;
 
-  const HomeGoalsSection({
-    super.key,
-    required this.isArabic,
-    required this.items,
-  });
+  const HomeGoalsSection({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +13,6 @@ class HomeGoalsSection extends StatelessWidget {
       height: 84.h,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        reverse: isArabic,
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         itemCount: items.length,
         separatorBuilder: (_, __) => SizedBox(width: 8.w),

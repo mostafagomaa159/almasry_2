@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
 import 'package:almasry_2/core/base/bloc/generic_state.dart';
 import 'package:almasry_2/core/base/locator/locator.dart';
@@ -11,6 +13,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 part 'view_model/categories_view_model.dart';
 part 'view/categories_view.dart';
+part 'widgets/categories_body.dart';
 part 'widgets/categories_children_section.dart';
 part 'widgets/categories_error_view.dart';
 part 'widgets/categories_loading_view.dart';

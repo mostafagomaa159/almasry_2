@@ -66,25 +66,25 @@ class ProductDetailsSummarySection extends StatelessWidget {
           SizedBox(height: 12.h),
           Row(
             children: [
-              if (isInStock)
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 12.w,
-                    vertical: 5.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF43A047),
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                  child: Text(
-                    'متوفر',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.h),
+                decoration: BoxDecoration(
+                  color: isInStock
+                      ? const Color(0xFF43A047)
+                      : const Color(0xFF9E9E9E),
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Text(
+                  isInStock
+                      ? LocaleKeys.productDetailsInStock.tr()
+                      : LocaleKeys.productDetailsOutOfStock.tr(),
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
                   ),
                 ),
+              ),
             ],
           ),
           SizedBox(height: 12.h),

@@ -3,10 +3,7 @@ part of '../home_imports.dart';
 class BrandStrip extends StatelessWidget {
   final List<HomeBrandModel> brands;
 
-  const BrandStrip({
-    super.key,
-    required this.brands,
-  });
+  const BrandStrip({super.key, required this.brands});
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +34,7 @@ class BrandStrip extends StatelessWidget {
 class _BrandItem extends StatelessWidget {
   final HomeBrandModel brand;
 
-  const _BrandItem({
-    required this.brand,
-  });
+  const _BrandItem({required this.brand});
 
   @override
   Widget build(BuildContext context) {

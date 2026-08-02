@@ -134,4 +134,115 @@ class LocaleKeys {
       'product_details_category_women_clothing';
   static const String productDetailsDescriptionValue =
       'product_details_description_value';
+
+  // Common
+  static const String retry = 'retry';
+  static const String comingSoon = 'coming_soon';
+  static const String somethingWentWrong = 'something_went_wrong';
+  static const String serverError = 'server_error';
+  static const String invalidResponseFormat = 'invalid_response_format';
+  static const String currencyShort = 'currency_short';
+  static const String details = 'details';
+
+  // Wishlist
+  static const String wishlistEmptyTitle = 'wishlist_empty_title';
+  static const String wishlistEmptyDesc = 'wishlist_empty_desc';
+
+  // Categories
+  static const String categoriesEmpty = 'categories_empty';
+  static const String categoriesSearchHint = 'categories_search_hint';
+  static const String categoriesNoSelection = 'categories_no_selection';
+  static const String categoriesNoMatchingSub = 'categories_no_matching_sub';
+  static const String categoriesNoSub = 'categories_no_sub';
+  static const String productsCount = 'products_count';
+
+  // Orders
+  static const String myOrders = 'my_orders';
+  static const String ordersNotFound = 'orders_not_found';
+  static const String itemsCount = 'items_count';
+
+  // Order details
+  static const String orderSummary = 'order_summary';
+  static const String orderItems = 'order_items';
+  static const String orderStatusLabel = 'order_status_label';
+  static const String orderDateLabel = 'order_date_label';
+  static const String orderGrandTotalLabel = 'order_grand_total_label';
+  static const String orderQtyLabel = 'order_qty_label';
+  static const String orderPriceLabel = 'order_price_label';
+  static const String orderDetailsNotFound = 'order_details_not_found';
+
+  // OTP verification
+  static const String otpConfirmTitle = 'otp_confirm_title';
+  static const String otpConfirmSubtitle = 'otp_confirm_subtitle';
+  static const String otpVerify = 'otp_verify';
+  static const String otpResend = 'otp_resend';
+  static const String otpResendAvailableNow = 'otp_resend_available_now';
+  static const String otpResendAvailableIn = 'otp_resend_available_in';
+  static const String otpResentSuccess = 'otp_resent_success';
+  static const String otpInvalidLength = 'otp_invalid_length';
+  static const String otpPhoneMissing = 'otp_phone_missing';
+  static const String otpCodeMissing = 'otp_code_missing';
+  static const String otpIncorrect = 'otp_incorrect';
+  static const String otpSendFailed = 'otp_send_failed';
+  static const String otpActivateFailed = 'otp_activate_failed';
+  static const String otpLoginFailed = 'otp_login_failed';
+  static const String otpResendPhoneMissing = 'otp_resend_phone_missing';
+
+  // Product list
+  static const String noProductsFound = 'no_products_found';
+  static const String outOfStock = 'out_of_stock';
+  static const String getDiscount = 'get_discount';
+
+  // Product details
+  static const String productDetailsTitle = 'product_details_title';
+  static const String productDetailsNotFound = 'product_details_not_found';
+  static const String productDetailsInfo = 'product_details_info';
+  static const String productDetailsDescriptionTitle =
+      'product_details_description_title';
+  static const String productDetailsShowMore = 'product_details_show_more';
+  static const String productDetailsShowLess = 'product_details_show_less';
+  static const String productDetailsInStock = 'product_details_in_stock';
+  static const String productDetailsRatingHas = 'product_details_rating_has';
+  static const String productDetailsRatingNone = 'product_details_rating_none';
+
+  // Product attribute labels
+  static const String attrBrand = 'attr_brand';
+  static const String attrCompanyName = 'attr_company_name';
+  static const String attrProductForm = 'attr_product_form';
+  static const String attrBarcode = 'attr_barcode';
+  static const String attrProductType = 'attr_product_type';
+  static const String attrGender = 'attr_gender';
+  static const String attrIngredients = 'attr_ingredients';
+  static const String attrShopByGoal = 'attr_shop_by_goal';
+  static const String attrSpecialties = 'attr_specialties';
+  static const String attrWarnings = 'attr_warnings';
+  static const String attrShopByConcern = 'attr_shop_by_concern';
+  static const String attrColor = 'attr_color';
+
+  // Home
+  static const String homeBrands = 'home_brands';
+  static const String homeMomBabyCare = 'home_mom_baby_care';
+  static const String homeHomeCare = 'home_home_care';
+  static const String homeFeminineCare = 'home_feminine_care';
+  static const String homeMenCare = 'home_men_care';
+  static const String homeNoBestsellers = 'home_no_bestsellers';
+  static const String homeSkinAnalysis = 'home_skin_analysis';
+  static const String homeSmartSearch = 'home_smart_search';
+
+  // Edit profile
+  static const String birthDateHint = 'birth_date_hint';
+
+  // Notify me when available
+  static const String productDetailsOutOfStock = 'product_details_out_of_stock';
+  static const String productDetailsNotifyMe = 'product_details_notify_me';
+  static const String productDetailsNotifyMeSuccess =
+      'product_details_notify_me_success';
+  static const String productDetailsNotifyMeSubscribed =
+      'product_details_notify_me_subscribed';
+  static const String productDetailsNotifyMeFailed =
+      'product_details_notify_me_failed';
+  static const String notificationProductAvailableTitle =
+      'notification_product_available_title';
+  static const String notificationProductAvailableBody =
+      'notification_product_available_body';
 }

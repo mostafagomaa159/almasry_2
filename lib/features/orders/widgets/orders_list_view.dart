@@ -1,12 +1,10 @@
 part of '../orders_imports.dart';
 
 class OrdersListView extends StatelessWidget {
+  final OrdersViewModel vm;
   final List<OrderModel> orders;
 
-  const OrdersListView({
-    super.key,
-    required this.orders,
-  });
+  const OrdersListView({super.key, required this.vm, required this.orders});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +14,7 @@ class OrdersListView extends StatelessWidget {
       separatorBuilder: (_, __) => SizedBox(height: 12.h),
       itemBuilder: (context, index) {
         final order = orders[index];
-        return OrderCard(order: order);
+        return OrderCard(vm: vm, order: order);
       },
     );
   }

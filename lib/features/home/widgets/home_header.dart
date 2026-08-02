@@ -19,10 +19,7 @@ class HomeHeader extends StatelessWidget {
                 bottomLeft: Radius.circular(28.r),
                 bottomRight: Radius.circular(28.r),
               ),
-              border: Border.all(
-                color: AppColors.primaryRed,
-                width: 1.2,
-              ),
+              border: Border.all(color: AppColors.primaryRed, width: 1.2),
             ),
             child: SafeArea(
               bottom: false,

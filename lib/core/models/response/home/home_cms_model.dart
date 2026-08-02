@@ -1,5 +1,3 @@
-
-
 import 'package:almasry_2/core/models/response/home/home_brands_data_model.dart';
 import 'package:almasry_2/core/models/response/home/home_mobile_block_model.dart';
 import 'package:almasry_2/core/models/response/home/home_slider_item_model.dart';
@@ -9,11 +7,7 @@ class HomeCmsModel {
   final HomeMobileBlockModel? mobileBlock;
   final HomeBrandsDataModel? brandsData;
 
-  const HomeCmsModel({
-    required this.slider,
-    this.mobileBlock,
-    this.brandsData,
-  });
+  const HomeCmsModel({required this.slider, this.mobileBlock, this.brandsData});
 
   factory HomeCmsModel.fromJson(Map<String, dynamic> json) {
     return HomeCmsModel(

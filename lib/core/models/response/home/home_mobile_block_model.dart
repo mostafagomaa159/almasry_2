@@ -1,4 +1,3 @@
-
 import 'package:almasry_2/core/models/response/home/home_sub_category_model.dart';
 
 class HomeMobileBlockModel {

@@ -12,8 +12,6 @@ class HomeOfferTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isArabic = context.locale.languageCode == 'ar';
-
     final List<String> tabs = [
       LocaleKeys.homeBeautyOffers.tr(),
       LocaleKeys.homePersonalCareOffers.tr(),
@@ -24,7 +22,6 @@ class HomeOfferTabs extends StatelessWidget {
       height: 46.h,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        reverse: isArabic,
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         itemCount: tabs.length,
         separatorBuilder: (_, _) => SizedBox(width: 8.w),
@@ -67,6 +64,7 @@ class HomeOfferTabs extends StatelessWidget {
     );
   }
 }
+
 class _HomeOfferItem extends StatelessWidget {
   final String title;
   final String imagePath;
@@ -101,9 +99,7 @@ class _HomeOfferItem extends StatelessWidget {
               child: Container(
                 width: 66.w,
                 height: 66.h,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                ),
+                decoration: const BoxDecoration(shape: BoxShape.circle),
                 clipBehavior: Clip.antiAlias,
                 child: _buildImage(),
               ),

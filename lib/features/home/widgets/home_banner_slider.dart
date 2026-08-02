@@ -1,21 +1,15 @@
 part of '../home_imports.dart';
 
 class HomeBannerSlider extends StatelessWidget {
-  final PageController controller;
-  final int currentIndex;
-  final ValueChanged<int> onPageChanged;
-  final List<HomeSliderItemModel> banners;
+  final HomeViewModel vm;
 
-  const HomeBannerSlider({
-    super.key,
-    required this.controller,
-    required this.currentIndex,
-    required this.onPageChanged,
-    required this.banners,
-  });
+  const HomeBannerSlider({super.key, required this.vm});
 
   @override
   Widget build(BuildContext context) {
+    final banners = vm._data.banners;
+    final currentIndex = vm._data.currentBannerIndex;
+
     if (banners.isEmpty) return const SizedBox.shrink();
 
     return Column(
@@ -23,8 +17,8 @@ class HomeBannerSlider extends StatelessWidget {
         SizedBox(
           height: 165.h,
           child: PageView.builder(
-            controller: controller,
-            onPageChanged: onPageChanged,
+            controller: vm._bannerController,
+            onPageChanged: vm._changeBannerIndex,
             itemCount: banners.length,
             itemBuilder: (context, index) {
               final banner = banners[index];
@@ -52,8 +46,7 @@ class HomeBannerSlider extends StatelessWidget {
                         child: const CircularProgressIndicator(),
                       );
                     },
-                  )
-
+                  ),
                 ),
               );
             },
@@ -64,7 +57,7 @@ class HomeBannerSlider extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(
             banners.length,
-                (index) => Container(
+            (index) => Container(
               width: currentIndex == index ? 14.w : 8.w,
               height: 8.h,
               margin: EdgeInsets.symmetric(horizontal: 3.w),

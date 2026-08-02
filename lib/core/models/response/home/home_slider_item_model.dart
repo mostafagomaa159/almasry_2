@@ -1,5 +1,3 @@
-
-
 import 'package:almasry_2/core/models/response/home/home_banner_url_model.dart';
 
 class HomeSliderItemModel {

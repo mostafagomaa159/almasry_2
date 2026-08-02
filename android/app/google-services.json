@@ -1,0 +1,134 @@
+{
+  "project_info": {
+    "project_number": "417887773",
+    "project_id": "lecturefirebase-7945c",
+    "storage_bucket": "lecturefirebase-7945c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:417887773:android:05663b0bf014d07620b8f4",
+        "android_client_info": {
+          "package_name": "com.example.almasry_2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "417887773-i2g9u2s60tln215189tq84t6eri5oum0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClrDYN4gKrWMtqjux2Zhhy4BW_bIraUUQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "417887773-i2g9u2s60tln215189tq84t6eri5oum0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "417887773-i20am4hu3a03hgstcdf3jk6p89aefr8l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.almasry2"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:417887773:android:18c11b72e978e94e20b8f4",
+        "android_client_info": {
+          "package_name": "com.example.lecturefirebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "417887773-i2g9u2s60tln215189tq84t6eri5oum0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClrDYN4gKrWMtqjux2Zhhy4BW_bIraUUQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "417887773-i2g9u2s60tln215189tq84t6eri5oum0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "417887773-i20am4hu3a03hgstcdf3jk6p89aefr8l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.almasry2"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:417887773:android:fc59c8a83b51183a20b8f4",
+        "android_client_info": {
+          "package_name": "com.example.myfirebaseapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "417887773-c8p3e2mtbjri24v9cb9lriuttdvtb239.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.myfirebaseapp",
+            "certificate_hash": "70c05fd45e309daa47d3b8fc100bbeba25f26827"
+          }
+        },
+        {
+          "client_id": "417887773-fqrfmj7leq6dqov6ahd4qcfb0qd7qji5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.myfirebaseapp",
+            "certificate_hash": "a26c62b2d59108d9f9bb542cfdebc2f2bd6726f6"
+          }
+        },
+        {
+          "client_id": "417887773-i2g9u2s60tln215189tq84t6eri5oum0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClrDYN4gKrWMtqjux2Zhhy4BW_bIraUUQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "417887773-i2g9u2s60tln215189tq84t6eri5oum0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "417887773-i20am4hu3a03hgstcdf3jk6p89aefr8l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.almasry2"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

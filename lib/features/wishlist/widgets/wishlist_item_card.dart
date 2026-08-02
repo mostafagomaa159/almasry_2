@@ -1,27 +1,10 @@
-part of '../../wishlist/wishlist_imports.dart';
+part of '../wishlist_imports.dart';
 
 class WishlistItemCard extends StatelessWidget {
+  final WishlistViewModel vm;
   final FavoriteProductModel product;
 
-  const WishlistItemCard({
-    super.key,
-    required this.product,
-  });
-
-  Future<void> _removeFromWishlist(BuildContext context) async {
-    await sl<FavoritesViewModel>().removeFavorite(product.id);
-  }
-
-  void _openDetails(BuildContext context) {
-    context.push(
-      AppRoutes.productDetails,
-      extra: ProductDetailsArgs(
-        sku: product.id,
-        imagePath: product.imagePath,
-        title: product.title,
-      ),
-    );
-  }
+  const WishlistItemCard({super.key, required this.vm, required this.product});
 
   bool _isNetworkImage(String path) {
     return path.startsWith('http://') || path.startsWith('https://');
@@ -70,7 +53,7 @@ class WishlistItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => _openDetails(context),
+      onTap: () => vm._openDetails(product),
       borderRadius: BorderRadius.circular(14.r),
       child: Container(
         margin: EdgeInsets.only(bottom: 14.h),
@@ -140,7 +123,7 @@ class WishlistItemCard extends StatelessWidget {
             ),
             SizedBox(width: 8.w),
             InkWell(
-              onTap: () => _removeFromWishlist(context),
+              onTap: () => vm._removeFromWishlist(product.id),
               borderRadius: BorderRadius.circular(50.r),
               child: Container(
                 width: 38.w,

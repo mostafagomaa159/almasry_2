@@ -1,23 +1,16 @@
 part of '../home_imports.dart';
 
 class HomeSuccessContent extends StatelessWidget {
-  final HomeModel data;
-  final PageController bannerController;
-  final Future<void> Function() onRefresh;
-  final ValueChanged<int> onBannerPageChanged;
+  final HomeViewModel vm;
 
-  const HomeSuccessContent({
-    super.key,
-    required this.data,
-    required this.bannerController,
-    required this.onRefresh,
-    required this.onBannerPageChanged,
-  });
+  const HomeSuccessContent({super.key, required this.vm});
 
   @override
   Widget build(BuildContext context) {
+    final data = vm._data;
+
     return RefreshIndicator(
-      onRefresh: onRefresh,
+      onRefresh: vm._getHomeData,
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Padding(
@@ -35,12 +28,7 @@ class HomeSuccessContent extends StatelessWidget {
               SizedBox(height: 16.h),
 
               if (data.banners.isNotEmpty) ...[
-                HomeBannerSlider(
-                  controller: bannerController,
-                  currentIndex: data.currentBannerIndex,
-                  onPageChanged: onBannerPageChanged,
-                  banners: data.banners,
-                ),
+                HomeBannerSlider(vm: vm),
                 SizedBox(height: 18.h),
               ],
 
@@ -48,9 +36,7 @@ class HomeSuccessContent extends StatelessWidget {
 
               SizedBox(height: 24.h),
 
-              HomeSectionsView(
-                data: data,
-              ),
+              HomeSectionsView(vm: vm),
             ],
           ),
         ),

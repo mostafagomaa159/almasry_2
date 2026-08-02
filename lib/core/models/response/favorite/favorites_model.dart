@@ -1,21 +1,13 @@
-
-
 import 'package:almasry_2/core/models/response/favorite/favorite_product_model.dart';
 
 class FavoritesModel {
   final bool isLoading;
   final List<FavoriteProductModel> favorites;
 
-  const FavoritesModel({
-    required this.isLoading,
-    required this.favorites,
-  });
+  const FavoritesModel({required this.isLoading, required this.favorites});
 
   factory FavoritesModel.initial() {
-    return const FavoritesModel(
-      isLoading: false,
-      favorites: [],
-    );
+    return const FavoritesModel(isLoading: false, favorites: []);
   }
 
   FavoritesModel copyWith({

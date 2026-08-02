@@ -13,12 +13,12 @@ class _CategoriesViewState extends State<CategoriesView> {
   @override
   void initState() {
     super.initState();
-    vm.init();
+    vm._init();
   }
 
   @override
   void dispose() {
-    vm.dispose();
+    vm._dispose();
     super.dispose();
   }
 
@@ -30,39 +30,11 @@ class _CategoriesViewState extends State<CategoriesView> {
         child: Column(
           children: [
             AppBar(
-              title: const Text('Categories'),
+              title: Text(LocaleKeys.categories.tr()),
               centerTitle: true,
               automaticallyImplyLeading: false,
             ),
-            Expanded(
-              child: BlocBuilder<GenericCubit<List<CategoryModel>>,
-                  GenericState<List<CategoryModel>>>(
-                bloc: vm.categoriesCubit,
-                builder: (context, state) {
-                  if (state is GenericUpdateState<List<CategoryModel>>) {
-                    if (state.data.isEmpty) {
-                      return const Center(
-                        child: Text('No categories found'),
-                      );
-                    }
-
-                    return CategoriesContentView(
-                      categories: state.data,
-                      selectedParentCategory: vm.selectedParentCategory,
-                      filteredChildren: vm.filteredChildren,
-                      searchQuery: vm.searchQuery,
-                      selectedParentIndex: vm.selectedParentIndex,
-                      searchController: vm.searchController,
-                      onParentSelected: vm.selectParentCategory,
-                      onSearchChanged: vm.updateSearchQuery,
-                      onClearSearch: vm.clearSearch,
-                    );
-                  } else {
-                    return const CategoriesLoadingView();
-                  }
-                },
-              ),
-            ),
+            Expanded(child: CategoriesBody(vm: vm)),
           ],
         ),
       ),

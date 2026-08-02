@@ -17,7 +17,7 @@ class OrderItemModel extends Equatable {
     required this.price,
     required this.originalPrice,
     required this.qtyOrdered,
-    
+
     required this.rowTotal,
     required this.productImage,
   });
@@ -32,7 +32,7 @@ class OrderItemModel extends Equatable {
       sku: json['sku']?.toString() ?? '',
       price: double.tryParse(json['price']?.toString() ?? '0') ?? 0,
       originalPrice:
-      double.tryParse(json['original_price']?.toString() ?? '0') ?? 0,
+          double.tryParse(json['original_price']?.toString() ?? '0') ?? 0,
       qtyOrdered: double.tryParse(json['qty_ordered']?.toString() ?? '0') ?? 0,
       rowTotal: double.tryParse(json['row_total']?.toString() ?? '0') ?? 0,
       productImage: extensionAttributes['product_image']?.toString() ?? '',

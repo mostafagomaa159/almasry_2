@@ -13,12 +13,12 @@ class ProductListRequest {
 
   String get endPoint =>
       '${ApiConstants.products}'
-          '?searchCriteria[filter_groups][0][filters][0][field]=category_id'
-          '&searchCriteria[filter_groups][0][filters][0][value]=$categoryId'
-          '&searchCriteria[filter_groups][0][filters][0][condition_type]=eq'
-          '&searchCriteria[filter_groups][1][filters][0][field]=status'
-          '&searchCriteria[filter_groups][1][filters][0][value]=1'
-          '&searchCriteria[filter_groups][1][filters][0][condition_type]=eq'
-          '&searchCriteria[pageSize]=$pageSize'
-          '&searchCriteria[currentPage]=$page';
+      '?searchCriteria[filter_groups][0][filters][0][field]=category_id'
+      '&searchCriteria[filter_groups][0][filters][0][value]=$categoryId'
+      '&searchCriteria[filter_groups][0][filters][0][condition_type]=eq'
+      '&searchCriteria[filter_groups][1][filters][0][field]=status'
+      '&searchCriteria[filter_groups][1][filters][0][value]=1'
+      '&searchCriteria[filter_groups][1][filters][0][condition_type]=eq'
+      '&searchCriteria[pageSize]=$pageSize'
+      '&searchCriteria[currentPage]=$page';
 }

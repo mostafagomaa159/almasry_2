@@ -1,41 +1,63 @@
 part of '../home_imports.dart';
 
+/// Per-screen view model for [HomeView].
+///
+/// Owns the CMS fetch and mapping, the banner page controller and its
+/// auto-slide timer, and the navigation the section widgets trigger.
 class HomeViewModel {
+  /// Services
+
   final ApiService _apiService = sl<ApiService>();
-  late final PageController bannerController;
-  final GenericCubit<HomeModel> homeCubit =
-  GenericCubit<HomeModel>(const HomeModel());
+  final FavoritesService _favorites = sl<FavoritesService>();
+  final NavigationService _nav = sl<NavigationService>();
+  final PushNotificationService _push = sl<PushNotificationService>();
 
-  Future<void> init() async {
-    await getHomeData();
-  }
+  /// Variables
 
+  final GenericCubit<HomeModel> _homeCubit = GenericCubit<HomeModel>(
+    const HomeModel(),
+  );
+
+  late final PageController _bannerController;
 
   Timer? _bannerTimer;
   int _lastBannersLength = 0;
 
+  HomeModel get _data => _homeCubit.state.data;
+
   HomeViewModel() {
-    bannerController = PageController();
+    _bannerController = PageController();
   }
 
-  void dispose() {
+  /// Init
+
+  Future<void> _init() async {
+    _push.dispatchPendingDeepLink();
+
+    await _getHomeData();
+  }
+
+  void _dispose() {
     _bannerTimer?.cancel();
-    bannerController.dispose();
+    _bannerController.dispose();
+    _homeCubit.close();
   }
 
-  void startBannerAutoSlide(int bannersLength) {
+  /// Banner auto-slide
+
+  void _startBannerAutoSlide(int bannersLength) {
     _bannerTimer?.cancel();
 
     if (bannersLength <= 1) return;
 
     _bannerTimer = Timer.periodic(const Duration(seconds: 3), (_) {
-      if (!bannerController.hasClients) return;
+      if (!_bannerController.hasClients) return;
 
       final int currentPage =
-          bannerController.page?.round() ?? bannerController.initialPage;
+          _bannerController.page?.round() ?? _bannerController.initialPage;
       final int nextPage = (currentPage + 1) % bannersLength;
 
-      bannerController.animateToPage(
+      _bannerController.animateToPage(
         nextPage,
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
@@ -43,35 +65,62 @@ class HomeViewModel {
     });
   }
 
-  void syncBannerTimer(int bannersLength) {
+  void _syncBannerTimer(int bannersLength) {
     if (_lastBannersLength == bannersLength) return;
 
     _lastBannersLength = bannersLength;
 
     if (bannersLength > 1) {
-      startBannerAutoSlide(bannersLength);
+      _startBannerAutoSlide(bannersLength);
     } else {
       _bannerTimer?.cancel();
     }
   }
 
-
-  void changeBannerIndex(int index) {
-    homeCubit.onUpdateData(
-      homeCubit.state.data.copyWith(currentBannerIndex: index),
+  void _changeBannerIndex(int index) {
+    _homeCubit.onUpdateData(
+      _homeCubit.state.data.copyWith(currentBannerIndex: index),
     );
   }
 
+  /// Kept public: nothing calls it yet, but it is what the unwired
+  /// [HomeOfferTabs] widget is meant to drive.
   void changeOfferTab(int index) {
-    homeCubit.onUpdateData(
-      homeCubit.state.data.copyWith(selectedOfferTabIndex: index),
+    _homeCubit.onUpdateData(
+      _homeCubit.state.data.copyWith(selectedOfferTabIndex: index),
     );
   }
+
+  /// Actions
+
+  void _openProductList(HomeSubCategoryModel item) {
+    if (item.id.trim().isEmpty) return;
+
+    _nav.pushNamed(
+      RouteNames.productList,
+      extra: ProductListArgs(title: item.name, categoryId: item.id),
+    );
+  }
+
+  void _openProductDetails({
+    required String sku,
+    required String title,
+    required String imagePath,
+  }) {
+    _nav.pushNamed(
+      RouteNames.productDetails,
+      extra: ProductDetailsArgs(sku: sku, title: title, imagePath: imagePath),
+    );
+  }
+
+  Future<void> _toggleFavorite(FavoriteProductModel product) async {
+    await _favorites.toggleFavorite(product);
+  }
+
+  /// Api
 
   Future<List<HomeCmsModel>> _fetchHomeData() async {
-    final response = await _apiService.get(
-      endPoint: ApiConstants.homeCmsPage,
-    );
+    final response = await _apiService.get(endPoint: ApiConstants.homeCmsPage);
 
     final List<dynamic> data = response.data as List<dynamic>;
 
@@ -110,8 +159,8 @@ class HomeViewModel {
   }
 
   Future<List<ProductModel>> _getProductsForBlock(
-      HomeMobileBlockModel? block,
-      ) async {
+    HomeMobileBlockModel? block,
+  ) async {
     final seeAllQuery = block?.seeAll.trim() ?? '';
 
     if (seeAllQuery.isEmpty) {
@@ -125,22 +174,19 @@ class HomeViewModel {
     }
   }
 
-  Future<void> getHomeData() async {
-    final current = homeCubit.state.data;
+  Future<void> _getHomeData() async {
+    final current = _homeCubit.state.data;
 
-    homeCubit.onUpdateData(
-      current.copyWith(
-        isLoading: true,
-        clearErrorMessage: true,
-      ),
+    _homeCubit.onUpdateData(
+      current.copyWith(isLoading: true, clearErrorMessage: true),
     );
 
     try {
       final response = await _fetchHomeData();
       final mapped = await _mapHomeResponse(response);
 
-      homeCubit.onUpdateData(
-        homeCubit.state.data.copyWith(
+      _homeCubit.onUpdateData(
+        _homeCubit.state.data.copyWith(
           isLoading: false,
           clearErrorMessage: true,
           banners: mapped.banners,
@@ -162,9 +208,15 @@ class HomeViewModel {
           menCareProducts: mapped.menCareProducts,
         ),
       );
+
+      // Was called from `HomeView.build`, which made every rebuild run a side
+      // effect. The banner count only changes when data lands, and
+      // [_syncBannerTimer] already no-ops when it hasn't, so doing it here is
+      // equivalent without building state changes into a build method.
+      _syncBannerTimer(mapped.banners.length);
     } catch (e) {
-      homeCubit.onUpdateData(
-        homeCubit.state.data.copyWith(
+      _homeCubit.onUpdateData(
+        _homeCubit.state.data.copyWith(
           isLoading: false,
           errorMessage: e.toString(),
         ),

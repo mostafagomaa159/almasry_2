@@ -1,4 +1,3 @@
-
 import 'package:almasry_2/core/models/response/product_list/product_custom_attribute_model.dart';
 import 'package:almasry_2/core/models/response/product_list/product_extension_attributes_model.dart';
 import 'package:almasry_2/core/models/response/product_list/product_media_gallery_entry_model.dart';
@@ -25,26 +24,28 @@ class ProductModel {
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     final extensionAttributes = json['extension_attributes'] != null
         ? ProductExtensionAttributesModel.fromJson(
-      json['extension_attributes'] as Map<String, dynamic>,
-    )
+            json['extension_attributes'] as Map<String, dynamic>,
+          )
         : null;
 
-    final customAttributes = (json['custom_attributes'] as List<dynamic>?)
-        ?.map(
-          (e) => ProductCustomAttributeModel.fromJson(
-        e as Map<String, dynamic>,
-      ),
-    )
-        .toList() ??
+    final customAttributes =
+        (json['custom_attributes'] as List<dynamic>?)
+            ?.map(
+              (e) => ProductCustomAttributeModel.fromJson(
+                e as Map<String, dynamic>,
+              ),
+            )
+            .toList() ??
         [];
 
-    final mediaGalleryEntries = (json['media_gallery_entries'] as List<dynamic>?)
-        ?.map(
-          (e) => ProductMediaGalleryEntryModel.fromJson(
-        e as Map<String, dynamic>,
-      ),
-    )
-        .toList() ??
+    final mediaGalleryEntries =
+        (json['media_gallery_entries'] as List<dynamic>?)
+            ?.map(
+              (e) => ProductMediaGalleryEntryModel.fromJson(
+                e as Map<String, dynamic>,
+              ),
+            )
+            .toList() ??
         [];
 
     return ProductModel(
@@ -105,10 +106,43 @@ class ProductModel {
     return _getCustomAttributeValue('description') ?? '';
   }
 
-
-
   String get shortDescription {
     return _getCustomAttributeValue('short_description') ?? '';
+  }
+
+  /// Values `extension_attributes.stock_status` uses for an unavailable
+  /// product. Magento serves the display string ("In Stock" / "Out of Stock");
+  /// the numeric and boolean forms are accepted too, since the same attribute
+  /// is exposed that way on some endpoints.
+  static const Set<String> _outOfStockValues = {
+    'out of stock',
+    'outofstock',
+    'out_of_stock',
+    '0',
+    'false',
+  };
+
+  /// Whether the product can be added to the basket.
+  ///
+  /// Falls back to `sellable_quantity` when `stock_status` is missing, and to
+  /// `true` when neither is present — an absent field should not hide the
+  /// Add to Cart button on an otherwise sellable product.
+  bool get isInStock {
+    final status = extensionAttributes?.stockStatus.trim().toLowerCase() ?? '';
+
+    if (status.isNotEmpty) {
+      return !_outOfStockValues.contains(status);
+    }
+
+    final quantity = num.tryParse(
+      extensionAttributes?.sellableQuantity.trim() ?? '',
+    );
+
+    if (quantity != null) {
+      return quantity > 0;
+    }
+
+    return true;
   }
 
   String? _getCustomAttributeValue(String code) {
