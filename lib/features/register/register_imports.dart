@@ -1,0 +1,27 @@
+import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
+import 'package:almasry_2/core/base/bloc/generic_state.dart';
+import 'package:almasry_2/core/base/locator/locator.dart';
+import 'package:almasry_2/core/constants/app_sizes.dart';
+import 'package:almasry_2/core/localization/app_locale.dart';
+import 'package:almasry_2/core/localization/locale_keys.dart';
+import 'package:almasry_2/core/models/response/login/user_model.dart';
+import 'package:almasry_2/core/models/response/profile/profile_args_model.dart';
+import 'package:almasry_2/core/routing/app_routes.dart';
+import 'package:almasry_2/core/services/auth_session_service.dart';
+import 'package:almasry_2/core/services/navigation_service.dart';
+import 'package:almasry_2/core/utils/focus_helper.dart';
+import 'package:almasry_2/core/utils/validators.dart';
+import 'package:almasry_2/core/widgets/app_button.dart';
+import 'package:almasry_2/core/widgets/app_text_field.dart';
+import 'package:almasry_2/core/widgets/auth_header.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+part 'view/register_view.dart';
+part 'view_model/register_view_model.dart';
+part 'widgets/register_form.dart';
+part 'widgets/register_language_switch.dart';
+part 'widgets/register_login_link.dart';
+part 'widgets/register_password_rules.dart';

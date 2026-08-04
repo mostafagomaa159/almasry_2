@@ -1,0 +1,24 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:almasry_2/core/localization/locale_keys.dart';
+import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
+import 'package:almasry_2/core/base/bloc/generic_state.dart';
+import 'package:almasry_2/core/base/locator/locator.dart';
+import 'package:almasry_2/core/models/response/login/otp_verification_args_model.dart';
+import 'package:almasry_2/core/models/response/login/user_model.dart';
+import 'package:almasry_2/core/models/response/profile/profile_args_model.dart';
+import 'package:almasry_2/core/routing/app_routes.dart';
+import 'package:almasry_2/core/services/auth_session_service.dart';
+import 'package:almasry_2/core/services/navigation_service.dart';
+import 'package:almasry_2/core/widgets/auth_header.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pinput/pinput.dart';
+
+part 'view/otp_verification_view.dart';
+part 'view_model/otp_view_model.dart';
+part 'widgets/otp_actions_section.dart';
+part 'widgets/otp_phone_header.dart';
+part 'widgets/otp_pin_fields.dart';
+part 'widgets/otp_pin_input.dart';
+part 'widgets/otp_resend_section.dart';
+part 'widgets/otp_verify_button.dart';
