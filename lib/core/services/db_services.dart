@@ -13,8 +13,7 @@ class DbServices {
 
   static const String _databaseName = 'favorites.db';
 
-  /// v2 added [notifyTableName]. Bump this and extend `onUpgrade` whenever a
-  /// table changes, otherwise existing installs keep the old schema.
+  // Bump this and extend `onUpgrade` whenever a table changes.
   static const int _databaseVersion = 2;
 
   static const String tableName = 'favorites';

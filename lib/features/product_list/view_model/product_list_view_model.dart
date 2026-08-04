@@ -1,9 +1,5 @@
 part of '../product_list_imports.dart';
 
-/// Per-screen view model for [ProductListView].
-///
-/// Owns the paging scroll controller as well as the data, so the view no longer
-/// has to wire a listener up to `loadMoreProducts`.
 class ProductListViewModel {
   /// Services
 
@@ -17,8 +13,6 @@ class ProductListViewModel {
 
   late final ScrollController _scrollController;
 
-  /// Set synchronously by [_init] so the app bar has it on the first build,
-  /// before the products request resolves.
   String _title = '';
 
   ProductListData get _data => _productListCubit.state.data;

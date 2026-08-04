@@ -1,10 +1,5 @@
 part of '../splash_imports.dart';
 
-/// Per-screen view model for [SplashView].
-///
-/// Owns the intro animation and the startup routing decision. The persisted
-/// first-run / logged-in state itself lives in [AppStartupService], since login
-/// and profile write to it too.
 class SplashViewModel {
   /// Services
 
@@ -56,10 +51,6 @@ class SplashViewModel {
     await _startup.checkAppStart();
   }
 
-  /// Routes onward once the startup status resolves.
-  ///
-  /// Takes the view's `mounted` as a callback rather than a plain bool so the
-  /// check happens *after* the delay, as it did when this lived in the view.
   Future<void> _onStatusChanged(
     StartupStatus status,
     bool Function() isMounted,

@@ -18,11 +18,6 @@ class AppRoutes {
   static const String wishlist = '/wishlist';
 }
 
-/// Route *names* used by [NavigationService] and [AppRouter].
-///
-/// Always navigate by name, never by the paths in [AppRoutes]: several screens
-/// are nested inside the shell branches, so their real path is not the constant
-/// declared above (e.g. `orderDetails` actually lives at `/profile/orderDetails`).
 class RouteNames {
   RouteNames._();
 

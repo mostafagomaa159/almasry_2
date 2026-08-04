@@ -1,10 +1,5 @@
 part of '../product_details_imports.dart';
 
-/// The bar pinned to the bottom of the product details screen.
-///
-/// Shows the quantity stepper and Add to Cart for an in-stock product, and
-/// replaces both with "Notify Me When Available" when the product is out of
-/// stock — there is nothing to add to the basket in that case.
 class ProductDetailsBottomAction extends StatelessWidget {
   final ProductDetailsViewModel vm;
 
@@ -128,8 +123,6 @@ class _NotifyMeButton extends StatelessWidget {
     final bool isSubscribed = vm._data.isNotifySubscribed;
     final bool isLoading = vm._data.isNotifyLoading;
 
-    // Once subscribed the button becomes a confirmation, so a second tap
-    // cannot re-arm the alert.
     final bool isEnabled = !isSubscribed && !isLoading;
 
     return SizedBox(

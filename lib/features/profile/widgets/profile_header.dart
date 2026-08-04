@@ -39,8 +39,6 @@ class ProfileHeader extends StatelessWidget {
                   end: 18.w,
                   top: 12.h,
                   child: Image.asset(
-                    // Was a fixed asset, which left the Arabic logo showing on
-                    // the English screens.
                     AppLogo.asset(context),
                     width: 45.w,
                     fit: BoxFit.contain,
@@ -83,8 +81,6 @@ class ProfileHeader extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // `arrow_back_ios_new` mirrors itself under RTL, so it
-                        // already points right in Arabic.
                         Icon(
                           Icons.arrow_back_ios_new,
                           size: 16.sp,

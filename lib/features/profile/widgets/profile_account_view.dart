@@ -10,8 +10,6 @@ class AccountProfileView extends StatefulWidget {
 }
 
 class _AccountProfileViewState extends State<AccountProfileView> {
-  /// Stateful only so that a language change, which remounts this subtree with
-  /// a new key, re-seeds the profile exactly as it did before.
   @override
   void initState() {
     super.initState();

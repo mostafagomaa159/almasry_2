@@ -1,7 +1,3 @@
-/// Shared auth state carried by `AuthSessionService`'s cubit.
-///
-/// A standalone library rather than a `part`, because the login, register and
-/// otp_verification features all need it and a `part` can only belong to one.
 class UserModel {
   final bool isPasswordHidden;
   final bool isConfirmPasswordHidden;

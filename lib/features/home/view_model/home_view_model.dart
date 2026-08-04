@@ -1,9 +1,5 @@
 part of '../home_imports.dart';
 
-/// Per-screen view model for [HomeView].
-///
-/// Owns the CMS fetch and mapping, the banner page controller and its
-/// auto-slide timer, and the navigation the section widgets trigger.
 class HomeViewModel {
   /// Services
 
@@ -83,8 +79,6 @@ class HomeViewModel {
     );
   }
 
-  /// Kept public: nothing calls it yet, but it is what the unwired
-  /// [HomeOfferTabs] widget is meant to drive.
   void changeOfferTab(int index) {
     _homeCubit.onUpdateData(
       _homeCubit.state.data.copyWith(selectedOfferTabIndex: index),
@@ -209,10 +203,6 @@ class HomeViewModel {
         ),
       );
 
-      // Was called from `HomeView.build`, which made every rebuild run a side
-      // effect. The banner count only changes when data lands, and
-      // [_syncBannerTimer] already no-ops when it hasn't, so doing it here is
-      // equivalent without building state changes into a build method.
       _syncBannerTimer(mapped.banners.length);
     } catch (e) {
       _homeCubit.onUpdateData(

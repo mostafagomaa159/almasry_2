@@ -33,10 +33,6 @@ class ProductDetailsHeader extends StatelessWidget {
           ),
         ],
       ),
-      // The back control is the first child so it sits at the leading edge in
-      // both directions — left in English, right in Arabic. The icon is not
-      // swapped by locale: `arrow_back_ios_new` sets `matchTextDirection`, so
-      // Flutter already points it right under RTL.
       child: Row(
         children: [
           GestureDetector(

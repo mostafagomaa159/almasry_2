@@ -1,5 +1,7 @@
 class LocaleKeys {
   static const String login = 'login';
+  static const String title = 'Al Masry';
+
   static const String loginWithPhone = 'login_with_phone';
   static const String emailOrPhone = 'email_or_phone';
   static const String phoneNumber = 'phone_number';
@@ -73,7 +75,6 @@ class LocaleKeys {
   static const String wishlist = 'wishlist';
   static const String appVersion = 'app_version';
 
-  // Profile - logged user placeholders / labels
   static const String profileNameNotAdded = 'profile_name_not_added';
   static const String profileEmailNotAdded = 'profile_email_not_added';
   static const String profilePhoneNotAdded = 'profile_phone_not_added';

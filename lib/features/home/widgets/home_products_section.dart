@@ -15,8 +15,6 @@ class HomeProductsSection extends StatefulWidget {
 }
 
 class _HomeProductsSectionState extends State<HomeProductsSection> {
-  /// Per-instance lazy-reveal state: several of these lists are on screen at
-  /// once, so how far each has been scrolled is view state, not app state.
   final ScrollController _scrollController = ScrollController();
   int visibleCount = 5;
   bool isLoadingMore = false;

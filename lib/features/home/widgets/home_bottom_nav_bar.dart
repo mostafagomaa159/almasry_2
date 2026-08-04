@@ -14,10 +14,6 @@ class HomeBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // `.tr()` resolves against a static singleton, so it registers no
-    // dependency on the locale. Reading `context.locale` subscribes this
-    // element to locale changes; without it the shell never rebuilds the bar
-    // and the labels keep the previous language until the app is restarted.
     final Locale locale = context.locale;
 
     final items = [

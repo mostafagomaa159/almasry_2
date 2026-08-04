@@ -1,6 +1,5 @@
 part of '../edit_profile_imports.dart';
 
-/// Per-screen view model for [EditProfileView].
 class EditProfileViewModel {
   /// Services
 
@@ -180,7 +179,6 @@ class EditProfileViewModel {
     _nav.pop();
   }
 
-  /// Pops back with the edited values once a save lands.
   void _onStateChanged(EditProfileModel data) {
     if (data.saveSuccess) {
       _nav.pop(

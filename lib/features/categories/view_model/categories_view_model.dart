@@ -1,6 +1,5 @@
 part of '../categories_imports.dart';
 
-/// Per-screen view model for [CategoriesView].
 class CategoriesViewModel {
   /// Services
 
@@ -16,8 +15,6 @@ class CategoriesViewModel {
   int _selectedParentIndex = 0;
   String _searchQuery = '';
 
-  /// Kept public: nothing reads it yet, but it is what the unwired
-  /// [CategoriesErrorView] is meant to display.
   String? errorMessage;
 
   /// Getters

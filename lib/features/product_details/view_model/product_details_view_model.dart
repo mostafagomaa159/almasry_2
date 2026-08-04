@@ -1,9 +1,5 @@
 part of '../product_details_imports.dart';
 
-/// Per-screen view model for [ProductDetailsView].
-///
-/// Also owns the display formatting and the favourite toggle that used to sit
-/// in the view's `State`.
 class ProductDetailsViewModel {
   /// Services
 
@@ -16,7 +12,6 @@ class ProductDetailsViewModel {
   final GenericCubit<ProductDetailsModel> _productDetailsCubit =
       GenericCubit<ProductDetailsModel>(const ProductDetailsModel());
 
-  /// Route args, kept for the image/title fallbacks.
   ProductDetailsArgs? _args;
 
   ProductDetailsModel get _data => _productDetailsCubit.state.data;
@@ -101,8 +96,6 @@ class ProductDetailsViewModel {
     return _getCustomAttributeValue(product, 'brand');
   }
 
-  /// Placeholders, carried over verbatim from the view: the API does not supply
-  /// these yet, so they were hardcoded there.
   String get _oldPrice => '';
 
   double get _rating => 0.0;
@@ -139,10 +132,6 @@ class ProductDetailsViewModel {
     );
   }
 
-  /// Registers the device for an availability alert on [product].
-  ///
-  /// Takes the `BuildContext` for the confirmation snackbar only, matching how
-  /// [OtpViewModel] does it — the work itself needs no context.
   Future<void> _notifyWhenAvailable(
     BuildContext context,
     ProductModel product,

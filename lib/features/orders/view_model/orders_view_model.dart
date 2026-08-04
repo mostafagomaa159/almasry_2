@@ -1,6 +1,5 @@
 part of '../orders_imports.dart';
 
-/// Per-screen view model for [OrdersView].
 class OrdersViewModel {
   /// Services
 
@@ -42,8 +41,6 @@ class OrdersViewModel {
     );
   }
 
-  /// Pagination entry points, kept public: nothing calls them yet, but they are
-  /// the intended API for a scroll listener / pull-to-refresh.
   Future<void> fetchMore({required String email}) async {
     await _ordersApi(email);
   }

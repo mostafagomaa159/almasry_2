@@ -1,6 +1,5 @@
 part of '../my_order_imports.dart';
 
-/// Per-screen view model for [OrderDetailsView].
 class OrderDetailsViewModel {
   /// Services
 

@@ -18,11 +18,6 @@ class HomeSectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final String resolvedActionTitle = actionTitle ?? LocaleKeys.homeMore.tr();
 
-    // No manual mirroring anywhere in here: `Row` lays its children out along
-    // the ambient text direction, `TextAlign.start` follows it, and
-    // `Icons.chevron_right` sets `matchTextDirection`, so it flips to point
-    // left in Arabic on its own. Branching on the locale would flip a second
-    // time and put everything back on the wrong side.
     Widget titleWidget = Text(
       title,
       maxLines: 1,

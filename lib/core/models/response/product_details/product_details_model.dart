@@ -6,11 +6,8 @@ class ProductDetailsModel extends Equatable {
   final String? errorMessage;
   final int quantity;
 
-  /// True once the user has asked to be notified about this product.
   final bool isNotifySubscribed;
 
-  /// True while the notify-me request is in flight, so the button can show a
-  /// spinner and reject a second tap.
   final bool isNotifyLoading;
 
   const ProductDetailsModel({

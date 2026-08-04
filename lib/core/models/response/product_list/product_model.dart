@@ -110,10 +110,6 @@ class ProductModel {
     return _getCustomAttributeValue('short_description') ?? '';
   }
 
-  /// Values `extension_attributes.stock_status` uses for an unavailable
-  /// product. Magento serves the display string ("In Stock" / "Out of Stock");
-  /// the numeric and boolean forms are accepted too, since the same attribute
-  /// is exposed that way on some endpoints.
   static const Set<String> _outOfStockValues = {
     'out of stock',
     'outofstock',
@@ -122,11 +118,6 @@ class ProductModel {
     'false',
   };
 
-  /// Whether the product can be added to the basket.
-  ///
-  /// Falls back to `sellable_quantity` when `stock_status` is missing, and to
-  /// `true` when neither is present — an absent field should not hide the
-  /// Add to Cart button on an otherwise sellable product.
   bool get isInStock {
     final status = extensionAttributes?.stockStatus.trim().toLowerCase() ?? '';
 

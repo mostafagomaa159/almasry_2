@@ -22,9 +22,6 @@ class ProfileMenuItem extends StatelessWidget {
               bottom: BorderSide(color: Color(0xFFD9D9D9), width: 1),
             ),
           ),
-          // Title leads, chevron trails. `Row` and `arrow_forward_ios` both
-          // follow the ambient text direction, so this reads title-then-arrow
-          // in English and arrow-then-title in Arabic without any branching.
           child: Row(
             children: [
               Text(

@@ -1,10 +1,5 @@
 part of '../profile_imports.dart';
 
-/// Per-screen view model for [ProfileView] and its two variants.
-///
-/// Owns the guest/language state, the account profile currently on screen, the
-/// edit round trip, logout and the app version — all of which used to live in
-/// `setState` inside [AccountProfileView] and [GuestProfileView].
 class ProfileViewModel {
   /// Services
 
@@ -15,12 +10,9 @@ class ProfileViewModel {
 
   final GenericCubit<ProfileData> _profileCubit;
 
-  /// The account details on screen. Seeded from the route args, then merged
-  /// with whatever is cached in prefs.
   final GenericCubit<ProfileArgs> _currentProfileCubit =
       GenericCubit<ProfileArgs>(const ProfileArgs(source: ''));
 
-  /// Guest screen only; empty until `PackageInfo` resolves.
   final GenericCubit<String> _appVersionCubit = GenericCubit<String>('');
 
   final ProfileArgs? _args;
@@ -45,8 +37,6 @@ class ProfileViewModel {
     );
   }
 
-  /// Called from [AccountProfileView]'s `initState`, so it re-runs when the
-  /// language change remounts that subtree — same as the old code.
   void _initAccount() {
     _currentProfileCubit.onUpdateData(
       ProfileArgs(
