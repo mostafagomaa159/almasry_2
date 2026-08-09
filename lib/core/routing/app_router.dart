@@ -7,8 +7,10 @@ import 'package:almasry_2/core/models/response/product_list/product_list_args_mo
 import 'package:almasry_2/core/models/response/login/otp_verification_args_model.dart';
 import 'package:almasry_2/core/models/response/profile/profile_args_model.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
+import 'package:almasry_2/features/brands/brands_imports.dart';
 import 'package:almasry_2/features/categories/categories_imports.dart';
 import 'package:almasry_2/features/coming_soon/view/coming_soon_view.dart';
+import 'package:almasry_2/features/contact_us/contact_us_imports.dart';
 import 'package:almasry_2/features/edit_profile/edit_profile_imports.dart';
 import 'package:almasry_2/features/home/home_imports.dart';
 import 'package:almasry_2/features/login/login_imports.dart';
@@ -84,6 +86,22 @@ class AppRouter {
                       final args = state.extra as ProductDetailsArgs;
                       return ProductDetailsView(args: args);
                     },
+                  ),
+                  GoRoute(
+                    path: AppRoutes.homeComingSoon.replaceFirst('/', ''),
+                    name: RouteNames.homeComingSoon,
+                    builder: (context, state) =>
+                        ComingSoonView(title: state.extra as String),
+                  ),
+                  GoRoute(
+                    path: AppRoutes.brands.replaceFirst('/', ''),
+                    name: RouteNames.brands,
+                    builder: (context, state) => const BrandsView(),
+                  ),
+                  GoRoute(
+                    path: AppRoutes.contactUs.replaceFirst('/', ''),
+                    name: RouteNames.contactUs,
+                    builder: (context, state) => const ContactUsView(),
                   ),
                 ],
               ),

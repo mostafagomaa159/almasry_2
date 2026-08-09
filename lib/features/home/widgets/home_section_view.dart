@@ -29,9 +29,11 @@ class HomeSectionsView extends StatelessWidget {
         if (data.bestSellerBlock != null) ...[
           HomeSectionHeader(title: LocaleKeys.homeBestSelling.tr()),
           SizedBox(height: 16.h),
-          if (data.bestSellerProducts.isEmpty)
-            Center(child: Text(LocaleKeys.homeNoBestsellers.tr())),
-          if (data.bestSellerProducts.isNotEmpty)
+          if (data.isProductsLoading)
+            const HomeProductsLoader()
+          else if (data.bestSellerProducts.isEmpty)
+            Center(child: Text(LocaleKeys.homeNoBestsellers.tr()))
+          else
             HomeProductsSection(vm: vm, products: data.bestSellerProducts),
           SizedBox(height: 24.h),
         ],
@@ -57,43 +59,51 @@ class HomeSectionsView extends StatelessWidget {
           SizedBox(height: 24.h),
         ],
 
-        if (data.momBabyBlock != null && data.momBabyProducts.isNotEmpty) ...[
+        if (data.momBabyBlock != null &&
+            (data.isProductsLoading || data.momBabyProducts.isNotEmpty)) ...[
           HomeDynamicBlockSection(
             vm: vm,
             title: LocaleKeys.homeMomBabyCare.tr(),
             block: data.momBabyBlock!,
             products: data.momBabyProducts,
+            isLoading: data.isProductsLoading,
           ),
           SizedBox(height: 24.h),
         ],
 
-        if (data.homeCareBlock != null && data.homeCareProducts.isNotEmpty) ...[
+        if (data.homeCareBlock != null &&
+            (data.isProductsLoading || data.homeCareProducts.isNotEmpty)) ...[
           HomeDynamicBlockSection(
             vm: vm,
             title: LocaleKeys.homeHomeCare.tr(),
             block: data.homeCareBlock!,
             products: data.homeCareProducts,
+            isLoading: data.isProductsLoading,
           ),
           SizedBox(height: 24.h),
         ],
 
         if (data.feminineCareBlock != null &&
-            data.feminineCareProducts.isNotEmpty) ...[
+            (data.isProductsLoading ||
+                data.feminineCareProducts.isNotEmpty)) ...[
           HomeDynamicBlockSection(
             vm: vm,
             title: LocaleKeys.homeFeminineCare.tr(),
             block: data.feminineCareBlock!,
             products: data.feminineCareProducts,
+            isLoading: data.isProductsLoading,
           ),
           SizedBox(height: 24.h),
         ],
 
-        if (data.menCareBlock != null && data.menCareProducts.isNotEmpty) ...[
+        if (data.menCareBlock != null &&
+            (data.isProductsLoading || data.menCareProducts.isNotEmpty)) ...[
           HomeDynamicBlockSection(
             vm: vm,
             title: LocaleKeys.homeMenCare.tr(),
             block: data.menCareBlock!,
             products: data.menCareProducts,
+            isLoading: data.isProductsLoading,
           ),
           SizedBox(height: 24.h),
         ],

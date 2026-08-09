@@ -81,7 +81,7 @@ class _ProductDetailsImageSectionState
                         builder: (context, state) {
                           final data = state.data;
                           final isFavorite = data.isFavorite(
-                            widget.product.id.toString(),
+                            widget.product.sku,
                           );
 
                           return _ActionButton(

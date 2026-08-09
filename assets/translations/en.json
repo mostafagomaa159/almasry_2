@@ -213,5 +213,24 @@
   "product_details_notify_me_subscribed": "You'll be notified when available",
   "product_details_notify_me_failed": "Could not register you for alerts. Please try again.",
   "notification_product_available_title": "Product Available",
-  "notification_product_available_body": "The product you requested is now available."
+  "notification_product_available_body": "The product you requested is now available.",
+
+  "drawer_menu": "Menu",
+  "drawer_shop_by_brands": "Shop by Brands",
+  "drawer_contact_us": "Contact us",
+
+  "brands_title": "Brands",
+  "brands_search_hint": "Search",
+  "brands_empty": "No brands found",
+
+  "contact_us_title": "Contact us",
+  "contact_us_name": "Name",
+  "contact_us_email": "Email",
+  "contact_us_phone": "Telephone",
+  "contact_us_message": "your message",
+  "contact_us_note": "We will respond within 12-24 hours after receiving it from Saturday to Thursday if it is not a holiday.",
+  "contact_us_submit": "Submit",
+  "contact_us_success": "The message has been sent successfully",
+  "contact_us_failed": "The message could not be sent. Please try again.",
+  "contact_us_numbers_title": "You can contact us through the following numbers"
 }

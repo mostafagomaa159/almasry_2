@@ -16,6 +16,7 @@ class LayoutShellView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8),
+      drawer: const AppDrawer(),
       body: navigationShell,
       bottomNavigationBar: HomeBottomNavBar(
         selectedIndex: navigationShell.currentIndex,

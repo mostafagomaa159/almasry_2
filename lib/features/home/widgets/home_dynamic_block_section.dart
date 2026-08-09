@@ -6,6 +6,7 @@ class HomeDynamicBlockSection extends StatefulWidget {
   final HomeMobileBlockModel block;
   final List<ProductModel> products;
   final List<HomeSubCategoryModel>? overrideSubCategories;
+  final bool isLoading;
 
   const HomeDynamicBlockSection({
     super.key,
@@ -14,6 +15,7 @@ class HomeDynamicBlockSection extends StatefulWidget {
     required this.block,
     required this.products,
     this.overrideSubCategories,
+    this.isLoading = false,
   });
 
   @override
@@ -86,7 +88,10 @@ class _HomeDynamicBlockSectionState extends State<HomeDynamicBlockSection> {
           SizedBox(height: 16.h),
         ],
 
-        HomeProductsSection(vm: widget.vm, products: widget.products),
+        if (widget.isLoading)
+          const HomeProductsLoader()
+        else
+          HomeProductsSection(vm: widget.vm, products: widget.products),
       ],
     );
   }

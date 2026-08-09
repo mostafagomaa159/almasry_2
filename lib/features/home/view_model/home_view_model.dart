@@ -21,6 +21,8 @@ class HomeViewModel {
 
   HomeModel get _data => _homeCubit.state.data;
 
+  GenericCubit<FavoritesModel> get _favoritesCubit => _favorites.favoritesCubit;
+
   HomeViewModel() {
     _bannerController = PageController();
   }
@@ -30,7 +32,9 @@ class HomeViewModel {
   Future<void> _init() async {
     _push.dispatchPendingDeepLink();
 
-    await _getHomeData();
+    // Favourites come from sqflite and nothing in the home request needs them,
+    // so the local read runs alongside the network call instead of before it.
+    await Future.wait([_favorites.loadFavorites(), _getHomeData()]);
   }
 
   void _dispose() {
@@ -168,6 +172,10 @@ class HomeViewModel {
     }
   }
 
+  /// Loads in two phases: the CMS response paints the page (banners,
+  /// categories, offers, brands, goals, concerns) as soon as it lands, then the
+  /// section products fill in. Everything above the fold comes from phase one,
+  /// so the user isn't held behind the product requests.
   Future<void> _getHomeData() async {
     final current = _homeCubit.state.data;
 
@@ -177,44 +185,76 @@ class HomeViewModel {
 
     try {
       final response = await _fetchHomeData();
-      final mapped = await _mapHomeResponse(response);
+      final _HomeStructure structure = _mapHomeStructure(response);
 
+      // Phase one — paint.
       _homeCubit.onUpdateData(
         _homeCubit.state.data.copyWith(
           isLoading: false,
+          isProductsLoading: true,
           clearErrorMessage: true,
-          banners: mapped.banners,
-          secondaryBanners: mapped.secondaryBanners,
-          offers: mapped.offers,
-          categories: mapped.categories,
-          goals: mapped.goals,
-          concerns: mapped.concerns,
-          brands: mapped.brands,
-          bestSellerBlock: mapped.bestSellerBlock,
-          momBabyBlock: mapped.momBabyBlock,
-          homeCareBlock: mapped.homeCareBlock,
-          feminineCareBlock: mapped.feminineCareBlock,
-          menCareBlock: mapped.menCareBlock,
-          bestSellerProducts: mapped.bestSellerProducts,
-          momBabyProducts: mapped.momBabyProducts,
-          homeCareProducts: mapped.homeCareProducts,
-          feminineCareProducts: mapped.feminineCareProducts,
-          menCareProducts: mapped.menCareProducts,
+          banners: structure.banners,
+          secondaryBanners: structure.secondaryBanners,
+          offers: structure.offers,
+          categories: structure.categories,
+          goals: structure.goals,
+          concerns: structure.concerns,
+          brands: structure.brands,
+          bestSellerBlock: structure.bestSellerBlock,
+          momBabyBlock: structure.momBabyBlock,
+          homeCareBlock: structure.homeCareBlock,
+          feminineCareBlock: structure.feminineCareBlock,
+          menCareBlock: structure.menCareBlock,
+          bestSellerProducts: const [],
+          momBabyProducts: const [],
+          homeCareProducts: const [],
+          feminineCareProducts: const [],
+          menCareProducts: const [],
         ),
       );
 
-      _syncBannerTimer(mapped.banners.length);
+      _syncBannerTimer(structure.banners.length);
+
+      // Phase two — fill the product rows in.
+      await _getSectionProductsFor(structure);
     } catch (e) {
       _homeCubit.onUpdateData(
         _homeCubit.state.data.copyWith(
           isLoading: false,
+          isProductsLoading: false,
           errorMessage: e.toString(),
         ),
       );
     }
   }
 
-  Future<_HomeMappedData> _mapHomeResponse(List<HomeCmsModel> response) async {
+  Future<void> _getSectionProductsFor(_HomeStructure structure) async {
+    // None of these five depend on each other, so they go out together rather
+    // than one round trip after another. [_getProductsForBlock] swallows its
+    // own errors, so one failing section can't take the whole batch down.
+    final List<List<ProductModel>> sections = await Future.wait([
+      _getProductsForBlock(structure.bestSellerBlock),
+      _getProductsForBlock(structure.momBabyBlock),
+      _getProductsForBlock(structure.homeCareBlock),
+      _getProductsForBlock(structure.feminineCareBlock),
+      _getProductsForBlock(structure.menCareBlock),
+    ]);
+
+    if (_homeCubit.isClosed) return;
+
+    _homeCubit.onUpdateData(
+      _homeCubit.state.data.copyWith(
+        isProductsLoading: false,
+        bestSellerProducts: sections[0],
+        momBabyProducts: sections[1],
+        homeCareProducts: sections[2],
+        feminineCareProducts: sections[3],
+        menCareProducts: sections[4],
+      ),
+    );
+  }
+
+  _HomeStructure _mapHomeStructure(List<HomeCmsModel> response) {
     List<HomeSliderItemModel> banners = [];
     List<HomeSliderItemModel> secondaryBanners = [];
     List<HomeSubCategoryModel> offers = [];
@@ -268,13 +308,7 @@ class HomeViewModel {
       }
     }
 
-    final bestSellerProducts = await _getProductsForBlock(bestSellerBlock);
-    final momBabyProducts = await _getProductsForBlock(momBabyBlock);
-    final homeCareProducts = await _getProductsForBlock(homeCareBlock);
-    final feminineCareProducts = await _getProductsForBlock(feminineCareBlock);
-    final menCareProducts = await _getProductsForBlock(menCareBlock);
-
-    return _HomeMappedData(
+    return _HomeStructure(
       banners: banners,
       secondaryBanners: secondaryBanners,
       offers: offers,
@@ -287,16 +321,13 @@ class HomeViewModel {
       homeCareBlock: homeCareBlock,
       feminineCareBlock: feminineCareBlock,
       menCareBlock: menCareBlock,
-      bestSellerProducts: bestSellerProducts,
-      momBabyProducts: momBabyProducts,
-      homeCareProducts: homeCareProducts,
-      feminineCareProducts: feminineCareProducts,
-      menCareProducts: menCareProducts,
     );
   }
 }
 
-class _HomeMappedData {
+/// Everything the CMS response carries on its own — no product requests
+/// involved, so phase one can render straight from it.
+class _HomeStructure {
   final List<HomeSliderItemModel> banners;
   final List<HomeSliderItemModel> secondaryBanners;
   final List<HomeSubCategoryModel> offers;
@@ -309,13 +340,8 @@ class _HomeMappedData {
   final HomeMobileBlockModel? homeCareBlock;
   final HomeMobileBlockModel? feminineCareBlock;
   final HomeMobileBlockModel? menCareBlock;
-  final List<ProductModel> bestSellerProducts;
-  final List<ProductModel> momBabyProducts;
-  final List<ProductModel> homeCareProducts;
-  final List<ProductModel> feminineCareProducts;
-  final List<ProductModel> menCareProducts;
 
-  const _HomeMappedData({
+  const _HomeStructure({
     required this.banners,
     required this.secondaryBanners,
     required this.offers,
@@ -328,10 +354,5 @@ class _HomeMappedData {
     required this.homeCareBlock,
     required this.feminineCareBlock,
     required this.menCareBlock,
-    required this.bestSellerProducts,
-    required this.momBabyProducts,
-    required this.homeCareProducts,
-    required this.feminineCareProducts,
-    required this.menCareProducts,
   });
 }

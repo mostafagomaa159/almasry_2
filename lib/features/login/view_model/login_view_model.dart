@@ -6,6 +6,7 @@ class LoginViewModel {
   final AuthSessionService _auth = sl<AuthSessionService>();
   final AppStartupService _startup = sl<AppStartupService>();
   final NavigationService _nav = sl<NavigationService>();
+  final SharedPrefsServices _prefs = sl<SharedPrefsServices>();
 
   /// Variables
 
@@ -102,14 +103,14 @@ class LoginViewModel {
 
     await _auth.login();
     await _startup.saveLoggedIn();
-    await SharedPrefsServices.setBool(PrefKeys.isLoggedIn, true);
+    await _prefs.setBool(PrefKeys.isLoggedIn, true);
 
     if (emailOrPhone.contains('@')) {
-      await SharedPrefsServices.setString(PrefKeys.email, emailOrPhone);
-      await SharedPrefsServices.remove(PrefKeys.phone);
+      await _prefs.setString(PrefKeys.email, emailOrPhone);
+      await _prefs.remove(PrefKeys.phone);
     } else {
-      await SharedPrefsServices.setString(PrefKeys.phone, emailOrPhone);
-      await SharedPrefsServices.remove(PrefKeys.email);
+      await _prefs.setString(PrefKeys.phone, emailOrPhone);
+      await _prefs.remove(PrefKeys.email);
     }
 
     if (!context.mounted) return;

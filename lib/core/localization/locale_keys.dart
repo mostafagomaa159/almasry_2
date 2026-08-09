@@ -246,4 +246,26 @@ class LocaleKeys {
       'notification_product_available_title';
   static const String notificationProductAvailableBody =
       'notification_product_available_body';
+
+  // Drawer
+  static const String drawerMenu = 'drawer_menu';
+  static const String drawerShopByBrands = 'drawer_shop_by_brands';
+  static const String drawerContactUs = 'drawer_contact_us';
+
+  // Brands
+  static const String brandsTitle = 'brands_title';
+  static const String brandsSearchHint = 'brands_search_hint';
+  static const String brandsEmpty = 'brands_empty';
+
+  // Contact us
+  static const String contactUsTitle = 'contact_us_title';
+  static const String contactUsName = 'contact_us_name';
+  static const String contactUsEmail = 'contact_us_email';
+  static const String contactUsPhone = 'contact_us_phone';
+  static const String contactUsMessage = 'contact_us_message';
+  static const String contactUsNote = 'contact_us_note';
+  static const String contactUsSubmit = 'contact_us_submit';
+  static const String contactUsSuccess = 'contact_us_success';
+  static const String contactUsFailed = 'contact_us_failed';
+  static const String contactUsNumbersTitle = 'contact_us_numbers_title';
 }

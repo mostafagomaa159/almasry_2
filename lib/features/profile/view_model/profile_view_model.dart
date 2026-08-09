@@ -5,6 +5,7 @@ class ProfileViewModel {
 
   final NavigationService _nav = sl<NavigationService>();
   final AppStartupService _startup = sl<AppStartupService>();
+  final SharedPrefsServices _prefs = sl<SharedPrefsServices>();
 
   /// Variables
 
@@ -57,14 +58,10 @@ class ProfileViewModel {
   }
 
   void _mergeSavedProfileData() {
-    final String savedEmail = SharedPrefsServices.getString(PrefKeys.email);
-    final String savedPhone = SharedPrefsServices.getString(PrefKeys.phone);
-    final String savedFirstName = SharedPrefsServices.getString(
-      PrefKeys.firstName,
-    );
-    final String savedLastName = SharedPrefsServices.getString(
-      PrefKeys.lastName,
-    );
+    final String savedEmail = _prefs.getString(PrefKeys.email);
+    final String savedPhone = _prefs.getString(PrefKeys.phone);
+    final String savedFirstName = _prefs.getString(PrefKeys.firstName);
+    final String savedLastName = _prefs.getString(PrefKeys.lastName);
 
     final current = _currentProfile;
 
@@ -235,16 +232,10 @@ class ProfileViewModel {
     );
 
     if (result is EditProfileArgs) {
-      await SharedPrefsServices.setString(
-        PrefKeys.firstName,
-        result.firstName ?? '',
-      );
-      await SharedPrefsServices.setString(
-        PrefKeys.lastName,
-        result.lastName ?? '',
-      );
-      await SharedPrefsServices.setString(PrefKeys.email, result.email ?? '');
-      await SharedPrefsServices.setString(PrefKeys.phone, result.phone ?? '');
+      await _prefs.setString(PrefKeys.firstName, result.firstName ?? '');
+      await _prefs.setString(PrefKeys.lastName, result.lastName ?? '');
+      await _prefs.setString(PrefKeys.email, result.email ?? '');
+      await _prefs.setString(PrefKeys.phone, result.phone ?? '');
 
       _currentProfileCubit.onUpdateData(
         ProfileArgs(
@@ -264,11 +255,11 @@ class ProfileViewModel {
   }
 
   Future<void> _logout(BuildContext context) async {
-    await SharedPrefsServices.remove(PrefKeys.isLoggedIn);
-    await SharedPrefsServices.remove(PrefKeys.email);
-    await SharedPrefsServices.remove(PrefKeys.phone);
-    await SharedPrefsServices.remove(PrefKeys.firstName);
-    await SharedPrefsServices.remove(PrefKeys.lastName);
+    await _prefs.remove(PrefKeys.isLoggedIn);
+    await _prefs.remove(PrefKeys.email);
+    await _prefs.remove(PrefKeys.phone);
+    await _prefs.remove(PrefKeys.firstName);
+    await _prefs.remove(PrefKeys.lastName);
 
     await _startup.logout();
 

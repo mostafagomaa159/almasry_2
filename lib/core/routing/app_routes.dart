@@ -14,6 +14,9 @@ class AppRoutes {
   static const String categories = '/categories';
 
   static const String comingsoonview = '/comingsoonview';
+  static const String homeComingSoon = '/comingSoon';
+  static const String brands = '/brands';
+  static const String contactUs = '/contactUs';
 
   static const String wishlist = '/wishlist';
 }
@@ -34,5 +37,8 @@ class RouteNames {
   static const String productList = 'productList';
   static const String categories = 'categories';
   static const String comingSoon = 'comingsoonview';
+  static const String homeComingSoon = 'homeComingSoon';
+  static const String brands = 'brands';
+  static const String contactUs = 'contactUs';
   static const String wishlist = 'wishlist';
 }

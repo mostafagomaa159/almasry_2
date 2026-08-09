@@ -18,7 +18,7 @@ class _SplashViewState extends State<SplashView>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      vm._checkAppStart();
+      vm._checkAppStart(() => mounted);
     });
   }
 
@@ -30,12 +30,6 @@ class _SplashViewState extends State<SplashView>
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<GenericCubit<SplashData>, GenericState<SplashData>>(
-      bloc: vm._splashCubit,
-      listener: (context, state) {
-        vm._onStatusChanged(state.data.status, () => mounted);
-      },
-      child: SplashLogo(vm: vm),
-    );
+    return SplashLogo(vm: vm);
   }
 }

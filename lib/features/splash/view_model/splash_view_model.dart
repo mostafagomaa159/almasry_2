@@ -13,8 +13,6 @@ class SplashViewModel {
   late final Animation<double> _scaleAnimation;
   late final Animation<Offset> _slideAnimation;
 
-  GenericCubit<SplashData> get _splashCubit => _startup.splashCubit;
-
   /// Init
 
   void _init(TickerProvider vsync) {
@@ -47,8 +45,10 @@ class SplashViewModel {
 
   /// Actions
 
-  Future<void> _checkAppStart() async {
-    await _startup.checkAppStart();
+  Future<void> _checkAppStart(bool Function() isMounted) async {
+    final StartupStatus status = await _startup.checkAppStart();
+
+    await _onStatusChanged(status, isMounted);
   }
 
   Future<void> _onStatusChanged(

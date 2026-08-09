@@ -7,6 +7,9 @@ class ApiConstants {
   static const String mediaBaseUrl =
       'https://2loyal-tmp-almasry.almasrypharmacy.com';
 
+  static const String graphqlUrl =
+      'https://2loyal-tmp-almasry.almasrypharmacy.com/graphql';
+
   static const String homeCmsPage = '/crocoit/mobileCmsPage/5425';
   static const String products = '/products';
   static const String forgetPassword = '/auth/forget-password';

@@ -6,6 +6,11 @@ class HomeModel {
   final int selectedBottomNavIndex;
 
   final bool isLoading;
+
+  /// True between the CMS response landing and the section products arriving,
+  /// so the page can render while the product rows are still in flight.
+  final bool isProductsLoading;
+
   final String? errorMessage;
 
   final List<HomeSliderItemModel> banners;
@@ -34,6 +39,7 @@ class HomeModel {
     this.selectedOfferTabIndex = 0,
     this.selectedBottomNavIndex = 0,
     this.isLoading = false,
+    this.isProductsLoading = false,
     this.errorMessage,
     this.banners = const [],
     this.secondaryBanners = const [],
@@ -59,6 +65,7 @@ class HomeModel {
     int? selectedOfferTabIndex,
     int? selectedBottomNavIndex,
     bool? isLoading,
+    bool? isProductsLoading,
     String? errorMessage,
     bool clearErrorMessage = false,
     List<HomeSliderItemModel>? banners,
@@ -86,6 +93,7 @@ class HomeModel {
       selectedBottomNavIndex:
           selectedBottomNavIndex ?? this.selectedBottomNavIndex,
       isLoading: isLoading ?? this.isLoading,
+      isProductsLoading: isProductsLoading ?? this.isProductsLoading,
       errorMessage: clearErrorMessage
           ? null
           : (errorMessage ?? this.errorMessage),

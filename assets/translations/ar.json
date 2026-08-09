@@ -214,5 +214,24 @@
   "product_details_notify_me_subscribed": "سيتم إشعارك عند التوفر",
   "product_details_notify_me_failed": "تعذر تسجيلك لتلقي الإشعارات. برجاء المحاولة مرة أخرى.",
   "notification_product_available_title": "المنتج متوفر",
-  "notification_product_available_body": "المنتج الذي طلبته متوفر الآن."
+  "notification_product_available_body": "المنتج الذي طلبته متوفر الآن.",
+
+  "drawer_menu": "القائمة",
+  "drawer_shop_by_brands": "تسوق حسب الماركة",
+  "drawer_contact_us": "تواصل معنا",
+
+  "brands_title": "الماركات",
+  "brands_search_hint": "بحث",
+  "brands_empty": "لا توجد ماركات",
+
+  "contact_us_title": "تواصل معنا",
+  "contact_us_name": "الاسم",
+  "contact_us_email": "البريد الإلكتروني",
+  "contact_us_phone": "رقم الهاتف",
+  "contact_us_message": "رسالتك",
+  "contact_us_note": "سيتم الرد خلال 12-24 ساعة من استلام الرسالة من السبت إلى الخميس ما لم يكن يوم عطلة.",
+  "contact_us_submit": "إرسال",
+  "contact_us_success": "تم إرسال الرسالة بنجاح",
+  "contact_us_failed": "تعذر إرسال الرسالة. برجاء المحاولة مرة أخرى.",
+  "contact_us_numbers_title": "يمكنك التواصل معنا عبر الأرقام التالية"
 }

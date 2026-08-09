@@ -26,15 +26,18 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFFF8F8F8),
-      child: SafeArea(
-        top: false,
-        child: Column(
-          children: [
-            const HomeHeader(),
-            Expanded(child: HomeBodyView(vm: vm)),
-          ],
+    return BlocProvider<GenericCubit<FavoritesModel>>.value(
+      value: vm._favoritesCubit,
+      child: Container(
+        color: const Color(0xFFF8F8F8),
+        child: SafeArea(
+          top: false,
+          child: Column(
+            children: [
+              const HomeHeader(),
+              Expanded(child: HomeBodyView(vm: vm)),
+            ],
+          ),
         ),
       ),
     );

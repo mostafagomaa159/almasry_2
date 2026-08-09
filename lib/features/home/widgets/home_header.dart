@@ -36,10 +36,20 @@ class HomeHeader extends StatelessWidget {
                   Positioned(
                     right: 4.w,
                     top: 18.h,
-                    child: Icon(
-                      Icons.menu,
-                      size: 28.sp,
-                      color: AppColors.textPrimary,
+                    child: Material(
+                      color: AppColors.transparent,
+                      child: InkWell(
+                        onTap: () => Scaffold.of(context).openDrawer(),
+                        borderRadius: BorderRadius.circular(8.r),
+                        child: Padding(
+                          padding: EdgeInsets.all(4.w),
+                          child: Icon(
+                            Icons.menu,
+                            size: 28.sp,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],

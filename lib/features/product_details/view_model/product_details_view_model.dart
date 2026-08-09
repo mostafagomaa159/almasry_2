@@ -16,10 +16,13 @@ class ProductDetailsViewModel {
 
   ProductDetailsModel get _data => _productDetailsCubit.state.data;
 
+  GenericCubit<FavoritesModel> get _favoritesCubit => _favorites.favoritesCubit;
+
   /// Init
 
   Future<void> _init({required ProductDetailsArgs args}) async {
     _args = args;
+    await _favorites.loadFavorites();
     await _getProductDetails(args.sku);
     await _loadNotifySubscription(args.sku);
   }
@@ -104,7 +107,7 @@ class ProductDetailsViewModel {
 
   Future<void> _toggleFavorite(ProductModel product) async {
     final favoriteProduct = FavoriteProductModel(
-      id: product.id.toString(),
+      id: product.sku,
       title: product.name,
       imagePath: product.imageUrl,
       price: product.price.toString(),
