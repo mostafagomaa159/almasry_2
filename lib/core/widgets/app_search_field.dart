@@ -1,0 +1,65 @@
+import 'package:almasry_2/core/constants/app_colors.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+/// The filled, borderless search box used by home, brands and categories.
+/// Pass [onClear] to get the trailing clear button.
+class AppSearchField extends StatelessWidget {
+  final TextEditingController? controller;
+  final String hintText;
+  final ValueChanged<String>? onChanged;
+  final VoidCallback? onClear;
+  final bool showClear;
+
+  const AppSearchField({
+    super.key,
+    required this.hintText,
+    this.controller,
+    this.onChanged,
+    this.onClear,
+    this.showClear = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      onChanged: onChanged,
+      textAlign: TextAlign.start,
+      textInputAction: TextInputAction.search,
+      style: TextStyle(fontSize: 15.sp, color: AppColors.textPrimary),
+      decoration: InputDecoration(
+        hintText: hintText,
+        hintStyle: TextStyle(
+          fontSize: 15.sp,
+          color: AppColors.textSecondary,
+          fontWeight: FontWeight.w500,
+        ),
+        prefixIcon: Icon(
+          Icons.search,
+          size: 22.sp,
+          color: AppColors.textSecondary,
+        ),
+        suffixIcon: showClear && onClear != null
+            ? IconButton(onPressed: onClear, icon: const Icon(Icons.close))
+            : null,
+        filled: true,
+        fillColor: const Color(0xFFF1F1F1),
+        isDense: true,
+        contentPadding: EdgeInsets.symmetric(vertical: 14.h),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14.r),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14.r),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14.r),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
+}
