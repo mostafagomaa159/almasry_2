@@ -10,7 +10,7 @@ class RegisterLoginLink extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SizedBox(height: 28.h),
+        28.verticalSpace,
         Center(
           child: GestureDetector(
             onTap: () => vm._goToLogin(context),
@@ -26,7 +26,7 @@ class RegisterLoginLink extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 30.h),
+        30.verticalSpace,
       ],
     );
   }

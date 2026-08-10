@@ -67,7 +67,7 @@ class AuthUnderlineField extends StatelessWidget {
           ),
         ),
         if (errorText != null) ...[
-          SizedBox(height: 6.h),
+          6.verticalSpace,
           Text(
             errorText!,
             textAlign: TextAlign.start,

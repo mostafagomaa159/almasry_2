@@ -122,24 +122,21 @@ class _ProductCardState extends State<ProductCard> {
                             width: double.infinity,
                             child: Center(
                               child: widget.isNetworkImage
-                                  ? Image.network(
-                                      widget.imagePath,
+                                  ? AppNetworkImage(
+                                      url: widget.imagePath,
                                       height: 110.h,
                                       fit: BoxFit.contain,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                            return Container(
-                                              height: 100.h,
-                                              width: 100.w,
-                                              color: Colors.grey.shade100,
-                                              alignment: Alignment.center,
-                                              child: Icon(
-                                                Icons.broken_image_outlined,
-                                                color: Colors.grey,
-                                                size: 26.sp,
-                                              ),
-                                            );
-                                          },
+                                      placeholder: Container(
+                                        height: 100.h,
+                                        width: 100.w,
+                                        color: Colors.grey.shade100,
+                                        alignment: Alignment.center,
+                                        child: Icon(
+                                          Icons.broken_image_outlined,
+                                          color: Colors.grey,
+                                          size: 26.sp,
+                                        ),
+                                      ),
                                     )
                                   : Image.asset(
                                       widget.imagePath,
@@ -209,7 +206,7 @@ class _ProductCardState extends State<ProductCard> {
                       ),
                     ),
 
-                    SizedBox(height: 4.h),
+                    4.verticalSpace,
 
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10.w),
@@ -226,7 +223,7 @@ class _ProductCardState extends State<ProductCard> {
                       ),
                     ),
 
-                    SizedBox(height: 6.h),
+                    6.verticalSpace,
 
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10.w),
@@ -244,7 +241,7 @@ class _ProductCardState extends State<ProductCard> {
                       ),
                     ),
 
-                    SizedBox(height: 8.h),
+                    8.verticalSpace,
 
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10.w),
@@ -260,7 +257,7 @@ class _ProductCardState extends State<ProductCard> {
                             ),
                           ),
                           if (hasOldPrice) ...[
-                            SizedBox(width: 6.w),
+                            6.horizontalSpace,
                             Flexible(
                               child: Text(
                                 widget.oldPrice,
@@ -279,7 +276,7 @@ class _ProductCardState extends State<ProductCard> {
                       ),
                     ),
 
-                    SizedBox(height: 10.h),
+                    10.verticalSpace,
                   ],
                 ),
               ),
@@ -314,7 +311,7 @@ class _ProductCardState extends State<ProductCard> {
             ),
           ),
 
-          SizedBox(height: 12.h),
+          12.verticalSpace,
         ],
       ),
     );
@@ -337,7 +334,7 @@ class _ProductCardState extends State<ProductCard> {
             onTap: quantity > 1 ? _decrementQuantity : null,
             isDisabled: quantity == 1,
           ),
-          SizedBox(width: 12.w),
+          12.horizontalSpace,
           ConstrainedBox(
             constraints: BoxConstraints(minWidth: 12.w),
             child: Center(
@@ -351,7 +348,7 @@ class _ProductCardState extends State<ProductCard> {
               ),
             ),
           ),
-          SizedBox(width: 12.w),
+          12.horizontalSpace,
           _buildQtyButton(
             icon: Icons.add,
             onTap: _incrementQuantity,

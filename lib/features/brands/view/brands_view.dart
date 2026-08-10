@@ -30,13 +30,10 @@ class _BrandsViewState extends State<BrandsView> {
         top: false,
         child: Column(
           children: [
-            AppPageHeader(
-              title: LocaleKeys.brandsTitle.tr(),
-              onBack: vm._back,
-            ),
-            SizedBox(height: 18.h),
+            CustomAppBar(title: LocaleKeys.brandsTitle.tr(), onBack: vm._back),
+            18.verticalSpace,
             BrandsSearchField(vm: vm),
-            SizedBox(height: 18.h),
+            18.verticalSpace,
             Expanded(child: BrandsBody(vm: vm)),
           ],
         ),

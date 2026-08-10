@@ -14,7 +14,10 @@ class _ProductListAppBar extends StatelessWidget
       centerTitle: true,
       leading: IconButton(
         onPressed: vm._goBack,
-        icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.black),
+        icon: Icon(
+          AppDirection.back(context, rounded: true),
+          color: Colors.black,
+        ),
       ),
       title: Text(
         vm._title,

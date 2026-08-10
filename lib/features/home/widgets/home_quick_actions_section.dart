@@ -17,7 +17,7 @@ class HomeQuickActionsSection extends StatelessWidget {
               onTap: () {},
             ),
           ),
-          SizedBox(width: 12.w),
+          12.horizontalSpace,
           Expanded(
             child: HomeQuickActionCard(
               title: LocaleKeys.homeSmartSearch.tr(),

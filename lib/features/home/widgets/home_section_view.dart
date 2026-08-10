@@ -14,49 +14,49 @@ class HomeSectionsView extends StatelessWidget {
       children: [
         if (data.offers.isNotEmpty) ...[
           HomeSectionHeader(title: LocaleKeys.homeOffers.tr()),
-          SizedBox(height: 14.h),
+          14.verticalSpace,
           HomeOffersSection(vm: vm, items: data.offers),
-          SizedBox(height: 24.h),
+          24.verticalSpace,
         ],
 
         if (data.categories.isNotEmpty) ...[
           HomeSectionHeader(title: LocaleKeys.homeCategories.tr()),
-          SizedBox(height: 12.h),
+          12.verticalSpace,
           HomeCategoriesSection(items: data.categories),
-          SizedBox(height: 24.h),
+          24.verticalSpace,
         ],
 
         if (data.bestSellerBlock != null) ...[
           HomeSectionHeader(title: LocaleKeys.homeBestSelling.tr()),
-          SizedBox(height: 16.h),
+          16.verticalSpace,
           if (data.isProductsLoading)
-            const HomeProductsLoader()
+            AppLoadingView(height: 330.h)
           else if (data.bestSellerProducts.isEmpty)
             Center(child: Text(LocaleKeys.homeNoBestsellers.tr()))
           else
             HomeProductsSection(vm: vm, products: data.bestSellerProducts),
-          SizedBox(height: 24.h),
+          24.verticalSpace,
         ],
 
         if (data.brands.isNotEmpty) ...[
           HomeSectionHeader(title: LocaleKeys.homeBrands.tr()),
-          SizedBox(height: 12.h),
+          12.verticalSpace,
           BrandStrip(brands: data.brands),
-          SizedBox(height: 24.h),
+          24.verticalSpace,
         ],
 
         if (data.goals.isNotEmpty) ...[
           HomeSectionHeader(title: LocaleKeys.homeGoals.tr()),
-          SizedBox(height: 12.h),
+          12.verticalSpace,
           HomeGoalsSection(items: data.goals),
-          SizedBox(height: 24.h),
+          24.verticalSpace,
         ],
 
         if (data.concerns.isNotEmpty) ...[
           HomeSectionHeader(title: LocaleKeys.homeConcerns.tr()),
-          SizedBox(height: 12.h),
+          12.verticalSpace,
           HomeConcernsSection(items: data.concerns),
-          SizedBox(height: 24.h),
+          24.verticalSpace,
         ],
 
         if (data.momBabyBlock != null &&
@@ -68,7 +68,7 @@ class HomeSectionsView extends StatelessWidget {
             products: data.momBabyProducts,
             isLoading: data.isProductsLoading,
           ),
-          SizedBox(height: 24.h),
+          24.verticalSpace,
         ],
 
         if (data.homeCareBlock != null &&
@@ -80,7 +80,7 @@ class HomeSectionsView extends StatelessWidget {
             products: data.homeCareProducts,
             isLoading: data.isProductsLoading,
           ),
-          SizedBox(height: 24.h),
+          24.verticalSpace,
         ],
 
         if (data.feminineCareBlock != null &&
@@ -93,7 +93,7 @@ class HomeSectionsView extends StatelessWidget {
             products: data.feminineCareProducts,
             isLoading: data.isProductsLoading,
           ),
-          SizedBox(height: 24.h),
+          24.verticalSpace,
         ],
 
         if (data.menCareBlock != null &&
@@ -105,7 +105,7 @@ class HomeSectionsView extends StatelessWidget {
             products: data.menCareProducts,
             isLoading: data.isProductsLoading,
           ),
-          SizedBox(height: 24.h),
+          24.verticalSpace,
         ],
       ],
     );

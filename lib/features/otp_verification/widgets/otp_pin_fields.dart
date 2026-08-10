@@ -34,6 +34,8 @@ class OtpPinFields extends StatelessWidget {
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
             Future.delayed(const Duration(milliseconds: 50), () {
+              if (!context.mounted) return;
+
               FocusScope.of(context).requestFocus(FocusNode());
             });
           },

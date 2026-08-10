@@ -25,7 +25,7 @@ class ProfileInfoCard extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 8.w),
+          8.horizontalSpace,
           Expanded(
             child: Text(
               value,
@@ -72,7 +72,7 @@ class ProfileInfoCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(height: 4.h),
+                4.verticalSpace,
                 Text(
                   vm._displayName,
                   textAlign: TextAlign.center,
@@ -82,7 +82,7 @@ class ProfileInfoCard extends StatelessWidget {
                     color: const Color(0xFF17375E),
                   ),
                 ),
-                SizedBox(height: 2.h),
+                2.verticalSpace,
                 Text(
                   vm._displayEmail,
                   textAlign: TextAlign.center,
@@ -92,7 +92,7 @@ class ProfileInfoCard extends StatelessWidget {
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                SizedBox(height: 18.h),
+                18.verticalSpace,
                 _buildInfoRow(
                   context: context,
                   label: LocaleKeys.profilePhoneLabel.tr(),

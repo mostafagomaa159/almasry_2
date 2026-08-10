@@ -10,7 +10,7 @@ class OtpPhoneHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 36),
+        36.verticalSpace,
         Text(
           LocaleKeys.otpConfirmTitle.tr(),
           style: const TextStyle(
@@ -19,7 +19,7 @@ class OtpPhoneHeader extends StatelessWidget {
             color: Color(0xFF1F2A37),
           ),
         ),
-        const SizedBox(height: 10),
+        10.verticalSpace,
         Text(
           LocaleKeys.otpConfirmSubtitle.tr(),
           style: const TextStyle(
@@ -28,7 +28,7 @@ class OtpPhoneHeader extends StatelessWidget {
             height: 1.5,
           ),
         ),
-        const SizedBox(height: 4),
+        4.verticalSpace,
         Text(
           vm._maskedPhone,
           style: const TextStyle(
@@ -37,7 +37,7 @@ class OtpPhoneHeader extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        const SizedBox(height: 36),
+        36.verticalSpace,
       ],
     );
   }

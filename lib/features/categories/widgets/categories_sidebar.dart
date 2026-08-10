@@ -7,7 +7,7 @@ class CategoriesSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final categories = vm._categories;
+    final List<CategoryModel> categories = vm._categories;
 
     return Container(
       width: 110.w,
@@ -15,8 +15,8 @@ class CategoriesSidebar extends StatelessWidget {
       child: ListView.builder(
         itemCount: categories.length,
         itemBuilder: (context, index) {
-          final item = categories[index];
-          final isSelected = index == vm._selectedParentIndex;
+          final CategoryModel item = categories[index];
+          final bool isSelected = index == vm._selectedParentIndex;
 
           return InkWell(
             onTap: () => vm._selectParentCategory(index),
@@ -35,15 +35,12 @@ class CategoriesSidebar extends StatelessWidget {
                     clipBehavior: Clip.antiAlias,
                     child: item.image.trim().isEmpty
                         ? const Icon(Icons.image_outlined)
-                        : Image.network(
-                            item.imageUrl,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) {
-                              return const Icon(Icons.image_outlined);
-                            },
+                        : AppNetworkImage(
+                            url: item.imageUrl,
+                            placeholder: const Icon(Icons.image_outlined),
                           ),
                   ),
-                  SizedBox(height: 8.h),
+                  8.verticalSpace,
                   Text(
                     item.name,
                     textAlign: TextAlign.center,

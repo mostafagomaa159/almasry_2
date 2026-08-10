@@ -47,16 +47,14 @@ class _BrandItem extends StatelessWidget {
         border: Border.all(color: const Color(0xFFEAEAEA)),
       ),
       child: Center(
-        child: Image.network(
-          brand.image,
+        child: AppNetworkImage(
+          url: brand.image,
           fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) {
-            return Icon(
-              Icons.broken_image_outlined,
-              color: Colors.grey.shade400,
-              size: 22.sp,
-            );
-          },
+          placeholder: Icon(
+            Icons.broken_image_outlined,
+            color: Colors.grey.shade400,
+            size: 22.sp,
+          ),
         ),
       ),
     );

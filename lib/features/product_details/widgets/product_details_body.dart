@@ -16,20 +16,13 @@ class ProductDetailsBody extends StatelessWidget {
         final data = vm._data;
 
         if (data.isLoading && data.product == null) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
+          return const Scaffold(body: AppLoadingView());
         }
 
         if (data.errorMessage != null && data.product == null) {
           return Scaffold(
             backgroundColor: const Color(0xFFF7F7F7),
-            body: Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.w),
-                child: Text(data.errorMessage!, textAlign: TextAlign.center),
-              ),
-            ),
+            body: AppErrorView(message: data.errorMessage!),
           );
         }
 
@@ -37,7 +30,7 @@ class ProductDetailsBody extends StatelessWidget {
 
         if (product == null) {
           return Scaffold(
-            body: Center(child: Text(LocaleKeys.productDetailsNotFound.tr())),
+            body: AppEmptyView(message: LocaleKeys.productDetailsNotFound.tr()),
           );
         }
 
@@ -69,7 +62,7 @@ class ProductDetailsBody extends StatelessWidget {
                             product: product,
                             onFavoriteTap: () => vm._toggleFavorite(product),
                           ),
-                          SizedBox(height: 12.h),
+                          12.verticalSpace,
                           ProductDetailsSummarySection(
                             sku: product.sku,
                             brand: vm._brandFor(product),
@@ -78,15 +71,15 @@ class ProductDetailsBody extends StatelessWidget {
                             oldPrice: vm._oldPrice,
                             isInStock: product.isInStock,
                           ),
-                          SizedBox(height: 10.h),
+                          10.verticalSpace,
                           ProductDetailsInfoSection(product: product),
-                          SizedBox(height: 10.h),
+                          10.verticalSpace,
                           ProductDetailsDescriptionSection(
                             description: vm._descriptionFor(product),
                           ),
-                          SizedBox(height: 10.h),
+                          10.verticalSpace,
                           ProductDetailsRatingSection(rating: vm._rating),
-                          SizedBox(height: 24.h),
+                          24.verticalSpace,
                         ],
                       ),
                     ),

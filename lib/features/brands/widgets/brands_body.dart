@@ -7,34 +7,29 @@ class BrandsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GenericCubit<BrandsData>, GenericState<BrandsData>>(
+    return BlocBuilder<
+      GenericCubit<List<BrandModel>?>,
+      GenericState<List<BrandModel>?>
+    >(
       bloc: vm._brandsCubit,
       builder: (context, state) {
-        final BrandsData data = state.data;
+        final List<BrandModel>? brands = state.data;
 
-        switch (data.status) {
-          case BrandsStatus.initial:
-          case BrandsStatus.loading:
-            return const BrandsLoadingView();
+        if (brands == null) return const AppLoadingView();
 
-          case BrandsStatus.error:
-            return BrandsErrorView(vm: vm, message: data.errorMessage);
+        if (brands.isEmpty) {
+          if (vm._errorMessage.isNotEmpty) {
+            return AppErrorView(message: vm._errorMessage, onRetry: vm._retry);
+          }
 
-          case BrandsStatus.success:
-            if (data.brands.isEmpty) {
-              return Center(
-                child: Text(
-                  LocaleKeys.brandsEmpty.tr(),
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              );
-            }
-
-            return BrandsGrid(vm: vm, data: data);
+          return AppEmptyView(message: LocaleKeys.brandsEmpty.tr());
         }
+
+        return BrandsGrid(
+          vm: vm,
+          brands: brands,
+          isLoadingMore: vm._isLoadingMore,
+        );
       },
     );
   }

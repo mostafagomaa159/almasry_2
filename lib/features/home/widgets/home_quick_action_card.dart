@@ -38,7 +38,7 @@ class HomeQuickActionCard extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 10.w),
+            10.horizontalSpace,
             Image.asset(
               iconPath,
               width: 40.w,

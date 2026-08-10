@@ -14,13 +14,13 @@ import 'package:almasry_2/core/widgets/order_status_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:almasry_2/core/widgets/app_empty_view.dart';
+import 'package:almasry_2/core/widgets/app_loading_view.dart';
+import 'package:almasry_2/core/widgets/app_network_image.dart';
 
 part 'view/orders_view.dart';
 part 'view_model/orders_view_model.dart';
 part 'widgets/orders_app_bar.dart';
 part 'widgets/orders_body.dart';
 part 'widgets/orders_card.dart';
-part 'widgets/orders_empty_view.dart';
-part 'widgets/orders_error_view.dart';
 part 'widgets/orders_list_view.dart';
-part 'widgets/orders_loading_view.dart';

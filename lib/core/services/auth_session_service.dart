@@ -10,14 +10,13 @@ import 'package:almasry_2/core/models/response/login/activate_account_model.dart
 import 'package:almasry_2/core/models/response/login/register_customer_otp_model.dart';
 import 'package:almasry_2/core/models/response/login/user_model.dart';
 import 'package:almasry_2/core/services/api_services.dart';
-import 'package:almasry_2/core/services/navigation_service.dart';
 import 'package:dio/dio.dart';
+import 'package:almasry_2/core/utils/error_message.dart';
 
 class AuthSessionService {
   /// Services
 
   final ApiService _apiService = sl<ApiService>();
-  final NavigationService _navigationService = sl<NavigationService>();
 
   /// Variables
 
@@ -172,26 +171,6 @@ class AuthSessionService {
     return cleaned;
   }
 
-  String _extractApiMessage(DioException e) {
-    final data = e.response?.data;
-
-    if (data is Map<String, dynamic>) {
-      final message = data['message'];
-      if (message is String && message.isNotEmpty) {
-        return message;
-      }
-    }
-
-    if (data is Map) {
-      final message = data['message'];
-      if (message is String && message.isNotEmpty) {
-        return message;
-      }
-    }
-
-    return e.message ?? LocaleKeys.somethingWentWrong.tr();
-  }
-
   /// Api
 
   Future<Map<String, dynamic>> _forgetPassword({
@@ -327,7 +306,7 @@ class AuthSessionService {
         authCubit.state.data.copyWith(
           isPhoneAuthLoading: false,
           isPhoneAuthSuccess: false,
-          authErrorMessage: _extractApiMessage(e),
+          authErrorMessage: errorMessageFrom(e),
         ),
       );
       return false;
@@ -446,7 +425,7 @@ class AuthSessionService {
         authCubit.state.data.copyWith(
           isOtpVerificationLoading: false,
           isOtpVerified: false,
-          authErrorMessage: _extractApiMessage(e),
+          authErrorMessage: errorMessageFrom(e),
         ),
       );
       return false;

@@ -27,6 +27,13 @@ class Validators {
     return null;
   }
 
+  static String? validateComment(String value) {
+    if (value.trim().isEmpty) {
+      return LocaleKeys.requiredField.tr();
+    }
+    return null;
+  }
+
   static String? validatePhone(String value) {
     if (value.trim().isEmpty) {
       return LocaleKeys.requiredField.tr();

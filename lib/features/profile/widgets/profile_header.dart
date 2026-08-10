@@ -82,11 +82,11 @@ class ProfileHeader extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          Icons.arrow_back_ios_new,
+                          AppDirection.back(context),
                           size: 16.sp,
                           color: const Color(0xFF7A7A7A),
                         ),
-                        SizedBox(width: 6.w),
+                        6.horizontalSpace,
                         Text(
                           LocaleKeys.back.tr(),
                           style: TextStyle(

@@ -1,11 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ComingSoonView extends StatelessWidget {
   final String title;
 
-  const ComingSoonView({required this.title});
+  const ComingSoonView({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class ComingSoonView extends StatelessWidget {
                 size: 56,
                 color: Colors.grey,
               ),
-              const SizedBox(height: 16),
+              16.verticalSpace,
               Text(
                 title,
                 style: const TextStyle(
@@ -29,7 +30,7 @@ class ComingSoonView extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(height: 8),
+              8.verticalSpace,
               Text(
                 LocaleKeys.comingSoon.tr(),
                 textAlign: TextAlign.center,

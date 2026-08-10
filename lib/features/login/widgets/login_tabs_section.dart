@@ -15,7 +15,7 @@ class LoginTabsSection extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 4.h),
+            4.verticalSpace,
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.w),
               child: AuthToggleTabs(
@@ -26,7 +26,7 @@ class LoginTabsSection extends StatelessWidget {
                 onEndTap: () => vm._onTabChanged(context, false),
               ),
             ),
-            SizedBox(height: 30.h),
+            30.verticalSpace,
           ],
         );
       },

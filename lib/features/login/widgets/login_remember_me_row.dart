@@ -26,7 +26,7 @@ class RememberMeRow extends StatelessWidget {
             color: const Color(0xFFFF1717),
           ),
         ),
-        SizedBox(width: 8.w),
+        8.horizontalSpace,
         InkWell(
           onTap: onCheckboxTap,
           borderRadius: BorderRadius.circular(4.r),

@@ -11,8 +11,6 @@ class ContactUsRequest {
     required this.telephone,
   });
 
-  /// `$telephone` is the only nullable variable in the mutation, so an empty
-  /// field is sent as null rather than an empty string.
   Map<String, dynamic> toVariables() {
     return {
       'name': name.trim(),

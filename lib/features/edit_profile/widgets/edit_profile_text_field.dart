@@ -38,7 +38,7 @@ class EditProfileTextField extends StatelessWidget {
               color: const Color(0xFF17375E),
             ),
           ),
-          SizedBox(height: 8.h),
+          8.verticalSpace,
           TextField(
             controller: controller,
             keyboardType: keyboardType,

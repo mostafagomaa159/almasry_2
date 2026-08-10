@@ -67,7 +67,7 @@ class _AddToBasketRow extends StatelessWidget {
           onIncrementTap: onIncrementTap,
           onDecrementTap: isDecrementEnabled ? onDecrementTap : null,
         ),
-        SizedBox(width: 12.w),
+        12.horizontalSpace,
         Expanded(
           child: SizedBox(
             height: 58.h,
@@ -90,7 +90,7 @@ class _AddToBasketRow extends StatelessWidget {
                     size: 22.sp,
                     color: Colors.white,
                   ),
-                  SizedBox(width: 8.w),
+                  8.horizontalSpace,
                   Flexible(
                     child: Text(
                       LocaleKeys.productDetailsAddToBasket.tr(),
@@ -166,7 +166,7 @@ class _NotifyMeButton extends StatelessWidget {
                     size: 22.sp,
                     color: Colors.white,
                   ),
-                  SizedBox(width: 8.w),
+                  8.horizontalSpace,
                   Flexible(
                     child: Text(
                       isSubscribed
@@ -217,7 +217,7 @@ class _QuantityControl extends StatelessWidget {
             onTap: onIncrementTap,
             iconColor: const Color(0xFF11385B),
           ),
-          SizedBox(width: 6.w),
+          6.horizontalSpace,
           SizedBox(
             width: 32.w,
             child: Text(
@@ -230,7 +230,7 @@ class _QuantityControl extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 6.w),
+          6.horizontalSpace,
           _QtyIconButton(
             icon: Icons.remove,
             onTap: onDecrementTap,

@@ -19,6 +19,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:almasry_2/core/constants/app_images.dart';
 import 'package:almasry_2/core/utils/app_logo.dart';
+import 'package:almasry_2/core/utils/app_direction.dart';
 
 part 'view/profile_view.dart';
 part 'widgets/profile_account_view.dart';

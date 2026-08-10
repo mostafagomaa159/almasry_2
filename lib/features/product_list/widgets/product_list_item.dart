@@ -19,7 +19,7 @@ class ProductListItem extends StatelessWidget {
   }
 
   num _currentPrice() {
-    return product.extensionAttributes?.priceAfter ?? product.price ?? 0;
+    return product.extensionAttributes?.priceAfter ?? product.price;
   }
 
   int? _discountPercent() {
@@ -50,7 +50,7 @@ class ProductListItem extends StatelessWidget {
     final discount = _discountPercent();
     final isOutOfStock = _isOutOfStock();
 
-    final sku = product.sku ?? '';
+    final sku = product.sku;
     final quantity = vm._getProductQuantity(sku);
 
     return Material(
@@ -92,7 +92,7 @@ class ProductListItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 6.h),
+                6.verticalSpace,
                 Expanded(
                   flex: 4,
                   child: Center(
@@ -102,10 +102,10 @@ class ProductListItem extends StatelessWidget {
                             size: 42.sp,
                             color: Colors.grey.shade400,
                           )
-                        : Image.network(
-                            imageUrl,
+                        : AppNetworkImage(
+                            url: imageUrl,
                             fit: BoxFit.contain,
-                            errorBuilder: (_, __, ___) => Icon(
+                            placeholder: Icon(
                               Icons.image_not_supported_outlined,
                               size: 42.sp,
                               color: Colors.grey.shade400,
@@ -113,7 +113,7 @@ class ProductListItem extends StatelessWidget {
                           ),
                   ),
                 ),
-                SizedBox(height: 8.h),
+                8.verticalSpace,
                 if (discount != null)
                   Container(
                     width: double.infinity,
@@ -132,9 +132,9 @@ class ProductListItem extends StatelessWidget {
                       ),
                     ),
                   ),
-                SizedBox(height: 10.h),
+                10.verticalSpace,
                 Text(
-                  product.name ?? '',
+                  product.name,
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -144,7 +144,7 @@ class ProductListItem extends StatelessWidget {
                     height: 1.25,
                   ),
                 ),
-                SizedBox(height: 10.h),
+                10.verticalSpace,
                 Text(
                   '${LocaleKeys.currencyShort.tr()} ${currentPrice.toStringAsFixed(2)}',
                   style: TextStyle(
@@ -153,7 +153,7 @@ class ProductListItem extends StatelessWidget {
                     color: const Color(0xFF18314F),
                   ),
                 ),
-                SizedBox(height: 4.h),
+                4.verticalSpace,
                 if (oldPrice != null && oldPrice > currentPrice)
                   Text(
                     '${LocaleKeys.currencyShort.tr()} ${oldPrice.toStringAsFixed(2)}',
@@ -164,7 +164,7 @@ class ProductListItem extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                SizedBox(height: 10.h),
+                10.verticalSpace,
                 isOutOfStock
                     ? Container(
                         width: double.infinity,

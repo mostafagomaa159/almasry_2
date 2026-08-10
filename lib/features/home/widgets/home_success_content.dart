@@ -18,23 +18,23 @@ class HomeSuccessContent extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: 10.h),
+              10.verticalSpace,
 
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 14.w),
                 child: const HomeSearchBar(),
               ),
 
-              SizedBox(height: 16.h),
+              16.verticalSpace,
 
               if (data.banners.isNotEmpty) ...[
                 HomeBannerSlider(vm: vm),
-                SizedBox(height: 18.h),
+                18.verticalSpace,
               ],
 
               const HomeQuickActionsSection(),
 
-              SizedBox(height: 24.h),
+              24.verticalSpace,
 
               HomeSectionsView(vm: vm),
             ],

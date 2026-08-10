@@ -24,7 +24,7 @@ class ProductDetailsRatingSection extends StatelessWidget {
               color: const Color(0xFF11385B),
             ),
           ),
-          SizedBox(height: 14.h),
+          14.verticalSpace,
           Container(
             width: double.infinity,
             padding: EdgeInsets.fromLTRB(14.w, 16.h, 14.w, 16.h),
@@ -54,7 +54,7 @@ class ProductDetailsRatingSection extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: 14.w),
+                14.horizontalSpace,
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,7 +72,7 @@ class ProductDetailsRatingSection extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(height: 8.h),
+                      8.verticalSpace,
                       Text(
                         hasRating
                             ? LocaleKeys.productDetailsRatingHas.tr()

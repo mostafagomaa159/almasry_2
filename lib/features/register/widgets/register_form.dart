@@ -27,7 +27,7 @@ class RegisterForm extends StatelessWidget {
           onChanged: (_) => vm._clearRegisterErrors(),
           onEditingComplete: vm._focusLastName,
         ),
-        SizedBox(height: 18.h),
+        18.verticalSpace,
         AppTextField(
           controller: vm._lastNameController,
           focusNode: vm._lastNameFocusNode,
@@ -38,7 +38,7 @@ class RegisterForm extends StatelessWidget {
           onChanged: (_) => vm._clearRegisterErrors(),
           onEditingComplete: vm._focusPhone,
         ),
-        SizedBox(height: 18.h),
+        18.verticalSpace,
         AppTextField(
           controller: vm._phoneController,
           focusNode: vm._phoneFocusNode,
@@ -49,7 +49,7 @@ class RegisterForm extends StatelessWidget {
           onChanged: (_) => vm._clearRegisterErrors(),
           onEditingComplete: vm._focusEmail,
         ),
-        SizedBox(height: 18.h),
+        18.verticalSpace,
         AppTextField(
           controller: vm._emailController,
           focusNode: vm._emailFocusNode,
@@ -60,7 +60,7 @@ class RegisterForm extends StatelessWidget {
           onChanged: (_) => vm._clearRegisterErrors(),
           onEditingComplete: vm._focusPassword,
         ),
-        SizedBox(height: 18.h),
+        18.verticalSpace,
         AppTextField(
           controller: vm._passwordController,
           focusNode: vm._passwordFocusNode,
@@ -82,7 +82,7 @@ class RegisterForm extends StatelessWidget {
           ),
         ),
         const PasswordRules(),
-        SizedBox(height: 34.h),
+        34.verticalSpace,
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 8.w),
           child: AppButton(

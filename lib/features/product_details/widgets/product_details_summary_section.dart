@@ -53,7 +53,7 @@ class ProductDetailsSummarySection extends StatelessWidget {
                 ),
             ],
           ),
-          SizedBox(height: 10.h),
+          10.verticalSpace,
           Text(
             title,
             style: TextStyle(
@@ -63,7 +63,7 @@ class ProductDetailsSummarySection extends StatelessWidget {
               height: 1.45,
             ),
           ),
-          SizedBox(height: 12.h),
+          12.verticalSpace,
           Row(
             children: [
               Container(
@@ -87,7 +87,7 @@ class ProductDetailsSummarySection extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 12.h),
+          12.verticalSpace,
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -100,7 +100,7 @@ class ProductDetailsSummarySection extends StatelessWidget {
                 ),
               ),
               if (hasOldPrice) ...[
-                SizedBox(width: 12.w),
+                12.horizontalSpace,
                 Padding(
                   padding: EdgeInsets.only(bottom: 3.h),
                   child: Text(

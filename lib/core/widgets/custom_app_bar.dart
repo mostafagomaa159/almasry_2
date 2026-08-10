@@ -1,21 +1,20 @@
 import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:almasry_2/core/constants/app_images.dart';
+import 'package:almasry_2/core/utils/app_direction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// The red-bordered header used by the inner screens (Brands, Contact us):
 /// back chevron, centred title, and the doctor avatar overlapping the bottom
 /// trailing corner — the same shape as the home header.
-class AppPageHeader extends StatelessWidget {
+class CustomAppBar extends StatelessWidget {
   final String title;
   final VoidCallback onBack;
 
-  const AppPageHeader({super.key, required this.title, required this.onBack});
+  const CustomAppBar({super.key, required this.title, required this.onBack});
 
   @override
   Widget build(BuildContext context) {
-    final bool isRtl = Directionality.of(context) == TextDirection.rtl;
-
     return SizedBox(
       height: 130.h,
       child: Stack(
@@ -58,7 +57,7 @@ class AppPageHeader extends StatelessWidget {
                         child: Padding(
                           padding: EdgeInsets.all(6.w),
                           child: Icon(
-                            isRtl ? Icons.chevron_right : Icons.chevron_left,
+                            AppDirection.chevronBack(context),
                             size: 28.sp,
                             color: AppColors.textPrimary,
                           ),

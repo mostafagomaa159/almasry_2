@@ -7,104 +7,94 @@ class ContactUsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GenericCubit<ContactUsData>, GenericState<ContactUsData>>(
-      bloc: vm._contactUsCubit,
-      builder: (context, state) {
-        final ContactUsData data = state.data;
-
-        return SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 32.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (data.status == ContactUsStatus.success)
-                ContactUsSuccessBanner(onClose: vm._dismissBanner),
-
-              if (data.status == ContactUsStatus.error &&
-                  data.errorMessage.isNotEmpty)
-                _ContactUsErrorBanner(
-                  message: data.errorMessage,
-                  onClose: vm._dismissBanner,
-                ),
-
-              ContactUsForm(vm: vm, data: data),
-
-              SizedBox(height: 20.h),
-
-              Text(
-                LocaleKeys.contactUsNote.tr(),
-                style: TextStyle(
-                  fontSize: 15.sp,
-                  height: 1.5,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-
-              SizedBox(height: 24.h),
-
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 26.w),
-                child: AppButton(
-                  title: LocaleKeys.contactUsSubmit.tr(),
-                  isLoading: data.isSubmitting,
-                  onPressed: vm._submit,
-                ),
-              ),
-
-              SizedBox(height: 28.h),
-
-              const ContactUsNumbersSection(),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _ContactUsErrorBanner extends StatelessWidget {
-  final String message;
-  final VoidCallback onClose;
-
-  const _ContactUsErrorBanner({required this.message, required this.onClose});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 16.h),
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFDECEC),
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Row(
+    return SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 32.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 26.sp,
-            color: AppColors.primaryRed,
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Text(
-              message,
-              style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-              ),
+          ContactUsForm(vm: vm),
+
+          20.verticalSpace,
+
+          Text(
+            LocaleKeys.contactUsNote.tr(),
+            style: TextStyle(
+              fontSize: 15.sp,
+              height: 1.5,
+              color: AppColors.textSecondary,
             ),
           ),
-          InkWell(
-            onTap: onClose,
-            child: Icon(
-              Icons.close,
-              size: 22.sp,
-              color: AppColors.textPrimary,
+
+          24.verticalSpace,
+
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 26.w),
+            child: BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+              bloc: vm._loadingCubit,
+              builder: (context, state) {
+                return AppButton(
+                  title: LocaleKeys.contactUsSubmit.tr(),
+                  isLoading: state.data,
+                  onPressed: () => _onSubmitPressed(context),
+                );
+              },
             ),
           ),
+
+          28.verticalSpace,
+
+          const ContactUsNumbersSection(),
         ],
       ),
     );
+  }
+
+  Future<void> _onSubmitPressed(BuildContext context) async {
+    await vm._submit();
+
+    if (!context.mounted) return;
+
+    _showResult(context);
+  }
+
+  void _showResult(BuildContext context) {
+    final SubmitContactFormResponse? response = vm._responseCubit.state.data;
+
+    if (response == null) return;
+
+    final bool isSuccess = response.status;
+
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: isSuccess
+              ? const Color(0xFF34A853)
+              : AppColors.primaryRed,
+          content: Row(
+            children: [
+              Icon(
+                isSuccess ? Icons.check_circle_outline : Icons.error_outline,
+                size: 24.sp,
+                color: AppColors.white,
+              ),
+              12.horizontalSpace,
+              Expanded(
+                child: Text(
+                  isSuccess
+                      ? LocaleKeys.contactUsSuccess.tr()
+                      : LocaleKeys.contactUsFailed.tr(),
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
   }
 }

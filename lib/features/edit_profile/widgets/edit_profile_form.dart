@@ -13,7 +13,7 @@ class EditProfileForm extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 22.w),
       child: Column(
         children: [
-          SizedBox(height: 22.h),
+          22.verticalSpace,
           Align(
             alignment: AlignmentDirectional.centerEnd,
             child: Text(
@@ -25,7 +25,7 @@ class EditProfileForm extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 24.h),
+          24.verticalSpace,
           Row(
             children: [
               Expanded(
@@ -37,7 +37,7 @@ class EditProfileForm extends StatelessWidget {
                   onChanged: vm._updateLastName,
                 ),
               ),
-              SizedBox(width: 34.w),
+              34.horizontalSpace,
               Expanded(
                 child: EditProfileTextField(
                   label: LocaleKeys.firstName.tr(),
@@ -108,15 +108,22 @@ class EditProfileForm extends StatelessWidget {
             textAlign: TextAlign.end,
             onChanged: vm._updateDiseaseType,
           ),
-          SizedBox(height: 26.h),
+          26.verticalSpace,
           Center(
-            child: EditProfileSaveButton(
+            child: AppButton(
               title: LocaleKeys.save.tr(),
               isLoading: data.isSaving,
-              onTap: vm._saveProfile,
+              onPressed: vm._saveProfile,
+              width: 206.w,
+              height: 49.h,
+              backgroundColor: const Color(0xFFFF0A0A),
+              borderColor: const Color(0xFFFF0A0A),
+              borderRadius: 12,
+              fontSize: 19,
+              elevation: 4,
             ),
           ),
-          SizedBox(height: 30.h),
+          30.verticalSpace,
         ],
       ),
     );

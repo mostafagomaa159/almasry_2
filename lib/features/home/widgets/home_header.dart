@@ -33,8 +33,8 @@ class HomeHeader extends StatelessWidget {
                       fit: BoxFit.contain,
                     ),
                   ),
-                  Positioned(
-                    right: 4.w,
+                  PositionedDirectional(
+                    start: 4.w,
                     top: 18.h,
                     child: Material(
                       color: AppColors.transparent,
@@ -57,8 +57,8 @@ class HomeHeader extends StatelessWidget {
             ),
           ),
 
-          Positioned(
-            left: 2.w,
+          PositionedDirectional(
+            end: 2.w,
             bottom: 0,
             child: Container(
               width: 74.w,
@@ -67,7 +67,7 @@ class HomeHeader extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: AppColors.white,
                 border: Border.all(
-                  color: AppColors.primaryRed.withOpacity(0.7),
+                  color: AppColors.primaryRed.withValues(alpha: 0.7),
                   width: 1.2,
                 ),
               ),

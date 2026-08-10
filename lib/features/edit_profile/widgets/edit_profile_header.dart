@@ -82,9 +82,9 @@ class EditProfileHeader extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      SizedBox(width: 6.w),
+                      6.horizontalSpace,
                       Icon(
-                        Icons.arrow_back_ios_new,
+                        AppDirection.back(context),
                         size: 16.sp,
                         color: const Color(0xFF7A7A7A),
                       ),

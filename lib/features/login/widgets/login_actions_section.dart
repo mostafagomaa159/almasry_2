@@ -31,13 +31,13 @@ class LoginActionsSection extends StatelessWidget {
                       ? data.isLoading
                       : data.isPhoneAuthLoading,
                 ),
-                SizedBox(height: 16.h),
+                16.verticalSpace,
                 AppButton(
                   title: LocaleKeys.createAccount.tr(),
                   onPressed: vm._goToRegisterScreen,
                   isPrimary: false,
                 ),
-                SizedBox(height: 30.h),
+                30.verticalSpace,
                 Center(
                   child: GestureDetector(
                     onTap: () => vm._continueAsGuest(context),
@@ -51,7 +51,7 @@ class LoginActionsSection extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 24.h),
+                24.verticalSpace,
               ],
             );
           },

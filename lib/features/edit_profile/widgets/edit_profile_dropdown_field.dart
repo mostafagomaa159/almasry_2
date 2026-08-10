@@ -32,7 +32,7 @@ class EditProfileDropdownField extends StatelessWidget {
               color: const Color(0xFF17375E),
             ),
           ),
-          SizedBox(height: 6.h),
+          6.verticalSpace,
           DropdownButtonFormField<String>(
             initialValue: (value != null && value!.isNotEmpty) ? value : null,
             items: items,

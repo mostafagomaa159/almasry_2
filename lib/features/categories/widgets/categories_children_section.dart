@@ -7,13 +7,13 @@ class CategoriesChildrenSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final parentCategory = vm._selectedParentCategory;
+    final CategoryModel? parentCategory = vm._selectedParentCategory;
 
     if (parentCategory == null) {
       return Center(child: Text(LocaleKeys.categoriesNoSelection.tr()));
     }
 
-    final childrenCategories = vm._filteredChildren;
+    final List<CategoryModel> childrenCategories = vm._filteredChildren;
 
     return Padding(
       padding: EdgeInsets.all(16.w),
@@ -24,14 +24,14 @@ class CategoriesChildrenSection extends StatelessWidget {
             parentCategory.name,
             style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w700),
           ),
-          SizedBox(height: 6.h),
+          6.verticalSpace,
           Text(
             LocaleKeys.productsCount.tr(
               args: ['${parentCategory.productCount}'],
             ),
             style: TextStyle(fontSize: 12.sp, color: Colors.grey),
           ),
-          SizedBox(height: 16.h),
+          16.verticalSpace,
           Expanded(
             child: childrenCategories.isEmpty
                 ? Center(

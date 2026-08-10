@@ -16,7 +16,7 @@ class ContactUsNumbersSection extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
         ),
-        SizedBox(height: 14.h),
+        14.verticalSpace,
         ...AppContact.phones.map(
           (phone) => Padding(
             padding: EdgeInsets.only(bottom: 10.h),
@@ -27,7 +27,7 @@ class ContactUsNumbersSection extends StatelessWidget {
                   size: 20.sp,
                   color: AppColors.textSecondary,
                 ),
-                SizedBox(width: 10.w),
+                10.horizontalSpace,
                 Text(
                   phone,
                   textDirection: TextDirection.ltr,

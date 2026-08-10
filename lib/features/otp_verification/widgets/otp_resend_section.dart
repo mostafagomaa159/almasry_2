@@ -30,7 +30,7 @@ class OtpResendSection extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 8),
+            8.verticalSpace,
             Center(
               child: TextButton(
                 onPressed: state.canResendOtp && !state.isPhoneAuthLoading
@@ -57,7 +57,7 @@ class OtpResendSection extends StatelessWidget {
                       ),
               ),
             ),
-            const SizedBox(height: 24),
+            24.verticalSpace,
           ],
         );
       },

@@ -34,9 +34,7 @@ class AppStartupService {
       status = StartupStatus.unauthenticated;
     }
 
-    splashCubit.onUpdateData(
-      splashCubit.state.data.copyWith(status: status),
-    );
+    splashCubit.onUpdateData(splashCubit.state.data.copyWith(status: status));
 
     return status;
   }

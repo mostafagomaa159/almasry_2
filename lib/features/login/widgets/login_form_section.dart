@@ -22,7 +22,7 @@ class LoginFormSection extends StatelessWidget {
                   RegularLoginForm(vm: vm)
                 else
                   PhoneLoginForm(vm: vm),
-                SizedBox(height: 18.h),
+                18.verticalSpace,
                 if (isRegularLoginSelected)
                   Center(
                     child: Text(
@@ -34,7 +34,7 @@ class LoginFormSection extends StatelessWidget {
                       ),
                     ),
                   ),
-                SizedBox(height: 28.h),
+                28.verticalSpace,
               ],
             );
           },

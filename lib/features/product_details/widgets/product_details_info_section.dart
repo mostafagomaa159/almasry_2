@@ -28,7 +28,7 @@ class ProductDetailsInfoSection extends StatelessWidget {
               color: const Color(0xFF11385B),
             ),
           ),
-          SizedBox(height: 14.h),
+          14.verticalSpace,
           ...attributes.map(
             (item) => Padding(
               padding: EdgeInsets.only(bottom: 10.h),

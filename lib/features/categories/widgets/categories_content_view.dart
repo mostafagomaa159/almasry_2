@@ -16,7 +16,7 @@ class CategoriesContentView extends StatelessWidget {
             child: Column(
               children: [
                 CategoriesSearchField(vm: vm),
-                const SizedBox(height: 12),
+                12.verticalSpace,
                 Expanded(child: CategoriesChildrenSection(vm: vm)),
               ],
             ),

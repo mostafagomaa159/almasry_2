@@ -35,7 +35,7 @@ class _HomeDynamicBlockSectionState extends State<HomeDynamicBlockSection> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         HomeSectionHeader(title: widget.title),
-        SizedBox(height: 12.h),
+        12.verticalSpace,
 
         if (subCategories.isNotEmpty) ...[
           SizedBox(
@@ -44,7 +44,7 @@ class _HomeDynamicBlockSectionState extends State<HomeDynamicBlockSection> {
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(horizontal: 14.w),
               itemCount: subCategories.length,
-              separatorBuilder: (_, __) => SizedBox(width: 8.w),
+              separatorBuilder: (_, _) => 8.horizontalSpace,
               itemBuilder: (context, index) {
                 final item = subCategories[index];
                 final isSelected = index == selectedIndex;
@@ -60,7 +60,7 @@ class _HomeDynamicBlockSectionState extends State<HomeDynamicBlockSection> {
                     padding: EdgeInsets.symmetric(horizontal: 14.w),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? AppColors.primaryRed.withOpacity(0.1)
+                          ? AppColors.primaryRed.withValues(alpha: 0.1)
                           : Colors.white,
                       borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
@@ -85,11 +85,11 @@ class _HomeDynamicBlockSectionState extends State<HomeDynamicBlockSection> {
               },
             ),
           ),
-          SizedBox(height: 16.h),
+          16.verticalSpace,
         ],
 
         if (widget.isLoading)
-          const HomeProductsLoader()
+          AppLoadingView(height: 330.h)
         else
           HomeProductsSection(vm: widget.vm, products: widget.products),
       ],

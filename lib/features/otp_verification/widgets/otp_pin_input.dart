@@ -67,7 +67,7 @@ class OtpPinInput extends StatelessWidget {
           ),
         ),
         if (state.otpError != null && state.otpError!.isNotEmpty) ...[
-          const SizedBox(height: 12),
+          12.verticalSpace,
           Text(
             state.otpError!,
             style: const TextStyle(
@@ -79,7 +79,7 @@ class OtpPinInput extends StatelessWidget {
         ],
         if (state.authErrorMessage != null &&
             state.authErrorMessage!.isNotEmpty) ...[
-          const SizedBox(height: 14),
+          14.verticalSpace,
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(12),

@@ -8,14 +8,27 @@ class ProductListViewModel {
 
   /// Variables
 
-  final GenericCubit<ProductListData> _productListCubit =
-      GenericCubit<ProductListData>(const ProductListData.ProductListModel());
+  /// The screen's only cubit. `null` means the first page is still loading;
+  /// a list — empty or not — means it has arrived.
+  final GenericCubit<List<ProductModel>?> _productsCubit =
+      GenericCubit<List<ProductModel>?>(null);
 
   late final ScrollController _scrollController;
 
-  String _title = '';
+  /// Plain fields, not cubits. Each one is written before the cubit emits, so
+  /// the rebuild that emit triggers always reads the matching value.
+  String _errorMessage = '';
+  bool _isLoadingMore = false;
+  Map<String, int> _quantities = const {};
 
-  ProductListData get _data => _productListCubit.state.data;
+  /// Paging bookkeeping — nothing renders it.
+  String _title = '';
+  String _categoryId = '';
+  int _currentPage = 1;
+  bool _hasMore = true;
+
+  List<ProductModel> get _loadedProducts =>
+      _productsCubit.state.data ?? const [];
 
   /// Init
 
@@ -24,25 +37,27 @@ class ProductListViewModel {
     required String categoryId,
   }) async {
     _title = title;
+    _categoryId = categoryId;
 
     _scrollController = ScrollController()..addListener(_onScroll);
 
-    await _loadInitialProducts(title: title, categoryId: categoryId);
+    await _loadInitialProducts();
   }
 
   void _dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
-    _productListCubit.close();
+
+    _productsCubit.close();
   }
 
-  /// Form state
+  /// Actions
 
   void _onScroll() {
     if (!_scrollController.hasClients) return;
 
-    final currentOffset = _scrollController.position.pixels;
-    final maxOffset = _scrollController.position.maxScrollExtent;
+    final double currentOffset = _scrollController.position.pixels;
+    final double maxOffset = _scrollController.position.maxScrollExtent;
 
     if (currentOffset >= maxOffset - 200) {
       _loadMoreProducts();
@@ -50,43 +65,38 @@ class ProductListViewModel {
   }
 
   int _getProductQuantity(String sku) {
-    return _productListCubit.state.data.quantities[sku] ?? 1;
+    return _quantities[sku] ?? 1;
   }
 
+  /// Re-emits the same list to get a rebuild — `GenericState.changed` makes
+  /// that work.
   void _incrementQuantity(String sku) {
-    final current = _productListCubit.state.data;
-    final updatedQuantities = Map<String, int>.from(current.quantities);
-    final currentQuantity = updatedQuantities[sku] ?? 1;
+    final Map<String, int> updated = Map<String, int>.from(_quantities);
 
-    updatedQuantities[sku] = currentQuantity + 1;
+    updated[sku] = (updated[sku] ?? 1) + 1;
+    _quantities = updated;
 
-    _productListCubit.onUpdateData(
-      current.copyWith(quantities: updatedQuantities),
-    );
+    _productsCubit.onUpdateData(_loadedProducts);
   }
 
   void _decrementQuantity(String sku) {
-    final current = _productListCubit.state.data;
-    final updatedQuantities = Map<String, int>.from(current.quantities);
-    final currentQuantity = updatedQuantities[sku] ?? 1;
+    final int currentQuantity = _quantities[sku] ?? 1;
+    if (currentQuantity <= 1) return;
 
-    if (currentQuantity > 1) {
-      updatedQuantities[sku] = currentQuantity - 1;
+    final Map<String, int> updated = Map<String, int>.from(_quantities);
 
-      _productListCubit.onUpdateData(
-        current.copyWith(quantities: updatedQuantities),
-      );
-    }
+    updated[sku] = currentQuantity - 1;
+    _quantities = updated;
+
+    _productsCubit.onUpdateData(_loadedProducts);
   }
-
-  /// Actions
 
   void _goBack() {
     _nav.pop();
   }
 
   void _navToProductDetails(ProductModel product) {
-    final sku = product.sku ?? '';
+    final String sku = product.sku;
     if (sku.isEmpty) return;
 
     _nav.pushNamed(
@@ -97,28 +107,6 @@ class ProductListViewModel {
         imagePath: product.extensionAttributes?.thumbnail,
       ),
     );
-  }
-
-  /// Helpers
-
-  String _extractApiMessage(DioException e) {
-    final data = e.response?.data;
-
-    if (data is Map<String, dynamic>) {
-      final message = data['message'];
-      if (message is String && message.isNotEmpty) {
-        return message;
-      }
-    }
-
-    if (data is Map) {
-      final message = data['message'];
-      if (message is String && message.isNotEmpty) {
-        return message;
-      }
-    }
-
-    return e.message ?? LocaleKeys.somethingWentWrong.tr();
   }
 
   /// Api
@@ -142,112 +130,67 @@ class ProductListViewModel {
     return const ProductListModel(items: [], totalCount: 0);
   }
 
-  Future<void> _loadInitialProducts({
-    required String title,
-    required String categoryId,
-  }) async {
-    final current = _productListCubit.state.data;
+  Future<void> _loadInitialProducts() async {
+    _currentPage = 1;
+    _hasMore = true;
+    _errorMessage = '';
+    _isLoadingMore = false;
+    _quantities = const {};
 
-    _productListCubit.onUpdateData(
-      current.copyWith(
-        status: ProductListStatus.loading,
-        title: title,
-        categoryId: categoryId,
-        currentPage: 1,
-        hasMore: true,
-        isLoadingMore: false,
-        totalCount: 0,
-        clearErrorMessage: true,
-        resetProducts: true,
-        resetQuantities: true,
-      ),
-    );
+    /// Back to `null` so the spinner replaces whatever was on screen.
+    _productsCubit.onUpdateData(null);
 
     try {
-      final request = ProductListRequest(categoryId: categoryId, page: 1);
+      final request = ProductListRequest(categoryId: _categoryId, page: 1);
 
-      final result = await _fetchProducts(request);
+      final ProductListModel result = await _fetchProducts(request);
 
-      final hasMore = result.items.length < result.totalCount;
+      _hasMore = result.items.length < result.totalCount;
 
-      _productListCubit.onUpdateData(
-        _productListCubit.state.data.copyWith(
-          status: ProductListStatus.success,
-          products: result.items,
-          currentPage: 1,
-          totalCount: result.totalCount,
-          hasMore: hasMore,
-          isLoadingMore: false,
-        ),
-      );
-    } on DioException catch (e) {
-      _productListCubit.onUpdateData(
-        _productListCubit.state.data.copyWith(
-          status: ProductListStatus.error,
-          errorMessage: _extractApiMessage(e),
-          isLoadingMore: false,
-        ),
-      );
-    } catch (e) {
-      _productListCubit.onUpdateData(
-        _productListCubit.state.data.copyWith(
-          status: ProductListStatus.error,
-          errorMessage: e.toString(),
-          isLoadingMore: false,
-        ),
-      );
+      _productsCubit.onUpdateData(result.items);
+    } catch (error) {
+      _errorMessage = errorMessageFrom(error);
+
+      /// Empty list + a message is what the body reads as "error".
+      _productsCubit.onUpdateData(const []);
     }
   }
 
   Future<void> _loadMoreProducts() async {
-    final current = _productListCubit.state.data;
+    if (_isLoadingMore || !_hasMore) return;
+    if (_productsCubit.state.data == null) return;
+    if (_categoryId.isEmpty) return;
 
-    if (current.status != ProductListStatus.success) return;
-    if (current.isLoadingMore) return;
-    if (!current.hasMore) return;
-    if (current.categoryId.isEmpty) return;
+    _isLoadingMore = true;
 
-    _productListCubit.onUpdateData(
-      current.copyWith(isLoadingMore: true, clearErrorMessage: true),
-    );
+    /// Same list, but the emit still forces the trailing spinner in.
+    _productsCubit.onUpdateData(_loadedProducts);
 
-    final nextPage = current.currentPage + 1;
+    final int nextPage = _currentPage + 1;
 
     try {
       final request = ProductListRequest(
-        categoryId: current.categoryId,
+        categoryId: _categoryId,
         page: nextPage,
       );
 
-      final result = await _fetchProducts(request);
+      final ProductListModel result = await _fetchProducts(request);
 
-      final updatedProducts = [...current.products, ...result.items];
-      final hasMore = updatedProducts.length < result.totalCount;
+      final List<ProductModel> updatedProducts = [
+        ..._loadedProducts,
+        ...result.items,
+      ];
 
-      _productListCubit.onUpdateData(
-        _productListCubit.state.data.copyWith(
-          status: ProductListStatus.success,
-          products: updatedProducts,
-          currentPage: nextPage,
-          totalCount: result.totalCount,
-          hasMore: hasMore,
-          isLoadingMore: false,
-        ),
-      );
-    } on DioException catch (e) {
-      _productListCubit.onUpdateData(
-        _productListCubit.state.data.copyWith(
-          isLoadingMore: false,
-          errorMessage: _extractApiMessage(e),
-        ),
-      );
-    } catch (e) {
-      _productListCubit.onUpdateData(
-        _productListCubit.state.data.copyWith(
-          isLoadingMore: false,
-          errorMessage: e.toString(),
-        ),
-      );
+      _currentPage = nextPage;
+      _hasMore = updatedProducts.length < result.totalCount;
+      _isLoadingMore = false;
+
+      _productsCubit.onUpdateData(updatedProducts);
+    } catch (_) {
+      /// A failed "load more" keeps the pages already on screen.
+      _isLoadingMore = false;
+
+      _productsCubit.onUpdateData(_loadedProducts);
     }
   }
 }

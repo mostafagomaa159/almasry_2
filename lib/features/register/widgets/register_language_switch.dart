@@ -22,7 +22,7 @@ class RegisterLanguageSwitch extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 8.h),
+        8.verticalSpace,
       ],
     );
   }

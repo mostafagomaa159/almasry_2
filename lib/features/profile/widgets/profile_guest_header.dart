@@ -37,7 +37,7 @@ class ProfileGuestHeader extends StatelessWidget {
               clipBehavior: Clip.none,
               children: [
                 Align(
-                  alignment: Alignment.centerLeft,
+                  alignment: AlignmentDirectional.centerStart,
                   child: Icon(
                     Icons.menu,
                     size: 28.sp,
@@ -54,8 +54,8 @@ class ProfileGuestHeader extends StatelessWidget {
                     ),
                   ),
                 ),
-                Positioned(
-                  right: 0,
+                PositionedDirectional(
+                  end: 0,
                   bottom: -18.h,
                   child: CircleAvatar(
                     radius: 42.r,

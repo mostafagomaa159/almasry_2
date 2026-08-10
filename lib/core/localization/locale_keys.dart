@@ -123,7 +123,7 @@ class LocaleKeys {
   static const String shippingFees = 'shippingFees';
   static const String discount = 'discount';
   static const String reorder = 'reorder';
-  static const String log_out = 'log_out';
+  static const String logOut = 'log_out';
 
   static const String productDetailsCategories = 'product_details_categories';
   static const String productDetailsDescription = 'product_details_description';

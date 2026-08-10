@@ -40,9 +40,9 @@ class OrderDetailsBody extends StatelessWidget {
                   Text(
                     '${LocaleKeys.orderStatusLabel.tr()}: ${order.status.name}',
                   ),
-                  const SizedBox(height: 8),
+                  8.verticalSpace,
                   Text('${LocaleKeys.orderDateLabel.tr()}: ${order.createdAt}'),
-                  const SizedBox(height: 8),
+                  8.verticalSpace,
                   Text(
                     '${LocaleKeys.orderGrandTotalLabel.tr()}: '
                     '${order.total.toStringAsFixed(2)} ${LocaleKeys.currency.tr()}',
@@ -50,7 +50,7 @@ class OrderDetailsBody extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            16.verticalSpace,
             _SectionCard(
               title: LocaleKeys.orderItems.tr(),
               child: Column(

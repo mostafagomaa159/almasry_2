@@ -1,7 +1,6 @@
 import 'package:almasry_2/core/constants/app_api.dart';
 import 'package:graphql/client.dart';
 
-
 class GraphQLServiceException implements Exception {
   final String message;
 

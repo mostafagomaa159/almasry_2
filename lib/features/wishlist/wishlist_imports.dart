@@ -13,9 +13,11 @@ import 'package:almasry_2/core/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:almasry_2/core/widgets/app_empty_view.dart';
+import 'package:almasry_2/core/widgets/app_loading_view.dart';
+import 'package:almasry_2/core/widgets/app_network_image.dart';
 
 part 'view/wishlist_view.dart';
 part 'view_model/wishlist_view_model.dart';
 part 'widgets/wishlist_body.dart';
-part 'widgets/wishlist_empty_view.dart';
 part 'widgets/wishlist_item_card.dart';

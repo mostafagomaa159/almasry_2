@@ -15,11 +15,13 @@ class OrdersBody extends StatelessWidget {
       builder: (context, state) {
         if (state is GenericUpdateState<List<OrderModel>>) {
           if (state.data.isEmpty) {
-            return const OrdersEmptyView();
+            return AppEmptyView(message: LocaleKeys.ordersNotFound.tr());
           }
+
           return OrdersListView(vm: vm, orders: state.data);
         }
-        return const OrdersLoadingView();
+
+        return const AppLoadingView();
       },
     );
   }

@@ -24,7 +24,7 @@ class HomeOfferTabs extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         itemCount: tabs.length,
-        separatorBuilder: (_, _) => SizedBox(width: 8.w),
+        separatorBuilder: (_, _) => 8.horizontalSpace,
         itemBuilder: (context, index) {
           final bool isSelected = selectedIndex == index;
 
@@ -39,7 +39,7 @@ class HomeOfferTabs extends StatelessWidget {
                 border: Border.all(color: const Color(0xFFE8E8E8)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.03),
+                    color: Colors.black.withValues(alpha: 0.03),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
@@ -104,7 +104,7 @@ class _HomeOfferItem extends StatelessWidget {
                 child: _buildImage(),
               ),
             ),
-            SizedBox(height: 10.h),
+            10.verticalSpace,
             Text(
               title,
               maxLines: 2,
@@ -129,17 +129,17 @@ class _HomeOfferItem extends StatelessWidget {
     }
 
     if (isNetworkImage) {
-      return Image.network(
-        imagePath,
+      return AppNetworkImage(
+        url: imagePath,
         fit: BoxFit.contain,
-        errorBuilder: (_, __, ___) => _buildPlaceholder(),
+        placeholder: _buildPlaceholder(),
       );
     }
 
     return Image.asset(
       imagePath,
       fit: BoxFit.contain,
-      errorBuilder: (_, __, ___) => _buildPlaceholder(),
+      errorBuilder: (_, _, _) => _buildPlaceholder(),
     );
   }
 

@@ -38,7 +38,7 @@ class GuestActionCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon, size: 38.sp, color: const Color(0xFFA7A7A7)),
-              SizedBox(height: 16.h),
+              16.verticalSpace,
               Text(
                 title,
                 textAlign: TextAlign.center,

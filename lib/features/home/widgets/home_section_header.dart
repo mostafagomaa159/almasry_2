@@ -18,7 +18,7 @@ class HomeSectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final String resolvedActionTitle = actionTitle ?? LocaleKeys.homeMore.tr();
 
-    Widget titleWidget = Text(
+    final Widget titleWidget = Text(
       title,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
@@ -30,7 +30,7 @@ class HomeSectionHeader extends StatelessWidget {
       ),
     );
 
-    Widget actionWidget = InkWell(
+    final Widget actionWidget = InkWell(
       onTap: onActionTap,
       borderRadius: BorderRadius.circular(8.r),
       child: Padding(
@@ -47,7 +47,7 @@ class HomeSectionHeader extends StatelessWidget {
               ),
             ),
             Icon(
-              Icons.chevron_right,
+              AppDirection.chevronForward(context),
               size: 16.sp,
               color: const Color(0xFFC4C4C4),
             ),

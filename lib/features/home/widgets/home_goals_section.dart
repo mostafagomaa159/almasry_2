@@ -15,7 +15,7 @@ class HomeGoalsSection extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         itemCount: items.length,
-        separatorBuilder: (_, __) => SizedBox(width: 8.w),
+        separatorBuilder: (_, _) => 8.horizontalSpace,
         itemBuilder: (context, index) {
           final item = items[index];
 

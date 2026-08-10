@@ -3,11 +3,7 @@ class BrandModel {
   final String name;
   final String image;
 
-  const BrandModel({
-    required this.id,
-    required this.name,
-    required this.image,
-  });
+  const BrandModel({required this.id, required this.name, required this.image});
 
   factory BrandModel.fromJson(Map<String, dynamic> json) {
     return BrandModel(

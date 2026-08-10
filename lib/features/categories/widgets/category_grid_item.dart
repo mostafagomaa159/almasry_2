@@ -19,15 +19,13 @@ class CategoryGridItem extends StatelessWidget {
           Expanded(
             child: category.image.trim().isEmpty
                 ? const Icon(Icons.image_outlined)
-                : Image.network(
-                    category.imageUrl,
+                : AppNetworkImage(
+                    url: category.imageUrl,
                     fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) {
-                      return const Icon(Icons.image_outlined);
-                    },
+                    placeholder: const Icon(Icons.image_outlined),
                   ),
           ),
-          SizedBox(height: 10.h),
+          10.verticalSpace,
           Text(
             category.name,
             textAlign: TextAlign.center,
@@ -35,7 +33,7 @@ class CategoryGridItem extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600),
           ),
-          SizedBox(height: 4.h),
+          4.verticalSpace,
           Text(
             '${category.productCount} products',
             style: TextStyle(fontSize: 11.sp, color: Colors.grey),

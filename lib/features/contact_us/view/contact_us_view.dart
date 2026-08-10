@@ -30,7 +30,7 @@ class _ContactUsViewState extends State<ContactUsView> {
         top: false,
         child: Column(
           children: [
-            AppPageHeader(
+            CustomAppBar(
               title: LocaleKeys.contactUsTitle.tr(),
               onBack: vm._back,
             ),

@@ -12,16 +12,18 @@ import 'package:almasry_2/core/models/response/product_list/product_list_model.d
 import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/core/services/api_services.dart';
 import 'package:almasry_2/core/services/navigation_service.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:equatable/equatable.dart';
+import 'package:almasry_2/core/widgets/app_error_view.dart';
+import 'package:almasry_2/core/widgets/app_empty_view.dart';
+import 'package:almasry_2/core/widgets/app_loading_view.dart';
+import 'package:almasry_2/core/widgets/app_network_image.dart';
+import 'package:almasry_2/core/utils/error_message.dart';
+import 'package:almasry_2/core/utils/app_direction.dart';
 
 part 'view/product_list_view.dart';
 part 'widgets/product_list_app_bar.dart';
 part 'widgets/product_list_body.dart';
 part 'widgets/product_list_item.dart';
-part 'widgets/product_list_loading.dart';
-part '../../core/models/response/product_list/product_list_view_model.dart';
 part 'view_model/product_list_view_model.dart';

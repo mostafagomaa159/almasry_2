@@ -31,7 +31,7 @@ class ProfileMenuList extends StatelessWidget {
           onTap: () => vm._toggleLanguage(context),
         ),
         ProfileMenuItem(
-          title: LocaleKeys.log_out.tr(),
+          title: LocaleKeys.logOut.tr(),
           onTap: () => vm._logout(context),
         ),
       ],

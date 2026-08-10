@@ -8,9 +8,18 @@ class AppButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool isPrimary;
   final bool isLoading;
+
+  /// `false` greys the button out and drops its tap handler, without the
+  /// spinner [isLoading] brings.
+  final bool isEnabled;
   final Color? backgroundColor;
   final Color? borderColor;
   final Color? textColor;
+  final double? width;
+  final double? height;
+  final double? borderRadius;
+  final double fontSize;
+  final double elevation;
 
   const AppButton({
     super.key,
@@ -18,9 +27,15 @@ class AppButton extends StatelessWidget {
     required this.onPressed,
     this.isPrimary = true,
     this.isLoading = false,
+    this.isEnabled = true,
     this.backgroundColor,
     this.borderColor,
     this.textColor,
+    this.width,
+    this.height,
+    this.borderRadius,
+    this.fontSize = 18,
+    this.elevation = 0,
   });
 
   @override
@@ -34,18 +49,20 @@ class AppButton extends StatelessWidget {
     final Color resolvedTextColor =
         textColor ?? (isPrimary ? AppColors.white : AppColors.darkBlue);
 
+    final double resolvedRadius = borderRadius ?? AppSizes.borderRadius;
+
     return SizedBox(
-      width: double.infinity,
-      height: AppSizes.buttonHeight.h,
+      width: width ?? double.infinity,
+      height: height ?? AppSizes.buttonHeight.h,
       child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
+        onPressed: (isLoading || !isEnabled) ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          elevation: 0,
+          elevation: elevation,
           backgroundColor: resolvedBackgroundColor,
           disabledBackgroundColor: resolvedBackgroundColor,
           foregroundColor: resolvedTextColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSizes.borderRadius.r),
+            borderRadius: BorderRadius.circular(resolvedRadius.r),
             side: BorderSide(color: resolvedBorderColor, width: 1.5.w),
           ),
         ),
@@ -61,7 +78,7 @@ class AppButton extends StatelessWidget {
             : Text(
                 title,
                 style: TextStyle(
-                  fontSize: 18.sp,
+                  fontSize: fontSize.sp,
                   fontWeight: FontWeight.w700,
                   color: resolvedTextColor,
                 ),

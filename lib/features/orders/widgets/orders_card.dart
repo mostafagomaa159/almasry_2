@@ -42,12 +42,12 @@ class OrderCard extends StatelessWidget {
               OrderStatusChip(status: order.status),
             ],
           ),
-          SizedBox(height: 10.h),
+          10.verticalSpace,
           Text(
             order.createdAt,
             style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
           ),
-          SizedBox(height: 12.h),
+          12.verticalSpace,
           if (firstItem != null)
             Row(
               children: [
@@ -61,14 +61,14 @@ class OrderCard extends StatelessWidget {
                   clipBehavior: Clip.antiAlias,
                   child: firstItem.productImage.isEmpty
                       ? const Icon(Icons.image_not_supported_outlined)
-                      : Image.network(
-                          firstItem.productImage,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) =>
-                              const Icon(Icons.image_not_supported_outlined),
+                      : AppNetworkImage(
+                          url: firstItem.productImage,
+                          placeholder: const Icon(
+                            Icons.image_not_supported_outlined,
+                          ),
                         ),
                 ),
-                SizedBox(width: 12.w),
+                12.horizontalSpace,
                 Expanded(
                   child: Text(
                     firstItem.name,
@@ -83,7 +83,7 @@ class OrderCard extends StatelessWidget {
                 ),
               ],
             ),
-          SizedBox(height: 14.h),
+          14.verticalSpace,
           Row(
             children: [
               Expanded(
@@ -105,7 +105,7 @@ class OrderCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 14.h),
+          14.verticalSpace,
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(

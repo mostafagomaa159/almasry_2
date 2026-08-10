@@ -14,7 +14,6 @@ import 'package:almasry_2/core/services/api_services.dart';
 import 'package:almasry_2/core/services/favorites_service.dart';
 import 'package:almasry_2/core/services/push_notification_service.dart';
 
-import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +21,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../core/models/response/favorite/favorite_product_model.dart';
+import 'package:almasry_2/core/widgets/app_error_view.dart';
+import 'package:almasry_2/core/widgets/app_empty_view.dart';
+import 'package:almasry_2/core/widgets/app_loading_view.dart';
+import 'package:almasry_2/core/widgets/app_network_image.dart';
+import 'package:almasry_2/core/utils/error_message.dart';
+import 'package:almasry_2/core/utils/app_direction.dart';
 
 part 'view/product_details_view.dart';
 part 'view_model/product_details_view_model.dart';

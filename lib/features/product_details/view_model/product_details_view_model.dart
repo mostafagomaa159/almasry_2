@@ -60,11 +60,11 @@ class ProductDetailsViewModel {
 
   String _getCustomAttributeValue(ProductModel product, String code) {
     try {
-      final attribute = product.customAttributes?.firstWhere(
+      final attribute = product.customAttributes.firstWhere(
         (item) => item.attributeCode == code,
       );
 
-      final value = attribute?.value;
+      final value = attribute.value;
       if (value == null) return '';
 
       if (value is List) {
@@ -88,7 +88,7 @@ class ProductDetailsViewModel {
   }
 
   String _descriptionFor(ProductModel product) {
-    return product.description ?? '';
+    return product.description;
   }
 
   String _priceFor(ProductModel product) {
@@ -173,28 +173,6 @@ class ProductDetailsViewModel {
     );
   }
 
-  /// Helpers
-
-  String _extractApiMessage(DioException e) {
-    final data = e.response?.data;
-
-    if (data is Map<String, dynamic>) {
-      final message = data['message'];
-      if (message is String && message.isNotEmpty) {
-        return message;
-      }
-    }
-
-    if (data is Map) {
-      final message = data['message'];
-      if (message is String && message.isNotEmpty) {
-        return message;
-      }
-    }
-
-    return e.message ?? LocaleKeys.somethingWentWrong.tr();
-  }
-
   /// Api
 
   Future<ProductModel> _fetchProductDetails({required String sku}) async {
@@ -222,18 +200,11 @@ class ProductDetailsViewModel {
           clearErrorMessage: true,
         ),
       );
-    } on DioException catch (e) {
+    } catch (error) {
       _productDetailsCubit.onUpdateData(
         _productDetailsCubit.state.data.copyWith(
           isLoading: false,
-          errorMessage: _extractApiMessage(e),
-        ),
-      );
-    } catch (e) {
-      _productDetailsCubit.onUpdateData(
-        _productDetailsCubit.state.data.copyWith(
-          isLoading: false,
-          errorMessage: e.toString(),
+          errorMessage: errorMessageFrom(error),
         ),
       );
     }

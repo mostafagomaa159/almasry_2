@@ -16,7 +16,7 @@ class HomeOffersSection extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         itemCount: items.length,
-        separatorBuilder: (_, __) => SizedBox(width: 18.w),
+        separatorBuilder: (_, _) => 18.horizontalSpace,
         itemBuilder: (context, index) {
           final item = items[index];
 

@@ -42,7 +42,7 @@ class _ProductDetailsDescriptionSectionState
               color: const Color(0xFF11385B),
             ),
           ),
-          SizedBox(height: 14.h),
+          14.verticalSpace,
           Container(
             width: double.infinity,
             padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 14.h),
@@ -62,7 +62,7 @@ class _ProductDetailsDescriptionSectionState
                     color: const Color(0xFF3A3A3A),
                   ),
                 ),
-                SizedBox(height: 10.h),
+                10.verticalSpace,
                 ClipRect(
                   child: AnimatedSize(
                     duration: const Duration(milliseconds: 220),
@@ -129,7 +129,7 @@ class _ProductDetailsDescriptionSectionState
                     ),
                   ),
                 ),
-                SizedBox(height: 10.h),
+                10.verticalSpace,
                 Align(
                   alignment: AlignmentDirectional.centerEnd,
                   child: GestureDetector(

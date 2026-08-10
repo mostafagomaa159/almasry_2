@@ -1,3 +1,4 @@
+import 'package:almasry_2/core/utils/app_direction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -35,7 +36,7 @@ class ProfileMenuItem extends StatelessWidget {
               ),
               const Spacer(),
               Icon(
-                Icons.arrow_forward_ios,
+                AppDirection.forward(context),
                 color: const Color(0xFF8C8C8C),
                 size: 18.sp,
               ),

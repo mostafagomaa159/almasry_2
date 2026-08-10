@@ -18,7 +18,7 @@ class PasswordRules extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(width: 12.w),
+        12.horizontalSpace,
         Expanded(
           child: Text(
             text,
@@ -41,9 +41,9 @@ class PasswordRules extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildRuleItem(LocaleKeys.passwordRuleUppercase.tr()),
-          SizedBox(height: 6.h),
+          6.verticalSpace,
           _buildRuleItem(LocaleKeys.passwordRuleNumber.tr()),
-          SizedBox(height: 6.h),
+          6.verticalSpace,
           _buildRuleItem(LocaleKeys.passwordRuleLength.tr()),
         ],
       ),

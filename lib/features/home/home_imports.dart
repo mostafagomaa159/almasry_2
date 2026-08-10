@@ -21,7 +21,6 @@ import 'package:almasry_2/core/models/response/profile/profile_args_model.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/core/services/api_services.dart';
 import 'package:almasry_2/core/utils/app_logo.dart';
-// intl's TextDirection (LTR/RTL) is re-exported here and shadows Flutter's.
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,6 +31,11 @@ import 'package:almasry_2/core/services/push_notification_service.dart';
 
 import '../../core/models/response/favorite/favorite_product_model.dart';
 import 'package:almasry_2/core/constants/app_images.dart';
+import 'package:almasry_2/core/widgets/app_error_view.dart';
+import 'package:almasry_2/core/widgets/app_loading_view.dart';
+import 'package:almasry_2/core/widgets/app_search_field.dart';
+import 'package:almasry_2/core/widgets/app_network_image.dart';
+import 'package:almasry_2/core/utils/app_direction.dart';
 
 part 'view/home_view.dart';
 part 'view_model/home_view_model.dart';
@@ -47,7 +51,6 @@ part 'widgets/home_header.dart';
 part 'widgets/home_offer_tabs.dart';
 part 'widgets/home_offers_section.dart';
 part 'widgets/home_product_card.dart';
-part 'widgets/home_products_loader.dart';
 part 'widgets/home_products_section.dart';
 part 'widgets/home_quick_action_card.dart';
 part 'widgets/home_search_bar.dart';
@@ -59,8 +62,6 @@ part '../layout/view/layout_shell_view.dart';
 part '../layout/widgets/app_drawer.dart';
 
 part 'widgets/home_body_view.dart';
-part 'widgets/home_loading_view.dart';
-part 'widgets/home_error_view.dart';
 part 'widgets/home_success_content.dart';
 part 'widgets/home_quick_actions_section.dart';
 part 'widgets/home_section_view.dart';

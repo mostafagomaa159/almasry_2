@@ -22,7 +22,7 @@ class RegularLoginForm extends StatelessWidget {
           onChanged: (_) => vm._clearLoginErrors(),
           onEditingComplete: vm._focusPassword,
         ),
-        SizedBox(height: 20.h),
+        20.verticalSpace,
         AuthUnderlineField(
           controller: vm._passwordController,
           focusNode: vm._passwordFocusNode,
@@ -43,7 +43,7 @@ class RegularLoginForm extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 18.h),
+        18.verticalSpace,
         RememberMeRow(
           isChecked: state.rememberMe,
           rememberMeTitle: LocaleKeys.rememberMe.tr(),

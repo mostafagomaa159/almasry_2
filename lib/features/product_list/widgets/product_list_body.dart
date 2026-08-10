@@ -8,23 +8,24 @@ class _ProductListBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<
-      GenericCubit<ProductListData>,
-      GenericState<ProductListData>
+      GenericCubit<List<ProductModel>?>,
+      GenericState<List<ProductModel>?>
     >(
-      bloc: vm._productListCubit,
+      bloc: vm._productsCubit,
       builder: (context, state) {
-        final data = vm._data;
+        final List<ProductModel>? products = state.data;
 
-        if (data.status == ProductListStatus.loading && data.products.isEmpty) {
-          return const _ProductListLoading();
-        }
+        if (products == null) return const AppLoadingView();
 
-        if (data.status == ProductListStatus.error && data.products.isEmpty) {
-          return Center(child: Text(data.errorMessage));
-        }
+        if (products.isEmpty) {
+          if (vm._errorMessage.isNotEmpty) {
+            return AppErrorView(
+              message: vm._errorMessage,
+              onRetry: vm._loadInitialProducts,
+            );
+          }
 
-        if (data.products.isEmpty) {
-          return Center(child: Text(LocaleKeys.noProductsFound.tr()));
+          return AppEmptyView(message: LocaleKeys.noProductsFound.tr());
         }
 
         return GridView.builder(
@@ -36,13 +37,13 @@ class _ProductListBody extends StatelessWidget {
             mainAxisSpacing: 12.h,
             childAspectRatio: 0.58,
           ),
-          itemCount: data.products.length + (data.isLoadingMore ? 1 : 0),
+          itemCount: products.length + (vm._isLoadingMore ? 1 : 0),
           itemBuilder: (context, index) {
-            if (index >= data.products.length) {
+            if (index >= products.length) {
               return const Center(child: CircularProgressIndicator());
             }
 
-            return ProductListItem(vm: vm, product: data.products[index]);
+            return ProductListItem(vm: vm, product: products[index]);
           },
         );
       },

@@ -111,9 +111,9 @@ class _HomeBottomNavItem extends StatelessWidget {
                     color: isSelected ? activeColor : inactiveColor,
                   ),
                   if ((data.badgeCount ?? 0) > 0)
-                    Positioned(
+                    PositionedDirectional(
                       top: -6.h,
-                      right: -10.w,
+                      end: -10.w,
                       child: Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 5.w,
@@ -140,7 +140,7 @@ class _HomeBottomNavItem extends StatelessWidget {
                     ),
                 ],
               ),
-              SizedBox(height: 4.h),
+              4.verticalSpace,
               Text(
                 data.label,
                 maxLines: 1,

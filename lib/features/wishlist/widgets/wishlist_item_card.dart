@@ -18,12 +18,11 @@ class WishlistItemCard extends StatelessWidget {
     }
 
     if (_isNetworkImage(imagePath)) {
-      return Image.network(
-        imagePath,
+      return AppNetworkImage(
+        url: imagePath,
         width: 90.w,
         height: 90.h,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => _imagePlaceholder(),
+        placeholder: _imagePlaceholder(),
       );
     }
 
@@ -32,7 +31,7 @@ class WishlistItemCard extends StatelessWidget {
       width: 90.w,
       height: 90.h,
       fit: BoxFit.cover,
-      errorBuilder: (_, __, ___) => _imagePlaceholder(),
+      errorBuilder: (_, _, _) => _imagePlaceholder(),
     );
   }
 
@@ -70,7 +69,7 @@ class WishlistItemCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12.r),
               child: _buildImage(context),
             ),
-            SizedBox(width: 12.w),
+            12.horizontalSpace,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +85,7 @@ class WishlistItemCard extends StatelessWidget {
                       color: AppColors.textPrimary,
                     ),
                   ),
-                  SizedBox(height: 8.h),
+                  8.verticalSpace,
                   Text(
                     product.category,
                     maxLines: 1,
@@ -96,7 +95,7 @@ class WishlistItemCard extends StatelessWidget {
                       color: Colors.grey.shade600,
                     ),
                   ),
-                  SizedBox(height: 8.h),
+                  8.verticalSpace,
                   Text(
                     product.price,
                     maxLines: 1,
@@ -107,7 +106,7 @@ class WishlistItemCard extends StatelessWidget {
                       color: AppColors.primaryRed,
                     ),
                   ),
-                  SizedBox(height: 4.h),
+                  4.verticalSpace,
                   Text(
                     product.oldPrice,
                     maxLines: 1,
@@ -121,7 +120,7 @@ class WishlistItemCard extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(width: 8.w),
+            8.horizontalSpace,
             InkWell(
               onTap: () => vm._removeFromWishlist(product.id),
               borderRadius: BorderRadius.circular(50.r),

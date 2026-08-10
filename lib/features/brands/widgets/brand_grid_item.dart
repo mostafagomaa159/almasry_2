@@ -22,11 +22,10 @@ class BrandGridItem extends StatelessWidget {
           ),
           child: Center(
             child: brand.hasImage
-                ? Image.network(
-                    brand.image,
+                ? AppNetworkImage(
+                    url: brand.image,
                     fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) =>
-                        _BrandNameLabel(name: brand.name),
+                    placeholder: _BrandNameLabel(name: brand.name),
                   )
                 : _BrandNameLabel(name: brand.name),
           ),

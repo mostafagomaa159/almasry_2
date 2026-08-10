@@ -7,10 +7,12 @@ import 'package:almasry_2/core/constants/app_api.dart';
 import 'package:almasry_2/core/models/response/my_orders_details/order_details_args_model.dart';
 import 'package:almasry_2/core/models/response/my_orders_details/order_model.dart';
 import 'package:almasry_2/core/services/api_services.dart';
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:almasry_2/core/widgets/app_network_image.dart';
+import 'package:almasry_2/core/utils/error_message.dart';
 
 part 'view/order_details_view.dart';
 part 'view_model/order_details_view_model.dart';

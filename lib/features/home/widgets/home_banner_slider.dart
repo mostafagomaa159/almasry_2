@@ -27,32 +27,22 @@ class HomeBannerSlider extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 12.w),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(22.r),
-                  child: Image.network(
-                    banner.image,
-                    fit: BoxFit.cover,
+                  child: AppNetworkImage(
+                    url: banner.image,
                     width: double.infinity,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.grey.shade300,
-                        alignment: Alignment.center,
-                        child: const Icon(Icons.broken_image),
-                      );
-                    },
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        color: Colors.grey.shade200,
-                        alignment: Alignment.center,
-                        child: const CircularProgressIndicator(),
-                      );
-                    },
+                    showLoader: true,
+                    placeholder: Container(
+                      color: Colors.grey.shade300,
+                      alignment: Alignment.center,
+                      child: const Icon(Icons.broken_image),
+                    ),
                   ),
                 ),
               );
             },
           ),
         ),
-        SizedBox(height: 8.h),
+        8.verticalSpace,
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(

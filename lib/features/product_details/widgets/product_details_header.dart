@@ -41,7 +41,7 @@ class ProductDetailsHeader extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(6.w),
               child: Icon(
-                Icons.arrow_back_ios_new,
+                AppDirection.back(context),
                 color: const Color(0xFF2C2C2C),
                 size: 22.sp,
               ),
@@ -76,7 +76,7 @@ class ProductDetailsHeader extends StatelessWidget {
         child: Image.asset(
           AppImages.profileDoctor,
           fit: BoxFit.contain,
-          errorBuilder: (_, __, ___) {
+          errorBuilder: (_, _, _) {
             return Container(
               decoration: BoxDecoration(
                 color: const Color(0xFFF5F5F5),

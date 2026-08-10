@@ -12,7 +12,9 @@ import 'package:almasry_2/core/services/navigation_service.dart';
 import 'package:almasry_2/core/widgets/auth_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pinput/pinput.dart';
+import 'package:almasry_2/core/widgets/app_button.dart';
 
 part 'view/otp_verification_view.dart';
 part 'view_model/otp_view_model.dart';
@@ -21,4 +23,3 @@ part 'widgets/otp_phone_header.dart';
 part 'widgets/otp_pin_fields.dart';
 part 'widgets/otp_pin_input.dart';
 part 'widgets/otp_resend_section.dart';
-part 'widgets/otp_verify_button.dart';

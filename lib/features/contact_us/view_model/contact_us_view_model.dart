@@ -8,8 +8,12 @@ class ContactUsViewModel {
 
   /// Variables
 
-  final GenericCubit<ContactUsData> _contactUsCubit =
-      GenericCubit<ContactUsData>(const ContactUsData());
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final GenericCubit<bool> _loadingCubit = GenericCubit<bool>(false);
+
+  final GenericCubit<SubmitContactFormResponse?> _responseCubit =
+      GenericCubit<SubmitContactFormResponse?>(null);
 
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
@@ -20,8 +24,6 @@ class ContactUsViewModel {
   late final FocusNode _emailFocusNode;
   late final FocusNode _phoneFocusNode;
   late final FocusNode _commentFocusNode;
-
-  ContactUsData get _data => _contactUsCubit.state.data;
 
   /// Init
 
@@ -48,7 +50,8 @@ class ContactUsViewModel {
     _phoneFocusNode.dispose();
     _commentFocusNode.dispose();
 
-    _contactUsCubit.close();
+    _loadingCubit.close();
+    _responseCubit.close();
   }
 
   /// Actions
@@ -57,69 +60,35 @@ class ContactUsViewModel {
     _nav.pop();
   }
 
-  void _dismissBanner() {
-    _contactUsCubit.onUpdateData(
-      _data.copyWith(status: ContactUsStatus.initial, clearErrorMessage: true),
-    );
-  }
+  /// Validation
+
+  String? _validateName(String? value) => Validators.validateName(value ?? '');
+
+  String? _validateEmail(String? value) =>
+      Validators.validateEmail(value ?? '');
 
   /// `telephone` is optional in the mutation, so it is only validated when the
   /// user actually typed something.
-  bool _validate() {
-    final String? nameError = Validators.validateName(_nameController.text);
-    final String? emailError = Validators.validateEmail(_emailController.text);
-
-    final String? phoneError = _phoneController.text.trim().isEmpty
-        ? null
-        : Validators.validatePhone(_phoneController.text);
-
-    final String? commentError = _commentController.text.trim().isEmpty
-        ? LocaleKeys.requiredField.tr()
-        : null;
-
-    _contactUsCubit.onUpdateData(
-      _data.copyWith(
-        clearFieldErrors: true,
-        nameError: nameError,
-        emailError: emailError,
-        phoneError: phoneError,
-        commentError: commentError,
-      ),
-    );
-
-    if (nameError != null) {
-      _nameFocusNode.requestFocus();
-      return false;
-    }
-
-    if (emailError != null) {
-      _emailFocusNode.requestFocus();
-      return false;
-    }
-
-    if (phoneError != null) {
-      _phoneFocusNode.requestFocus();
-      return false;
-    }
-
-    if (commentError != null) {
-      _commentFocusNode.requestFocus();
-      return false;
-    }
-
-    return true;
+  String? _validatePhone(String? value) {
+    final String phone = value ?? '';
+    return phone.trim().isEmpty ? null : Validators.validatePhone(phone);
   }
 
-  Future<void> _submit() async {
-    if (_data.isSubmitting) return;
-    if (!_validate()) return;
+  String? _validateComment(String? value) =>
+      Validators.validateComment(value ?? '');
 
-    _contactUsCubit.onUpdateData(
-      _data.copyWith(
-        status: ContactUsStatus.submitting,
-        clearErrorMessage: true,
-      ),
-    );
+  /// Submit
+
+  Future<void> _submit() async {
+    if (_loadingCubit.state.data) return;
+
+    /// Cleared before validating so a rejected form never re-reports the
+    /// previous submit's response.
+    _responseCubit.onUpdateData(null);
+
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+
+    _loadingCubit.onUpdateData(true);
 
     final ContactUsRequest request = ContactUsRequest(
       name: _nameController.text,
@@ -129,40 +98,23 @@ class ContactUsViewModel {
     );
 
     try {
-      final Map<String, dynamic> data = await _graphql.mutate(
+      final Map<String, dynamic> json = await _graphql.mutate(
         GraphQLDocuments.submitContactForm,
         variables: request.toVariables(),
       );
 
-      final bool isSent =
-          (data['contactUs'] as Map<String, dynamic>?)?['status'] == true;
+      final SubmitContactFormResponse response =
+          SubmitContactFormResponse.fromJson(json);
 
-      if (!isSent) {
-        _contactUsCubit.onUpdateData(
-          _data.copyWith(
-            status: ContactUsStatus.error,
-            errorMessage: LocaleKeys.contactUsFailed.tr(),
-          ),
-        );
-        return;
-      }
+      if (response.status) _clearForm();
 
-      _clearForm();
-
-      _contactUsCubit.onUpdateData(
-        _data.copyWith(
-          status: ContactUsStatus.success,
-          clearErrorMessage: true,
-          clearFieldErrors: true,
-        ),
+      _responseCubit.onUpdateData(response);
+    } catch (_) {
+      _responseCubit.onUpdateData(
+        const SubmitContactFormResponse(status: false),
       );
-    } catch (error) {
-      _contactUsCubit.onUpdateData(
-        _data.copyWith(
-          status: ContactUsStatus.error,
-          errorMessage: _extractGraphQLMessage(error),
-        ),
-      );
+    } finally {
+      _loadingCubit.onUpdateData(false);
     }
   }
 
@@ -171,13 +123,9 @@ class ContactUsViewModel {
     _emailController.clear();
     _phoneController.clear();
     _commentController.clear();
-  }
 
-  String _extractGraphQLMessage(Object error) {
-    if (error is GraphQLServiceException && error.message.trim().isNotEmpty) {
-      return error.message;
-    }
-
-    return LocaleKeys.contactUsFailed.tr();
+    /// Drops the error text the fields are still showing from the last
+    /// `validate()` call.
+    _formKey.currentState?.reset();
   }
 }

@@ -2,6 +2,7 @@ import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:almasry_2/core/utils/app_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:almasry_2/core/utils/app_direction.dart';
 
 class AuthHeader extends StatelessWidget {
   final VoidCallback? onBackPressed;
@@ -19,9 +20,9 @@ class AuthHeader extends StatelessWidget {
       height: 240.h,
       child: Stack(
         children: [
-          Positioned(
+          PositionedDirectional(
             top: -90.h,
-            left: -130.w,
+            start: -130.w,
             child: Container(
               width: 320.w,
               height: 320.h,
@@ -32,9 +33,9 @@ class AuthHeader extends StatelessWidget {
             ),
           ),
           if (showBackButton)
-            Positioned(
+            PositionedDirectional(
               top: 56.h,
-              left: 20.w,
+              start: 20.w,
               child: GestureDetector(
                 onTap: onBackPressed,
                 child: Container(
@@ -53,7 +54,7 @@ class AuthHeader extends StatelessWidget {
                     ],
                   ),
                   child: Icon(
-                    Icons.arrow_back_ios_new_rounded,
+                    AppDirection.back(context, rounded: true),
                     size: 18.sp,
                     color: Colors.black87,
                   ),

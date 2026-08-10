@@ -71,9 +71,9 @@ class _ProductDetailsImageSectionState
                   child: Column(
                     children: [
                       _ActionButton(icon: Icons.share_outlined, onTap: () {}),
-                      SizedBox(height: 12.h),
+                      12.verticalSpace,
                       _ActionButton(icon: Icons.chat_outlined, onTap: () {}),
-                      SizedBox(height: 12.h),
+                      12.verticalSpace,
                       BlocBuilder<
                         GenericCubit<FavoritesModel>,
                         GenericState<FavoritesModel>
@@ -112,7 +112,7 @@ class _ProductDetailsImageSectionState
           ),
 
           if (_images.isNotEmpty) ...[
-            SizedBox(height: 8.h),
+            8.verticalSpace,
             Align(
               alignment: AlignmentDirectional.centerEnd,
               child: Wrap(
@@ -151,7 +151,7 @@ class _ProductDetailsImageSectionState
             ),
           ],
 
-          SizedBox(height: 18.h),
+          18.verticalSpace,
           const Divider(height: 1, thickness: 1, color: Color(0xFFE9E9E9)),
         ],
       ),
@@ -167,13 +167,11 @@ class _ProductDetailsImageSectionState
 
   Widget _buildImage(String path, {BoxFit fit = BoxFit.cover, double? height}) {
     if (_isNetworkImage(path)) {
-      return Image.network(
-        path,
+      return AppNetworkImage(
+        url: path,
         height: height,
         fit: fit,
-        errorBuilder: (context, error, stackTrace) {
-          return _buildPlaceholder();
-        },
+        placeholder: _buildPlaceholder(),
       );
     }
 

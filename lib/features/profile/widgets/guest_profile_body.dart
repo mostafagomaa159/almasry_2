@@ -17,7 +17,7 @@ class GuestProfileBody extends StatelessWidget {
             height: 250.h,
             fit: BoxFit.contain,
           ),
-          SizedBox(height: 24.h),
+          24.verticalSpace,
           Text(
             LocaleKeys.guestStartWithPharmacy.tr(),
             textAlign: TextAlign.center,
@@ -28,7 +28,7 @@ class GuestProfileBody extends StatelessWidget {
               color: const Color(0xFF0A3152),
             ),
           ),
-          SizedBox(height: 28.h),
+          28.verticalSpace,
           SizedBox(
             width: double.infinity,
             height: 56.h,
@@ -48,7 +48,7 @@ class GuestProfileBody extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 56.h),
+          56.verticalSpace,
           Row(
             children: [
               Expanded(
@@ -58,7 +58,7 @@ class GuestProfileBody extends StatelessWidget {
                   onTap: () => vm._toggleLanguage(context),
                 ),
               ),
-              SizedBox(width: 16.w),
+              16.horizontalSpace,
               Expanded(
                 child: GuestActionCard(
                   icon: Icons.favorite,
@@ -68,7 +68,7 @@ class GuestProfileBody extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 28.h),
+          28.verticalSpace,
           BlocBuilder<GenericCubit<String>, GenericState<String>>(
             bloc: vm._appVersionCubit,
             builder: (context, state) {

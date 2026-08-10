@@ -49,14 +49,12 @@ class AppDrawer extends StatelessWidget {
                 title: LocaleKeys.homeSkinAnalysis.tr(),
                 iconPath: AppImages.mask,
                 backgroundColor: _skinAnalysisBgColor,
-                onTap: () => _openComingSoon(
-                  context,
-                  LocaleKeys.homeSkinAnalysis.tr(),
-                ),
+                onTap: () =>
+                    _openComingSoon(context, LocaleKeys.homeSkinAnalysis.tr()),
               ),
             ),
 
-            SizedBox(height: 32.h),
+            32.verticalSpace,
 
             Expanded(
               child: SingleChildScrollView(
@@ -139,7 +137,7 @@ class _DrawerHighlightCard extends StatelessWidget {
           child: Row(
             children: [
               Image.asset(iconPath, width: 34.w, height: 34.w),
-              SizedBox(width: 14.w),
+              14.horizontalSpace,
               Expanded(
                 child: Text(
                   title,
@@ -166,8 +164,6 @@ class _DrawerMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isRtl = Directionality.of(context) == TextDirection.rtl;
-
     return Column(
       children: [
         Divider(
@@ -196,7 +192,7 @@ class _DrawerMenuItem extends StatelessWidget {
                     ),
                   ),
                   Icon(
-                    isRtl ? Icons.chevron_left : Icons.chevron_right,
+                    AppDirection.chevronForward(context),
                     size: 24.sp,
                     color: AppColors.textPrimary,
                   ),
@@ -266,11 +262,7 @@ class _SocialIcon extends StatelessWidget {
       borderRadius: BorderRadius.circular(20.r),
       child: Padding(
         padding: EdgeInsets.all(4.w),
-        child: Icon(
-          icon,
-          size: 24.sp,
-          color: AppDrawer._socialIconColor,
-        ),
+        child: Icon(icon, size: 24.sp, color: AppDrawer._socialIconColor),
       ),
     );
   }

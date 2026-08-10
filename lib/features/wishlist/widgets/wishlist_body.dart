@@ -16,11 +16,15 @@ class WishlistBody extends StatelessWidget {
         final data = vm._data;
 
         if (data.isLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const AppLoadingView();
         }
 
         if (data.favorites.isEmpty) {
-          return const WishlistEmptyView();
+          return AppEmptyView(
+            message: LocaleKeys.wishlistEmptyTitle.tr(),
+            icon: Icons.favorite_border,
+            description: LocaleKeys.wishlistEmptyDesc.tr(),
+          );
         }
 
         return ListView.builder(

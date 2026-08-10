@@ -33,7 +33,7 @@ class _AccountProfileViewState extends State<AccountProfileView> {
                 child: Column(
                   children: [
                     ProfileInfoCard(vm: vm),
-                    SizedBox(height: 20.h),
+                    20.verticalSpace,
                     ProfileMenuList(vm: vm),
                   ],
                 ),

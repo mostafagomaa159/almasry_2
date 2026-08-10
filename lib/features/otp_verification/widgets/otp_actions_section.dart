@@ -10,7 +10,7 @@ class OtpActionsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 32),
+        32.verticalSpace,
         BlocBuilder<GenericCubit<String>, GenericState<String>>(
           bloc: vm._otpTextCubit,
           builder: (context, otpState) {
@@ -20,16 +20,27 @@ class OtpActionsSection extends StatelessWidget {
             >(
               bloc: vm._authCubit,
               builder: (context, blocState) {
-                return OtpVerifyButton(
+                return AppButton(
+                  title: LocaleKeys.otpVerify.tr(),
                   isLoading: blocState.data.isOtpVerificationLoading,
                   isEnabled: vm._isVerifyEnabled,
                   onPressed: () => vm._verifyOtp(context),
+                  height: 54.h,
+                  backgroundColor: vm._isVerifyEnabled
+                      ? const Color(0xFFCFCFCF)
+                      : const Color(0xFFD9D9D9),
+                  borderColor: vm._isVerifyEnabled
+                      ? const Color(0xFFCFCFCF)
+                      : const Color(0xFFD9D9D9),
+                  textColor: Colors.white,
+                  borderRadius: 14,
+                  fontSize: 22,
                 );
               },
             );
           },
         ),
-        const SizedBox(height: 36),
+        36.verticalSpace,
         OtpResendSection(vm: vm),
       ],
     );

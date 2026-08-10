@@ -40,17 +40,16 @@ class WideInfoCard extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 10.w),
+          10.horizontalSpace,
           ClipRRect(
             borderRadius: BorderRadius.circular(10.r),
             child: SizedBox(
               width: 58.w,
               height: 58.h,
               child: isNetworkImage
-                  ? Image.network(
-                      imagePath,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
+                  ? AppNetworkImage(
+                      url: imagePath,
+                      placeholder: Container(
                         color: Colors.grey.shade200,
                         alignment: Alignment.center,
                         child: Icon(
