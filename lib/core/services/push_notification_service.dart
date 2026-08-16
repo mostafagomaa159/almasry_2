@@ -11,8 +11,10 @@ import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/models/response/notify_me/notify_subscription_model.dart';
 import 'package:almasry_2/core/models/response/product_details/product_details_args_model.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
+import 'package:almasry_2/core/services/alert_service.dart';
 import 'package:almasry_2/core/services/db_services.dart';
 import 'package:almasry_2/core/services/navigation_service.dart';
+import 'package:bot_toast/bot_toast.dart';
 
 class PushNotificationService {
   /// Services
@@ -24,6 +26,8 @@ class PushNotificationService {
 
   NavigationService get _nav => sl<NavigationService>();
 
+  AlertService get _alert => sl<AlertService>();
+
   /// Constants
 
   // Must match `default_notification_channel_id` in AndroidManifest.xml.
@@ -34,8 +38,6 @@ class PushNotificationService {
       'Alerts you when a product you asked about is back in stock.';
 
   static const int _availabilityAlertId = 4001;
-
-  static const int _remoteMessageId = 4002;
 
   /// Variables
 
@@ -228,14 +230,17 @@ class PushNotificationService {
   /// Incoming messages
 
   void _listenForMessages() {
+    // Foreground messages become an in-app banner rather than a system
+    // notification — the app is already on screen, so a tray entry would be
+    // easy to miss and awkward to tap through.
     FirebaseMessaging.onMessage.listen((message) {
       final notification = message.notification;
       if (notification == null) return;
 
-      _showNow(
-        title: notification.title,
-        body: notification.body,
-        payload: _encodePayload(_deepLinkFromData(message.data)),
+      _showForegroundBanner(
+        title: notification.title ?? '',
+        body: notification.body ?? '',
+        product: _deepLinkFromData(message.data),
       );
     });
 
@@ -248,13 +253,25 @@ class PushNotificationService {
     });
   }
 
-  Future<void> _showNow({String? title, String? body, String? payload}) {
-    return _localNotifications.show(
-      id: _remoteMessageId,
+  void _showForegroundBanner({
+    required String title,
+    required String body,
+    ProductDetailsArgs? product,
+  }) {
+    // `cancel` is only available once the banner exists, so the tap handler
+    // has to close over it lazily — otherwise the banner would linger on top
+    // of the product page for its full four seconds.
+    late final CancelFunc cancel;
+
+    cancel = _alert.showFCMAlert(
       title: title,
-      body: body,
-      notificationDetails: _notificationDetails(),
-      payload: payload,
+      subTitle: body,
+      onTap: product == null
+          ? null
+          : () {
+              cancel();
+              _navigateToProduct(product);
+            },
     );
   }
 

@@ -8,23 +8,42 @@ class AppSearchField extends StatelessWidget {
   final TextEditingController? controller;
   final String hintText;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
   final VoidCallback? onClear;
   final bool showClear;
+  final FocusNode? focusNode;
+  final bool autofocus;
+
+  /// For the boxes that only look like a field — home's, which opens the
+  /// search screen instead of taking input. Pair it with [onTap].
+  final bool readOnly;
+
+  final VoidCallback? onTap;
 
   const AppSearchField({
     super.key,
     required this.hintText,
     this.controller,
     this.onChanged,
+    this.onSubmitted,
     this.onClear,
     this.showClear = false,
+    this.focusNode,
+    this.autofocus = false,
+    this.readOnly = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
+      focusNode: focusNode,
+      autofocus: autofocus,
+      readOnly: readOnly,
+      onTap: onTap,
       onChanged: onChanged,
+      onSubmitted: onSubmitted,
       textAlign: TextAlign.start,
       textInputAction: TextInputAction.search,
       style: TextStyle(fontSize: 15.sp, color: AppColors.textPrimary),

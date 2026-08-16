@@ -24,6 +24,7 @@ class ProductListViewModel {
   /// Paging bookkeeping — nothing renders it.
   String _title = '';
   String _categoryId = '';
+  bool _isBrand = false;
   int _currentPage = 1;
   bool _hasMore = true;
 
@@ -35,9 +36,11 @@ class ProductListViewModel {
   Future<void> _init({
     required String title,
     required String categoryId,
+    bool isBrand = false,
   }) async {
     _title = title;
     _categoryId = categoryId;
+    _isBrand = isBrand;
 
     _scrollController = ScrollController()..addListener(_onScroll);
 
@@ -141,7 +144,11 @@ class ProductListViewModel {
     _productsCubit.onUpdateData(null);
 
     try {
-      final request = ProductListRequest(categoryId: _categoryId, page: 1);
+      final request = ProductListRequest(
+        categoryId: _categoryId,
+        page: 1,
+        isBrand: _isBrand,
+      );
 
       final ProductListModel result = await _fetchProducts(request);
 
@@ -172,6 +179,7 @@ class ProductListViewModel {
       final request = ProductListRequest(
         categoryId: _categoryId,
         page: nextPage,
+        isBrand: _isBrand,
       );
 
       final ProductListModel result = await _fetchProducts(request);

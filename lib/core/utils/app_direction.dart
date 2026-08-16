@@ -1,46 +1,26 @@
 import 'package:flutter/material.dart';
 
-/// Direction-aware icons. Material icons do not mirror themselves, so a
-/// hardcoded `Icons.arrow_back_ios_new` keeps pointing left in Arabic — where
-/// "back" is to the right. Everything that points somewhere should come from
-/// here.
+/// The app's navigation icons, in one place so "which way does this point"
+/// is never decided at a call site.
+///
+/// These deliberately do **not** mirror with the locale: the product shows a
+/// left-pointing back chevron and a right-pointing forward chevron in both
+/// Arabic and English. That is why nothing here takes a [BuildContext] —
+/// adding one back would be the first step toward re-introducing mirroring.
 class AppDirection {
   const AppDirection._();
 
-  static bool isRtl(BuildContext context) {
-    return Directionality.of(context) == TextDirection.rtl;
-  }
-
-  /// Points the way the user came from.
-  static IconData back(BuildContext context, {bool rounded = false}) {
-    if (isRtl(context)) {
-      return rounded
-          ? Icons.arrow_forward_ios_rounded
-          : Icons.arrow_forward_ios;
-    }
-
+  static IconData back({bool rounded = false}) {
     return rounded
         ? Icons.arrow_back_ios_new_rounded
         : Icons.arrow_back_ios_new;
   }
 
-  /// Points onward — trailing chevrons on rows that open another screen.
-  static IconData forward(BuildContext context, {bool rounded = false}) {
-    if (isRtl(context)) {
-      return rounded
-          ? Icons.arrow_back_ios_new_rounded
-          : Icons.arrow_back_ios_new;
-    }
-
+  static IconData forward({bool rounded = false}) {
     return rounded ? Icons.arrow_forward_ios_rounded : Icons.arrow_forward_ios;
   }
 
-  /// The wide chevron used by "see more" affordances.
-  static IconData chevronForward(BuildContext context) {
-    return isRtl(context) ? Icons.chevron_left : Icons.chevron_right;
-  }
+  static IconData get chevronForward => Icons.chevron_right;
 
-  static IconData chevronBack(BuildContext context) {
-    return isRtl(context) ? Icons.chevron_right : Icons.chevron_left;
-  }
+  static IconData get chevronBack => Icons.chevron_left;
 }

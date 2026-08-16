@@ -23,6 +23,14 @@ class SharedPrefsServices {
     return _prefs?.getString(key) ?? defaultValue;
   }
 
+  Future<bool> setStringList(String key, List<String> value) async {
+    return await _prefs!.setStringList(key, value);
+  }
+
+  List<String> getStringList(String key) {
+    return _prefs?.getStringList(key) ?? const [];
+  }
+
   Future<bool> remove(String key) async {
     return await _prefs!.remove(key);
   }

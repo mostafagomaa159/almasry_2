@@ -1,20 +1,23 @@
 part of '../product_details_imports.dart';
 
+/// The pinned card at the bottom: quantity plus "Add to cart" when the product
+/// is sellable, the availability subscription when it is not.
 class ProductDetailsBottomAction extends StatelessWidget {
   final ProductDetailsViewModel vm;
+  final ProductDetailModel product;
 
-  const ProductDetailsBottomAction({super.key, required this.vm});
+  const ProductDetailsBottomAction({
+    super.key,
+    required this.vm,
+    required this.product,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final ProductModel? product = vm._data.product;
-
-    if (product == null) return const SizedBox.shrink();
-
     return _BottomActionCard(
       child: product.isInStock
           ? _AddToBasketRow(vm: vm)
-          : _NotifyMeButton(vm: vm, product: product),
+          : _NotifyMeButton(vm: vm),
     );
   }
 }
@@ -30,7 +33,7 @@ class _BottomActionCard extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
@@ -54,28 +57,25 @@ class _AddToBasketRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final int quantity = vm._data.quantity;
-    final VoidCallback onIncrementTap = vm._incrementQuantity;
-    final VoidCallback onDecrementTap = vm._decrementQuantity;
-    final VoidCallback onAddToBasketTap = vm._addToBasket;
-
-    final bool isDecrementEnabled = quantity > 1;
 
     return Row(
       children: [
         _QuantityControl(
           quantity: quantity,
-          onIncrementTap: onIncrementTap,
-          onDecrementTap: isDecrementEnabled ? onDecrementTap : null,
+          onIncrementTap: vm._incrementQuantity,
+          onDecrementTap: quantity > 1 ? vm._decrementQuantity : null,
         ),
+
         12.horizontalSpace,
+
         Expanded(
           child: SizedBox(
             height: 58.h,
             child: ElevatedButton(
-              onPressed: onAddToBasketTap,
+              onPressed: vm._addToBasket,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryRed,
-                foregroundColor: Colors.white,
+                foregroundColor: AppColors.white,
                 elevation: 0,
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 shape: RoundedRectangleBorder(
@@ -88,7 +88,7 @@ class _AddToBasketRow extends StatelessWidget {
                   Icon(
                     Icons.shopping_basket_outlined,
                     size: 22.sp,
-                    color: Colors.white,
+                    color: AppColors.white,
                   ),
                   8.horizontalSpace,
                   Flexible(
@@ -98,7 +98,7 @@ class _AddToBasketRow extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                        color: AppColors.white,
                       ),
                     ),
                   ),
@@ -114,9 +114,8 @@ class _AddToBasketRow extends StatelessWidget {
 
 class _NotifyMeButton extends StatelessWidget {
   final ProductDetailsViewModel vm;
-  final ProductModel product;
 
-  const _NotifyMeButton({required this.vm, required this.product});
+  const _NotifyMeButton({required this.vm});
 
   @override
   Widget build(BuildContext context) {
@@ -129,18 +128,16 @@ class _NotifyMeButton extends StatelessWidget {
       width: double.infinity,
       height: 58.h,
       child: ElevatedButton(
-        onPressed: isEnabled
-            ? () => vm._notifyWhenAvailable(context, product)
-            : null,
+        onPressed: isEnabled ? vm._notifyWhenAvailable : null,
         style: ElevatedButton.styleFrom(
           backgroundColor: isSubscribed
               ? const Color(0xFF43A047)
               : AppColors.primaryRed,
-          foregroundColor: Colors.white,
+          foregroundColor: AppColors.white,
           disabledBackgroundColor: isSubscribed
               ? const Color(0xFF43A047)
               : const Color(0xFFBDBDBD),
-          disabledForegroundColor: Colors.white,
+          disabledForegroundColor: AppColors.white,
           elevation: 0,
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           shape: RoundedRectangleBorder(
@@ -153,7 +150,7 @@ class _NotifyMeButton extends StatelessWidget {
                 height: 22.w,
                 child: const CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: Colors.white,
+                  color: AppColors.white,
                 ),
               )
             : Row(
@@ -164,7 +161,7 @@ class _NotifyMeButton extends StatelessWidget {
                         ? Icons.notifications_active
                         : Icons.notifications_none,
                     size: 22.sp,
-                    color: Colors.white,
+                    color: AppColors.white,
                   ),
                   8.horizontalSpace,
                   Flexible(
@@ -176,7 +173,7 @@ class _NotifyMeButton extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                        color: AppColors.white,
                       ),
                     ),
                   ),
@@ -217,7 +214,9 @@ class _QuantityControl extends StatelessWidget {
             onTap: onIncrementTap,
             iconColor: const Color(0xFF11385B),
           ),
+
           6.horizontalSpace,
+
           SizedBox(
             width: 32.w,
             child: Text(
@@ -230,7 +229,9 @@ class _QuantityControl extends StatelessWidget {
               ),
             ),
           ),
+
           6.horizontalSpace,
+
           _QtyIconButton(
             icon: Icons.remove,
             onTap: onDecrementTap,
@@ -238,7 +239,7 @@ class _QuantityControl extends StatelessWidget {
                 ? const Color(0xFF11385B)
                 : const Color(0xFFBDBDBD),
             backgroundColor: canDecrement
-                ? Colors.white
+                ? AppColors.white
                 : const Color(0xFFF3F3F3),
           ),
         ],
@@ -269,7 +270,7 @@ class _QtyIconButton extends StatelessWidget {
         width: 40.w,
         height: 40.h,
         decoration: BoxDecoration(
-          color: backgroundColor ?? Colors.white,
+          color: backgroundColor ?? AppColors.white,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(color: const Color(0xFFE6E6E6)),
         ),

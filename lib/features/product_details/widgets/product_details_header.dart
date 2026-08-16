@@ -1,11 +1,16 @@
 part of '../product_details_imports.dart';
 
+/// The red-bordered screen header: back chevron, centred title and the doctor
+/// avatar.
 class ProductDetailsHeader extends StatelessWidget {
   final String title;
+  final VoidCallback onBack;
 
-  const ProductDetailsHeader({super.key, required this.title});
-
-  NavigationService get _nav => sl<NavigationService>();
+  const ProductDetailsHeader({
+    super.key,
+    required this.title,
+    required this.onBack,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +41,12 @@ class ProductDetailsHeader extends StatelessWidget {
       child: Row(
         children: [
           GestureDetector(
-            onTap: () => _nav.pop(),
+            onTap: onBack,
             behavior: HitTestBehavior.opaque,
             child: Padding(
               padding: EdgeInsets.all(6.w),
               child: Icon(
-                AppDirection.back(context),
+                AppDirection.back(),
                 color: const Color(0xFF2C2C2C),
                 size: 22.sp,
               ),

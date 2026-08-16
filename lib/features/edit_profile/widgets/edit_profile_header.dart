@@ -84,7 +84,7 @@ class EditProfileHeader extends StatelessWidget {
                       ),
                       6.horizontalSpace,
                       Icon(
-                        AppDirection.back(context),
+                        AppDirection.back(),
                         size: 16.sp,
                         color: const Color(0xFF7A7A7A),
                       ),

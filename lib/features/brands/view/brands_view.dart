@@ -24,17 +24,34 @@ class _BrandsViewState extends State<BrandsView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFFF8F8F8),
-      child: SafeArea(
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8F8F8),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: BrandsFloat(vm: vm),
+      body: SafeArea(
         top: false,
         child: Column(
           children: [
             CustomAppBar(title: LocaleKeys.brandsTitle.tr(), onBack: vm._back),
-            18.verticalSpace,
-            BrandsSearchField(vm: vm),
-            18.verticalSpace,
-            Expanded(child: BrandsBody(vm: vm)),
+
+            Padding(
+              padding: EdgeInsets.all(20.r),
+              child: BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+                bloc: vm._clearSearchCubit,
+                builder: (context, state) {
+                  return AppSearchField(
+                    controller: vm._searchController,
+                    hintText: LocaleKeys.brandsSearchHint.tr(),
+                    showClear: state.data,
+                    onClear: vm._clearSearch,
+                    onChanged: vm._onSearchChanged,
+                    onSubmitted: vm._brandsSearch,
+                  );
+                },
+              ),
+            ),
+
+            BrandsList(vm: vm),
           ],
         ),
       ),

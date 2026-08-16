@@ -26,9 +26,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<GenericCubit<FavoritesModel>>.value(
-      value: vm._favoritesCubit,
-      child: ProductDetailsBody(vm: vm),
-    );
+    return ProductDetailsBody(vm: vm);
   }
 }

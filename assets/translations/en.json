@@ -215,6 +215,14 @@
   "notification_product_available_title": "Product Available",
   "notification_product_available_body": "The product you requested is now available.",
 
+  "product_details_full_description": "Full Description:",
+  "product_details_more_from_brand": "More From This Brand",
+  "product_details_comments": "Comments ({})",
+  "product_details_add_review": "add a review",
+  "product_details_only_x_left": "Only {} left in stock",
+  "product_details_country": "Country of Origin",
+  "product_details_weight": "Weight",
+
   "drawer_menu": "Menu",
   "drawer_shop_by_brands": "Shop by Brands",
   "drawer_contact_us": "Contact us",
@@ -222,6 +230,11 @@
   "brands_title": "Brands",
   "brands_search_hint": "Search",
   "brands_empty": "No brands found",
+
+  "product_search_hint": "Search",
+  "product_search_prompt": "Search by keywords or product name",
+  "product_search_available_only": "Available Only",
+  "product_search_empty_description": "Try a different product name or SKU.",
 
   "contact_us_title": "Contact us",
   "contact_us_name": "Name",

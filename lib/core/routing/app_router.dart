@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:almasry_2/core/models/response/edit_profile/edit_profile_args_model.dart';
@@ -19,6 +20,7 @@ import 'package:almasry_2/features/orders/orders_imports.dart';
 import 'package:almasry_2/features/otp_verification/otp_verification_imports.dart';
 import 'package:almasry_2/features/product_details/product_details_imports.dart';
 import 'package:almasry_2/features/product_list/product_list_imports.dart';
+import 'package:almasry_2/features/product_search/product_search_imports.dart';
 import 'package:almasry_2/features/profile/profile_imports.dart';
 import 'package:almasry_2/features/register/register_imports.dart';
 import 'package:almasry_2/features/splash/splash_imports.dart';
@@ -28,6 +30,8 @@ import 'package:go_router/go_router.dart';
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: AppRoutes.splash,
+    // Lets BotToast dismiss its toasts when the route underneath them changes.
+    observers: [BotToastNavigatorObserver()],
     routes: [
       GoRoute(
         path: AppRoutes.splash,
@@ -76,8 +80,14 @@ class AppRouter {
                       return ProductListView(
                         title: args.title,
                         categoryId: args.categoryId,
+                        isBrand: args.isBrand,
                       );
                     },
+                  ),
+                  GoRoute(
+                    path: AppRoutes.productSearch.replaceFirst('/', ''),
+                    name: RouteNames.productSearch,
+                    builder: (context, state) => const ProductSearchView(),
                   ),
                   GoRoute(
                     path: 'productDetails',

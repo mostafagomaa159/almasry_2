@@ -9,4 +9,9 @@ class PrefKeys {
   static const String phone = 'phone';
   static const String firstName = 'first_name';
   static const String lastName = 'last_name';
+
+  static const String recentSearches = 'recent_searches';
+
+  /// Cache keys — see `CacheManagerService`.
+  static const String cachedBrands = 'cached_brands';
 }

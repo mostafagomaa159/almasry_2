@@ -82,7 +82,7 @@ class ProfileHeader extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          AppDirection.back(context),
+                          AppDirection.back(),
                           size: 16.sp,
                           color: const Color(0xFF7A7A7A),
                         ),

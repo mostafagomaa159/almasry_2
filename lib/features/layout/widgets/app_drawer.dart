@@ -89,7 +89,10 @@ class _DrawerHeaderRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(20.w, 24.h, 12.w, 24.h),
+      /// Directional, not LTRB: the title sits on the start edge and the close
+      /// button on the end, so the wide padding has to follow them when the
+      /// locale flips.
+      padding: EdgeInsetsDirectional.fromSTEB(20.w, 24.h, 12.w, 24.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -192,7 +195,7 @@ class _DrawerMenuItem extends StatelessWidget {
                     ),
                   ),
                   Icon(
-                    AppDirection.chevronForward(context),
+                    AppDirection.chevronForward,
                     size: 24.sp,
                     color: AppColors.textPrimary,
                   ),

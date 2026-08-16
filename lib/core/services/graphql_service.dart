@@ -20,19 +20,32 @@ class GraphQLService {
     );
   }
 
+  /// Pass [headers] to override the request headers for this call only —
+  /// Magento's `store` header is what selects the Arabic or English store
+  /// view, so a search may need to hit both.
   Future<Map<String, dynamic>> query(
     String document, {
     Map<String, dynamic> variables = const {},
+    Map<String, String> headers = const {},
   }) async {
     final QueryResult result = await _client.query(
       QueryOptions(
         document: gql(document),
         variables: variables,
         fetchPolicy: FetchPolicy.networkOnly,
+        context: _contextFor(headers),
       ),
     );
 
     return _resolve(result);
+  }
+
+  /// An empty map has to leave the context untouched: adding an empty
+  /// `HttpLinkHeaders` entry would still key the cache differently.
+  Context _contextFor(Map<String, String> headers) {
+    if (headers.isEmpty) return const Context();
+
+    return const Context().withEntry(HttpLinkHeaders(headers: headers));
   }
 
   Future<Map<String, dynamic>> mutate(

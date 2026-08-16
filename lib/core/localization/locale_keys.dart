@@ -247,6 +247,17 @@ class LocaleKeys {
   static const String notificationProductAvailableBody =
       'notification_product_available_body';
 
+  // Product details — GraphQL sections
+  static const String productDetailsFullDescription =
+      'product_details_full_description';
+  static const String productDetailsMoreFromBrand =
+      'product_details_more_from_brand';
+  static const String productDetailsComments = 'product_details_comments';
+  static const String productDetailsAddReview = 'product_details_add_review';
+  static const String productDetailsOnlyXLeft = 'product_details_only_x_left';
+  static const String productDetailsCountry = 'product_details_country';
+  static const String productDetailsWeight = 'product_details_weight';
+
   // Drawer
   static const String drawerMenu = 'drawer_menu';
   static const String drawerShopByBrands = 'drawer_shop_by_brands';
@@ -256,6 +267,14 @@ class LocaleKeys {
   static const String brandsTitle = 'brands_title';
   static const String brandsSearchHint = 'brands_search_hint';
   static const String brandsEmpty = 'brands_empty';
+
+  // Product search
+  static const String productSearchHint = 'product_search_hint';
+  static const String productSearchPrompt = 'product_search_prompt';
+  static const String productSearchAvailableOnly =
+      'product_search_available_only';
+  static const String productSearchEmptyDescription =
+      'product_search_empty_description';
 
   // Contact us
   static const String contactUsTitle = 'contact_us_title';

@@ -3,11 +3,13 @@ part of '../product_list_imports.dart';
 class ProductListView extends StatefulWidget {
   final String title;
   final String categoryId;
+  final bool isBrand;
 
   const ProductListView({
     super.key,
     required this.title,
     required this.categoryId,
+    this.isBrand = false,
   });
 
   @override
@@ -20,7 +22,11 @@ class _ProductListViewState extends State<ProductListView> {
   @override
   void initState() {
     super.initState();
-    vm._init(title: widget.title, categoryId: widget.categoryId);
+    vm._init(
+      title: widget.title,
+      categoryId: widget.categoryId,
+      isBrand: widget.isBrand,
+    );
   }
 
   @override

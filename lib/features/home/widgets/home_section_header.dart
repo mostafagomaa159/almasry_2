@@ -47,7 +47,7 @@ class HomeSectionHeader extends StatelessWidget {
               ),
             ),
             Icon(
-              AppDirection.chevronForward(context),
+              AppDirection.chevronForward,
               size: 16.sp,
               color: const Color(0xFFC4C4C4),
             ),

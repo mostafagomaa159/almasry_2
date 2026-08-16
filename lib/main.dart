@@ -6,7 +6,9 @@ import 'package:almasry_2/core/services/push_background_services.dart';
 import 'package:almasry_2/core/services/push_notification_service.dart';
 import 'package:almasry_2/core/services/shared_prefs_services.dart';
 import 'package:almasry_2/firebase_options.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +54,9 @@ class BlinkApp extends StatelessWidget {
         supportedLocales: context.supportedLocales,
         localizationsDelegates: context.localizationDelegates,
         routerConfig: AppRouter.router,
+        // Both overlays wrap the whole app so `AlertService` can show a toast
+        // or a blocking loader without a BuildContext.
+        builder: EasyLoading.init(builder: BotToastInit()),
       ),
     );
   }

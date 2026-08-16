@@ -57,7 +57,7 @@ class CustomAppBar extends StatelessWidget {
                         child: Padding(
                           padding: EdgeInsets.all(6.w),
                           child: Icon(
-                            AppDirection.chevronBack(context),
+                            AppDirection.chevronBack,
                             size: 28.sp,
                             color: AppColors.textPrimary,
                           ),

@@ -216,6 +216,14 @@
   "notification_product_available_title": "المنتج متوفر",
   "notification_product_available_body": "المنتج الذي طلبته متوفر الآن.",
 
+  "product_details_full_description": "الوصف الكامل:",
+  "product_details_more_from_brand": "المزيد من هذه العلامة التجارية",
+  "product_details_comments": "التعليقات ({})",
+  "product_details_add_review": "أضف تقييماً",
+  "product_details_only_x_left": "متبقي {} فقط في المخزون",
+  "product_details_country": "بلد المنشأ",
+  "product_details_weight": "الوزن",
+
   "drawer_menu": "القائمة",
   "drawer_shop_by_brands": "تسوق حسب الماركة",
   "drawer_contact_us": "تواصل معنا",
@@ -223,6 +231,11 @@
   "brands_title": "الماركات",
   "brands_search_hint": "بحث",
   "brands_empty": "لا توجد ماركات",
+
+  "product_search_hint": "بحث",
+  "product_search_prompt": "ابحث بالكلمات الدلالية أو اسم المنتج",
+  "product_search_available_only": "المتوفر فقط",
+  "product_search_empty_description": "جرب اسم منتج آخر أو كود SKU مختلف.",
 
   "contact_us_title": "تواصل معنا",
   "contact_us_name": "الاسم",

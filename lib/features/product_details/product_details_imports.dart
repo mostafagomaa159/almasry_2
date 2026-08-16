@@ -1,42 +1,56 @@
+import 'dart:async';
+
 import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
 import 'package:almasry_2/core/base/bloc/generic_state.dart';
 import 'package:almasry_2/core/base/locator/locator.dart';
-import 'package:almasry_2/core/services/navigation_service.dart';
-import 'package:almasry_2/core/constants/app_api.dart';
 import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:almasry_2/core/constants/app_images.dart';
-
 import 'package:almasry_2/core/localization/locale_keys.dart';
+import 'package:almasry_2/core/models/request/product_details/product_detail_request.dart';
+import 'package:almasry_2/core/models/request/product_details/products_by_brand_request.dart';
+import 'package:almasry_2/core/models/response/favorite/favorite_product_model.dart';
 import 'package:almasry_2/core/models/response/favorite/favorites_model.dart';
+import 'package:almasry_2/core/models/response/product_details/get_product_detail_response.dart';
+import 'package:almasry_2/core/models/response/product_details/product_custom_attribute_model.dart';
+import 'package:almasry_2/core/models/response/product_details/product_detail_model.dart';
 import 'package:almasry_2/core/models/response/product_details/product_details_args_model.dart';
-import 'package:almasry_2/core/models/response/product_list/product_model.dart';
-import 'package:almasry_2/core/services/api_services.dart';
+import 'package:almasry_2/core/models/response/product_details/product_related_item_model.dart';
+import 'package:almasry_2/core/models/response/product_details/product_review_model.dart';
+import 'package:almasry_2/core/models/response/product_details/products_by_brand_response.dart';
+import 'package:almasry_2/core/constants/app_graphql.dart';
+import 'package:almasry_2/core/routing/app_routes.dart';
+import 'package:almasry_2/core/services/alert_service.dart';
 import 'package:almasry_2/core/services/favorites_service.dart';
+import 'package:almasry_2/core/services/graphql_service.dart';
+import 'package:almasry_2/core/services/navigation_service.dart';
 import 'package:almasry_2/core/services/push_notification_service.dart';
-
+import 'package:almasry_2/core/utils/app_direction.dart';
+import 'package:almasry_2/core/utils/error_message.dart';
+import 'package:almasry_2/core/widgets/app_empty_view.dart';
+import 'package:almasry_2/core/widgets/app_error_view.dart';
+import 'package:almasry_2/core/widgets/app_network_image.dart';
+import 'package:almasry_2/core/widgets/app_refresh_indicator.dart';
+import 'package:almasry_2/core/widgets/app_shimmer.dart';
+import 'package:animate_do/animate_do.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../core/models/response/favorite/favorite_product_model.dart';
-import 'package:almasry_2/core/widgets/app_error_view.dart';
-import 'package:almasry_2/core/widgets/app_empty_view.dart';
-import 'package:almasry_2/core/widgets/app_loading_view.dart';
-import 'package:almasry_2/core/widgets/app_network_image.dart';
-import 'package:almasry_2/core/utils/error_message.dart';
-import 'package:almasry_2/core/utils/app_direction.dart';
 
 part 'view/product_details_view.dart';
 part 'view_model/product_details_view_model.dart';
+
 part 'widgets/product_details_body.dart';
 part 'widgets/product_details_bottom_action.dart';
-
 part 'widgets/product_details_description_section.dart';
 part 'widgets/product_details_header.dart';
 part 'widgets/product_details_image_section.dart';
-part 'widgets/product_details_rating_section.dart';
-part 'widgets/product_details_summary_section.dart';
 part 'widgets/product_details_info_section.dart';
+part 'widgets/product_details_rating_section.dart';
+part 'widgets/product_details_related_section.dart';
+part 'widgets/product_details_shimmer.dart';
+part 'widgets/product_details_summary_section.dart';
+
 part '../../core/models/response/product_details/product_details_model.dart';

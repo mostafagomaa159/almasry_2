@@ -1,21 +1,22 @@
 part of '../product_details_imports.dart';
 
+/// The "Information" table. Rows now come from the backend's own
+/// `custom_attributes` — label included — so a new attribute appears without a
+/// code change, and the hardcoded attribute-code list is gone.
 class ProductDetailsInfoSection extends StatelessWidget {
-  final ProductModel product;
+  final ProductDetailModel product;
 
   const ProductDetailsInfoSection({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
-    final attributes = _buildAttributes(product);
+    final List<_ProductInfoItem> attributes = _buildAttributes();
 
-    if (attributes.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    if (attributes.isEmpty) return const SizedBox.shrink();
 
     return Container(
       width: double.infinity,
-      color: Colors.white,
+      color: AppColors.white,
       padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 18.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,15 +29,13 @@ class ProductDetailsInfoSection extends StatelessWidget {
               color: const Color(0xFF11385B),
             ),
           ),
+
           14.verticalSpace,
+
           ...attributes.map(
             (item) => Padding(
               padding: EdgeInsets.only(bottom: 10.h),
-              child: _ProductInfoRow(
-                label: item.label,
-                value: item.value,
-                highlightValue: item.highlightValue,
-              ),
+              child: _ProductInfoRow(item: item),
             ),
           ),
         ],
@@ -44,79 +43,41 @@ class ProductDetailsInfoSection extends StatelessWidget {
     );
   }
 
-  List<_ProductInfoItem> _buildAttributes(ProductModel product) {
-    final items = <_ProductInfoItem>[
+  List<_ProductInfoItem> _buildAttributes() {
+    final List<_ProductInfoItem> items = [
+      _ProductInfoItem(
+        label: LocaleKeys.productDetailsCategories.tr(),
+        value: product.categories
+            .map((category) => category.name)
+            .where((name) => name.trim().isNotEmpty)
+            .join(', '),
+      ),
+
       _ProductInfoItem(
         label: LocaleKeys.attrBrand.tr(),
-        value: _getCustomAttributeValue(product, 'brand'),
+        value: product.brandName,
         highlightValue: true,
       ),
-      _ProductInfoItem(
-        label: LocaleKeys.attrCompanyName.tr(),
-        value: _getCustomAttributeValue(product, 'manufacturer'),
+
+      ...product.customAttributes.map(
+        (ProductCustomAttributeModel attribute) => _ProductInfoItem(
+          label: attribute.label,
+          value: attribute.displayValue,
+        ),
       ),
+
       _ProductInfoItem(
-        label: LocaleKeys.attrProductForm.tr(),
-        value: _getCustomAttributeValue(product, 'product_form'),
+        label: LocaleKeys.productDetailsCountry.tr(),
+        value: product.countryOfManufacture,
       ),
+
       _ProductInfoItem(
-        label: LocaleKeys.attrBarcode.tr(),
-        value: _getCustomAttributeValue(product, 'barcode'),
-      ),
-      _ProductInfoItem(
-        label: LocaleKeys.attrProductType.tr(),
-        value: _getCustomAttributeValue(product, 'product_type'),
-      ),
-      _ProductInfoItem(
-        label: LocaleKeys.attrGender.tr(),
-        value: _getCustomAttributeValue(product, 'gender'),
-      ),
-      _ProductInfoItem(
-        label: LocaleKeys.attrIngredients.tr(),
-        value: _getCustomAttributeValue(product, 'ingredients'),
-      ),
-      _ProductInfoItem(
-        label: LocaleKeys.attrShopByGoal.tr(),
-        value: _getCustomAttributeValue(product, 'shop_by_goal'),
-      ),
-      _ProductInfoItem(
-        label: LocaleKeys.attrSpecialties.tr(),
-        value: _getCustomAttributeValue(product, 'specialties'),
-      ),
-      _ProductInfoItem(
-        label: LocaleKeys.attrWarnings.tr(),
-        value: _getCustomAttributeValue(product, 'warnings'),
-      ),
-      _ProductInfoItem(
-        label: LocaleKeys.attrShopByConcern.tr(),
-        value: _getCustomAttributeValue(product, 'shop_by_concern'),
-      ),
-      _ProductInfoItem(
-        label: LocaleKeys.attrColor.tr(),
-        value: _getCustomAttributeValue(product, 'color'),
+        label: LocaleKeys.productDetailsWeight.tr(),
+        value: product.weight == null ? '' : '${product.weight}',
       ),
     ];
 
-    return items.where((e) => e.value.trim().isNotEmpty).toList();
-  }
-
-  String _getCustomAttributeValue(ProductModel product, String code) {
-    try {
-      final attribute = product.customAttributes.firstWhere(
-        (item) => item.attributeCode == code,
-      );
-
-      final value = attribute.value;
-      if (value == null) return '';
-
-      if (value is List) {
-        return value.join(', ');
-      }
-
-      return value.toString().trim();
-    } catch (_) {
-      return '';
-    }
+    return items.where((item) => item.value.trim().isNotEmpty).toList();
   }
 }
 
@@ -125,7 +86,7 @@ class _ProductInfoItem {
   final String value;
   final bool highlightValue;
 
-  _ProductInfoItem({
+  const _ProductInfoItem({
     required this.label,
     required this.value,
     this.highlightValue = false,
@@ -133,15 +94,9 @@ class _ProductInfoItem {
 }
 
 class _ProductInfoRow extends StatelessWidget {
-  final String label;
-  final String value;
-  final bool highlightValue;
+  final _ProductInfoItem item;
 
-  const _ProductInfoRow({
-    required this.label,
-    required this.value,
-    this.highlightValue = false,
-  });
+  const _ProductInfoRow({required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -159,26 +114,28 @@ class _ProductInfoRow extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
                 child: Text(
-                  value,
+                  item.value,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
                     height: 1.5,
-                    color: highlightValue
+                    color: item.highlightValue
                         ? const Color(0xFFD7262E)
                         : const Color(0xFF8B8B8B),
                   ),
                 ),
               ),
             ),
+
             Container(width: 1, color: const Color(0xFFE3E3E3)),
+
             Expanded(
               flex: 4,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
                 child: Text(
-                  '$label:',
+                  '${item.label}:',
                   textAlign: TextAlign.start,
                   style: TextStyle(
                     fontSize: 15.sp,

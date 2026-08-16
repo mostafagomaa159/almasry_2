@@ -1,19 +1,15 @@
 part of '../contact_us_imports.dart';
 
+/// Drives the contact form: field controllers, validation, and the submit
+/// mutation whose result is reported through [AlertService].
 class ContactUsViewModel {
-  /// Services
-
   final GraphQLService _graphql = sl<GraphQLService>();
   final NavigationService _nav = sl<NavigationService>();
-
-  /// Variables
+  final AlertService _alert = sl<AlertService>();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final GenericCubit<bool> _loadingCubit = GenericCubit<bool>(false);
-
-  final GenericCubit<SubmitContactFormResponse?> _responseCubit =
-      GenericCubit<SubmitContactFormResponse?>(null);
 
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
@@ -24,8 +20,6 @@ class ContactUsViewModel {
   late final FocusNode _emailFocusNode;
   late final FocusNode _phoneFocusNode;
   late final FocusNode _commentFocusNode;
-
-  /// Init
 
   void _init() {
     _nameController = TextEditingController();
@@ -51,24 +45,17 @@ class ContactUsViewModel {
     _commentFocusNode.dispose();
 
     _loadingCubit.close();
-    _responseCubit.close();
   }
-
-  /// Actions
 
   void _back() {
     _nav.pop();
   }
-
-  /// Validation
 
   String? _validateName(String? value) => Validators.validateName(value ?? '');
 
   String? _validateEmail(String? value) =>
       Validators.validateEmail(value ?? '');
 
-  /// `telephone` is optional in the mutation, so it is only validated when the
-  /// user actually typed something.
   String? _validatePhone(String? value) {
     final String phone = value ?? '';
     return phone.trim().isEmpty ? null : Validators.validatePhone(phone);
@@ -77,14 +64,8 @@ class ContactUsViewModel {
   String? _validateComment(String? value) =>
       Validators.validateComment(value ?? '');
 
-  /// Submit
-
   Future<void> _submit() async {
     if (_loadingCubit.state.data) return;
-
-    /// Cleared before validating so a rejected form never re-reports the
-    /// previous submit's response.
-    _responseCubit.onUpdateData(null);
 
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
@@ -106,13 +87,17 @@ class ContactUsViewModel {
       final SubmitContactFormResponse response =
           SubmitContactFormResponse.fromJson(json);
 
-      if (response.status) _clearForm();
+      if (!response.status) {
+        _alert.showError(LocaleKeys.contactUsFailed.tr());
 
-      _responseCubit.onUpdateData(response);
+        return;
+      }
+
+      _clearForm();
+
+      _alert.showSuccess(LocaleKeys.contactUsSuccess.tr());
     } catch (_) {
-      _responseCubit.onUpdateData(
-        const SubmitContactFormResponse(status: false),
-      );
+      _alert.showError(LocaleKeys.contactUsFailed.tr());
     } finally {
       _loadingCubit.onUpdateData(false);
     }
@@ -124,8 +109,6 @@ class ContactUsViewModel {
     _phoneController.clear();
     _commentController.clear();
 
-    /// Drops the error text the fields are still showing from the last
-    /// `validate()` call.
     _formKey.currentState?.reset();
   }
 }

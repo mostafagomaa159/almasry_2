@@ -1,27 +1,31 @@
 part of '../product_details_imports.dart';
 
+/// Drives the product details screen: one GraphQL query for the product, a
+/// second unawaited one for the brand carousel, plus the gallery selection,
+/// quantity stepper, favourites and availability subscription.
 class ProductDetailsViewModel {
-  /// Services
-
-  final ApiService _apiService = sl<ApiService>();
+  final GraphQLService _graphql = sl<GraphQLService>();
+  final NavigationService _nav = sl<NavigationService>();
   final FavoritesService _favorites = sl<FavoritesService>();
   final PushNotificationService _push = sl<PushNotificationService>();
+  final AlertService _alert = sl<AlertService>();
 
-  /// Variables
+  static const int _brandProductsPageSize = 10;
 
-  final GenericCubit<ProductDetailsModel> _productDetailsCubit =
-      GenericCubit<ProductDetailsModel>(const ProductDetailsModel());
+  final GenericCubit<ProductDetailsData> _productDetailsCubit =
+      GenericCubit<ProductDetailsData>(const ProductDetailsData());
 
   ProductDetailsArgs? _args;
 
-  ProductDetailsModel get _data => _productDetailsCubit.state.data;
+  ProductDetailsData get _data => _productDetailsCubit.state.data;
+
+  ProductDetailModel? get _product => _data.product;
 
   GenericCubit<FavoritesModel> get _favoritesCubit => _favorites.favoritesCubit;
 
-  /// Init
-
   Future<void> _init({required ProductDetailsArgs args}) async {
     _args = args;
+
     await _favorites.loadFavorites();
     await _getProductDetails(args.sku);
     await _loadNotifySubscription(args.sku);
@@ -31,179 +35,255 @@ class ProductDetailsViewModel {
     _productDetailsCubit.close();
   }
 
-  /// Form state
+  void _back() {
+    _nav.pop();
+  }
 
   void _incrementQuantity() {
-    final current = _productDetailsCubit.state.data;
-
     _productDetailsCubit.onUpdateData(
-      current.copyWith(quantity: current.quantity + 1),
+      _data.copyWith(quantity: _data.quantity + 1),
     );
   }
 
   void _decrementQuantity() {
-    final current = _productDetailsCubit.state.data;
+    if (_data.quantity <= 1) return;
 
-    if (current.quantity > 1) {
-      _productDetailsCubit.onUpdateData(
-        current.copyWith(quantity: current.quantity - 1),
-      );
-    }
-  }
-
-  /// Display values
-
-  String _formatPrice(num? price) {
-    if (price == null) return '';
-    return '${price.toStringAsFixed(2)} ${LocaleKeys.currency.tr()}';
-  }
-
-  String _getCustomAttributeValue(ProductModel product, String code) {
-    try {
-      final attribute = product.customAttributes.firstWhere(
-        (item) => item.attributeCode == code,
-      );
-
-      final value = attribute.value;
-      if (value == null) return '';
-
-      if (value is List) {
-        return value.join(', ');
-      }
-
-      return value.toString().trim();
-    } catch (_) {
-      return '';
-    }
-  }
-
-  String _imagePathFor(ProductModel product) {
-    return product.imageUrl.isNotEmpty
-        ? product.imageUrl
-        : (_args?.imagePath ?? '');
-  }
-
-  String _titleFor(ProductModel product) {
-    return product.name.isNotEmpty ? product.name : (_args?.title ?? '');
-  }
-
-  String _descriptionFor(ProductModel product) {
-    return product.description;
-  }
-
-  String _priceFor(ProductModel product) {
-    return _formatPrice(product.price);
-  }
-
-  String _brandFor(ProductModel product) {
-    return _getCustomAttributeValue(product, 'brand');
-  }
-
-  String get _oldPrice => '';
-
-  double get _rating => 0.0;
-
-  /// Actions
-
-  Future<void> _toggleFavorite(ProductModel product) async {
-    final favoriteProduct = FavoriteProductModel(
-      id: product.sku,
-      title: product.name,
-      imagePath: product.imageUrl,
-      price: product.price.toString(),
-      oldPrice: '',
-      category: '',
-      description: product.description,
+    _productDetailsCubit.onUpdateData(
+      _data.copyWith(quantity: _data.quantity - 1),
     );
+  }
 
-    await _favorites.toggleFavorite(favoriteProduct);
+  void _toggleDescription() {
+    _productDetailsCubit.onUpdateData(
+      _data.copyWith(isDescriptionExpanded: !_data.isDescriptionExpanded),
+    );
+  }
+
+  void _selectImage(int index) {
+    if (index == _data.selectedImageIndex) return;
+
+    _productDetailsCubit.onUpdateData(
+      _data.copyWith(selectedImageIndex: index),
+    );
   }
 
   void _addToBasket() {
-    // TODO
+    // TODO: wire to the cart endpoint once it exists.
   }
 
-  /// Notify me when available
+  void _addReview() {
+    _nav.pushNamed(
+      RouteNames.homeComingSoon,
+      extra: LocaleKeys.productDetailsAddReview.tr(),
+    );
+  }
+
+  void _openRelatedProduct(ProductRelatedItemModel item) {
+    if (item.sku.trim().isEmpty) return;
+
+    _nav.pushNamed(
+      RouteNames.productDetails,
+      extra: ProductDetailsArgs(
+        sku: item.sku,
+        title: item.name,
+        imagePath: item.thumbnailUrl,
+      ),
+    );
+  }
+
+  Future<void> _toggleFavorite() async {
+    final ProductDetailModel? product = _product;
+
+    if (product == null) return;
+
+    await _favorites.toggleFavorite(
+      FavoriteProductModel(
+        id: product.sku,
+        title: product.name,
+        imagePath: _imagePath,
+        price: product.finalPrice.toStringAsFixed(2),
+        oldPrice: product.hasDiscount
+            ? product.regularPrice.toStringAsFixed(2)
+            : '',
+        category: product.categories.isEmpty
+            ? ''
+            : product.categories.first.name,
+        description: product.shortDescriptionHtml,
+      ),
+    );
+  }
+
+  String get _title {
+    final String name = _product?.name ?? '';
+
+    return name.isNotEmpty ? name : (_args?.title ?? '');
+  }
+
+  String get _imagePath {
+    final String url = _product?.imageUrl ?? '';
+
+    return url.isNotEmpty ? url : (_args?.imagePath ?? '');
+  }
+
+  String get _sku => _product?.sku ?? _args?.sku ?? '';
+
+  List<String> get _galleryImages {
+    final List<String> urls = _product?.galleryUrls ?? const [];
+
+    if (urls.isNotEmpty) return urls;
+
+    return _imagePath.isEmpty ? const [] : [_imagePath];
+  }
+
+  int get _selectedImageIndex {
+    final int count = _galleryImages.length;
+
+    if (count == 0) return 0;
+
+    return _data.selectedImageIndex.clamp(0, count - 1);
+  }
+
+  String get _selectedImage {
+    final List<String> images = _galleryImages;
+
+    return images.isEmpty ? '' : images[_selectedImageIndex];
+  }
+
+  String _formatPrice(double? price) {
+    if (price == null || price <= 0) return '';
+
+    return '${LocaleKeys.currencyShort.tr()} ${price.toStringAsFixed(2)}';
+  }
 
   Future<void> _loadNotifySubscription(String sku) async {
-    final isSubscribed = await _push.isSubscribed(sku);
+    final bool isSubscribed = await _push.isSubscribed(sku);
 
-    if (!isSubscribed) return;
+    if (!isSubscribed || _productDetailsCubit.isClosed) return;
 
-    _productDetailsCubit.onUpdateData(
-      _productDetailsCubit.state.data.copyWith(isNotifySubscribed: true),
-    );
+    _productDetailsCubit.onUpdateData(_data.copyWith(isNotifySubscribed: true));
   }
 
-  Future<void> _notifyWhenAvailable(
-    BuildContext context,
-    ProductModel product,
-  ) async {
-    if (_data.isNotifyLoading) return;
+  Future<void> _notifyWhenAvailable() async {
+    final ProductDetailModel? product = _product;
 
-    _productDetailsCubit.onUpdateData(
-      _productDetailsCubit.state.data.copyWith(isNotifyLoading: true),
-    );
+    if (product == null || _data.isNotifyLoading) return;
 
-    final success = await _push.subscribeToAvailability(
+    _productDetailsCubit.onUpdateData(_data.copyWith(isNotifyLoading: true));
+
+    final bool success = await _push.subscribeToAvailability(
       sku: product.sku,
-      productName: _titleFor(product),
-      imagePath: _imagePathFor(product),
+      productName: _title,
+      imagePath: _imagePath,
       notificationTitle: LocaleKeys.notificationProductAvailableTitle.tr(),
       notificationBody: LocaleKeys.notificationProductAvailableBody.tr(),
     );
 
-    _productDetailsCubit.onUpdateData(
-      _productDetailsCubit.state.data.copyWith(
-        isNotifyLoading: false,
-        isNotifySubscribed: success,
-      ),
-    );
-
-    if (!context.mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          success
-              ? LocaleKeys.productDetailsNotifyMeSuccess.tr()
-              : LocaleKeys.productDetailsNotifyMeFailed.tr(),
-        ),
-      ),
-    );
-  }
-
-  /// Api
-
-  Future<ProductModel> _fetchProductDetails({required String sku}) async {
-    final endPoint = '${ApiConstants.products}/$sku';
-
-    final response = await _apiService.get(endPoint: endPoint);
-
-    return ProductModel.fromJson(response.data as Map<String, dynamic>);
-  }
-
-  Future<void> _getProductDetails(String sku) async {
-    final current = _productDetailsCubit.state.data;
+    if (_productDetailsCubit.isClosed) return;
 
     _productDetailsCubit.onUpdateData(
-      current.copyWith(isLoading: true, clearErrorMessage: true),
+      _data.copyWith(isNotifyLoading: false, isNotifySubscribed: success),
+    );
+
+    if (success) {
+      _alert.showSuccess(LocaleKeys.productDetailsNotifyMeSuccess.tr());
+      return;
+    }
+
+    _alert.showError(LocaleKeys.productDetailsNotifyMeFailed.tr());
+  }
+
+  Future<void> _refresh() => _getProductDetails(_sku);
+
+  Future<void> _retry() => _refresh();
+
+  Future<void> _getBrandProducts(ProductDetailModel? product) async {
+    if (product == null) return;
+
+    final String brandId = product.brandId;
+
+    if (brandId.isEmpty) return;
+
+    _productDetailsCubit.onUpdateData(
+      _data.copyWith(isBrandProductsLoading: true),
     );
 
     try {
-      final product = await _fetchProductDetails(sku: sku);
+      final ProductsByBrandRequest request = ProductsByBrandRequest(
+        brandId: brandId,
+        pageSize: _brandProductsPageSize,
+      );
+
+      final Map<String, dynamic> data = await _graphql.query(
+        GraphQLDocuments.productsByBrand,
+        variables: request.toVariables(),
+      );
+
+      if (_productDetailsCubit.isClosed) return;
+
+      final List<ProductRelatedItemModel> items =
+          ProductsByBrandResponse.fromJson(
+            data,
+          ).items.where((item) => item.sku != product.sku).toList();
 
       _productDetailsCubit.onUpdateData(
-        _productDetailsCubit.state.data.copyWith(
-          isLoading: false,
+        _data.copyWith(brandProducts: items, isBrandProductsLoading: false),
+      );
+    } catch (_) {
+      if (_productDetailsCubit.isClosed) return;
+
+      _productDetailsCubit.onUpdateData(
+        _data.copyWith(isBrandProductsLoading: false),
+      );
+    }
+  }
+
+  Future<ProductDetailModel?> _fetchProductDetails(String sku) async {
+    final ProductDetailRequest request = ProductDetailRequest(sku: sku);
+
+    final Map<String, dynamic> data = await _graphql.query(
+      GraphQLDocuments.getProductDetail,
+      variables: request.toVariables(),
+    );
+
+    return GetProductDetailResponse.fromJson(data).product;
+  }
+
+  Future<void> _getProductDetails(String sku) async {
+    if (sku.trim().isEmpty) return;
+
+    _productDetailsCubit.onUpdateData(
+      _data.copyWith(
+        status: ProductDetailsStatus.loading,
+        clearErrorMessage: true,
+      ),
+    );
+
+    try {
+      final ProductDetailModel? product = await _fetchProductDetails(sku);
+
+      if (_productDetailsCubit.isClosed) return;
+
+      _productDetailsCubit.onUpdateData(
+        _data.copyWith(
+          status: ProductDetailsStatus.success,
           product: product,
+
+          quantity: 1,
+          selectedImageIndex: 0,
+          clearProduct: product == null,
           clearErrorMessage: true,
+
+          brandProducts: const [],
         ),
       );
+
+      unawaited(_getBrandProducts(product));
     } catch (error) {
+      if (_productDetailsCubit.isClosed) return;
+
       _productDetailsCubit.onUpdateData(
-        _productDetailsCubit.state.data.copyWith(
-          isLoading: false,
+        _data.copyWith(
+          status: ProductDetailsStatus.error,
           errorMessage: errorMessageFrom(error),
         ),
       );

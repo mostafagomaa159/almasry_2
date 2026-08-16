@@ -1,55 +1,24 @@
 part of '../product_details_imports.dart';
 
-class ProductDetailsImageSection extends StatefulWidget {
-  final String imagePath;
-  final ProductModel product;
-  final VoidCallback onFavoriteTap;
+/// The main image with the floating action rail, and the gallery thumbnails
+/// under it. Selection lives in the ViewModel, so a refresh resets it.
+class ProductDetailsImageSection extends StatelessWidget {
+  final ProductDetailsViewModel vm;
+  final ProductDetailModel product;
 
   const ProductDetailsImageSection({
     super.key,
-    required this.imagePath,
+    required this.vm,
     required this.product,
-    required this.onFavoriteTap,
   });
 
   @override
-  State<ProductDetailsImageSection> createState() =>
-      _ProductDetailsImageSectionState();
-}
-
-class _ProductDetailsImageSectionState
-    extends State<ProductDetailsImageSection> {
-  late int _selectedIndex;
-  late List<String> _images;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedIndex = 0;
-    _images = _collectImages();
-  }
-
-  List<String> _collectImages() {
-    final images = <String>[];
-
-    if (widget.imagePath.trim().isNotEmpty) {
-      images.add(widget.imagePath);
-    }
-
-    return images.toSet().toList();
-  }
-
-  bool _isNetworkImage(String path) {
-    return path.startsWith('http://') || path.startsWith('https://');
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final currentImage = _images.isNotEmpty ? _images[_selectedIndex] : '';
+    final List<String> images = vm._galleryImages;
 
     return Container(
       width: double.infinity,
-      color: Colors.white,
+      color: AppColors.white,
       padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 14.h),
       child: Column(
         children: [
@@ -59,9 +28,13 @@ class _ProductDetailsImageSectionState
               children: [
                 Positioned.fill(
                   child: Center(
-                    child: currentImage.isEmpty
-                        ? _buildPlaceholder()
-                        : _buildMainImage(currentImage),
+                    child: AppNetworkImage(
+                      url: vm._selectedImage,
+                      height: 250.h,
+                      fit: BoxFit.contain,
+                      showLoader: true,
+                      placeholder: const _ImagePlaceholder(),
+                    ),
                   ),
                 ),
 
@@ -74,27 +47,7 @@ class _ProductDetailsImageSectionState
                       12.verticalSpace,
                       _ActionButton(icon: Icons.chat_outlined, onTap: () {}),
                       12.verticalSpace,
-                      BlocBuilder<
-                        GenericCubit<FavoritesModel>,
-                        GenericState<FavoritesModel>
-                      >(
-                        builder: (context, state) {
-                          final data = state.data;
-                          final isFavorite = data.isFavorite(
-                            widget.product.sku,
-                          );
-
-                          return _ActionButton(
-                            icon: isFavorite
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            iconColor: isFavorite
-                                ? Colors.red
-                                : const Color(0xFF202020),
-                            onTap: widget.onFavoriteTap,
-                          );
-                        },
-                      ),
+                      _FavoriteButton(vm: vm, product: product),
                     ],
                   ),
                 ),
@@ -111,44 +64,9 @@ class _ProductDetailsImageSectionState
             ),
           ),
 
-          if (_images.isNotEmpty) ...[
+          if (images.length > 1) ...[
             8.verticalSpace,
-            Align(
-              alignment: AlignmentDirectional.centerEnd,
-              child: Wrap(
-                spacing: 10.w,
-                runSpacing: 10.h,
-                children: List.generate(_images.length, (index) {
-                  final image = _images[index];
-                  final isSelected = index == _selectedIndex;
-
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedIndex = index;
-                      });
-                    },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 180),
-                      width: 74.w,
-                      height: 74.h,
-                      padding: EdgeInsets.all(6.w),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12.r),
-                        border: Border.all(
-                          color: isSelected
-                              ? const Color(0xFF11385B)
-                              : const Color(0xFFE0E0E0),
-                          width: isSelected ? 1.4 : 1,
-                        ),
-                      ),
-                      child: _buildImage(image, fit: BoxFit.contain),
-                    ),
-                  );
-                }),
-              ),
-            ),
+            _GalleryThumbnails(vm: vm, images: images),
           ],
 
           18.verticalSpace,
@@ -157,48 +75,80 @@ class _ProductDetailsImageSectionState
       ),
     );
   }
+}
 
-  Widget _buildMainImage(String imagePath) {
+class _GalleryThumbnails extends StatelessWidget {
+  const _GalleryThumbnails({required this.vm, required this.images});
+
+  final ProductDetailsViewModel vm;
+  final List<String> images;
+
+  @override
+  Widget build(BuildContext context) {
+    final int selected = vm._selectedImageIndex;
+
     return SizedBox(
-      width: double.infinity,
-      child: _buildImage(imagePath, fit: BoxFit.contain, height: 250.h),
+      height: 74.h,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: images.length,
+        separatorBuilder: (context, index) => 10.horizontalSpace,
+        itemBuilder: (context, index) {
+          final bool isSelected = index == selected;
+
+          return GestureDetector(
+            onTap: () => vm._selectImage(index),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              width: 74.w,
+              padding: EdgeInsets.all(6.w),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(
+                  color: isSelected
+                      ? const Color(0xFF11385B)
+                      : const Color(0xFFE0E0E0),
+                  width: isSelected ? 1.4 : 1,
+                ),
+              ),
+              child: AppNetworkImage(
+                url: images[index],
+                fit: BoxFit.contain,
+                placeholder: const _ImagePlaceholder(),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
+}
 
-  Widget _buildImage(String path, {BoxFit fit = BoxFit.cover, double? height}) {
-    if (_isNetworkImage(path)) {
-      return AppNetworkImage(
-        url: path,
-        height: height,
-        fit: fit,
-        placeholder: _buildPlaceholder(),
-      );
-    }
+class _FavoriteButton extends StatelessWidget {
+  const _FavoriteButton({required this.vm, required this.product});
 
-    return Image.asset(
-      path,
-      height: height,
-      fit: fit,
-      errorBuilder: (context, error, stackTrace) {
-        return _buildPlaceholder();
+  final ProductDetailsViewModel vm;
+  final ProductDetailModel product;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<
+      GenericCubit<FavoritesModel>,
+      GenericState<FavoritesModel>
+    >(
+      bloc: vm._favoritesCubit,
+      builder: (context, state) {
+        final bool isFavorite = state.data.isFavorite(product.sku);
+
+        return _ActionButton(
+          icon: isFavorite ? Icons.favorite : Icons.favorite_border,
+          iconColor: isFavorite
+              ? AppColors.primaryRed
+              : const Color(0xFF202020),
+          onTap: vm._toggleFavorite,
+        );
       },
-    );
-  }
-
-  Widget _buildPlaceholder() {
-    return Container(
-      width: 180.w,
-      height: 180.h,
-      decoration: BoxDecoration(
-        color: const Color(0xFFF3F3F3),
-        borderRadius: BorderRadius.circular(16.r),
-      ),
-      alignment: Alignment.center,
-      child: Icon(
-        Icons.image_not_supported_outlined,
-        size: 34.sp,
-        color: const Color(0xFF9E9E9E),
-      ),
     );
   }
 }
@@ -232,6 +182,26 @@ class _ActionButton extends StatelessWidget {
           size: 22.sp,
           color: iconColor ?? const Color(0xFF202020),
         ),
+      ),
+    );
+  }
+}
+
+class _ImagePlaceholder extends StatelessWidget {
+  const _ImagePlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFF3F3F3),
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      alignment: Alignment.center,
+      child: Icon(
+        Icons.image_not_supported_outlined,
+        size: 34.sp,
+        color: const Color(0xFF9E9E9E),
       ),
     );
   }

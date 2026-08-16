@@ -1,152 +1,340 @@
 part of '../brands_imports.dart';
 
+typedef ListBrands = List<BrandModel>;
+
+/// Drives the brands screen: a cache-first listing, submit-driven search that
+/// queries both store views for mixed-script terms, scroll paging, and the
+/// scroll-to-top button.
 class BrandsViewModel {
-  /// Services
-
-  final GraphQLService _graphql = sl<GraphQLService>();
   final NavigationService _nav = sl<NavigationService>();
+  final GraphQLService _graphql = sl<GraphQLService>();
+  final CacheManagerService _cache = sl<CacheManagerService>();
+  final AlertService _alert = sl<AlertService>();
 
-  /// Variables
+  final GenericCubit<ListBrands> _brandsCubit = GenericCubit<ListBrands>([]);
+  final GenericCubit<int> _totalItemsCubit = GenericCubit<int>(0);
+  final GenericCubit<bool> _showFAB = GenericCubit<bool>(false);
+  final GenericCubit<int> _currentIndex = GenericCubit<int>(1);
+  final GenericCubit<bool> _clearSearchCubit = GenericCubit<bool>(false);
+  final GenericCubit<bool> _loadingCubit = GenericCubit<bool>(false);
 
-  static const int _pageSize = 20;
+  final TextEditingController _searchController = TextEditingController();
 
-  final GenericCubit<List<BrandModel>?> _brandsCubit =
-      GenericCubit<List<BrandModel>?>(null);
+  String _searchTerm = '';
 
-  late final TextEditingController _searchController;
   late final ScrollController _scrollController;
 
-  Timer? _searchDebounce;
+  static const int _pageSize = 21;
+  static const double _estimatedRowExtent = 175;
+  static const double _fabRevealOffset = 200;
+
+  int _page = 1;
+  bool _isFetching = false;
+  int? _totalItems;
+
+  ListBrands _allBrands = [];
+  ListBrands _cachedDefaultBrands = [];
+  int? _cachedDefaultTotalItems;
 
   String _errorMessage = '';
-  bool _isLoadingMore = false;
 
-  /// Paging bookkeeping — nothing renders it.
-  String _searchQuery = '';
-  int _currentPage = 1;
-  int _totalPages = 1;
-
-  bool get _hasMore => _currentPage < _totalPages;
-
-  List<BrandModel> get _loadedBrands => _brandsCubit.state.data ?? const [];
-
-  /// Init
+  bool get _canFetchMoreItems =>
+      _totalItems == null || _allBrands.length < (_totalItems ?? 0);
 
   void _init() {
-    _searchController = TextEditingController();
-    _scrollController = ScrollController()..addListener(_onScroll);
+    _setupScrollController();
 
-    _getBrands();
+    unawaited(_cachingApi());
   }
 
   void _dispose() {
-    _searchDebounce?.cancel();
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     _searchController.dispose();
 
     _brandsCubit.close();
+    _totalItemsCubit.close();
+    _showFAB.close();
+    _currentIndex.close();
+    _clearSearchCubit.close();
+    _loadingCubit.close();
   }
 
-  /// Actions
-
-  void _onSearchChanged(String value) {
-    _searchDebounce?.cancel();
-
-    _searchDebounce = Timer(const Duration(milliseconds: 450), () {
-      if (value.trim() == _searchQuery) return;
-
-      _searchQuery = value.trim();
-
-      _getBrands();
-    });
+  void _setupScrollController() {
+    _scrollController = ScrollController()..addListener(_onScroll);
   }
 
   void _onScroll() {
     if (!_scrollController.hasClients) return;
 
-    final bool isNearBottom =
-        _scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200;
+    final ScrollPosition position = _scrollController.position;
 
-    if (isNearBottom) _loadMore();
+    if (position.pixels >= position.maxScrollExtent - 200 &&
+        !_isFetching &&
+        _canFetchMoreItems) {
+      unawaited(_brandsApi(loadMore: true));
+    }
+
+    final double offset = _scrollController.offset;
+    final bool isFabVisible = _showFAB.state.data;
+
+    _currentIndex.onUpdateData((offset / _estimatedRowExtent).round() + 1);
+
+    if (offset >= _fabRevealOffset && !isFabVisible) {
+      _showFAB.onUpdateData(true);
+    } else if (offset < _fabRevealOffset && isFabVisible) {
+      _showFAB.onUpdateData(false);
+    }
+  }
+
+  void _scrollToTop() {
+    if (!_scrollController.hasClients) return;
+
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 800),
+      curve: Curves.easeInOut,
+    );
   }
 
   void _back() {
     _nav.pop();
   }
 
-  void _openBrand(BrandModel brand) {
-    // TODO: open the brand's product list once the products-by-brand filter
-    // is confirmed.
+  void _brandClickAction(BrandModel brand) {
+    if (brand.id.trim().isEmpty) return;
+
+    _nav.pushNamed(
+      RouteNames.productList,
+      extra: ProductListArgs(
+        title: brand.name,
+        categoryId: brand.id,
+        isBrand: true,
+      ),
+    );
   }
 
-  /// Data
-
-  Future<void> _getBrands() async {
-    _currentPage = 1;
-    _totalPages = 1;
-    _errorMessage = '';
-    _isLoadingMore = false;
-
-    /// Back to `null` so the spinner replaces whatever was on screen.
-    _brandsCubit.onUpdateData(null);
-
-    await _fetchPage(1);
+  void _onSearchChanged(String value) {
+    _clearSearchCubit.onUpdateData(value.trim().isNotEmpty);
   }
 
-  Future<void> _loadMore() async {
-    if (_isLoadingMore || !_hasMore) return;
-    if (_brandsCubit.state.data == null) return;
+  void _clearSearch() {
+    _searchController.clear();
 
-    _isLoadingMore = true;
-    _brandsCubit.onUpdateData(_loadedBrands);
-
-    await _fetchPage(_currentPage + 1);
+    _brandsSearch('');
   }
 
-  Future<void> _retry() async {
-    await _getBrands();
+  void _brandsSearch(String query) {
+    _searchTerm = query.trim();
+    _clearSearchCubit.onUpdateData(_searchTerm.isNotEmpty);
+
+    _page = 1;
+    _totalItems = null;
+
+    if (_searchTerm.isEmpty && _cachedDefaultBrands.isNotEmpty) {
+      _allBrands = List<BrandModel>.from(_cachedDefaultBrands);
+      _errorMessage = '';
+
+      final int defaultTotal = _cachedDefaultTotalItems ?? _allBrands.length;
+
+      _totalItems = defaultTotal;
+      _totalItemsCubit.onUpdateData(defaultTotal);
+      _brandsCubit.onUpdateData(_allBrands);
+
+      return;
+    }
+
+    _loadingCubit.onUpdateData(true);
+
+    unawaited(_brandsApi());
   }
 
-  Future<void> _fetchPage(int page) async {
-    final bool isFirstPage = page == 1;
-
-    final BrandsRequest request = BrandsRequest(
-      page: page,
-      pageSize: _pageSize,
-      searchQuery: _searchQuery,
+  Future<void> _cachingApi() async {
+    final ListBrands cached = await _cache.getCachedData<BrandModel>(
+      key: PrefKeys.cachedBrands,
+      fromJson: BrandModel.fromJson,
     );
 
+    if (cached.isNotEmpty) {
+      _getDataFromCache(cached);
+
+      unawaited(_brandsApi());
+
+      return;
+    }
+
+    await _brandsApi();
+  }
+
+  void _getDataFromCache(ListBrands cachedData) {
+    _searchTerm = '';
+
+    final ListBrands named = _withNames(cachedData);
+
+    _allBrands = named;
+    _cachedDefaultBrands = List<BrandModel>.from(named);
+    _cachedDefaultTotalItems = named.length;
+    _totalItems = named.length;
+
+    _totalItemsCubit.onUpdateData(named.length);
+    _brandsCubit.onUpdateData(named);
+  }
+
+  Future<void> _refresh() async {
+    _page = 1;
+    _totalItems = null;
+
+    await _brandsApi();
+  }
+
+  Future<void> _retry() => _refresh();
+
+  Future<void> _brandsApi({bool loadMore = false}) async {
+    if (_isFetching) return;
+    _isFetching = true;
+
+    final String currentSearch = _searchTerm;
+
     try {
-      final Map<String, dynamic> data = await _graphql.query(
-        GraphQLDocuments.searchBrands,
-        variables: request.toVariables(),
-      );
-
-      final GetBrandsResponse response = GetBrandsResponse.fromJson(data);
-
-      _currentPage = page;
-      _totalPages = response.pageInfo.totalPages;
-      _errorMessage = '';
-      _isLoadingMore = false;
-
-      _brandsCubit.onUpdateData(
-        isFirstPage ? response.brands : [..._loadedBrands, ...response.brands],
-      );
-    } catch (error) {
-      _isLoadingMore = false;
-
-      /// A failed "load more" keeps the pages already on screen.
-      if (!isFirstPage) {
-        _brandsCubit.onUpdateData(_loadedBrands);
-        return;
+      if (LanguageDetector.hasMixedLanguage(currentSearch) && !loadMore) {
+        await _searchBothStores(currentSearch);
+      } else {
+        await _searchSingleStore(currentSearch, loadMore);
       }
 
-      _errorMessage = errorMessageFrom(error);
+      _errorMessage = '';
 
-      /// Empty list + a message is what the body reads as "error".
-      _brandsCubit.onUpdateData(const []);
+      if (currentSearch.isEmpty && !loadMore) {
+        _cachedDefaultBrands = List<BrandModel>.from(_allBrands);
+        _cachedDefaultTotalItems = _totalItems ?? _allBrands.length;
+
+        await _cache.cacheData<BrandModel>(
+          data: _allBrands,
+          key: PrefKeys.cachedBrands,
+          toJson: (BrandModel item) => item.toJson(),
+        );
+      }
+    } catch (error) {
+      _handleFetchError(error, loadMore: loadMore);
+    } finally {
+      _isFetching = false;
+      _loadingCubit.onUpdateData(false);
     }
+  }
+
+  void _handleFetchError(Object error, {required bool loadMore}) {
+    final String message = errorMessageFrom(error);
+
+    if (loadMore || _allBrands.isNotEmpty) {
+      _alert.showError(message);
+
+      _brandsCubit.onUpdateData(_allBrands);
+
+      return;
+    }
+
+    _errorMessage = message;
+
+    _brandsCubit.onUpdateData(const []);
+  }
+
+  Future<void> _searchSingleStore(String currentSearch, bool loadMore) async {
+    final GetBrandsResponse response = await _fetchBrands(
+      query: currentSearch,
+      page: _page,
+      pageSize: _pageSize,
+      storeType: LanguageDetector.storeHeaderFor(currentSearch),
+    );
+
+    _totalItems = response.pageInfo.totalCount;
+    _totalItemsCubit.onUpdateData(_totalItems ?? 0);
+
+    final ListBrands newBrands = _withNames(response.brands);
+
+    _allBrands = loadMore ? [..._allBrands, ...newBrands] : newBrands;
+
+    _brandsCubit.onUpdateData(_allBrands);
+
+    _page++;
+  }
+
+  Future<void> _searchBothStores(String currentSearch) async {
+    final List<ListBrands> results = await Future.wait([
+      _fetchBrandsFromStore(currentSearch, storeType: 'arabic'),
+      _fetchBrandsFromStore(currentSearch, storeType: ''),
+    ]);
+
+    final ListBrands merged = _mergeAndDeduplicateBrands(
+      results[0],
+      results[1],
+    );
+
+    _allBrands = merged;
+    _totalItems = merged.length;
+
+    _totalItemsCubit.onUpdateData(merged.length);
+    _brandsCubit.onUpdateData(merged);
+
+    _page = 2;
+  }
+
+  Future<ListBrands> _fetchBrandsFromStore(
+    String query, {
+    required String storeType,
+  }) async {
+    try {
+      final GetBrandsResponse response = await _fetchBrands(
+        query: query,
+        page: 1,
+        pageSize: _pageSize * 2,
+        storeType: storeType,
+      );
+
+      return _withNames(response.brands);
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  Future<GetBrandsResponse> _fetchBrands({
+    required String query,
+    required int page,
+    required int pageSize,
+    required String storeType,
+  }) async {
+    final BrandsRequest request = BrandsRequest(
+      page: page,
+      pageSize: pageSize,
+      searchQuery: query,
+    );
+
+    final Map<String, dynamic> data = await _graphql.query(
+      GraphQLDocuments.searchBrands,
+      variables: request.toVariables(),
+      headers: storeType.isEmpty ? const {} : {'store': storeType},
+    );
+
+    return GetBrandsResponse.fromJson(data);
+  }
+
+  ListBrands _mergeAndDeduplicateBrands(
+    ListBrands arabicBrands,
+    ListBrands englishBrands,
+  ) {
+    final Map<String, BrandModel> uniqueBrands = <String, BrandModel>{};
+
+    for (final BrandModel brand in [...arabicBrands, ...englishBrands]) {
+      if (brand.id.trim().isEmpty) continue;
+
+      uniqueBrands.putIfAbsent(brand.id, () => brand);
+    }
+
+    return uniqueBrands.values.toList();
+  }
+
+  ListBrands _withNames(ListBrands brands) {
+    return brands
+        .where((BrandModel brand) => brand.name.trim().isNotEmpty)
+        .toList();
   }
 }
