@@ -1,0 +1,52 @@
+library;
+
+import 'dart:async';
+
+import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
+import 'package:almasry_2/core/base/bloc/generic_state.dart';
+import 'package:almasry_2/core/base/locator/locator.dart';
+import 'package:almasry_2/core/constants/app_colors.dart';
+import 'package:almasry_2/core/constants/app_graphql.dart';
+import 'package:almasry_2/core/constants/pref_keys.dart';
+import 'package:almasry_2/core/localization/locale_keys.dart';
+import 'package:almasry_2/core/models/request/product_search/product_search_request.dart';
+import 'package:almasry_2/core/models/response/product_details/product_details_args_model.dart';
+import 'package:almasry_2/core/models/response/favorite/favorite_product_model.dart';
+import 'package:almasry_2/core/models/response/favorite/favorites_model.dart';
+import 'package:almasry_2/core/models/response/product_search/product_search_label_model.dart';
+import 'package:almasry_2/core/models/response/product_search/product_search_product_model.dart';
+import 'package:almasry_2/core/models/response/product_search/product_search_response.dart';
+import 'package:almasry_2/core/routing/app_routes.dart';
+import 'package:almasry_2/core/services/favorites_service.dart';
+import 'package:almasry_2/core/services/graphql_service.dart';
+import 'package:almasry_2/core/services/navigation_service.dart';
+import 'package:almasry_2/core/services/shared_prefs_services.dart';
+import 'package:almasry_2/core/utils/app_direction.dart';
+import 'package:almasry_2/core/utils/error_message.dart';
+import 'package:almasry_2/core/utils/language_detector.dart';
+import 'package:almasry_2/core/widgets/app_empty_view.dart';
+import 'package:almasry_2/core/widgets/app_error_view.dart';
+import 'package:almasry_2/core/widgets/app_network_image.dart';
+import 'package:almasry_2/core/widgets/app_refresh_indicator.dart';
+import 'package:almasry_2/core/widgets/app_search_field.dart';
+import 'package:almasry_2/core/widgets/app_shimmer.dart';
+import 'package:animate_do/animate_do.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+part 'view/product_search_view.dart';
+part 'view_model/product_search_view_model.dart';
+
+part 'widgets/product_search_app_bar.dart';
+part 'widgets/product_search_available_chip.dart';
+part 'widgets/product_search_body.dart';
+part 'widgets/product_search_list.dart';
+part 'widgets/product_search_shimmer.dart';
+part 'widgets/product_search_float.dart';
+part 'widgets/product_search_item.dart';
+part 'widgets/product_search_label_badge.dart';
+part 'widgets/product_search_recent_searches.dart';
+part '../../core/models/response/product_search/product_search_data_model.dart';
