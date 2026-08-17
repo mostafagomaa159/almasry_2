@@ -175,7 +175,7 @@ class ProfileViewModel {
   ) async {
     if (_profileCubit.state.data.currentLanguageCode == languageCode) return;
 
-    await sl<AppLocaleService>().setLanguage(context, languageCode);
+    await AppLocale.setLanguage(context, languageCode);
 
     _profileCubit.onUpdateData(
       _profileCubit.state.data.copyWith(currentLanguageCode: languageCode),

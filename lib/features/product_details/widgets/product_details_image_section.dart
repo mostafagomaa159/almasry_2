@@ -116,8 +116,13 @@ class _GalleryThumbnails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final int selected = vm._selectedImageIndex;
+    return BlocBuilder<GenericCubit<int>, GenericState<int>>(
+      bloc: vm._selectedImageCubit,
+      builder: (context, state) => _strip(vm._selectedImageIndex),
+    );
+  }
 
+  Widget _strip(int selected) {
     return SizedBox(
       height: 74.h,
       child: ListView.separated(

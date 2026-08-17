@@ -1,7 +1,6 @@
-import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/constants/app_api.dart';
 import 'package:almasry_2/core/constants/app_stores.dart';
-import 'package:almasry_2/core/services/app_locale_service.dart';
+import 'package:almasry_2/core/localization/app_locale.dart';
 import 'package:graphql/client.dart';
 
 class GraphQLServiceException implements Exception {
@@ -40,13 +39,9 @@ class GraphQLService {
     return _resolve(result);
   }
 
-  /// Every request names a store view. The default is whatever the app's
-  /// current language maps to; [headers] wins where it disagrees, which is how
-  /// search and brands send a query to the store matching the *typed text*
-  /// rather than the interface language.
   Context _contextFor(Map<String, String> headers) {
     final Map<String, String> resolved = {
-      AppStores.header: sl<AppLocaleService>().storeCode,
+      AppStores.header: AppLocale.storeCode,
       ...headers,
     };
 

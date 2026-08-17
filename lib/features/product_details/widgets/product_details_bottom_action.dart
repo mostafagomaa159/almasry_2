@@ -56,14 +56,17 @@ class _AddToBasketRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final int quantity = vm._data.quantity;
-
     return Row(
       children: [
-        _QuantityControl(
-          quantity: quantity,
-          onIncrementTap: vm._incrementQuantity,
-          onDecrementTap: quantity > 1 ? vm._decrementQuantity : null,
+        BlocBuilder<GenericCubit<int>, GenericState<int>>(
+          bloc: vm._quantityCubit,
+          builder: (context, state) {
+            return _QuantityControl(
+              quantity: state.data,
+              onIncrementTap: vm._incrementQuantity,
+              onDecrementTap: state.data > 1 ? vm._decrementQuantity : null,
+            );
+          },
         ),
 
         12.horizontalSpace,
@@ -119,9 +122,23 @@ class _NotifyMeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isSubscribed = vm._data.isNotifySubscribed;
-    final bool isLoading = vm._data.isNotifyLoading;
+    return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+      bloc: vm._notifySubscribedCubit,
+      builder: (context, subscribedState) {
+        return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+          bloc: vm._notifyLoadingCubit,
+          builder: (context, loadingState) {
+            return _button(
+              isSubscribed: subscribedState.data,
+              isLoading: loadingState.data,
+            );
+          },
+        );
+      },
+    );
+  }
 
+  Widget _button({required bool isSubscribed, required bool isLoading}) {
     final bool isEnabled = !isSubscribed && !isLoading;
 
     return SizedBox(

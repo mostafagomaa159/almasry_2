@@ -34,22 +34,7 @@ class _BrandsViewState extends State<BrandsView> {
           children: [
             CustomAppBar(title: LocaleKeys.brandsTitle.tr(), onBack: vm._back),
 
-            Padding(
-              padding: EdgeInsets.all(20.r),
-              child: BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
-                bloc: vm._clearSearchCubit,
-                builder: (context, state) {
-                  return CustomAppSearchField(
-                    controller: vm._searchController,
-                    hintText: LocaleKeys.brandsSearchHint.tr(),
-                    showClear: state.data,
-                    onClear: vm._clearSearch,
-                    onChanged: vm._onSearchChanged,
-                    onSubmitted: vm._brandsSearch,
-                  );
-                },
-              ),
-            ),
+            BrandsSearchField(vm: vm),
 
             BrandsList(vm: vm),
           ],

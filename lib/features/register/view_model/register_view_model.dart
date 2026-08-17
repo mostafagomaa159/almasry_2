@@ -83,7 +83,7 @@ class RegisterViewModel {
   /// Actions
 
   Future<void> _toggleLanguage(BuildContext context) {
-    return sl<AppLocaleService>().toggleLanguage(context);
+    return AppLocale.toggleLanguage(context);
   }
 
   Future<void> _submitRegister(BuildContext context) async {

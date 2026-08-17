@@ -10,27 +10,30 @@ class ProductSearchRecentSearches extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> recentSearches = vm._data.recentSearches;
+    return BlocBuilder<GenericCubit<List<String>>, GenericState<List<String>>>(
+      bloc: vm._recentSearchesCubit,
+      builder: (context, state) {
+        return ListView(
+          padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 24.h),
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          children: [
+            Text(
+              LocaleKeys.productSearchPrompt.tr(),
+              style: TextStyle(
+                fontSize: 17.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary,
+              ),
+            ),
 
-    return ListView(
-      padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 24.h),
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      children: [
-        Text(
-          LocaleKeys.productSearchPrompt.tr(),
-          style: TextStyle(
-            fontSize: 17.sp,
-            fontWeight: FontWeight.w500,
-            color: AppColors.textPrimary,
-          ),
-        ),
+            18.verticalSpace,
 
-        18.verticalSpace,
-
-        ...recentSearches.map(
-          (query) => _RecentSearchTile(vm: vm, query: query),
-        ),
-      ],
+            ...state.data.map(
+              (query) => _RecentSearchTile(vm: vm, query: query),
+            ),
+          ],
+        );
+      },
     );
   }
 }

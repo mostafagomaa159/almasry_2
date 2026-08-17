@@ -6,10 +6,10 @@ typedef ListBrands = List<BrandModel>;
 /// queries both store views for mixed-script terms, scroll paging, and the
 /// scroll-to-top button.
 class BrandsViewModel {
-  final NavigationService _nav = sl<NavigationService>();
-  final GraphQLService _graphql = sl<GraphQLService>();
-  final CacheManagerService _cache = sl<CacheManagerService>();
-  final AlertService _alert = sl<AlertService>();
+  final NavigationService _navService = sl<NavigationService>();
+  final GraphQLService _graphqlService = sl<GraphQLService>();
+  final CacheManagerService _cacheService = sl<CacheManagerService>();
+  final AlertService _alertService = sl<AlertService>();
 
   final GenericCubit<ListBrands> _brandsCubit = GenericCubit<ListBrands>([]);
   final GenericCubit<int> _totalItemsCubit = GenericCubit<int>(0);
@@ -51,13 +51,6 @@ class BrandsViewModel {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     _searchController.dispose();
-
-    _brandsCubit.close();
-    _totalItemsCubit.close();
-    _showFAB.close();
-    _currentIndex.close();
-    _clearSearchCubit.close();
-    _loadingCubit.close();
   }
 
   void _setupScrollController() {
@@ -98,13 +91,13 @@ class BrandsViewModel {
   }
 
   void _back() {
-    _nav.pop();
+    _navService.pop();
   }
 
   void _brandClickAction(BrandModel brand) {
     if (brand.id.trim().isEmpty) return;
 
-    _nav.pushNamed(
+    _navService.pushNamed(
       RouteNames.productList,
       extra: ProductListArgs(
         title: brand.name,
@@ -150,7 +143,7 @@ class BrandsViewModel {
   }
 
   Future<void> _cachingApi() async {
-    final ListBrands cached = await _cache.getCachedData<BrandModel>(
+    final ListBrands cached = await _cacheService.getCachedData<BrandModel>(
       key: PrefKeys.cachedBrands,
       fromJson: BrandModel.fromJson,
     );
@@ -208,7 +201,7 @@ class BrandsViewModel {
         _cachedDefaultBrands = List<BrandModel>.from(_allBrands);
         _cachedDefaultTotalItems = _totalItems ?? _allBrands.length;
 
-        await _cache.cacheData<BrandModel>(
+        await _cacheService.cacheData<BrandModel>(
           data: _allBrands,
           key: PrefKeys.cachedBrands,
           toJson: (BrandModel item) => item.toJson(),
@@ -226,7 +219,7 @@ class BrandsViewModel {
     final String message = errorMessageFrom(error);
 
     if (loadMore || _allBrands.isNotEmpty) {
-      _alert.showError(message);
+      _alertService.showError(message);
 
       _brandsCubit.onUpdateData(_allBrands);
 
@@ -308,7 +301,7 @@ class BrandsViewModel {
       searchQuery: query,
     );
 
-    final Map<String, dynamic> data = await _graphql.query(
+    final Map<String, dynamic> data = await _graphqlService.query(
       GraphQLDocuments.searchBrands,
       variables: request.toVariables(),
       headers: {AppStores.header: storeType},

@@ -36,5 +36,6 @@ import 'package:almasry_2/core/constants/app_durations.dart';
 part 'view_model/brands_view_model.dart';
 part 'view/brands_view.dart';
 part 'widgets/brands_list.dart';
+part 'widgets/brands_search_field.dart';
 part 'widgets/brands_shimmer.dart';
 part 'widgets/brands_float.dart';

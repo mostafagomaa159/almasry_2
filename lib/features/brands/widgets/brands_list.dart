@@ -85,7 +85,7 @@ class _BrandsGrid extends StatelessWidget {
           mainAxisSpacing: 20.h,
         ),
         itemBuilder: (context, index) {
-          if (index >= brands.length) return vm._alert.showLoadingView();
+          if (index >= brands.length) return vm._alertService.showLoadingView();
 
           return _BrandGridItem(vm: vm, brand: brands[index], index: index);
         },
