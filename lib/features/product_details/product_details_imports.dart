@@ -28,6 +28,7 @@ import 'package:almasry_2/core/utils/app_direction.dart';
 import 'package:almasry_2/core/utils/error_message.dart';
 import 'package:almasry_2/core/widgets/custom_app_empty_view.dart';
 import 'package:almasry_2/core/widgets/custom_app_error_view.dart';
+import 'package:almasry_2/core/widgets/custom_app_directional_text.dart';
 import 'package:almasry_2/core/widgets/custom_app_network_image.dart';
 import 'package:almasry_2/core/widgets/custom_app_refresh_indicator.dart';
 import 'package:almasry_2/core/widgets/custom_app_shimmer.dart';

@@ -243,7 +243,7 @@ class BrandsViewModel {
       query: currentSearch,
       page: _page,
       pageSize: _pageSize,
-      storeType: LanguageDetector.storeHeaderFor(currentSearch),
+      storeType: LanguageDetector.storeCodeFor(currentSearch),
     );
 
     _totalItems = response.pageInfo.totalCount;
@@ -260,8 +260,8 @@ class BrandsViewModel {
 
   Future<void> _searchBothStores(String currentSearch) async {
     final List<ListBrands> results = await Future.wait([
-      _fetchBrandsFromStore(currentSearch, storeType: 'arabic'),
-      _fetchBrandsFromStore(currentSearch, storeType: ''),
+      _fetchBrandsFromStore(currentSearch, storeType: AppStores.arabic),
+      _fetchBrandsFromStore(currentSearch, storeType: AppStores.defaultView),
     ]);
 
     final ListBrands merged = _mergeAndDeduplicateBrands(
@@ -311,7 +311,7 @@ class BrandsViewModel {
     final Map<String, dynamic> data = await _graphql.query(
       GraphQLDocuments.searchBrands,
       variables: request.toVariables(),
-      headers: storeType.isEmpty ? const {} : {'store': storeType},
+      headers: {AppStores.header: storeType},
     );
 
     return GetBrandsResponse.fromJson(data);

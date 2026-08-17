@@ -65,7 +65,6 @@ class ProductDetailsBody extends StatelessWidget {
   }
 }
 
-
 class _ProductDetailsPlaceholder extends StatelessWidget {
   const _ProductDetailsPlaceholder({required this.child});
 

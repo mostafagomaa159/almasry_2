@@ -107,13 +107,37 @@ class _ProductInfoRow extends StatelessWidget {
         border: Border.all(color: AppColors.borderInfoRow),
       ),
       child: IntrinsicHeight(
+        // Label first, so it sits on the leading edge in both directions: on
+        // the right in Arabic, on the left in English. Ordering the value
+        // first put each column on the wrong side of the row in *both*
+        // locales, since a Row lays its children out along the ambient
+        // direction rather than a fixed one.
         child: Row(
           children: [
+            Expanded(
+              flex: 4,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
+                child: CustomAppDirectionalText(
+                  '${item.label}:',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w700,
+                    height: 1.4,
+                    color: AppColors.textInfoValue,
+                  ),
+                ),
+              ),
+            ),
+
+            Container(width: 1, color: AppColors.borderInfoRow),
+
             Expanded(
               flex: 5,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
-                child: Text(
+                child: CustomAppDirectionalText(
                   item.value,
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -123,25 +147,6 @@ class _ProductInfoRow extends StatelessWidget {
                     color: item.highlightValue
                         ? AppColors.redHeading
                         : AppColors.textInfoMuted,
-                  ),
-                ),
-              ),
-            ),
-
-            Container(width: 1, color: AppColors.borderInfoRow),
-
-            Expanded(
-              flex: 4,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
-                child: Text(
-                  '${item.label}:',
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w700,
-                    height: 1.4,
-                    color: AppColors.textInfoValue,
                   ),
                 ),
               ),

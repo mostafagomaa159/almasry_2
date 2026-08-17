@@ -1,7 +1,5 @@
 part of '../contact_us_imports.dart';
 
-/// Drives the contact form: field controllers, validation, and the submit
-/// mutation whose result is reported through [AlertService].
 class ContactUsViewModel {
   final GraphQLService _graphql = sl<GraphQLService>();
   final NavigationService _nav = sl<NavigationService>();

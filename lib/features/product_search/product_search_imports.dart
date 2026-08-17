@@ -7,6 +7,7 @@ import 'package:almasry_2/core/base/bloc/generic_state.dart';
 import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:almasry_2/core/constants/app_graphql.dart';
+import 'package:almasry_2/core/constants/app_stores.dart';
 import 'package:almasry_2/core/constants/pref_keys.dart';
 import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:almasry_2/core/models/request/product_search/product_search_request.dart';

@@ -1,8 +1,5 @@
 part of '../product_search_imports.dart';
 
-/// Drives the product search screen: debounced search-as-you-type guarded by a
-/// request id, a dual-store query for mixed-script terms, scroll paging,
-/// recent searches and the scroll-to-top button.
 class ProductSearchViewModel {
   final GraphQLService _graphql = sl<GraphQLService>();
   final NavigationService _nav = sl<NavigationService>();
@@ -268,7 +265,7 @@ class ProductSearchViewModel {
       GraphQLDocuments.searchProducts,
       variables: request.toVariables(),
 
-      headers: storeType.isEmpty ? const {} : {'store': storeType},
+      headers: {AppStores.header: storeType},
     );
 
     return ProductSearchResponse.fromJson(data);
@@ -294,8 +291,8 @@ class ProductSearchViewModel {
     }
 
     final List<ProductSearchResponse?> results = await Future.wait([
-      attempt('arabic'),
-      attempt(''),
+      attempt(AppStores.arabic),
+      attempt(AppStores.defaultView),
     ]);
 
     if (results.nonNulls.isEmpty) throw firstError!;
@@ -351,7 +348,7 @@ class ProductSearchViewModel {
           : await _fetchPage(
               query,
               1,
-              storeType: LanguageDetector.storeHeaderFor(query),
+              storeType: LanguageDetector.storeCodeFor(query),
             );
 
       if (_isStale(requestId)) return;
@@ -392,7 +389,7 @@ class ProductSearchViewModel {
       final ProductSearchResponse response = await _fetchPage(
         query,
         nextPage,
-        storeType: LanguageDetector.storeHeaderFor(query),
+        storeType: LanguageDetector.storeCodeFor(query),
       );
 
       if (_isStale(requestId)) return;

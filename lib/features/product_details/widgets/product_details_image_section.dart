@@ -1,6 +1,5 @@
 part of '../product_details_imports.dart';
 
-
 class ProductDetailsImageSection extends StatelessWidget {
   final ProductDetailsViewModel vm;
   final ProductDetailModel product;
@@ -67,7 +66,6 @@ class ProductDetailsImageSection extends StatelessWidget {
     );
   }
 }
-
 
 class _Gallery extends StatelessWidget {
   const _Gallery({required this.vm, required this.images});
