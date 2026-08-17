@@ -92,7 +92,7 @@ class BrandsViewModel {
 
     _scrollController.animateTo(
       0,
-      duration: const Duration(milliseconds: 800),
+      duration: AppDurations.entrance,
       curve: Curves.easeInOut,
     );
   }

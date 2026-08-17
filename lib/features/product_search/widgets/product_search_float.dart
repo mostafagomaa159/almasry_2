@@ -22,7 +22,7 @@ class ProductSearchFloat extends StatelessWidget {
                 showState.data && indexState.data > _minimumRow;
 
             return AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
+              duration: AppDurations.floatToggle,
               transitionBuilder: (child, animation) {
                 return ScaleTransition(scale: animation, child: child);
               },

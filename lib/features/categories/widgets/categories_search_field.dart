@@ -7,7 +7,7 @@ class CategoriesSearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppSearchField(
+    return CustomAppSearchField(
       controller: vm._searchController,
       hintText: LocaleKeys.categoriesSearchHint.tr(),
       onChanged: vm._updateSearchQuery,

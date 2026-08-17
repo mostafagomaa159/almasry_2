@@ -52,7 +52,7 @@ class _HomeProductsSectionState extends State<HomeProductsSection> {
       isLoadingMore = true;
     });
 
-    Future.delayed(const Duration(milliseconds: 200), () {
+    Future.delayed(AppDurations.listStagger, () {
       if (!mounted) return;
 
       setState(() {

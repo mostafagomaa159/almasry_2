@@ -16,7 +16,7 @@ class OtpPhoneHeader extends StatelessWidget {
           style: const TextStyle(
             fontSize: 31,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF1F2A37),
+            color: AppColors.textSlateDark,
           ),
         ),
         10.verticalSpace,
@@ -24,7 +24,7 @@ class OtpPhoneHeader extends StatelessWidget {
           LocaleKeys.otpConfirmSubtitle.tr(),
           style: const TextStyle(
             fontSize: 17,
-            color: Color(0xFF6B7280),
+            color: AppColors.textSlateMuted,
             height: 1.5,
           ),
         ),
@@ -33,7 +33,7 @@ class OtpPhoneHeader extends StatelessWidget {
           vm._maskedPhone,
           style: const TextStyle(
             fontSize: 18,
-            color: Color(0xFF1F2A37),
+            color: AppColors.textSlateDark,
             fontWeight: FontWeight.w500,
           ),
         ),

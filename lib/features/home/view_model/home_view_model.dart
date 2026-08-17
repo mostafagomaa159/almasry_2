@@ -50,7 +50,7 @@ class HomeViewModel {
 
     if (bannersLength <= 1) return;
 
-    _bannerTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+    _bannerTimer = Timer.periodic(AppDurations.bannerInterval, (_) {
       if (!_bannerController.hasClients) return;
 
       final int currentPage =
@@ -59,7 +59,7 @@ class HomeViewModel {
 
       _bannerController.animateToPage(
         nextPage,
-        duration: const Duration(milliseconds: 400),
+        duration: AppDurations.bannerSlide,
         curve: Curves.easeInOut,
       );
     });

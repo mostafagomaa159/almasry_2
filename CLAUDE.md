@@ -32,7 +32,7 @@ Consequences when editing:
 - To use a new symbol inside a view/widget/view_model, add the `import` to the feature's `_imports.dart`, not to the file you're editing.
 - To add a new file to a feature, create it as a `part of`, then register a `part '...'` line in the barrel. A file not listed in the barrel will not compile as part of the feature.
 - Cross-feature use works by importing the *other feature's barrel* (e.g. `home_imports.dart` imports `product_list_imports.dart`).
-- **A `part` file belongs to exactly one library.** So anything two features both need cannot be a `part` — it has to be a standalone library (its own imports, no `part of`) that both barrels `import`. That is why the shared state models (`UserModel`, `SplashData`), the shared args (`OtpVerificationArgs`, `OrderDetailsArgs`), the shared services (`AuthSessionService`, `AppStartupService`, `FavoritesService`) and the shared widgets (`AuthHeader`, `OrderStatusChip`) all live in `lib/core/` as plain libraries.
+- **A `part` file belongs to exactly one library.** So anything two features both need cannot be a `part` — it has to be a standalone library (its own imports, no `part of`) that both barrels `import`. That is why the shared state models (`UserModel`, `SplashData`), the shared args (`OtpVerificationArgs`, `OrderDetailsArgs`), the shared services (`AuthSessionService`, `AppStartupService`, `FavoritesService`) and the shared widgets (`CustomAuthHeader`, `CustomOrderStatusChip`) all live in `lib/core/` as plain libraries.
 - **No feature barrel imports another feature barrel.** This is now an invariant — if you find yourself needing one, the symbol you want belongs in `core` instead.
 - Some files live outside the feature folder but are still `part of` its barrel — notably the per-feature state models under `lib/core/models/response/...` (e.g. `product_list_view_model.dart` there defines `ProductListData`, and is `part of` `product_list_imports.dart`), plus `lib/features/layout/view/layout_shell_view.dart` which is `part of` `home_imports.dart`.
 
@@ -51,7 +51,7 @@ Cross-screen state does **not** live in a feature. It goes in a locator-register
 
 Two deliberate exceptions to "private members":
 - A member nothing reads yet stays public with a comment, because privatising it would only produce an `unused_element` / `unused_field` warning (`OrdersViewModel.fetchMore`/`reset`, `CategoriesViewModel.errorMessage`, `HomeViewModel.changeOfferTab`).
-- Genuinely presentational leaf widgets keep their parameters — `AppTextField`, `EditProfileTextField`, `ProfileMenuItem`, `OtpVerifyButton`, `ProductDetailsSummarySection`. The *section* widget above them takes `vm`.
+- Genuinely presentational leaf widgets keep their parameters — `CustomAppTextField`, `EditProfileTextField`, `ProfileMenuItem`, `OtpVerifyButton`, `ProductDetailsSummarySection`. The *section* widget above them takes `vm`.
 
 ### State management: `GenericCubit<T>` (no per-feature blocs)
 
@@ -108,7 +108,7 @@ Request DTOs live in `lib/core/models/request/`, responses in `lib/core/models/r
 
 - `easy_localization` with `assets/translations/{ar,en}.json`; `startLocale` is Arabic, fallback English. Reference strings via `LocaleKeys.someKey.tr()` — add the constant to `lib/core/localization/locale_keys.dart` **and** both JSON files. (Some validation/API error messages are still hardcoded Arabic literals — most of them in `AuthSessionService`.)
 - `flutter_screenutil` with `designSize: Size(430, 932)` — size text with `.sp`, dimensions with `.w` / `.h` / `.r`.
-- Shared constants in `lib/core/constants/` (`AppColors`, `AppSizes`, `AppImages`); shared widgets in `lib/core/widgets/` (`AppButton`, `AppTextField`, `AuthHeader`); form validation helpers in `lib/core/utils/validators.dart`.
+- Shared constants in `lib/core/constants/` (`AppColors` — the full colour catalogue, `AppDurations` — every animation/debounce/timeout, `AppSizes`, `AppImages`); shared widgets in `lib/core/widgets/` (`CustomAppButton`, `CustomAppTextField`, `CustomAppCard`, `CustomAuthHeader` &c. — every widget there is `custom_app_*`); form validation helpers in `lib/core/utils/validators.dart`.
 
 ### Lint expectations
 

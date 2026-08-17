@@ -43,7 +43,7 @@ class AuthUnderlineField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: TextStyle(
-              color: const Color(0xFF7A7A7A),
+              color: AppColors.textFieldLabel,
               fontSize: 17.sp,
               fontWeight: FontWeight.w500,
             ),
@@ -53,10 +53,10 @@ class AuthUnderlineField extends StatelessWidget {
               minHeight: 24.h,
             ),
             enabledBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFFC8C8C8)),
+              borderSide: BorderSide(color: AppColors.iconFavoriteInactive),
             ),
             focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFFFF1717), width: 1.4),
+              borderSide: BorderSide(color: AppColors.redLink, width: 1.4),
             ),
             errorBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.red),

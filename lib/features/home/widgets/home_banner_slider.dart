@@ -27,7 +27,7 @@ class HomeBannerSlider extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 12.w),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(22.r),
-                  child: AppNetworkImage(
+                  child: CustomAppNetworkImage(
                     url: banner.image,
                     width: double.infinity,
                     showLoader: true,

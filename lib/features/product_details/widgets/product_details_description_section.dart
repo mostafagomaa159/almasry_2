@@ -36,7 +36,7 @@ class ProductDetailsDescriptionSection extends StatelessWidget {
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w800,
-              color: const Color(0xFF11385B),
+              color: AppColors.navyHeading,
             ),
           ),
 
@@ -46,9 +46,9 @@ class ProductDetailsDescriptionSection extends StatelessWidget {
             width: double.infinity,
             padding: EdgeInsets.all(14.w),
             decoration: BoxDecoration(
-              color: const Color(0xFFF7F7F7),
+              color: AppColors.surfaceMuted,
               borderRadius: BorderRadius.circular(14.r),
-              border: Border.all(color: const Color(0xFFE6E6E6)),
+              border: Border.all(color: AppColors.borderButton),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,7 +58,7 @@ class ProductDetailsDescriptionSection extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w700,
-                    color: const Color(0xFF3A3A3A),
+                    color: AppColors.textBody,
                   ),
                 ),
 
@@ -66,7 +66,7 @@ class ProductDetailsDescriptionSection extends StatelessWidget {
 
                 ClipRect(
                   child: AnimatedSize(
-                    duration: const Duration(milliseconds: 220),
+                    duration: AppDurations.expand,
                     curve: Curves.easeInOut,
                     child: ConstrainedBox(
                       constraints: isExpanded
@@ -79,14 +79,14 @@ class ProductDetailsDescriptionSection extends StatelessWidget {
 
                 if (isExpanded && hasShort && hasFull) ...[
                   14.verticalSpace,
-                  const Divider(height: 1, color: Color(0xFFE6E6E6)),
+                  const Divider(height: 1, color: AppColors.borderButton),
                   14.verticalSpace,
                   Text(
                     LocaleKeys.productDetailsFullDescription.tr(),
                     style: TextStyle(
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w700,
-                      color: const Color(0xFF3A3A3A),
+                      color: AppColors.textBody,
                     ),
                   ),
                   10.verticalSpace,
@@ -107,7 +107,7 @@ class ProductDetailsDescriptionSection extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w700,
-                        color: const Color(0xFFD7262E),
+                        color: AppColors.redHeading,
                       ),
                     ),
                   ),
@@ -145,24 +145,24 @@ class _DescriptionHtml extends StatelessWidget {
           padding: HtmlPaddings.zero,
           fontSize: FontSize(14),
           fontWeight: FontWeight.w500,
-          color: const Color(0xFF8C8C8C),
+          color: AppColors.textCaption,
           lineHeight: LineHeight.number(1.7),
         ),
         'p': Style(margin: Margins.only(bottom: 10)),
         'h1': Style(
           fontSize: FontSize(20),
           fontWeight: FontWeight.w700,
-          color: const Color(0xFF11385B),
+          color: AppColors.navyHeading,
         ),
         'h2': Style(
           fontSize: FontSize(18),
           fontWeight: FontWeight.w700,
-          color: const Color(0xFF11385B),
+          color: AppColors.navyHeading,
         ),
         'h3': Style(
           fontSize: FontSize(16),
           fontWeight: FontWeight.w700,
-          color: const Color(0xFF11385B),
+          color: AppColors.navyHeading,
         ),
         'ul': Style(
           margin: Margins.only(bottom: 10),
@@ -175,14 +175,14 @@ class _DescriptionHtml extends StatelessWidget {
         'li': Style(
           margin: Margins.only(bottom: 6),
           fontSize: FontSize(14),
-          color: const Color(0xFF8C8C8C),
+          color: AppColors.textCaption,
           lineHeight: LineHeight.number(1.6),
         ),
         'strong': Style(
           fontWeight: FontWeight.w700,
-          color: const Color(0xFF11385B),
+          color: AppColors.navyHeading,
         ),
-        'b': Style(fontWeight: FontWeight.w700, color: const Color(0xFF11385B)),
+        'b': Style(fontWeight: FontWeight.w700, color: AppColors.navyHeading),
       },
     );
   }

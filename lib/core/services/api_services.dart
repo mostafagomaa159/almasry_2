@@ -1,12 +1,13 @@
 import 'package:almasry_2/core/constants/app_api.dart';
 import 'package:dio/dio.dart';
+import 'package:almasry_2/core/constants/app_durations.dart';
 
 class ApiService {
   final Dio _dio = Dio(
     BaseOptions(
       baseUrl: ApiConstants.baseUrl,
-      connectTimeout: const Duration(seconds: 20),
-      receiveTimeout: const Duration(seconds: 20),
+      connectTimeout: AppDurations.networkTimeout,
+      receiveTimeout: AppDurations.networkTimeout,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',

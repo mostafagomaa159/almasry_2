@@ -15,7 +15,7 @@ class LayoutShellView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8),
+      backgroundColor: AppColors.surfaceScaffold,
       drawer: const AppDrawer(),
       body: navigationShell,
       bottomNavigationBar: HomeBottomNavBar(

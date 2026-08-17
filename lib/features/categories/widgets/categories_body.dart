@@ -15,14 +15,17 @@ class CategoriesBody extends StatelessWidget {
       builder: (context, state) {
         final List<CategoryModel>? categories = state.data;
 
-        if (categories == null) return const AppLoadingView();
+        if (categories == null) return const CustomAppLoadingView();
 
         if (categories.isEmpty) {
           if (vm._errorMessage.isNotEmpty) {
-            return AppErrorView(message: vm._errorMessage, onRetry: vm._retry);
+            return CustomAppErrorView(
+              message: vm._errorMessage,
+              onRetry: vm._retry,
+            );
           }
 
-          return AppEmptyView(message: LocaleKeys.categoriesEmpty.tr());
+          return CustomAppEmptyView(message: LocaleKeys.categoriesEmpty.tr());
         }
 
         return CategoriesContentView(vm: vm);

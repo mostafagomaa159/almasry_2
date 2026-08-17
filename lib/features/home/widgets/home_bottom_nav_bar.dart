@@ -53,7 +53,7 @@ class HomeBottomNavBar extends StatelessWidget {
           ),
         ],
         border: Border(
-          top: BorderSide(color: const Color(0xFFF0F0F0), width: 1.w),
+          top: BorderSide(color: AppColors.surfaceGrey, width: 1.w),
         ),
       ),
       padding: EdgeInsets.only(
@@ -91,7 +91,7 @@ class _HomeBottomNavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color activeColor = AppColors.primaryRed;
-    const Color inactiveColor = Color(0xFFC6C6C6);
+    const Color inactiveColor = AppColors.iconNavInactive;
 
     return Expanded(
       child: InkWell(
@@ -124,7 +124,7 @@ class _HomeBottomNavItem extends StatelessWidget {
                           minHeight: 16.h,
                         ),
                         decoration: const BoxDecoration(
-                          color: Color(0xFF1F1F1F),
+                          color: AppColors.textNearBlack,
                           shape: BoxShape.circle,
                         ),
                         alignment: Alignment.center,

@@ -25,7 +25,7 @@ class _BrandsViewState extends State<BrandsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8),
+      backgroundColor: AppColors.surfaceScaffold,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: BrandsFloat(vm: vm),
       body: SafeArea(
@@ -39,7 +39,7 @@ class _BrandsViewState extends State<BrandsView> {
               child: BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
                 bloc: vm._clearSearchCubit,
                 builder: (context, state) {
-                  return AppSearchField(
+                  return CustomAppSearchField(
                     controller: vm._searchController,
                     hintText: LocaleKeys.brandsSearchHint.tr(),
                     showClear: state.data,

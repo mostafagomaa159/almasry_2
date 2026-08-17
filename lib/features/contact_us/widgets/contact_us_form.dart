@@ -12,7 +12,7 @@ class ContactUsForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppTextField(
+          CustomAppTextField(
             controller: vm._nameController,
             focusNode: vm._nameFocusNode,
             label: LocaleKeys.contactUsName.tr(),
@@ -20,7 +20,7 @@ class ContactUsForm extends StatelessWidget {
             validator: vm._validateName,
           ),
           18.verticalSpace,
-          AppTextField(
+          CustomAppTextField(
             controller: vm._emailController,
             focusNode: vm._emailFocusNode,
             label: LocaleKeys.contactUsEmail.tr(),
@@ -29,7 +29,7 @@ class ContactUsForm extends StatelessWidget {
             keyboardType: TextInputType.emailAddress,
           ),
           18.verticalSpace,
-          AppTextField(
+          CustomAppTextField(
             controller: vm._phoneController,
             focusNode: vm._phoneFocusNode,
             label: LocaleKeys.contactUsPhone.tr(),
@@ -38,7 +38,7 @@ class ContactUsForm extends StatelessWidget {
             keyboardType: TextInputType.phone,
           ),
           18.verticalSpace,
-          AppTextField(
+          CustomAppTextField(
             controller: vm._commentController,
             focusNode: vm._commentFocusNode,
             label: LocaleKeys.contactUsMessage.tr(),

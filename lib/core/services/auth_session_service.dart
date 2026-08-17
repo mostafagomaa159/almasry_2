@@ -12,6 +12,7 @@ import 'package:almasry_2/core/models/response/login/user_model.dart';
 import 'package:almasry_2/core/services/api_services.dart';
 import 'package:dio/dio.dart';
 import 'package:almasry_2/core/utils/error_message.dart';
+import 'package:almasry_2/core/constants/app_durations.dart';
 
 class AuthSessionService {
   /// Services
@@ -219,7 +220,7 @@ class AuthSessionService {
     );
 
     try {
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(AppDurations.authStub);
 
       authCubit.onUpdateData(authCubit.state.data.copyWith(isLoading: false));
     } catch (e) {
@@ -241,7 +242,7 @@ class AuthSessionService {
     );
 
     try {
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(AppDurations.authStub);
 
       authCubit.onUpdateData(authCubit.state.data.copyWith(isLoading: false));
     } catch (e) {

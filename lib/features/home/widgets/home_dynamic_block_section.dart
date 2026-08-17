@@ -34,7 +34,7 @@ class _HomeDynamicBlockSectionState extends State<HomeDynamicBlockSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        HomeSectionHeader(title: widget.title),
+        CustomAppSectionHeader(title: widget.title),
         12.verticalSpace,
 
         if (subCategories.isNotEmpty) ...[
@@ -66,7 +66,7 @@ class _HomeDynamicBlockSectionState extends State<HomeDynamicBlockSection> {
                       border: Border.all(
                         color: isSelected
                             ? AppColors.primaryRed
-                            : const Color(0xFFE6E6E6),
+                            : AppColors.borderButton,
                       ),
                     ),
                     alignment: Alignment.center,
@@ -89,7 +89,7 @@ class _HomeDynamicBlockSectionState extends State<HomeDynamicBlockSection> {
         ],
 
         if (widget.isLoading)
-          AppLoadingView(height: 330.h)
+          CustomAppLoadingView(height: 330.h)
         else
           HomeProductsSection(vm: widget.vm, products: widget.products),
       ],

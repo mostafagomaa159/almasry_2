@@ -23,7 +23,7 @@ class HomeGoalsSection extends StatelessWidget {
             title: item.name,
             imagePath: item.image,
             isNetworkImage: true,
-            backgroundColor: const Color(0xFFF9F3E6),
+            backgroundColor: AppColors.goldTint,
           );
         },
       ),

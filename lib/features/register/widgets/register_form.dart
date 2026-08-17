@@ -17,7 +17,7 @@ class RegisterForm extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        AppTextField(
+        CustomAppTextField(
           controller: vm._firstNameController,
           focusNode: vm._firstNameFocusNode,
           hintText: LocaleKeys.firstName.tr(),
@@ -28,7 +28,7 @@ class RegisterForm extends StatelessWidget {
           onEditingComplete: vm._focusLastName,
         ),
         18.verticalSpace,
-        AppTextField(
+        CustomAppTextField(
           controller: vm._lastNameController,
           focusNode: vm._lastNameFocusNode,
           hintText: LocaleKeys.lastName.tr(),
@@ -39,7 +39,7 @@ class RegisterForm extends StatelessWidget {
           onEditingComplete: vm._focusPhone,
         ),
         18.verticalSpace,
-        AppTextField(
+        CustomAppTextField(
           controller: vm._phoneController,
           focusNode: vm._phoneFocusNode,
           hintText: LocaleKeys.phoneNumber.tr(),
@@ -50,7 +50,7 @@ class RegisterForm extends StatelessWidget {
           onEditingComplete: vm._focusEmail,
         ),
         18.verticalSpace,
-        AppTextField(
+        CustomAppTextField(
           controller: vm._emailController,
           focusNode: vm._emailFocusNode,
           hintText: LocaleKeys.email.tr(),
@@ -61,7 +61,7 @@ class RegisterForm extends StatelessWidget {
           onEditingComplete: vm._focusPassword,
         ),
         18.verticalSpace,
-        AppTextField(
+        CustomAppTextField(
           controller: vm._passwordController,
           focusNode: vm._passwordFocusNode,
           hintText: LocaleKeys.password.tr(),
@@ -85,7 +85,7 @@ class RegisterForm extends StatelessWidget {
         34.verticalSpace,
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 8.w),
-          child: AppButton(
+          child: CustomAppButton(
             title: LocaleKeys.createAccount.tr(),
             onPressed: () => vm._submitRegister(context),
             isLoading: state.isLoading,

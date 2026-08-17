@@ -28,7 +28,7 @@ class LoginFormSection extends StatelessWidget {
                     child: Text(
                       LocaleKeys.forgotPassword.tr(),
                       style: TextStyle(
-                        color: const Color(0xFF9E9E9E),
+                        color: AppColors.textSecondary,
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
                       ),

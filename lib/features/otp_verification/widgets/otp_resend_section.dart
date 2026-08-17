@@ -25,7 +25,7 @@ class OtpResendSection extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 16,
-                  color: Color(0xFF9CA3AF),
+                  color: AppColors.textSlateLight,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -36,9 +36,7 @@ class OtpResendSection extends StatelessWidget {
                 onPressed: state.canResendOtp && !state.isPhoneAuthLoading
                     ? () => vm._resendCode(context)
                     : null,
-                style: TextButton.styleFrom(
-                  foregroundColor: const Color(0xFFD62828),
-                ),
+                style: TextButton.styleFrom(foregroundColor: AppColors.redOtp),
                 child: state.isPhoneAuthLoading
                     ? const SizedBox(
                         height: 18,
@@ -51,8 +49,8 @@ class OtpResendSection extends StatelessWidget {
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
                           color: state.canResendOtp
-                              ? const Color(0xFFD62828)
-                              : const Color(0xFFBDBDBD),
+                              ? AppColors.redOtp
+                              : AppColors.unavailableGrey,
                         ),
                       ),
               ),

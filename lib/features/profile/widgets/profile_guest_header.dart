@@ -9,7 +9,7 @@ class ProfileGuestHeader extends StatelessWidget {
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
-        statusBarColor: Color(0xFFD72626),
+        statusBarColor: AppColors.redGuest,
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.dark,
       ),
@@ -19,7 +19,7 @@ class ProfileGuestHeader extends StatelessWidget {
           Container(
             height: statusBarHeight,
             width: double.infinity,
-            color: const Color(0xFFD72626),
+            color: AppColors.redGuest,
           ),
           Container(
             height: 110.h,
@@ -27,7 +27,7 @@ class ProfileGuestHeader extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(color: const Color(0xFFD72626), width: 1.2),
+              border: Border.all(color: AppColors.redGuest, width: 1.2),
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(28.r),
                 bottomRight: Radius.circular(28.r),
@@ -41,7 +41,7 @@ class ProfileGuestHeader extends StatelessWidget {
                   child: Icon(
                     Icons.menu,
                     size: 28.sp,
-                    color: const Color(0xFF5A4A4A),
+                    color: AppColors.textGuestSubtitle,
                   ),
                 ),
                 Center(
@@ -50,7 +50,7 @@ class ProfileGuestHeader extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 22.sp,
                       fontWeight: FontWeight.w700,
-                      color: const Color(0xFF2D2D2D),
+                      color: AppColors.textGuestName,
                     ),
                   ),
                 ),

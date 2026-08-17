@@ -31,7 +31,7 @@ class _OrdersViewState extends State<OrdersView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const OrdersAppBar(),
+      appBar: CustomAppTitleAppBar(title: LocaleKeys.myOrders.tr()),
       body: OrdersBody(vm: vm),
     );
   }

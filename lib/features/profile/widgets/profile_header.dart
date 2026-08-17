@@ -9,7 +9,7 @@ class ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
-        statusBarColor: Color(0xFFFF2D2D),
+        statusBarColor: AppColors.redAction,
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.dark,
       ),
@@ -19,14 +19,14 @@ class ProfileHeader extends StatelessWidget {
           Container(
             height: 44.h,
             width: double.infinity,
-            color: const Color(0xFFFF2D2D),
+            color: AppColors.redAction,
           ),
           Container(
             height: 72.h,
             width: double.infinity,
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(color: const Color(0xFFFF2D2D), width: 1.2),
+              border: Border.all(color: AppColors.redAction, width: 1.2),
               borderRadius: BorderRadiusDirectional.only(
                 bottomStart: Radius.circular(28.r),
                 bottomEnd: Radius.circular(28.r),
@@ -56,7 +56,7 @@ class ProfileHeader extends StatelessWidget {
                         shape: BoxShape.circle,
                         color: Colors.white,
                         border: Border.all(
-                          color: const Color(0xFFFF2D2D),
+                          color: AppColors.redAction,
                           width: 1,
                         ),
                       ),
@@ -84,13 +84,13 @@ class ProfileHeader extends StatelessWidget {
                         Icon(
                           AppDirection.back(),
                           size: 16.sp,
-                          color: const Color(0xFF7A7A7A),
+                          color: AppColors.textFieldLabel,
                         ),
                         6.horizontalSpace,
                         Text(
                           LocaleKeys.back.tr(),
                           style: TextStyle(
-                            color: const Color(0xFF7A7A7A),
+                            color: AppColors.textFieldLabel,
                             fontSize: 17.sp,
                             fontWeight: FontWeight.w500,
                           ),

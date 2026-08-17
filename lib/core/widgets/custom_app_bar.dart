@@ -1,6 +1,6 @@
 import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:almasry_2/core/constants/app_images.dart';
-import 'package:almasry_2/core/utils/app_direction.dart';
+import 'package:almasry_2/core/widgets/custom_app_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -49,21 +49,7 @@ class CustomAppBar extends StatelessWidget {
                   PositionedDirectional(
                     start: 0,
                     top: 10.h,
-                    child: Material(
-                      color: AppColors.transparent,
-                      child: InkWell(
-                        onTap: onBack,
-                        borderRadius: BorderRadius.circular(8.r),
-                        child: Padding(
-                          padding: EdgeInsets.all(6.w),
-                          child: Icon(
-                            AppDirection.chevronBack,
-                            size: 28.sp,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                      ),
-                    ),
+                    child: CustomAppBackButton(onTap: onBack),
                   ),
                 ],
               ),

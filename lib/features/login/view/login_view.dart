@@ -25,12 +25,12 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: AppColors.surfaceLight,
       body: SafeArea(
         top: false,
         child: Column(
           children: [
-            const AuthHeader(),
+            const CustomAuthHeader(),
             Expanded(
               child: SingleChildScrollView(
                 padding: EdgeInsets.symmetric(

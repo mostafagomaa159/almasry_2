@@ -17,6 +17,16 @@ class ProductDetailsViewModel {
 
   ProductDetailsArgs? _args;
 
+  /// The gallery pager and the thumbnail strip are driven from here, not from
+  /// the widget: the selected index lives in [_data], and both a swipe and a
+  /// thumbnail tap have to end up changing that one value.
+  final PageController _galleryController = PageController();
+  final ScrollController _thumbnailsController = ScrollController();
+
+  /// Thumbnail tile plus its separator, in design units — what one step of the
+  /// strip measures.
+  static const double _thumbnailExtent = 84;
+
   ProductDetailsData get _data => _productDetailsCubit.state.data;
 
   ProductDetailModel? get _product => _data.product;
@@ -32,6 +42,8 @@ class ProductDetailsViewModel {
   }
 
   void _dispose() {
+    _galleryController.dispose();
+    _thumbnailsController.dispose();
     _productDetailsCubit.close();
   }
 
@@ -59,12 +71,59 @@ class ProductDetailsViewModel {
     );
   }
 
+  /// The pager reports here after a swipe *and* after a programmatic move, so
+  /// this is the only place the index is written.
   void _selectImage(int index) {
     if (index == _data.selectedImageIndex) return;
 
     _productDetailsCubit.onUpdateData(
       _data.copyWith(selectedImageIndex: index),
     );
+
+    _revealThumbnail(index);
+  }
+
+  /// A thumbnail tap moves the pager and lets [_selectImage] pick the change up
+  /// from `onPageChanged` — driving both directly would have the two fighting
+  /// over the index mid-animation.
+  void _showImage(int index) {
+    if (index == _selectedImageIndex) return;
+
+    if (!_galleryController.hasClients) {
+      _selectImage(index);
+      return;
+    }
+
+    _galleryController.animateToPage(
+      index,
+      duration: AppDurations.page,
+      curve: Curves.easeOut,
+    );
+  }
+
+  /// Keeps the selected thumbnail centred in the strip, so swiping deep into a
+  /// long gallery doesn't leave the highlight off-screen.
+  void _revealThumbnail(int index) {
+    if (!_thumbnailsController.hasClients) return;
+
+    final ScrollPosition position = _thumbnailsController.position;
+    final double step = _thumbnailExtent.w;
+    final double target =
+        (index * step) - ((position.viewportDimension - step) / 2);
+
+    _thumbnailsController.animateTo(
+      target.clamp(position.minScrollExtent, position.maxScrollExtent),
+      duration: AppDurations.page,
+      curve: Curves.easeOut,
+    );
+  }
+
+  /// `selectedImageIndex` is reset to 0 on every successful load; the pager
+  /// keeps its own page, so it has to be sent back too.
+  void _resetGalleryPage() {
+    if (_galleryController.hasClients) _galleryController.jumpToPage(0);
+
+    if (_thumbnailsController.hasClients) _thumbnailsController.jumpTo(0);
   }
 
   void _addToBasket() {
@@ -141,12 +200,6 @@ class ProductDetailsViewModel {
     if (count == 0) return 0;
 
     return _data.selectedImageIndex.clamp(0, count - 1);
-  }
-
-  String get _selectedImage {
-    final List<String> images = _galleryImages;
-
-    return images.isEmpty ? '' : images[_selectedImageIndex];
   }
 
   String _formatPrice(double? price) {
@@ -276,6 +329,8 @@ class ProductDetailsViewModel {
           brandProducts: const [],
         ),
       );
+
+      _resetGalleryPage();
 
       unawaited(_getBrandProducts(product));
     } catch (error) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:almasry_2/core/constants/app_colors.dart';
 
 class AuthToggleTabs extends StatelessWidget {
   final String startTitle;
@@ -39,7 +40,7 @@ class AuthToggleTabs extends StatelessWidget {
       height: 56.h,
       padding: EdgeInsets.all(4.w),
       decoration: BoxDecoration(
-        color: const Color(0xFFF1F1F1),
+        color: AppColors.surfaceField,
         borderRadius: BorderRadius.circular(32.r),
       ),
       child: Row(children: [startTab, endTab]),
@@ -61,7 +62,7 @@ class _ToggleTabItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: isSelected ? const Color(0xFFFF1717) : Colors.white,
+      color: isSelected ? AppColors.redLink : Colors.white,
       borderRadius: BorderRadius.circular(28.r),
       child: InkWell(
         onTap: onTap,
@@ -90,7 +91,7 @@ class _ToggleTabItem extends StatelessWidget {
               style: TextStyle(
                 fontSize: 15.sp,
                 fontWeight: FontWeight.w700,
-                color: isSelected ? Colors.white : const Color(0xFF5E5E5E),
+                color: isSelected ? Colors.white : AppColors.textTabInactive,
               ),
             ),
           ),

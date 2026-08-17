@@ -37,7 +37,7 @@ class ProductDetailsRelatedSection extends StatelessWidget {
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w800,
-              color: const Color(0xFF11385B),
+              color: AppColors.navyHeading,
             ),
           ),
         ),
@@ -66,7 +66,7 @@ class _RelatedShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppShimmer(
+    return CustomAppShimmer(
       child: SizedBox(
         height: 250.h,
         child: ListView.separated(
@@ -110,14 +110,14 @@ class _RelatedCard extends StatelessWidget {
           padding: EdgeInsets.all(10.w),
           decoration: BoxDecoration(
             borderRadius: radius,
-            border: Border.all(color: const Color(0xFFEAEAEA)),
+            border: Border.all(color: AppColors.borderLight),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: Center(
-                  child: AppNetworkImage(
+                  child: CustomAppNetworkImage(
                     url: item.thumbnailUrl,
                     fit: BoxFit.contain,
                     placeholder: Icon(
@@ -138,7 +138,7 @@ class _RelatedCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 13.sp,
                   fontWeight: FontWeight.w700,
-                  color: const Color(0xFF11385B),
+                  color: AppColors.navyHeading,
                   height: 1.3,
                 ),
               ),
@@ -150,7 +150,7 @@ class _RelatedCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w800,
-                  color: const Color(0xFF11385B),
+                  color: AppColors.navyHeading,
                 ),
               ),
             ],

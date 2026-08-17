@@ -12,7 +12,7 @@ class ContactUsBody extends StatelessWidget {
     return SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 32.h),
       child: FadeInUp(
-        duration: const Duration(milliseconds: 250),
+        duration: AppDurations.contentFade,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -36,7 +36,7 @@ class ContactUsBody extends StatelessWidget {
               child: BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
                 bloc: vm._loadingCubit,
                 builder: (context, state) {
-                  return AppButton(
+                  return CustomAppButton(
                     title: LocaleKeys.contactUsSubmit.tr(),
                     isLoading: state.data,
                     onPressed: vm._submit,

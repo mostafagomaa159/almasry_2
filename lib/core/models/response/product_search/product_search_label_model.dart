@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:almasry_2/core/constants/app_colors.dart';
 
 /// A merchandising badge Magento renders over the product image (`Global`,
 /// `New`, …). The backend ships the styling as a raw CSS declaration block, so
@@ -37,7 +38,7 @@ class ProductSearchLabelModel {
   bool get isEmpty => !hasText && !hasImage;
 
   Color get backgroundColor =>
-      _colorFrom('background-color') ?? const Color(0xFF34323C);
+      _colorFrom('background-color') ?? AppColors.textLabelFallback;
 
   Color get textColor => _colorFrom('color') ?? Colors.white;
 

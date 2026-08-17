@@ -26,7 +26,7 @@ class ProductDetailsInfoSection extends StatelessWidget {
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w800,
-              color: const Color(0xFF11385B),
+              color: AppColors.navyHeading,
             ),
           ),
 
@@ -102,9 +102,9 @@ class _ProductInfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F7F7),
+        color: AppColors.surfaceMuted,
         borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(color: const Color(0xFFE3E3E3)),
+        border: Border.all(color: AppColors.borderInfoRow),
       ),
       child: IntrinsicHeight(
         child: Row(
@@ -121,14 +121,14 @@ class _ProductInfoRow extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                     height: 1.5,
                     color: item.highlightValue
-                        ? const Color(0xFFD7262E)
-                        : const Color(0xFF8B8B8B),
+                        ? AppColors.redHeading
+                        : AppColors.textInfoMuted,
                   ),
                 ),
               ),
             ),
 
-            Container(width: 1, color: const Color(0xFFE3E3E3)),
+            Container(width: 1, color: AppColors.borderInfoRow),
 
             Expanded(
               flex: 4,
@@ -141,7 +141,7 @@ class _ProductInfoRow extends StatelessWidget {
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w700,
                     height: 1.4,
-                    color: const Color(0xFF3E3E3E),
+                    color: AppColors.textInfoValue,
                   ),
                 ),
               ),

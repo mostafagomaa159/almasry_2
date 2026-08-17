@@ -21,7 +21,7 @@ class EditProfileForm extends StatelessWidget {
               style: TextStyle(
                 fontSize: 22.sp,
                 fontWeight: FontWeight.w800,
-                color: const Color(0xFF17375E),
+                color: AppColors.navyProfile,
               ),
             ),
           ),
@@ -110,14 +110,14 @@ class EditProfileForm extends StatelessWidget {
           ),
           26.verticalSpace,
           Center(
-            child: AppButton(
+            child: CustomAppButton(
               title: LocaleKeys.save.tr(),
               isLoading: data.isSaving,
               onPressed: vm._saveProfile,
               width: 206.w,
               height: 49.h,
-              backgroundColor: const Color(0xFFFF0A0A),
-              borderColor: const Color(0xFFFF0A0A),
+              backgroundColor: AppColors.redSave,
+              borderColor: AppColors.redSave,
               borderRadius: 12,
               fontSize: 19,
               elevation: 4,

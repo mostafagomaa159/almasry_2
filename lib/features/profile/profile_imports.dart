@@ -20,6 +20,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:almasry_2/core/constants/app_images.dart';
 import 'package:almasry_2/core/utils/app_logo.dart';
 import 'package:almasry_2/core/utils/app_direction.dart';
+import 'package:almasry_2/core/widgets/custom_app_card.dart';
 
 part 'view/profile_view.dart';
 part 'widgets/profile_account_view.dart';

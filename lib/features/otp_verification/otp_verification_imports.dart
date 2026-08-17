@@ -9,12 +9,14 @@ import 'package:almasry_2/core/models/response/profile/profile_args_model.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/core/services/auth_session_service.dart';
 import 'package:almasry_2/core/services/navigation_service.dart';
-import 'package:almasry_2/core/widgets/auth_header.dart';
+import 'package:almasry_2/core/widgets/custom_auth_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pinput/pinput.dart';
-import 'package:almasry_2/core/widgets/app_button.dart';
+import 'package:almasry_2/core/widgets/custom_app_button.dart';
+import 'package:almasry_2/core/constants/app_colors.dart';
+import 'package:almasry_2/core/constants/app_durations.dart';
 
 part 'view/otp_verification_view.dart';
 part 'view_model/otp_view_model.dart';

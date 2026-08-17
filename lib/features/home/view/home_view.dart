@@ -29,7 +29,7 @@ class _HomeViewState extends State<HomeView> {
     return BlocProvider<GenericCubit<FavoritesModel>>.value(
       value: vm._favoritesCubit,
       child: Container(
-        color: const Color(0xFFF8F8F8),
+        color: AppColors.surfaceScaffold,
         child: SafeArea(
           top: false,
           child: Column(

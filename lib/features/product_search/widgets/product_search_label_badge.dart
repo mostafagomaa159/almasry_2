@@ -15,7 +15,7 @@ class ProductSearchLabelBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (label.hasImage) {
-      return AppNetworkImage(
+      return CustomAppNetworkImage(
         url: label.image,
         height: 26.h,
         fit: BoxFit.contain,
@@ -23,22 +23,14 @@ class ProductSearchLabelBadge extends StatelessWidget {
       );
     }
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-      decoration: BoxDecoration(
-        color: label.backgroundColor,
-        borderRadius: BorderRadius.circular(8.r),
-      ),
-      child: Text(
-        label.text.toUpperCase(),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          fontSize: 12.sp,
-          fontWeight: FontWeight.w700,
-          color: label.textColor,
-        ),
-      ),
+    return CustomAppBadge(
+      label: label.text,
+      backgroundColor: label.backgroundColor,
+      textColor: label.textColor,
+      borderRadius: 8,
+      verticalPadding: 4,
+      uppercase: true,
+      maxLines: 1,
     );
   }
 }

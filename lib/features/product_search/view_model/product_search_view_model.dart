@@ -15,8 +15,6 @@ class ProductSearchViewModel {
 
   static const int _maxRecentSearches = 10;
 
-  static const Duration _debounceDuration = Duration(milliseconds: 450);
-
   static const double _estimatedRowExtent = 345;
 
   static const double _fabRevealOffset = 200;
@@ -83,7 +81,7 @@ class ProductSearchViewModel {
       return;
     }
 
-    _debounce = Timer(_debounceDuration, () => _search(query));
+    _debounce = Timer(AppDurations.searchDebounce, () => _search(query));
   }
 
   Future<void> _onQuerySubmitted(String value) async {
@@ -152,7 +150,7 @@ class ProductSearchViewModel {
 
     _scrollController.animateTo(
       0,
-      duration: const Duration(milliseconds: 800),
+      duration: AppDurations.entrance,
       curve: Curves.easeInOut,
     );
   }

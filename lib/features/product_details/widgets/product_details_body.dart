@@ -8,7 +8,7 @@ class ProductDetailsBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F7),
+      backgroundColor: AppColors.surfaceMuted,
       body: SafeArea(
         child: Column(
           children: [
@@ -25,7 +25,7 @@ class ProductDetailsBody extends StatelessWidget {
                   >(
                     bloc: vm._productDetailsCubit,
                     builder: (context, state) {
-                      return AppRefreshIndicator(
+                      return CustomAppRefreshIndicator(
                         onRefresh: vm._refresh,
                         child: _content(state.data),
                       );
@@ -47,12 +47,17 @@ class ProductDetailsBody extends StatelessWidget {
 
       if (data.status == ProductDetailsStatus.error) {
         return _ProductDetailsPlaceholder(
-          child: AppErrorView(message: data.errorMessage, onRetry: vm._retry),
+          child: CustomAppErrorView(
+            message: data.errorMessage,
+            onRetry: vm._retry,
+          ),
         );
       }
 
       return _ProductDetailsPlaceholder(
-        child: AppEmptyView(message: LocaleKeys.productDetailsNotFound.tr()),
+        child: CustomAppEmptyView(
+          message: LocaleKeys.productDetailsNotFound.tr(),
+        ),
       );
     }
 
@@ -60,8 +65,7 @@ class ProductDetailsBody extends StatelessWidget {
   }
 }
 
-/// The error and empty states are centred boxes, but they still have to scroll
-/// or [AppRefreshIndicator] would have nothing to pull on.
+
 class _ProductDetailsPlaceholder extends StatelessWidget {
   const _ProductDetailsPlaceholder({required this.child});
 
@@ -101,7 +105,7 @@ class _ProductDetailsContent extends StatelessWidget {
 
             padding: EdgeInsets.only(bottom: 140.h),
             child: FadeInUp(
-              duration: const Duration(milliseconds: 250),
+              duration: AppDurations.contentFade,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

@@ -29,12 +29,12 @@ class OtpPinInput extends StatelessWidget {
             textStyle: const TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF1F2937),
+              color: AppColors.textSlate,
             ),
             decoration: BoxDecoration(
-              color: const Color(0xFFF5F5F5),
+              color: AppColors.surfaceLight,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFF1F1F1)),
+              border: Border.all(color: AppColors.surfaceField),
             ),
           ),
           focusedPinTheme: PinTheme(
@@ -43,12 +43,12 @@ class OtpPinInput extends StatelessWidget {
             textStyle: const TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF1F2937),
+              color: AppColors.textSlate,
             ),
             decoration: BoxDecoration(
-              color: const Color(0xFFF5F5F5),
+              color: AppColors.surfaceLight,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFD62828)),
+              border: Border.all(color: AppColors.redOtp),
             ),
           ),
           errorPinTheme: PinTheme(
@@ -57,10 +57,10 @@ class OtpPinInput extends StatelessWidget {
             textStyle: const TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF1F2937),
+              color: AppColors.textSlate,
             ),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF5F5),
+              color: AppColors.redTintLightest,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.red),
             ),
@@ -84,13 +84,13 @@ class OtpPinInput extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF1F2),
+              color: AppColors.redTintPink,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFFECDD3)),
+              border: Border.all(color: AppColors.redTintBorder),
             ),
             child: Text(
               state.authErrorMessage!,
-              style: const TextStyle(color: Color(0xFFB42318), fontSize: 13),
+              style: const TextStyle(color: AppColors.redError, fontSize: 13),
             ),
           ),
         ],

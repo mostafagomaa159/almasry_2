@@ -18,7 +18,7 @@ class SplashViewModel {
   void _init(TickerProvider vsync) {
     _controller = AnimationController(
       vsync: vsync,
-      duration: const Duration(milliseconds: 1800),
+      duration: AppDurations.splashLogo,
     );
 
     _fadeAnimation = Tween<double>(
@@ -57,20 +57,20 @@ class SplashViewModel {
   ) async {
     switch (status) {
       case StartupStatus.firstTime:
-        await Future.delayed(const Duration(seconds: 3));
+        await Future.delayed(AppDurations.splashHold);
         await _startup.completeFirstTime();
         if (!isMounted()) return;
         _nav.goNamed(RouteNames.login);
         break;
 
       case StartupStatus.authenticated:
-        await Future.delayed(const Duration(seconds: 3));
+        await Future.delayed(AppDurations.splashHold);
         if (!isMounted()) return;
         _nav.goNamed(RouteNames.home);
         break;
 
       case StartupStatus.unauthenticated:
-        await Future.delayed(const Duration(seconds: 3));
+        await Future.delayed(AppDurations.splashHold);
         if (!isMounted()) return;
         _nav.goNamed(RouteNames.login);
         break;

@@ -10,7 +10,7 @@ class ProductSearchList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppRefreshIndicator(onRefresh: vm._refresh, child: _content());
+    return CustomAppRefreshIndicator(onRefresh: vm._refresh, child: _content());
   }
 
   Widget _content() {
@@ -20,13 +20,16 @@ class ProductSearchList extends StatelessWidget {
 
     if (data.status == ProductSearchStatus.error) {
       return _ProductSearchPlaceholder(
-        child: AppErrorView(message: data.errorMessage, onRetry: vm._retry),
+        child: CustomAppErrorView(
+          message: data.errorMessage,
+          onRetry: vm._retry,
+        ),
       );
     }
 
     if (data.products.isEmpty) {
       return _ProductSearchPlaceholder(
-        child: AppEmptyView(
+        child: CustomAppEmptyView(
           icon: Icons.search_off_rounded,
           message: LocaleKeys.noProductsFound.tr(),
           description: LocaleKeys.productSearchEmptyDescription.tr(),
@@ -39,7 +42,7 @@ class ProductSearchList extends StatelessWidget {
 }
 
 /// The error and empty states are centred boxes, but they still have to scroll
-/// or [AppRefreshIndicator] would have nothing to pull on.
+/// or [CustomAppRefreshIndicator] would have nothing to pull on.
 class _ProductSearchPlaceholder extends StatelessWidget {
   const _ProductSearchPlaceholder({required this.child});
 
@@ -100,7 +103,7 @@ class _ProductSearchGrid extends StatelessWidget {
           }
 
           return FadeInUp(
-            duration: const Duration(milliseconds: 200),
+            duration: AppDurations.listStagger,
 
             delay: Duration(milliseconds: 2 * index),
             child: ProductSearchItem(vm: vm, product: products[index]),

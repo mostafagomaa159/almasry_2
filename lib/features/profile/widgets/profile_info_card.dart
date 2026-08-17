@@ -20,7 +20,7 @@ class ProfileInfoCard extends StatelessWidget {
               textAlign: TextAlign.start,
               style: TextStyle(
                 fontSize: 15.sp,
-                color: const Color(0xFF2A2A2A),
+                color: AppColors.textCharcoal,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -33,7 +33,7 @@ class ProfileInfoCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 15.sp,
                 fontWeight: FontWeight.w700,
-                color: const Color(0xFF17375E),
+                color: AppColors.navyProfile,
               ),
             ),
           ),
@@ -51,20 +51,13 @@ class ProfileInfoCard extends StatelessWidget {
   }
 
   Widget _buildCard(BuildContext context) {
-    return Container(
+    return CustomAppCard(
       width: double.infinity,
       padding: EdgeInsetsDirectional.fromSTEB(18.w, 14.h, 18.w, 16.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(15),
-            blurRadius: 14,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+      borderRadius: 22,
+      // The original was `Colors.black.withAlpha(15)`; 15/255 keeps the exact
+      // same channel value through the opacity-based API.
+      shadowOpacity: 15 / 255,
       child: Stack(
         children: [
           Padding(
@@ -79,7 +72,7 @@ class ProfileInfoCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 24.sp,
                     fontWeight: FontWeight.w800,
-                    color: const Color(0xFF17375E),
+                    color: AppColors.navyProfile,
                   ),
                 ),
                 2.verticalSpace,
@@ -88,7 +81,7 @@ class ProfileInfoCard extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16.sp,
-                    color: const Color(0xFF9A9A9A),
+                    color: AppColors.textPlaceholder,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -131,13 +124,13 @@ class ProfileInfoCard extends StatelessWidget {
                 width: 34.w,
                 height: 34.w,
                 decoration: const BoxDecoration(
-                  color: Color(0xFFF0F0F0),
+                  color: AppColors.surfaceGrey,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.edit_outlined,
                   size: 17.sp,
-                  color: const Color(0xFF8A8A8A),
+                  color: AppColors.iconEdit,
                 ),
               ),
             ),
