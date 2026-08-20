@@ -1,9 +1,6 @@
 import 'package:almasry_2/core/models/response/product_search/product_search_label_model.dart';
 
-/// One row of `products.items` from the search query.
-///
-/// Every price on this endpoint arrives under `price_range.minimum_price`, so
-/// the nesting is flattened here and the card never digs through maps.
+
 class ProductSearchProductModel {
   final String id;
   final String typeId;
@@ -11,7 +8,6 @@ class ProductSearchProductModel {
   final String sku;
   final String stockStatus;
 
-  /// Magento returns this as a decimal (`1.8`), not an int.
   final double sellableQuantity;
 
   final String webrotatePath;
