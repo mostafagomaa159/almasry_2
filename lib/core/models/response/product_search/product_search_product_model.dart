@@ -1,6 +1,5 @@
 import 'package:almasry_2/core/models/response/product_search/product_search_label_model.dart';
 
-
 class ProductSearchProductModel {
   final String id;
   final String typeId;

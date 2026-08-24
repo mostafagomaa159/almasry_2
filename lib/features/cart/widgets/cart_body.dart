@@ -25,7 +25,10 @@ class CartBody extends StatelessWidget {
           }
 
           if (data.status == CartStatus.error) {
-            return AppErrorView(message: data.errorMessage, onRetry: vm._retry);
+            return CustomAppErrorView(
+              message: data.errorMessage,
+              onRetry: vm._retry,
+            );
           }
 
           return const CartEmptyView();
@@ -34,7 +37,7 @@ class CartBody extends StatelessWidget {
         return Column(
           children: <Widget>[
             Expanded(
-              child: AppRefreshIndicator(
+              child: CustomAppRefreshIndicator(
                 onRefresh: vm._refresh,
                 child: ListView.separated(
                   padding: EdgeInsets.symmetric(

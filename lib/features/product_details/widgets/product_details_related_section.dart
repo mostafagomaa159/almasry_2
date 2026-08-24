@@ -15,35 +15,18 @@ class ProductDetailsRelatedSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<
-      GenericCubit<ListRelatedProducts>,
-      GenericState<ListRelatedProducts>
-    >(
-      bloc: vm._brandProductsCubit,
-      builder: (context, state) {
-        final ListRelatedProducts items = state.data.isNotEmpty
-            ? state.data
-            : product.carouselProducts;
+    final List<ProductRelatedItemModel> brandProducts = vm._data.brandProducts;
 
-        if (items.isEmpty) return _emptyOrShimmer();
+    final List<ProductRelatedItemModel> items = brandProducts.isNotEmpty
+        ? brandProducts
+        : product.carouselProducts;
 
-        return _carousel(items);
-      },
-    );
-  }
+    if (items.isEmpty) {
+      return vm._data.isBrandProductsLoading
+          ? const _RelatedShimmer()
+          : const SizedBox.shrink();
+    }
 
-  Widget _emptyOrShimmer() {
-    return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
-      bloc: vm._brandProductsLoadingCubit,
-      builder: (context, state) {
-        if (!state.data) return const SizedBox.shrink();
-
-        return const _RelatedShimmer();
-      },
-    );
-  }
-
-  Widget _carousel(ListRelatedProducts items) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

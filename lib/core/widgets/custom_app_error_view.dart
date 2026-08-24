@@ -14,11 +14,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 /// (`_ProductDetailsPlaceholder`, `_ProductSearchPlaceholder`) already wrap it
 /// in one so pull-to-refresh has something to pull on; nesting a second
 /// scrollable inside that unbounded space would throw.
-class AppErrorView extends StatelessWidget {
+class CustomAppErrorView extends StatelessWidget {
   final String message;
   final VoidCallback? onRetry;
 
-  const AppErrorView({super.key, required this.message, this.onRetry});
+  const CustomAppErrorView({super.key, required this.message, this.onRetry});
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,5 @@
 part of '../product_search_imports.dart';
 
-
 class ProductSearchAvailableChip extends StatelessWidget {
   final ProductSearchViewModel vm;
   final bool isSelected;

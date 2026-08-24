@@ -9,7 +9,7 @@ import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/core/services/navigation_service.dart';
 import 'package:almasry_2/core/services/shared_prefs_services.dart';
 import 'package:almasry_2/core/utils/price_format.dart';
-import 'package:almasry_2/core/widgets/app_button.dart';
+import 'package:almasry_2/core/widgets/custom_app_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

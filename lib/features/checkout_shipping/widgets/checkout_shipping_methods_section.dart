@@ -36,7 +36,7 @@ class CheckoutShippingMethodsSection extends StatelessWidget {
         if (data.isApplyingAddress)
           const _MethodsLoader()
         else if (data.methods.isEmpty)
-          AppEmptyView(message: LocaleKeys.checkoutNoShippingMethods.tr())
+          CustomAppEmptyView(message: LocaleKeys.checkoutNoShippingMethods.tr())
         else
           for (final ShippingMethodModel method in data.methods)
             _MethodRow(

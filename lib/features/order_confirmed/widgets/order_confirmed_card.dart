@@ -97,7 +97,7 @@ class OrderConfirmedCard extends StatelessWidget {
 }
 
 /// The dark pill beside the order number. Deliberately not the shared
-/// `OrderStatusChip`: that one is pastel-per-status and this design wants one
+/// `CustomOrderStatusChip`: that one is pastel-per-status and this design wants one
 /// solid dark blue pill.
 class _StatusPill extends StatelessWidget {
   final String status;

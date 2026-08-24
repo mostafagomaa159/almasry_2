@@ -50,7 +50,7 @@ class _ProductRow extends StatelessWidget {
           child: SizedBox(
             width: 66.w,
             height: 66.w,
-            child: AppNetworkImage(url: item.imageUrl),
+            child: CustomAppNetworkImage(url: item.imageUrl),
           ),
         ),
 

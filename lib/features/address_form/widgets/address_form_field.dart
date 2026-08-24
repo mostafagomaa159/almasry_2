@@ -3,7 +3,7 @@ part of '../address_form_imports.dart';
 /// One field of the address form: a bold dark-blue caption over an underlined
 /// input.
 ///
-/// Deliberately not `AppTextField` — that one draws a filled, fully bordered
+/// Deliberately not `CustomAppTextField` — that one draws a filled, fully bordered
 /// box, and this screen's fields are bare underlines.
 ///
 /// A presentational leaf, so it keeps its parameters rather than taking the

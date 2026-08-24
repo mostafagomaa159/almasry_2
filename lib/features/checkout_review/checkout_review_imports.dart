@@ -19,7 +19,7 @@ import 'package:almasry_2/core/services/graphql_service.dart';
 import 'package:almasry_2/core/services/navigation_service.dart';
 import 'package:almasry_2/core/utils/error_message.dart';
 import 'package:almasry_2/core/utils/price_format.dart';
-import 'package:almasry_2/core/widgets/app_network_image.dart';
+import 'package:almasry_2/core/widgets/custom_app_network_image.dart';
 import 'package:almasry_2/core/widgets/cart_totals_card.dart';
 import 'package:almasry_2/core/widgets/checkout_stepper.dart';
 import 'package:almasry_2/core/widgets/custom_app_bar.dart';

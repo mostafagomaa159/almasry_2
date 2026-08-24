@@ -29,7 +29,7 @@ class CartItemTile extends StatelessWidget {
           child: SizedBox(
             width: 96.w,
             height: 96.w,
-            child: AppNetworkImage(url: item.imageUrl),
+            child: CustomAppNetworkImage(url: item.imageUrl),
           ),
         ),
 

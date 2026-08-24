@@ -44,7 +44,7 @@ class OrderConfirmedBody extends StatelessWidget {
 
         26.verticalSpace,
 
-        AppButton(
+        CustomAppButton(
           title: LocaleKeys.orderConfirmedTrack.tr(),
           onPressed: vm._openOrders,
           borderRadius: 10,
@@ -52,7 +52,7 @@ class OrderConfirmedBody extends StatelessWidget {
 
         14.verticalSpace,
 
-        AppButton(
+        CustomAppButton(
           title: LocaleKeys.orderConfirmedBackToMain.tr(),
           onPressed: vm._backToMain,
           borderRadius: 10,

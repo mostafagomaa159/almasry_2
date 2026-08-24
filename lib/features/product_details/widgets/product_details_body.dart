@@ -7,64 +7,81 @@ class ProductDetailsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<
-      GenericCubit<ProductDetailModel?>,
-      GenericState<ProductDetailModel?>
-    >(
-      bloc: vm._productCubit,
-      builder: (context, state) {
-        return CustomAppRefreshIndicator(
-          onRefresh: vm._refresh,
-          child: _content(state),
-        );
-      },
+    return Scaffold(
+      backgroundColor: AppColors.surfaceMuted,
+      body: SafeArea(
+        child: Column(
+          children: [
+            ProductDetailsHeader(
+              title: LocaleKeys.productDetailsTitle.tr(),
+              onBack: vm._back,
+            ),
+
+            Expanded(
+              child:
+                  BlocBuilder<
+                    GenericCubit<ProductDetailsData>,
+                    GenericState<ProductDetailsData>
+                  >(
+                    bloc: vm._productDetailsCubit,
+                    builder: (context, state) {
+                      return CustomAppRefreshIndicator(
+                        onRefresh: vm._refresh,
+                        child: _content(state.data),
+                      );
+                    },
+                  ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _content(GenericState<ProductDetailModel?> state) {
-    if (state is! GenericUpdateState) return const ProductDetailsShimmer();
+  Widget _content(ProductDetailsData data) {
+    if (data.product == null) {
+      if (data.status == ProductDetailsStatus.initial ||
+          data.status == ProductDetailsStatus.loading) {
+        return const ProductDetailsShimmer();
+      }
 
-    final ProductDetailModel? product = state.data;
+      if (data.status == ProductDetailsStatus.error) {
+        return _ProductDetailsPlaceholder(
+          child: CustomAppErrorView(
+            message: data.errorMessage,
+            onRetry: vm._retry,
+          ),
+        );
+      }
 
-    if (product == null) return _ProductDetailsPlaceholder(vm: vm);
+      return _ProductDetailsPlaceholder(
+        child: CustomAppEmptyView(
+          message: LocaleKeys.productDetailsNotFound.tr(),
+        ),
+      );
+    }
 
-    return _ProductDetailsContent(vm: vm, product: product);
+    return _ProductDetailsContent(vm: vm, data: data);
   }
 }
 
-/// Nothing to show: the skeleton while a retry is in flight, the error once it
-/// fails, and the not-found box when the SKU simply matched nothing. Both
-/// boxes still have to scroll or [CustomAppRefreshIndicator] would have
-/// nothing to pull on.
+/// The error and empty states are centred boxes, but they still have to scroll
+/// or [CustomAppRefreshIndicator] would have nothing to pull on.
 class _ProductDetailsPlaceholder extends StatelessWidget {
-  const _ProductDetailsPlaceholder({required this.vm});
+  const _ProductDetailsPlaceholder({required this.child});
 
-  final ProductDetailsViewModel vm;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
-      bloc: vm._loadingCubit,
-      builder: (context, state) {
-        if (state.data) return const ProductDetailsShimmer();
-
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: vm._errorMessage.isNotEmpty
-                    ? CustomAppErrorView(
-                        message: vm._errorMessage,
-                        onRetry: vm._retry,
-                      )
-                    : CustomAppEmptyView(
-                        message: LocaleKeys.productDetailsNotFound.tr(),
-                      ),
-              ),
-            );
-          },
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: child,
+          ),
         );
       },
     );
@@ -72,13 +89,15 @@ class _ProductDetailsPlaceholder extends StatelessWidget {
 }
 
 class _ProductDetailsContent extends StatelessWidget {
-  const _ProductDetailsContent({required this.vm, required this.product});
+  const _ProductDetailsContent({required this.vm, required this.data});
 
   final ProductDetailsViewModel vm;
-  final ProductDetailModel product;
+  final ProductDetailsData data;
 
   @override
   Widget build(BuildContext context) {
+    final ProductDetailModel product = data.product!;
+
     return Stack(
       children: [
         Positioned.fill(
@@ -87,7 +106,7 @@ class _ProductDetailsContent extends StatelessWidget {
 
             padding: EdgeInsets.only(bottom: 140.h),
             child: FadeInUp(
-              duration: AppDurations.contentFade,
+              duration: const Duration(milliseconds: 250),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

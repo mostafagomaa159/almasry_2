@@ -22,27 +22,8 @@ class ProductDetailsDescriptionSection extends StatelessWidget {
 
     if (!hasShort && !hasFull) return const SizedBox.shrink();
 
-    return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
-      bloc: vm._descriptionExpandedCubit,
-      builder: (context, state) {
-        return _card(
-          isExpanded: state.data,
-          shortDescription: shortDescription,
-          fullDescription: fullDescription,
-          hasShort: hasShort,
-          hasFull: hasFull,
-        );
-      },
-    );
-  }
+    final bool isExpanded = vm._data.isDescriptionExpanded;
 
-  Widget _card({
-    required bool isExpanded,
-    required String shortDescription,
-    required String fullDescription,
-    required bool hasShort,
-    required bool hasFull,
-  }) {
     final String body = hasShort ? shortDescription : fullDescription;
 
     return Padding(
@@ -85,7 +66,7 @@ class ProductDetailsDescriptionSection extends StatelessWidget {
 
                 ClipRect(
                   child: AnimatedSize(
-                    duration: AppDurations.expand,
+                    duration: const Duration(milliseconds: 220),
                     curve: Curves.easeInOut,
                     child: ConstrainedBox(
                       constraints: isExpanded

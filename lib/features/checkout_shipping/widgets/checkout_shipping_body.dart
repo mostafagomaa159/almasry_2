@@ -19,7 +19,10 @@ class CheckoutShippingBody extends StatelessWidget {
         // A failed address apply takes the whole step: there is nothing valid
         // to pick a carrier from until it succeeds.
         if (data.status == CheckoutShippingStatus.error) {
-          return AppErrorView(message: data.errorMessage, onRetry: vm._retry);
+          return CustomAppErrorView(
+            message: data.errorMessage,
+            onRetry: vm._retry,
+          );
         }
 
         return Column(

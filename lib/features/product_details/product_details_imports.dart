@@ -30,17 +30,16 @@ import 'package:almasry_2/core/utils/app_direction.dart';
 import 'package:almasry_2/core/utils/error_message.dart';
 import 'package:almasry_2/core/widgets/custom_app_empty_view.dart';
 import 'package:almasry_2/core/widgets/custom_app_error_view.dart';
-import 'package:almasry_2/core/widgets/custom_app_directional_text.dart';
 import 'package:almasry_2/core/widgets/custom_app_network_image.dart';
 import 'package:almasry_2/core/widgets/custom_app_refresh_indicator.dart';
 import 'package:almasry_2/core/widgets/custom_app_shimmer.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:almasry_2/core/constants/app_durations.dart';
 
 part 'view/product_details_view.dart';
 part 'view_model/product_details_view_model.dart';
@@ -55,3 +54,5 @@ part 'widgets/product_details_rating_section.dart';
 part 'widgets/product_details_related_section.dart';
 part 'widgets/product_details_shimmer.dart';
 part 'widgets/product_details_summary_section.dart';
+
+part '../../core/models/response/product_details/product_details_model.dart';

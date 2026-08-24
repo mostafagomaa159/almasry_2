@@ -17,11 +17,11 @@ class CheckoutPaymentBody extends StatelessWidget {
         final CheckoutPaymentData data = state.data;
 
         if (data.status == CheckoutPaymentStatus.loading) {
-          return const Center(child: AppLoadingView());
+          return const Center(child: CustomAppLoadingView());
         }
 
         if (data.status == CheckoutPaymentStatus.error) {
-          return AppErrorView(
+          return CustomAppErrorView(
             message: data.errorMessage,
             onRetry: vm._loadMethods,
           );
@@ -31,7 +31,7 @@ class CheckoutPaymentBody extends StatelessWidget {
           children: <Widget>[
             Expanded(
               child: data.methods.isEmpty
-                  ? AppEmptyView(
+                  ? CustomAppEmptyView(
                       message: LocaleKeys.checkoutNoPaymentMethods.tr(),
                     )
                   : ListView.separated(

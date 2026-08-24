@@ -126,7 +126,7 @@ class AddressFormBody extends StatelessWidget {
                 (BuildContext context, GenericState<AddressFormData> state) {
                   return Padding(
                     padding: EdgeInsets.symmetric(horizontal: 24.w),
-                    child: AppButton(
+                    child: CustomAppButton(
                       title: LocaleKeys.addressFormSave.tr(),
                       onPressed: vm._save,
                       isLoading: state.data.isSaving,

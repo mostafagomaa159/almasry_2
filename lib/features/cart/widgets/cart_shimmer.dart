@@ -8,7 +8,7 @@ class CartShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppShimmer(
+    return CustomAppShimmer(
       child: ListView.separated(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         physics: const NeverScrollableScrollPhysics(),

@@ -191,7 +191,10 @@ class _OptionRow extends StatelessWidget {
               SizedBox(
                 width: 44.w,
                 height: 28.h,
-                child: AppNetworkImage(url: option.logo, fit: BoxFit.contain),
+                child: CustomAppNetworkImage(
+                  url: option.logo,
+                  fit: BoxFit.contain,
+                ),
               ),
           ],
         ),

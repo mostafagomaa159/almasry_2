@@ -69,7 +69,7 @@ class CheckoutShippingAddressSection extends StatelessWidget {
             if (all.isEmpty)
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 24.h),
-                child: AppEmptyView(
+                child: CustomAppEmptyView(
                   message: LocaleKeys.checkoutNoAddresses.tr(),
                 ),
               )

@@ -19,7 +19,7 @@ import 'package:almasry_2/core/services/graphql_service.dart';
 import 'package:almasry_2/core/services/navigation_service.dart';
 import 'package:almasry_2/core/utils/error_message.dart';
 import 'package:almasry_2/core/utils/validators.dart';
-import 'package:almasry_2/core/widgets/app_button.dart';
+import 'package:almasry_2/core/widgets/custom_app_button.dart';
 import 'package:almasry_2/core/widgets/custom_app_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
