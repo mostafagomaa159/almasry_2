@@ -1,7 +1,5 @@
 part of '../product_details_imports.dart';
 
-/// The main image with the floating action rail, and the gallery thumbnails
-/// under it. Selection lives in the ViewModel, so a refresh resets it.
 class ProductDetailsImageSection extends StatelessWidget {
   final ProductDetailsViewModel vm;
   final ProductDetailModel product;
@@ -27,15 +25,7 @@ class ProductDetailsImageSection extends StatelessWidget {
             child: Stack(
               children: [
                 Positioned.fill(
-                  child: Center(
-                    child: AppNetworkImage(
-                      url: vm._selectedImage,
-                      height: 250.h,
-                      fit: BoxFit.contain,
-                      showLoader: true,
-                      placeholder: const _ImagePlaceholder(),
-                    ),
-                  ),
+                  child: _Gallery(vm: vm, images: images),
                 ),
 
                 PositionedDirectional(
@@ -70,9 +60,50 @@ class ProductDetailsImageSection extends StatelessWidget {
           ],
 
           18.verticalSpace,
-          const Divider(height: 1, thickness: 1, color: Color(0xFFE9E9E9)),
+          const Divider(height: 1, thickness: 1, color: AppColors.divider),
         ],
       ),
+    );
+  }
+}
+
+class _Gallery extends StatelessWidget {
+  const _Gallery({required this.vm, required this.images});
+
+  final ProductDetailsViewModel vm;
+  final List<String> images;
+
+  @override
+  Widget build(BuildContext context) {
+    if (images.isEmpty) {
+      return Center(
+        child: SizedBox(
+          height: 250.h,
+          width: 250.w,
+          child: const _ImagePlaceholder(),
+        ),
+      );
+    }
+
+    return PageView.builder(
+      controller: vm._galleryController,
+      itemCount: images.length,
+      onPageChanged: vm._selectImage,
+
+      physics: images.length > 1
+          ? const ClampingScrollPhysics()
+          : const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Center(
+          child: CustomAppNetworkImage(
+            url: images[index],
+            height: 250.h,
+            fit: BoxFit.contain,
+            showLoader: true,
+            placeholder: const _ImagePlaceholder(),
+          ),
+        );
+      },
     );
   }
 }
@@ -85,11 +116,17 @@ class _GalleryThumbnails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final int selected = vm._selectedImageIndex;
+    return BlocBuilder<GenericCubit<int>, GenericState<int>>(
+      bloc: vm._selectedImageCubit,
+      builder: (context, state) => _strip(vm._selectedImageIndex),
+    );
+  }
 
+  Widget _strip(int selected) {
     return SizedBox(
       height: 74.h,
       child: ListView.separated(
+        controller: vm._thumbnailsController,
         scrollDirection: Axis.horizontal,
         itemCount: images.length,
         separatorBuilder: (context, index) => 10.horizontalSpace,
@@ -97,9 +134,9 @@ class _GalleryThumbnails extends StatelessWidget {
           final bool isSelected = index == selected;
 
           return GestureDetector(
-            onTap: () => vm._selectImage(index),
+            onTap: () => vm._showImage(index),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 180),
+              duration: AppDurations.highlight,
               width: 74.w,
               padding: EdgeInsets.all(6.w),
               decoration: BoxDecoration(
@@ -107,12 +144,12 @@ class _GalleryThumbnails extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(
                   color: isSelected
-                      ? const Color(0xFF11385B)
-                      : const Color(0xFFE0E0E0),
+                      ? AppColors.navyHeading
+                      : AppColors.borderThumbnail,
                   width: isSelected ? 1.4 : 1,
                 ),
               ),
-              child: AppNetworkImage(
+              child: CustomAppNetworkImage(
                 url: images[index],
                 fit: BoxFit.contain,
                 placeholder: const _ImagePlaceholder(),
@@ -143,9 +180,7 @@ class _FavoriteButton extends StatelessWidget {
 
         return _ActionButton(
           icon: isFavorite ? Icons.favorite : Icons.favorite_border,
-          iconColor: isFavorite
-              ? AppColors.primaryRed
-              : const Color(0xFF202020),
+          iconColor: isFavorite ? AppColors.primaryRed : AppColors.textInk,
           onTap: vm._toggleFavorite,
         );
       },
@@ -173,15 +208,11 @@ class _ActionButton extends StatelessWidget {
         width: 48.w,
         height: 48.h,
         decoration: BoxDecoration(
-          color: const Color(0xFFF6F6F6),
+          color: AppColors.surfaceAction,
           borderRadius: BorderRadius.circular(12.r),
         ),
         alignment: Alignment.center,
-        child: Icon(
-          icon,
-          size: 22.sp,
-          color: iconColor ?? const Color(0xFF202020),
-        ),
+        child: Icon(icon, size: 22.sp, color: iconColor ?? AppColors.textInk),
       ),
     );
   }
@@ -194,14 +225,14 @@ class _ImagePlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFF3F3F3),
+        color: AppColors.surfacePlaceholder,
         borderRadius: BorderRadius.circular(16.r),
       ),
       alignment: Alignment.center,
       child: Icon(
         Icons.image_not_supported_outlined,
         size: 34.sp,
-        color: const Color(0xFF9E9E9E),
+        color: AppColors.textSecondary,
       ),
     );
   }

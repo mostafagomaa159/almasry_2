@@ -19,7 +19,7 @@ class ServiceCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: const Color(0xFFEDEDED)),
+        border: Border.all(color: AppColors.borderSoft),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),

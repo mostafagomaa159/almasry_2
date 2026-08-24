@@ -35,13 +35,8 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
-  static const Color _titleColor = Color(0xFF183B61);
-  static const Color _mutedColor = Color(0xFF4A4A4A);
-  static const Color _borderColor = Color(0xFFEDEDED);
-  static const Color _softBorderColor = Color(0xFFE1E1E1);
-  static const Color _disabledBgColor = Color(0xFFF7F7F7);
-  static const Color _disabledBorderColor = Color(0xFFF0F0F0);
-  static const Color _disabledIconColor = Color(0xFFD0D0D0);
+  static const Color _titleColor = AppColors.navyCard;
+  static const Color _mutedColor = AppColors.textMuted;
 
   int quantity = 1;
 
@@ -84,24 +79,18 @@ class _ProductCardState extends State<ProductCard> {
 
     final radius = BorderRadius.circular(16.r);
 
-    return Container(
+    return CustomAppCard(
       width: 165.w,
       margin: EdgeInsetsDirectional.only(start: 10.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: radius,
-        border: Border.all(color: _borderColor),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      borderColor: AppColors.borderSoft,
+      shadowOpacity: 0.04,
+      shadowBlur: 8,
+      shadowOffsetY: 2,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // The tap target covers the image and copy but stops above the cart
+          // row, so the stepper's own buttons are not swallowed by it.
           Material(
             color: Colors.transparent,
             borderRadius: radius,
@@ -122,7 +111,7 @@ class _ProductCardState extends State<ProductCard> {
                             width: double.infinity,
                             child: Center(
                               child: widget.isNetworkImage
-                                  ? AppNetworkImage(
+                                  ? CustomAppNetworkImage(
                                       url: widget.imagePath,
                                       height: 110.h,
                                       fit: BoxFit.contain,
@@ -154,50 +143,15 @@ class _ProductCardState extends State<ProductCard> {
                                   GenericState<FavoritesModel>
                                 >(
                                   builder: (context, state) {
-                                    final isFavorite = state.data.isFavorite(
-                                      widget.sku,
-                                    );
-
-                                    return Material(
-                                      color: Colors.transparent,
-                                      child: InkWell(
-                                        onTap: _toggleFavorite,
-                                        borderRadius: BorderRadius.circular(
-                                          10.r,
-                                        ),
-                                        child: Container(
-                                          width: 32.w,
-                                          height: 32.h,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(
-                                              10.r,
-                                            ),
-                                            border: Border.all(
-                                              color: const Color(0xFFEAEAEA),
-                                            ),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black.withValues(
-                                                  alpha: 0.04,
-                                                ),
-                                                blurRadius: 6,
-                                                offset: const Offset(0, 2),
-                                              ),
-                                            ],
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: Icon(
-                                            isFavorite
-                                                ? Icons.favorite
-                                                : Icons.favorite_border,
-                                            color: isFavorite
-                                                ? AppColors.primaryRed
-                                                : const Color(0xFFC8C8C8),
-                                            size: 18.sp,
-                                          ),
-                                        ),
+                                    return CustomAppFavoriteButton(
+                                      isFavorite: state.data.isFavorite(
+                                        widget.sku,
                                       ),
+                                      onTap: _toggleFavorite,
+                                      roundedOutline: false,
+                                      inactiveColor:
+                                          AppColors.iconFavoriteInactive,
+                                      shadowOpacity: 0.04,
                                     );
                                   },
                                 ),
@@ -245,34 +199,20 @@ class _ProductCardState extends State<ProductCard> {
 
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10.w),
-                      child: Row(
+                      child: CustomAppPriceRow(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            widget.price,
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w800,
-                              color: _titleColor,
-                            ),
-                          ),
-                          if (hasOldPrice) ...[
-                            6.horizontalSpace,
-                            Flexible(
-                              child: Text(
-                                widget.oldPrice,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 11.sp,
-                                  color: const Color(0xFFBDBDBD),
-                                  decoration: TextDecoration.lineThrough,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ],
+                        price: widget.price,
+                        oldPrice: hasOldPrice ? widget.oldPrice : null,
+                        priceStyle: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w800,
+                          color: _titleColor,
+                        ),
+                        oldPriceStyle: TextStyle(
+                          fontSize: 11.sp,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.unavailableGrey,
+                        ),
                       ),
                     ),
 
@@ -306,88 +246,29 @@ class _ProductCardState extends State<ProductCard> {
                   ),
                 ),
                 const Spacer(),
-                _buildQuantityStepper(),
+                CustomAppQuantityStepper(
+                  quantity: quantity,
+                  onIncrement: _incrementQuantity,
+                  onDecrement: quantity > 1 ? _decrementQuantity : null,
+                  incrementFirst: false,
+                  boxedButtons: true,
+                  backgroundColor: AppColors.white,
+                  borderColor: AppColors.borderStepper,
+                  borderRadius: 10,
+                  horizontalPadding: 6,
+                  buttonSize: 24,
+                  iconSize: 16,
+                  spacing: 12,
+                  fontSize: 14,
+                  contentColor: _titleColor,
+                  iconColor: _mutedColor,
+                ),
               ],
             ),
           ),
 
           12.verticalSpace,
         ],
-      ),
-    );
-  }
-
-  Widget _buildQuantityStepper() {
-    return Container(
-      height: 36.h,
-      padding: EdgeInsets.symmetric(horizontal: 6.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(color: _softBorderColor),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildQtyButton(
-            icon: Icons.remove,
-            onTap: quantity > 1 ? _decrementQuantity : null,
-            isDisabled: quantity == 1,
-          ),
-          12.horizontalSpace,
-          ConstrainedBox(
-            constraints: BoxConstraints(minWidth: 12.w),
-            child: Center(
-              child: Text(
-                '$quantity',
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w700,
-                  color: _titleColor,
-                ),
-              ),
-            ),
-          ),
-          12.horizontalSpace,
-          _buildQtyButton(
-            icon: Icons.add,
-            onTap: _incrementQuantity,
-            isDisabled: false,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildQtyButton({
-    required IconData icon,
-    required VoidCallback? onTap,
-    required bool isDisabled,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8.r),
-        child: Container(
-          width: 24.w,
-          height: 24.h,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: isDisabled ? _disabledBgColor : Colors.white,
-            borderRadius: BorderRadius.circular(8.r),
-            border: Border.all(
-              color: isDisabled
-                  ? _disabledBorderColor
-                  : const Color(0xFFE6E6E6),
-            ),
-          ),
-          child: Icon(
-            icon,
-            size: 16.sp,
-            color: isDisabled ? _disabledIconColor : _mutedColor,
-          ),
-        ),
       ),
     );
   }

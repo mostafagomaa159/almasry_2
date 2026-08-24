@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 /// `Image.network` with the placeholder every call site was rolling by hand.
 /// An empty [url] short-circuits to [placeholder] instead of failing a
 /// request first.
-class AppNetworkImage extends StatelessWidget {
+class CustomAppNetworkImage extends StatelessWidget {
   final String url;
   final BoxFit fit;
   final double? width;
@@ -17,7 +17,7 @@ class AppNetworkImage extends StatelessWidget {
   /// Shows a spinner while the bytes arrive.
   final bool showLoader;
 
-  const AppNetworkImage({
+  const CustomAppNetworkImage({
     super.key,
     required this.url,
     this.fit = BoxFit.cover,

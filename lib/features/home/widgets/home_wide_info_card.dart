@@ -11,7 +11,7 @@ class WideInfoCard extends StatelessWidget {
     required this.title,
     required this.imagePath,
     this.isNetworkImage = false,
-    this.backgroundColor = const Color(0xFFF9F3E6),
+    this.backgroundColor = AppColors.goldTint,
   });
 
   @override
@@ -35,7 +35,7 @@ class WideInfoCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w700,
-                color: const Color(0xFF183B61),
+                color: AppColors.navyCard,
                 height: 1.3,
               ),
             ),
@@ -47,7 +47,7 @@ class WideInfoCard extends StatelessWidget {
               width: 58.w,
               height: 58.h,
               child: isNetworkImage
-                  ? AppNetworkImage(
+                  ? CustomAppNetworkImage(
                       url: imagePath,
                       placeholder: Container(
                         color: Colors.grey.shade200,

@@ -9,8 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:almasry_2/core/constants/app_images.dart';
-import 'package:almasry_2/core/widgets/app_button.dart';
+import 'package:almasry_2/core/widgets/custom_app_button.dart';
 import 'package:almasry_2/core/utils/app_direction.dart';
+import 'package:almasry_2/core/constants/app_colors.dart';
+import 'package:almasry_2/core/constants/app_durations.dart';
 
 part 'view/edit_profile_view.dart';
 part 'view_model/edit_profile_view_model.dart';

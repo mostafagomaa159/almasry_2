@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 /// Pull-to-refresh in the app's colours. Thin on purpose — it exists so every
 /// screen gets the same spinner without repeating the theming.
-class AppRefreshIndicator extends StatelessWidget {
+class CustomAppRefreshIndicator extends StatelessWidget {
   final Future<void> Function() onRefresh;
   final Widget child;
 
-  const AppRefreshIndicator({
+  const CustomAppRefreshIndicator({
     super.key,
     required this.onRefresh,
     required this.child,

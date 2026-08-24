@@ -10,7 +10,7 @@ class BrandsList extends StatelessWidget {
     return Expanded(
       child: Stack(
         children: [
-          AppRefreshIndicator(
+          CustomAppRefreshIndicator(
             onRefresh: vm._refresh,
             child:
                 BlocBuilder<GenericCubit<ListBrands>, GenericState<ListBrands>>(
@@ -35,7 +35,7 @@ class BrandsList extends StatelessWidget {
 }
 
 /// The error and empty states. Both are centred boxes, but they still have to
-/// scroll or [AppRefreshIndicator] would have nothing to pull on.
+/// scroll or [CustomAppRefreshIndicator] would have nothing to pull on.
 class _BrandsPlaceholder extends StatelessWidget {
   const _BrandsPlaceholder({required this.vm});
 
@@ -50,8 +50,11 @@ class _BrandsPlaceholder extends StatelessWidget {
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
             child: vm._errorMessage.isNotEmpty
-                ? AppErrorView(message: vm._errorMessage, onRetry: vm._retry)
-                : AppEmptyView(message: LocaleKeys.brandsEmpty.tr()),
+                ? CustomAppErrorView(
+                    message: vm._errorMessage,
+                    onRetry: vm._retry,
+                  )
+                : CustomAppEmptyView(message: LocaleKeys.brandsEmpty.tr()),
           ),
         );
       },
@@ -82,7 +85,7 @@ class _BrandsGrid extends StatelessWidget {
           mainAxisSpacing: 20.h,
         ),
         itemBuilder: (context, index) {
-          if (index >= brands.length) return vm._alert.showLoadingView();
+          if (index >= brands.length) return vm._alertService.showLoadingView();
 
           return _BrandGridItem(vm: vm, brand: brands[index], index: index);
         },
@@ -105,7 +108,7 @@ class _BrandGridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FadeInUp(
-      duration: const Duration(milliseconds: 200),
+      duration: AppDurations.listStagger,
 
       delay: Duration(milliseconds: 2 * index),
       child: GestureDetector(
@@ -115,11 +118,11 @@ class _BrandGridItem extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.white,
             borderRadius: BorderRadius.circular(14.r),
-            border: Border.all(color: const Color(0xFFEAEAEA)),
+            border: Border.all(color: AppColors.borderLight),
           ),
           child: Center(
             child: brand.hasImage
-                ? AppNetworkImage(
+                ? CustomAppNetworkImage(
                     url: brand.image,
                     fit: BoxFit.contain,
                     placeholder: _BrandNameLabel(name: brand.name),

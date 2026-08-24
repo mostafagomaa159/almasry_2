@@ -13,11 +13,11 @@ class HomeBodyView extends StatelessWidget {
         final data = vm._data;
 
         if (data.isLoading) {
-          return const AppLoadingView();
+          return const CustomAppLoadingView();
         }
 
         if (data.errorMessage != null && data.errorMessage!.isNotEmpty) {
-          return AppErrorView(message: data.errorMessage!);
+          return CustomAppErrorView(message: data.errorMessage!);
         }
 
         return HomeSuccessContent(vm: vm);

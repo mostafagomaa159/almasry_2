@@ -13,7 +13,7 @@ class HomeQuickActionsSection extends StatelessWidget {
             child: HomeQuickActionCard(
               title: LocaleKeys.homeSkinAnalysis.tr(),
               iconPath: AppImages.mask,
-              backgroundColor: const Color(0xFFFDEBEC),
+              backgroundColor: AppColors.redTintCard,
               onTap: () {},
             ),
           ),
@@ -22,7 +22,7 @@ class HomeQuickActionsSection extends StatelessWidget {
             child: HomeQuickActionCard(
               title: LocaleKeys.homeSmartSearch.tr(),
               iconPath: AppImages.ai,
-              backgroundColor: const Color(0xFFF3F0FF),
+              backgroundColor: AppColors.violetTint,
               onTap: () {},
             ),
           ),

@@ -31,7 +31,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
       body: SafeArea(
         child: Column(
           children: [
-            AuthHeader(showBackButton: true, onBackPressed: vm._goBack),
+            CustomAuthHeader(showBackButton: true, onBackPressed: vm._goBack),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 24),

@@ -9,7 +9,7 @@ class HomeSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppSearchField(
+    return CustomAppSearchField(
       hintText: LocaleKeys.homeSearch.tr(),
       readOnly: true,
       onTap: () => _nav.pushNamed(RouteNames.productSearch),

@@ -10,20 +10,12 @@ class OrderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final firstItem = order.firstItem;
 
-    return Container(
+    return CustomAppCard(
       padding: EdgeInsets.all(14.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: const Color(0xFFEAEAEA)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
+      borderColor: AppColors.borderLight,
+      shadowOpacity: 0.03,
+      shadowBlur: 10,
+      shadowOffsetY: 3,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -35,11 +27,11 @@ class OrderCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w700,
-                    color: const Color(0xFF18314F),
+                    color: AppColors.titleNavy,
                   ),
                 ),
               ),
-              OrderStatusChip(status: order.status),
+              CustomOrderStatusChip(status: order.status),
             ],
           ),
           10.verticalSpace,
@@ -55,13 +47,13 @@ class OrderCard extends StatelessWidget {
                   width: 58.w,
                   height: 58.w,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF7F7F7),
+                    color: AppColors.surfaceMuted,
                     borderRadius: BorderRadius.circular(12.r),
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: firstItem.productImage.isEmpty
                       ? const Icon(Icons.image_not_supported_outlined)
-                      : AppNetworkImage(
+                      : CustomAppNetworkImage(
                           url: firstItem.productImage,
                           placeholder: const Icon(
                             Icons.image_not_supported_outlined,
@@ -77,7 +69,7 @@ class OrderCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFF18314F),
+                      color: AppColors.titleNavy,
                     ),
                   ),
                 ),
@@ -100,7 +92,7 @@ class OrderCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
-                  color: const Color(0xFF18314F),
+                  color: AppColors.titleNavy,
                 ),
               ),
             ],

@@ -3,7 +3,7 @@ import 'package:almasry_2/core/constants/app_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class AppButton extends StatelessWidget {
+class CustomAppButton extends StatelessWidget {
   final String title;
   final VoidCallback? onPressed;
   final bool isPrimary;
@@ -21,7 +21,7 @@ class AppButton extends StatelessWidget {
   final double fontSize;
   final double elevation;
 
-  const AppButton({
+  const CustomAppButton({
     super.key,
     required this.title,
     required this.onPressed,

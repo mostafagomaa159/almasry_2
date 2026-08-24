@@ -36,7 +36,7 @@ class _EditProfileViewState extends State<EditProfileView> {
             listener: (context, state) => vm._onStateChanged(state.data),
             builder: (context, state) {
               return Scaffold(
-                backgroundColor: const Color(0xFFF2F2F2),
+                backgroundColor: AppColors.surfacePage,
                 body: SafeArea(
                   child: Column(
                     children: [

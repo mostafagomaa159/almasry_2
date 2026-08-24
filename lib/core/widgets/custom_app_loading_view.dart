@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 /// The centred spinner every screen shows while its first request is in
 /// flight. Pass [height] when it stands in for content of a known size, so the
 /// page doesn't jump once the data lands.
-class AppLoadingView extends StatelessWidget {
+class CustomAppLoadingView extends StatelessWidget {
   final double? height;
   final Color color;
 
-  const AppLoadingView({
+  const CustomAppLoadingView({
     super.key,
     this.height,
     this.color = AppColors.primaryRed,

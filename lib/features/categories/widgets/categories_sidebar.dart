@@ -11,7 +11,7 @@ class CategoriesSidebar extends StatelessWidget {
 
     return Container(
       width: 110.w,
-      color: const Color(0xFFF7F7F7),
+      color: AppColors.surfaceMuted,
       child: ListView.builder(
         itemCount: categories.length,
         itemBuilder: (context, index) {
@@ -22,7 +22,7 @@ class CategoriesSidebar extends StatelessWidget {
             onTap: () => vm._selectParentCategory(index),
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 12.h),
-              color: isSelected ? Colors.white : const Color(0xFFF7F7F7),
+              color: isSelected ? Colors.white : AppColors.surfaceMuted,
               child: Column(
                 children: [
                   Container(
@@ -35,7 +35,7 @@ class CategoriesSidebar extends StatelessWidget {
                     clipBehavior: Clip.antiAlias,
                     child: item.image.trim().isEmpty
                         ? const Icon(Icons.image_outlined)
-                        : AppNetworkImage(
+                        : CustomAppNetworkImage(
                             url: item.imageUrl,
                             placeholder: const Icon(Icons.image_outlined),
                           ),

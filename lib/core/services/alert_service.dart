@@ -1,9 +1,10 @@
 import 'package:almasry_2/core/constants/app_colors.dart';
-import 'package:almasry_2/core/widgets/app_loading_view.dart';
+import 'package:almasry_2/core/widgets/custom_app_loading_view.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:almasry_2/core/constants/app_durations.dart';
 
 /// App-wide toasts and blocking loaders, so no feature has to build its own
 /// SnackBar or spin up a dialog just to say "saved" or "something went wrong".
@@ -55,9 +56,9 @@ class AlertService {
       ),
       backgroundColor: const Color.fromRGBO(255, 255, 255, 0.84),
       backButtonBehavior: BackButtonBehavior.close,
-      animationDuration: const Duration(milliseconds: 500),
-      animationReverseDuration: const Duration(milliseconds: 500),
-      duration: const Duration(seconds: 4),
+      animationDuration: AppDurations.alertSlide,
+      animationReverseDuration: AppDurations.alertSlide,
+      duration: AppDurations.alertVisible,
       borderRadius: 12.r,
       contentPadding: EdgeInsets.all(16.r),
     );
@@ -81,9 +82,9 @@ class AlertService {
       ),
       backgroundColor: AppColors.white,
       backButtonBehavior: BackButtonBehavior.close,
-      animationDuration: const Duration(milliseconds: 500),
-      animationReverseDuration: const Duration(milliseconds: 500),
-      duration: const Duration(seconds: 4),
+      animationDuration: AppDurations.alertSlide,
+      animationReverseDuration: AppDurations.alertSlide,
+      duration: AppDurations.alertVisible,
       borderRadius: 12.r,
       margin: EdgeInsets.all(5.r),
       contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
@@ -104,7 +105,7 @@ class AlertService {
       ..indicatorWidget = SizedBox(
         height: 40.h,
         width: 40.w,
-        child: const AppLoadingView(),
+        child: const CustomAppLoadingView(),
       );
 
     EasyLoading.show(
@@ -113,7 +114,7 @@ class AlertService {
     );
   }
 
-  Widget showLoadingView() => const AppLoadingView();
+  Widget showLoadingView() => const CustomAppLoadingView();
 
   void closeLoading() => EasyLoading.dismiss();
 }

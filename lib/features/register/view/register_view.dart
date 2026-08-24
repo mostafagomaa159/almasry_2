@@ -29,7 +29,7 @@ class _RegisterCustomerViewState extends State<RegisterCustomerView> {
         top: false,
         child: Column(
           children: [
-            const AuthHeader(),
+            const CustomAuthHeader(),
             Expanded(
               child: SingleChildScrollView(
                 padding: EdgeInsets.symmetric(

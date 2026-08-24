@@ -206,7 +206,7 @@ class EditProfileViewModel {
       ),
     );
 
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(AppDurations.savePause);
 
     _editProfileCubit.onUpdateData(
       _editProfileCubit.state.data.copyWith(isSaving: false, saveSuccess: true),

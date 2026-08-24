@@ -25,7 +25,7 @@ class _CategoriesViewState extends State<CategoriesView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFFF8F8F8),
+      color: AppColors.surfaceScaffold,
       child: SafeArea(
         child: Column(
           children: [

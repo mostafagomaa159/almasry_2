@@ -15,18 +15,35 @@ class ProductDetailsRelatedSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<ProductRelatedItemModel> brandProducts = vm._data.brandProducts;
+    return BlocBuilder<
+      GenericCubit<ListRelatedProducts>,
+      GenericState<ListRelatedProducts>
+    >(
+      bloc: vm._brandProductsCubit,
+      builder: (context, state) {
+        final ListRelatedProducts items = state.data.isNotEmpty
+            ? state.data
+            : product.carouselProducts;
 
-    final List<ProductRelatedItemModel> items = brandProducts.isNotEmpty
-        ? brandProducts
-        : product.carouselProducts;
+        if (items.isEmpty) return _emptyOrShimmer();
 
-    if (items.isEmpty) {
-      return vm._data.isBrandProductsLoading
-          ? const _RelatedShimmer()
-          : const SizedBox.shrink();
-    }
+        return _carousel(items);
+      },
+    );
+  }
 
+  Widget _emptyOrShimmer() {
+    return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+      bloc: vm._brandProductsLoadingCubit,
+      builder: (context, state) {
+        if (!state.data) return const SizedBox.shrink();
+
+        return const _RelatedShimmer();
+      },
+    );
+  }
+
+  Widget _carousel(ListRelatedProducts items) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -37,7 +54,7 @@ class ProductDetailsRelatedSection extends StatelessWidget {
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w800,
-              color: const Color(0xFF11385B),
+              color: AppColors.navyHeading,
             ),
           ),
         ),
@@ -66,7 +83,7 @@ class _RelatedShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppShimmer(
+    return CustomAppShimmer(
       child: SizedBox(
         height: 250.h,
         child: ListView.separated(
@@ -110,14 +127,14 @@ class _RelatedCard extends StatelessWidget {
           padding: EdgeInsets.all(10.w),
           decoration: BoxDecoration(
             borderRadius: radius,
-            border: Border.all(color: const Color(0xFFEAEAEA)),
+            border: Border.all(color: AppColors.borderLight),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: Center(
-                  child: AppNetworkImage(
+                  child: CustomAppNetworkImage(
                     url: item.thumbnailUrl,
                     fit: BoxFit.contain,
                     placeholder: Icon(
@@ -138,7 +155,7 @@ class _RelatedCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 13.sp,
                   fontWeight: FontWeight.w700,
-                  color: const Color(0xFF11385B),
+                  color: AppColors.navyHeading,
                   height: 1.3,
                 ),
               ),
@@ -150,7 +167,7 @@ class _RelatedCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w800,
-                  color: const Color(0xFF11385B),
+                  color: AppColors.navyHeading,
                 ),
               ),
             ],

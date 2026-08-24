@@ -33,7 +33,7 @@ class OtpPinFields extends StatelessWidget {
         GestureDetector(
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
-            Future.delayed(const Duration(milliseconds: 50), () {
+            Future.delayed(AppDurations.focusHop, () {
               if (!context.mounted) return;
 
               FocusScope.of(context).requestFocus(FocusNode());
@@ -50,12 +50,12 @@ class OtpPinFields extends StatelessWidget {
                 height: 68,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF5F5F5),
+                  color: AppColors.surfaceLight,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: hasError
                         ? Colors.red.shade300
-                        : const Color(0xFFF1F1F1),
+                        : AppColors.surfaceField,
                   ),
                 ),
                 child: Text(
@@ -63,7 +63,7 @@ class OtpPinFields extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF1F2937),
+                    color: AppColors.textSlate,
                   ),
                 ),
               );

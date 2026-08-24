@@ -19,7 +19,7 @@ class _GuestProfileViewState extends State<GuestProfileView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFFF7F7F7),
+      color: AppColors.surfaceMuted,
       child: SafeArea(
         top: false,
         child: Column(

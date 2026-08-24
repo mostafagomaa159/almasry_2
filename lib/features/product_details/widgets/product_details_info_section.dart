@@ -26,7 +26,7 @@ class ProductDetailsInfoSection extends StatelessWidget {
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w800,
-              color: const Color(0xFF11385B),
+              color: AppColors.navyHeading,
             ),
           ),
 
@@ -102,18 +102,42 @@ class _ProductInfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F7F7),
+        color: AppColors.surfaceMuted,
         borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(color: const Color(0xFFE3E3E3)),
+        border: Border.all(color: AppColors.borderInfoRow),
       ),
       child: IntrinsicHeight(
+        // Label first, so it sits on the leading edge in both directions: on
+        // the right in Arabic, on the left in English. Ordering the value
+        // first put each column on the wrong side of the row in *both*
+        // locales, since a Row lays its children out along the ambient
+        // direction rather than a fixed one.
         child: Row(
           children: [
+            Expanded(
+              flex: 4,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
+                child: CustomAppDirectionalText(
+                  '${item.label}:',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w700,
+                    height: 1.4,
+                    color: AppColors.textInfoValue,
+                  ),
+                ),
+              ),
+            ),
+
+            Container(width: 1, color: AppColors.borderInfoRow),
+
             Expanded(
               flex: 5,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
-                child: Text(
+                child: CustomAppDirectionalText(
                   item.value,
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -121,27 +145,8 @@ class _ProductInfoRow extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                     height: 1.5,
                     color: item.highlightValue
-                        ? const Color(0xFFD7262E)
-                        : const Color(0xFF8B8B8B),
-                  ),
-                ),
-              ),
-            ),
-
-            Container(width: 1, color: const Color(0xFFE3E3E3)),
-
-            Expanded(
-              flex: 4,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
-                child: Text(
-                  '${item.label}:',
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w700,
-                    height: 1.4,
-                    color: const Color(0xFF3E3E3E),
+                        ? AppColors.redHeading
+                        : AppColors.textInfoMuted,
                   ),
                 ),
               ),

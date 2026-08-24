@@ -15,7 +15,7 @@ class _OrderItemTile extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: hasImage
-              ? AppNetworkImage(
+              ? CustomAppNetworkImage(
                   url: item.imagePath,
                   width: 70,
                   height: 70,

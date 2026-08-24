@@ -1,6 +1,7 @@
 import 'package:almasry_2/core/utils/app_direction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:almasry_2/core/constants/app_colors.dart';
 
 class ProfileMenuItem extends StatelessWidget {
   final String title;
@@ -20,7 +21,7 @@ class ProfileMenuItem extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           decoration: const BoxDecoration(
             border: Border(
-              bottom: BorderSide(color: Color(0xFFD9D9D9), width: 1),
+              bottom: BorderSide(color: AppColors.border, width: 1),
             ),
           ),
           child: Row(
@@ -30,14 +31,14 @@ class ProfileMenuItem extends StatelessWidget {
                 textAlign: TextAlign.start,
                 style: TextStyle(
                   fontSize: 18.sp,
-                  color: const Color(0xFF8C8C8C),
+                  color: AppColors.textCaption,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               const Spacer(),
               Icon(
                 AppDirection.forward(),
-                color: const Color(0xFF8C8C8C),
+                color: AppColors.textCaption,
                 size: 18.sp,
               ),
             ],

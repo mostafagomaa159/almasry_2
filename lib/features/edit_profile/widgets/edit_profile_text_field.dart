@@ -35,7 +35,7 @@ class EditProfileTextField extends StatelessWidget {
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w700,
-              color: const Color(0xFF17375E),
+              color: AppColors.navyProfile,
             ),
           ),
           8.verticalSpace,
@@ -48,7 +48,7 @@ class EditProfileTextField extends StatelessWidget {
             onTap: onTap,
             style: TextStyle(
               fontSize: 16.sp,
-              color: const Color(0xFF9A9A9A),
+              color: AppColors.textPlaceholder,
               fontWeight: FontWeight.w600,
             ),
             decoration: InputDecoration(
@@ -56,18 +56,18 @@ class EditProfileTextField extends StatelessWidget {
               hintText: hintText,
               hintStyle: TextStyle(
                 fontSize: 16.sp,
-                color: const Color(0xFFB0B0B0),
+                color: AppColors.textDisabled,
                 fontWeight: FontWeight.w500,
               ),
               contentPadding: EdgeInsets.only(bottom: 10.h),
               enabledBorder: const UnderlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFFB9B9B9), width: 1),
+                borderSide: BorderSide(color: AppColors.textHint, width: 1),
               ),
               focusedBorder: const UnderlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFFFF2D2D), width: 1.2),
+                borderSide: BorderSide(color: AppColors.redAction, width: 1.2),
               ),
               border: const UnderlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFFB9B9B9), width: 1),
+                borderSide: BorderSide(color: AppColors.textHint, width: 1),
               ),
             ),
           ),

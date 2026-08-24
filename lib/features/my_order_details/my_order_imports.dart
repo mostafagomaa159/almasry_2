@@ -11,7 +11,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:almasry_2/core/widgets/app_network_image.dart';
+import 'package:almasry_2/core/widgets/custom_app_network_image.dart';
 import 'package:almasry_2/core/utils/error_message.dart';
 
 part 'view/order_details_view.dart';

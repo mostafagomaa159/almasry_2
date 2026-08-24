@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/localization/app_locale.dart';
+
 import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:almasry_2/core/routing/app_router.dart';
 import 'package:almasry_2/core/services/push_background_services.dart';
@@ -38,8 +41,24 @@ Future<void> main() async {
   );
 }
 
-class BlinkApp extends StatelessWidget {
+class BlinkApp extends StatefulWidget {
   const BlinkApp({super.key});
+
+  @override
+  State<BlinkApp> createState() => _BlinkAppState();
+}
+
+class _BlinkAppState extends State<BlinkApp> {
+  /// Fires on the first build and again on every locale change, which is what
+  /// keeps [AppLocale]'s context-free mirror in step with the locale
+  /// `easy_localization` restored — including for installs that changed the
+  /// language before the mirror existed.
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    unawaited(AppLocale.syncFrom(context.locale));
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// The filled, borderless search box used by home, brands and categories.
 /// Pass [onClear] to get the trailing clear button.
-class AppSearchField extends StatelessWidget {
+class CustomAppSearchField extends StatelessWidget {
   final TextEditingController? controller;
   final String hintText;
   final ValueChanged<String>? onChanged;
@@ -20,7 +20,7 @@ class AppSearchField extends StatelessWidget {
 
   final VoidCallback? onTap;
 
-  const AppSearchField({
+  const CustomAppSearchField({
     super.key,
     required this.hintText,
     this.controller,
@@ -63,7 +63,7 @@ class AppSearchField extends StatelessWidget {
             ? IconButton(onPressed: onClear, icon: const Icon(Icons.close))
             : null,
         filled: true,
-        fillColor: const Color(0xFFF1F1F1),
+        fillColor: AppColors.surfaceField,
         isDense: true,
         contentPadding: EdgeInsets.symmetric(vertical: 14.h),
         border: OutlineInputBorder(

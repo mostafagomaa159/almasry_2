@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:almasry_2/core/constants/app_colors.dart';
+import 'package:almasry_2/core/constants/app_durations.dart';
 
 class RememberMeRow extends StatelessWidget {
   final bool isChecked;
@@ -23,7 +25,7 @@ class RememberMeRow extends StatelessWidget {
           style: TextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w700,
-            color: const Color(0xFFFF1717),
+            color: AppColors.redLink,
           ),
         ),
         8.horizontalSpace,
@@ -45,14 +47,14 @@ class _RememberCheckbox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 180),
+      duration: AppDurations.highlight,
       width: 22.w,
       height: 22.h,
       decoration: BoxDecoration(
-        color: isChecked ? const Color(0xFFFF1717) : Colors.transparent,
+        color: isChecked ? AppColors.redLink : Colors.transparent,
         borderRadius: BorderRadius.circular(4.r),
         border: Border.all(
-          color: isChecked ? const Color(0xFFFF1717) : const Color(0xFFBDBDBD),
+          color: isChecked ? AppColors.redLink : AppColors.unavailableGrey,
           width: 1.4,
         ),
       ),

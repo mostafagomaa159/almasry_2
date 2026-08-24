@@ -36,7 +36,7 @@ class ProductDetailsSummarySection extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w700,
-                      color: const Color(0xFFD7262E),
+                      color: AppColors.redHeading,
                     ),
                   ),
                 )
@@ -49,7 +49,7 @@ class ProductDetailsSummarySection extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFFB0B0B0),
+                    color: AppColors.textDisabled,
                   ),
                 ),
             ],
@@ -62,7 +62,7 @@ class ProductDetailsSummarySection extends StatelessWidget {
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.w800,
-              color: const Color(0xFF11385B),
+              color: AppColors.navyHeading,
               height: 1.45,
             ),
           ),
@@ -89,7 +89,7 @@ class ProductDetailsSummarySection extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFFE07C00),
+                color: AppColors.amber,
               ),
             ),
           ],
@@ -104,7 +104,7 @@ class ProductDetailsSummarySection extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 24.sp,
                   fontWeight: FontWeight.w800,
-                  color: const Color(0xFF11385B),
+                  color: AppColors.navyHeading,
                 ),
               ),
 
@@ -117,7 +117,7 @@ class ProductDetailsSummarySection extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w500,
-                      color: const Color(0xFF9E9E9E),
+                      color: AppColors.textSecondary,
                       decoration: TextDecoration.lineThrough,
                     ),
                   ),
@@ -143,7 +143,7 @@ class _StockBadge extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.h),
       decoration: BoxDecoration(
-        color: isInStock ? const Color(0xFF43A047) : AppColors.primaryRed,
+        color: isInStock ? AppColors.successGreen : AppColors.primaryRed,
         borderRadius: BorderRadius.circular(10.r),
       ),
       child: Text(
@@ -170,7 +170,7 @@ class _DiscountBadge extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.h),
       decoration: BoxDecoration(
-        color: const Color(0xFFEDEDED),
+        color: AppColors.borderSoft,
         borderRadius: BorderRadius.circular(10.r),
       ),
       child: Text(
@@ -178,7 +178,7 @@ class _DiscountBadge extends StatelessWidget {
         style: TextStyle(
           fontSize: 12.sp,
           fontWeight: FontWeight.w700,
-          color: const Color(0xFF3B3B3B),
+          color: AppColors.strongGrey,
         ),
       ),
     );

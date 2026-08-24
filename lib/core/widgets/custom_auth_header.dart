@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:almasry_2/core/utils/app_direction.dart';
 
-class AuthHeader extends StatelessWidget {
+class CustomAuthHeader extends StatelessWidget {
   final VoidCallback? onBackPressed;
   final bool showBackButton;
 
-  const AuthHeader({
+  const CustomAuthHeader({
     super.key,
     this.onBackPressed,
     this.showBackButton = false,

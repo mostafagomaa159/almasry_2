@@ -22,7 +22,7 @@ class ProductSearchFloat extends StatelessWidget {
                 showState.data && indexState.data > _minimumRow;
 
             return AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
+              duration: AppDurations.floatToggle,
               transitionBuilder: (child, animation) {
                 return ScaleTransition(scale: animation, child: child);
               },
@@ -47,36 +47,32 @@ class _ScrollToTopButton extends StatelessWidget {
     return SizedBox(
       key: const ValueKey('product_search_scroll_to_top'),
       height: 35.h,
-      child:
-          BlocBuilder<
-            GenericCubit<ProductSearchData>,
-            GenericState<ProductSearchData>
-          >(
-            bloc: vm._searchCubit,
-            builder: (context, state) {
-              return FloatingActionButton.extended(
-                onPressed: vm._scrollToTop,
-                backgroundColor: AppColors.textPrimary.withValues(alpha: 0.6),
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(7.r),
-                ),
-                icon: const Icon(
-                  Icons.keyboard_double_arrow_up,
-                  color: AppColors.white,
-                  size: 16,
-                ),
-                label: Text(
-                  state.data.totalCount.toString(),
-                  style: TextStyle(
-                    color: AppColors.white,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 10.sp,
-                  ),
-                ),
-              );
-            },
-          ),
+      child: BlocBuilder<GenericCubit<int>, GenericState<int>>(
+        bloc: vm._totalItemsCubit,
+        builder: (context, state) {
+          return FloatingActionButton.extended(
+            onPressed: vm._scrollToTop,
+            backgroundColor: AppColors.textPrimary.withValues(alpha: 0.6),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(7.r),
+            ),
+            icon: const Icon(
+              Icons.keyboard_double_arrow_up,
+              color: AppColors.white,
+              size: 16,
+            ),
+            label: Text(
+              state.data.toString(),
+              style: TextStyle(
+                color: AppColors.white,
+                fontWeight: FontWeight.w900,
+                fontSize: 10.sp,
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

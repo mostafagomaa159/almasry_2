@@ -20,7 +20,7 @@ class LoginActionsSection extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                AppButton(
+                CustomAppButton(
                   title: isRegularLoginSelected
                       ? LocaleKeys.signIn.tr()
                       : LocaleKeys.sendVerificationCode.tr(),
@@ -32,7 +32,7 @@ class LoginActionsSection extends StatelessWidget {
                       : data.isPhoneAuthLoading,
                 ),
                 16.verticalSpace,
-                AppButton(
+                CustomAppButton(
                   title: LocaleKeys.createAccount.tr(),
                   onPressed: vm._goToRegisterScreen,
                   isPrimary: false,

@@ -13,24 +13,24 @@ class HomeSectionsView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (data.offers.isNotEmpty) ...[
-          HomeSectionHeader(title: LocaleKeys.homeOffers.tr()),
+          CustomAppSectionHeader(title: LocaleKeys.homeOffers.tr()),
           14.verticalSpace,
           HomeOffersSection(vm: vm, items: data.offers),
           24.verticalSpace,
         ],
 
         if (data.categories.isNotEmpty) ...[
-          HomeSectionHeader(title: LocaleKeys.homeCategories.tr()),
+          CustomAppSectionHeader(title: LocaleKeys.homeCategories.tr()),
           12.verticalSpace,
           HomeCategoriesSection(items: data.categories),
           24.verticalSpace,
         ],
 
         if (data.bestSellerBlock != null) ...[
-          HomeSectionHeader(title: LocaleKeys.homeBestSelling.tr()),
+          CustomAppSectionHeader(title: LocaleKeys.homeBestSelling.tr()),
           16.verticalSpace,
           if (data.isProductsLoading)
-            AppLoadingView(height: 330.h)
+            CustomAppLoadingView(height: 330.h)
           else if (data.bestSellerProducts.isEmpty)
             Center(child: Text(LocaleKeys.homeNoBestsellers.tr()))
           else
@@ -39,21 +39,21 @@ class HomeSectionsView extends StatelessWidget {
         ],
 
         if (data.brands.isNotEmpty) ...[
-          HomeSectionHeader(title: LocaleKeys.homeBrands.tr()),
+          CustomAppSectionHeader(title: LocaleKeys.homeBrands.tr()),
           12.verticalSpace,
           BrandStrip(brands: data.brands),
           24.verticalSpace,
         ],
 
         if (data.goals.isNotEmpty) ...[
-          HomeSectionHeader(title: LocaleKeys.homeGoals.tr()),
+          CustomAppSectionHeader(title: LocaleKeys.homeGoals.tr()),
           12.verticalSpace,
           HomeGoalsSection(items: data.goals),
           24.verticalSpace,
         ],
 
         if (data.concerns.isNotEmpty) ...[
-          HomeSectionHeader(title: LocaleKeys.homeConcerns.tr()),
+          CustomAppSectionHeader(title: LocaleKeys.homeConcerns.tr()),
           12.verticalSpace,
           HomeConcernsSection(items: data.concerns),
           24.verticalSpace,

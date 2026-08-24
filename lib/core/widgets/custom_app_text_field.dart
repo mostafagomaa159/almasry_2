@@ -2,7 +2,7 @@ import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class AppTextField extends StatelessWidget {
+class CustomAppTextField extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode? focusNode;
 
@@ -22,7 +22,7 @@ class AppTextField extends StatelessWidget {
   final void Function(String)? onChanged;
   final VoidCallback? onEditingComplete;
 
-  const AppTextField({
+  const CustomAppTextField({
     super.key,
     required this.controller,
     required this.hintText,
@@ -82,7 +82,7 @@ class AppTextField extends StatelessWidget {
         errorText: errorText,
         hintStyle: TextStyle(
           fontSize: 18.sp,
-          color: const Color(0xFF3A3A4A),
+          color: AppColors.hintField,
           fontWeight: FontWeight.w400,
         ),
         suffixIcon: suffixIcon,
@@ -90,10 +90,10 @@ class AppTextField extends StatelessWidget {
         isDense: true,
         contentPadding: EdgeInsets.symmetric(vertical: 18.h),
         enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Color(0xFFCFCFCF), width: 1.4),
+          borderSide: BorderSide(color: AppColors.borderField, width: 1.4),
         ),
         focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Color(0xFFB71C1C), width: 1.6),
+          borderSide: BorderSide(color: AppColors.redFieldFocus, width: 1.6),
         ),
         errorBorder: const UnderlineInputBorder(
           borderSide: BorderSide(color: Colors.red, width: 1.4),

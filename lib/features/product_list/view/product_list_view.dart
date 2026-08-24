@@ -39,7 +39,15 @@ class _ProductListViewState extends State<ProductListView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: _ProductListAppBar(vm: vm),
+      appBar: CustomAppTitleAppBar(
+        title: vm._title,
+        onBack: vm._goBack,
+        titleStyle: TextStyle(
+          fontSize: 18.sp,
+          fontWeight: FontWeight.w700,
+          color: Colors.black,
+        ),
+      ),
       body: _ProductListBody(vm: vm),
     );
   }

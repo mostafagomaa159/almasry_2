@@ -82,12 +82,8 @@ class RegisterViewModel {
 
   /// Actions
 
-  Future<void> _toggleLanguage(BuildContext context) async {
-    if (context.locale.languageCode == 'ar') {
-      await context.setLocale(AppLocale.english);
-    } else {
-      await context.setLocale(AppLocale.arabic);
-    }
+  Future<void> _toggleLanguage(BuildContext context) {
+    return AppLocale.toggleLanguage(context);
   }
 
   Future<void> _submitRegister(BuildContext context) async {

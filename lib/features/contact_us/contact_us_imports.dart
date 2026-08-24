@@ -10,14 +10,15 @@ import 'package:almasry_2/core/services/alert_service.dart';
 import 'package:almasry_2/core/services/graphql_service.dart';
 import 'package:almasry_2/core/services/navigation_service.dart';
 import 'package:almasry_2/core/utils/validators.dart';
-import 'package:almasry_2/core/widgets/app_button.dart';
+import 'package:almasry_2/core/widgets/custom_app_button.dart';
 import 'package:almasry_2/core/widgets/custom_app_bar.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:almasry_2/core/widgets/app_text_field.dart';
+import 'package:almasry_2/core/widgets/custom_app_text_field.dart';
+import 'package:almasry_2/core/constants/app_durations.dart';
 
 part '../../core/models/response/contact_us/contact_us_data_model.dart';
 

@@ -9,6 +9,7 @@ import 'package:almasry_2/core/services/cart_service.dart';
 import 'package:almasry_2/core/services/navigation_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:almasry_2/core/constants/app_durations.dart';
 
 part 'view/splash_view.dart';
 part 'view_model/splash_view_model.dart';

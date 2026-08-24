@@ -1,49 +1,54 @@
 part of '../product_search_imports.dart';
 
-/// Everything below the "Available only" chip: the loading skeleton, the error
-/// and empty states, and the results grid — all of it under pull-to-refresh.
+/// Everything below the "Available only" chip: the first-load skeleton, the
+/// error and empty states, and the results grid — all of it under
+/// pull-to-refresh, with a shimmer covering the previous results while a new
+/// query is in flight.
 class ProductSearchList extends StatelessWidget {
-  const ProductSearchList({super.key, required this.vm, required this.data});
+  const ProductSearchList({super.key, required this.vm});
 
   final ProductSearchViewModel vm;
-  final ProductSearchData data;
 
   @override
   Widget build(BuildContext context) {
-    return AppRefreshIndicator(onRefresh: vm._refresh, child: _content());
-  }
+    return Expanded(
+      child: Stack(
+        children: [
+          CustomAppRefreshIndicator(
+            onRefresh: vm._refresh,
+            child:
+                BlocBuilder<
+                  GenericCubit<ListSearchProducts>,
+                  GenericState<ListSearchProducts>
+                >(
+                  bloc: vm._productsCubit,
+                  builder: (context, state) {
+                    if (state is! GenericUpdateState) {
+                      return const ProductSearchShimmer();
+                    }
 
-  Widget _content() {
-    if (data.status == ProductSearchStatus.loading) {
-      return const ProductSearchShimmer();
-    }
+                    if (state.data.isEmpty) {
+                      return _ProductSearchPlaceholder(vm: vm);
+                    }
 
-    if (data.status == ProductSearchStatus.error) {
-      return _ProductSearchPlaceholder(
-        child: AppErrorView(message: data.errorMessage, onRetry: vm._retry),
-      );
-    }
+                    return _ProductSearchGrid(vm: vm, products: state.data);
+                  },
+                ),
+          ),
 
-    if (data.products.isEmpty) {
-      return _ProductSearchPlaceholder(
-        child: AppEmptyView(
-          icon: Icons.search_off_rounded,
-          message: LocaleKeys.noProductsFound.tr(),
-          description: LocaleKeys.productSearchEmptyDescription.tr(),
-        ),
-      );
-    }
-
-    return _ProductSearchGrid(vm: vm, data: data);
+          _ProductSearchOverlay(vm: vm),
+        ],
+      ),
+    );
   }
 }
 
-/// The error and empty states are centred boxes, but they still have to scroll
-/// or [AppRefreshIndicator] would have nothing to pull on.
+/// The error and empty states. Both are centred boxes, but they still have to
+/// scroll or [CustomAppRefreshIndicator] would have nothing to pull on.
 class _ProductSearchPlaceholder extends StatelessWidget {
-  const _ProductSearchPlaceholder({required this.child});
+  const _ProductSearchPlaceholder({required this.vm});
 
-  final Widget child;
+  final ProductSearchViewModel vm;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +58,16 @@ class _ProductSearchPlaceholder extends StatelessWidget {
           physics: const AlwaysScrollableScrollPhysics(),
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: child,
+            child: vm._errorMessage.isNotEmpty
+                ? CustomAppErrorView(
+                    message: vm._errorMessage,
+                    onRetry: vm._retry,
+                  )
+                : CustomAppEmptyView(
+                    icon: Icons.search_off_rounded,
+                    message: LocaleKeys.noProductsFound.tr(),
+                    description: LocaleKeys.productSearchEmptyDescription.tr(),
+                  ),
           ),
         );
       },
@@ -62,14 +76,14 @@ class _ProductSearchPlaceholder extends StatelessWidget {
 }
 
 class _ProductSearchGrid extends StatelessWidget {
-  const _ProductSearchGrid({required this.vm, required this.data});
+  const _ProductSearchGrid({required this.vm, required this.products});
 
   final ProductSearchViewModel vm;
-  final ProductSearchData data;
+  final ListSearchProducts products;
 
   @override
   Widget build(BuildContext context) {
-    final List<ProductSearchProductModel> products = data.products;
+    final bool hasMore = vm._canFetchMoreItems;
 
     return Scrollbar(
       controller: vm._scrollController,
@@ -84,29 +98,42 @@ class _ProductSearchGrid extends StatelessWidget {
           mainAxisSpacing: 12.h,
           childAspectRatio: 0.56,
         ),
-        itemCount: products.length + (data.isLoadingMore ? 1 : 0),
+        itemCount: products.length + (hasMore ? 1 : 0),
         itemBuilder: (context, index) {
           if (index >= products.length) {
-            return Center(
-              child: SizedBox(
-                width: 22.w,
-                height: 22.w,
-                child: const CircularProgressIndicator(
-                  strokeWidth: 2.5,
-                  color: AppColors.primaryRed,
-                ),
-              ),
-            );
+            return vm._alertService.showLoadingView();
           }
 
           return FadeInUp(
-            duration: const Duration(milliseconds: 200),
-
+            duration: AppDurations.listStagger,
             delay: Duration(milliseconds: 2 * index),
             child: ProductSearchItem(vm: vm, product: products[index]),
           );
         },
       ),
+    );
+  }
+}
+
+/// Covers the previous results while a search is in flight, so the grid never
+/// looks like it answered the new query with the old products.
+class _ProductSearchOverlay extends StatelessWidget {
+  const _ProductSearchOverlay({required this.vm});
+
+  final ProductSearchViewModel vm;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+      bloc: vm._loadingCubit,
+      builder: (context, state) {
+        if (!state.data) return const SizedBox.shrink();
+
+        return const ColoredBox(
+          color: AppColors.white,
+          child: SizedBox.expand(child: ProductSearchShimmer()),
+        );
+      },
     );
   }
 }

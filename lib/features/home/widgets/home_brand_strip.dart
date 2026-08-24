@@ -44,10 +44,10 @@ class _BrandItem extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: const Color(0xFFEAEAEA)),
+        border: Border.all(color: AppColors.borderLight),
       ),
       child: Center(
-        child: AppNetworkImage(
+        child: CustomAppNetworkImage(
           url: brand.image,
           fit: BoxFit.contain,
           placeholder: Icon(

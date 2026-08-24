@@ -29,7 +29,7 @@ class ProductDetailsHeader extends StatelessWidget {
           bottomLeft: Radius.circular(24.r),
           bottomRight: Radius.circular(24.r),
         ),
-        border: Border.all(color: const Color(0xFFD7262E), width: 0.8),
+        border: Border.all(color: AppColors.redHeading, width: 0.8),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -47,7 +47,7 @@ class ProductDetailsHeader extends StatelessWidget {
               padding: EdgeInsets.all(6.w),
               child: Icon(
                 AppDirection.back(),
-                color: const Color(0xFF2C2C2C),
+                color: AppColors.textGraphite,
                 size: 22.sp,
               ),
             ),
@@ -61,7 +61,7 @@ class ProductDetailsHeader extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 17.sp,
                   fontWeight: FontWeight.w700,
-                  color: const Color(0xFF202020),
+                  color: AppColors.textInk,
                 ),
               ),
             ),
@@ -84,14 +84,14 @@ class ProductDetailsHeader extends StatelessWidget {
           errorBuilder: (_, _, _) {
             return Container(
               decoration: BoxDecoration(
-                color: const Color(0xFFF5F5F5),
+                color: AppColors.surfaceLight,
                 borderRadius: BorderRadius.circular(16.r),
-                border: Border.all(color: const Color(0xFFE5E5E5)),
+                border: Border.all(color: AppColors.borderHeader),
               ),
               alignment: Alignment.center,
               child: Icon(
                 Icons.medical_services_outlined,
-                color: const Color(0xFF11385B),
+                color: AppColors.navyHeading,
                 size: 28.sp,
               ),
             );

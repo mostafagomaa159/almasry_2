@@ -12,14 +12,14 @@ class CategoryGridItem extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: const Color(0xFFE9E9E9)),
+        border: Border.all(color: AppColors.divider),
       ),
       child: Column(
         children: [
           Expanded(
             child: category.image.trim().isEmpty
                 ? const Icon(Icons.image_outlined)
-                : AppNetworkImage(
+                : CustomAppNetworkImage(
                     url: category.imageUrl,
                     fit: BoxFit.contain,
                     placeholder: const Icon(Icons.image_outlined),

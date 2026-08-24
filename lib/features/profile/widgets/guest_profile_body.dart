@@ -25,7 +25,7 @@ class GuestProfileBody extends StatelessWidget {
               fontSize: 24.sp,
               height: 1.3,
               fontWeight: FontWeight.w700,
-              color: const Color(0xFF0A3152),
+              color: AppColors.navyDeepest,
             ),
           ),
           28.verticalSpace,
@@ -78,7 +78,7 @@ class GuestProfileBody extends StatelessWidget {
                 '${LocaleKeys.appVersion.tr()} ${appVersion.isEmpty ? '...' : appVersion}',
                 style: TextStyle(
                   fontSize: 16.sp,
-                  color: const Color(0xFF8D8D8D),
+                  color: AppColors.textGuestCaption,
                   decoration: TextDecoration.underline,
                   fontWeight: FontWeight.w600,
                 ),

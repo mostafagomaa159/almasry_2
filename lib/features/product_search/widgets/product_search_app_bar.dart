@@ -16,21 +16,7 @@ class ProductSearchAppBar extends StatelessWidget {
       padding: EdgeInsetsDirectional.fromSTEB(6.w, 8.h, 14.w, 0),
       child: Row(
         children: [
-          Material(
-            color: AppColors.transparent,
-            child: InkWell(
-              onTap: vm._back,
-              borderRadius: BorderRadius.circular(8.r),
-              child: Padding(
-                padding: EdgeInsets.all(6.w),
-                child: Icon(
-                  AppDirection.chevronBack,
-                  size: 28.sp,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-            ),
-          ),
+          CustomAppBackButton(onTap: vm._back),
 
           6.horizontalSpace,
 
@@ -40,7 +26,7 @@ class ProductSearchAppBar extends StatelessWidget {
             child: ValueListenableBuilder<TextEditingValue>(
               valueListenable: vm._searchController,
               builder: (context, value, child) {
-                return AppSearchField(
+                return CustomAppSearchField(
                   controller: vm._searchController,
                   focusNode: vm._searchFocusNode,
                   hintText: LocaleKeys.productSearchHint.tr(),
@@ -56,22 +42,12 @@ class ProductSearchAppBar extends StatelessWidget {
 
           10.horizontalSpace,
 
-          Material(
-            color: AppColors.darkBlue,
-            borderRadius: BorderRadius.circular(12.r),
-            child: InkWell(
-              onTap: vm._openImageSearch,
-              borderRadius: BorderRadius.circular(12.r),
-              child: SizedBox(
-                width: 48.w,
-                height: 48.w,
-                child: Icon(
-                  Icons.image_search_outlined,
-                  size: 26.sp,
-                  color: AppColors.white,
-                ),
-              ),
-            ),
+          CustomAppIconButton(
+            icon: Icons.image_search_outlined,
+            onTap: vm._openImageSearch,
+            iconSize: 26,
+            backgroundColor: AppColors.darkBlue,
+            iconColor: AppColors.white,
           ),
         ],
       ),

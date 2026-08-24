@@ -1,31 +1,25 @@
 part of '../product_search_imports.dart';
 
-/// Drives the product search screen: debounced search-as-you-type guarded by a
-/// request id, a dual-store query for mixed-script terms, scroll paging,
-/// recent searches and the scroll-to-top button.
+typedef ListSearchProducts = List<ProductSearchProductModel>;
+
 class ProductSearchViewModel {
-  final GraphQLService _graphql = sl<GraphQLService>();
-  final NavigationService _nav = sl<NavigationService>();
-  final SharedPrefsServices _prefs = sl<SharedPrefsServices>();
-  final FavoritesService _favorites = sl<FavoritesService>();
+  final _graphqlService = sl<GraphQLService>();
+  final _navService = sl<NavigationService>();
+  final _prefsService = sl<SharedPrefsServices>();
+  final _favoritesService = sl<FavoritesService>();
+  final _alertService = sl<AlertService>();
 
-  static const int _pageSize = 20;
-
-  static const int _minQueryLength = 2;
-
-  static const int _maxRecentSearches = 10;
-
-  static const Duration _debounceDuration = Duration(milliseconds: 450);
-
-  static const double _estimatedRowExtent = 345;
-
-  static const double _fabRevealOffset = 200;
-
-  final GenericCubit<ProductSearchData> _searchCubit =
-      GenericCubit<ProductSearchData>(const ProductSearchData());
-
+  final GenericCubit<ListSearchProducts> _productsCubit =
+      GenericCubit<ListSearchProducts>([]);
+  final _totalItemsCubit = GenericCubit<int>(0);
   final GenericCubit<bool> _showFAB = GenericCubit<bool>(false);
   final GenericCubit<int> _currentIndex = GenericCubit<int>(1);
+  final GenericCubit<bool> _loadingCubit = GenericCubit<bool>(false);
+  final GenericCubit<bool> _availableOnlyCubit = GenericCubit<bool>(false);
+  final GenericCubit<List<String>> _recentSearchesCubit =
+      GenericCubit<List<String>>([]);
+
+  final GenericCubit<bool> _hasQueryCubit = GenericCubit<bool>(false);
 
   late final TextEditingController _searchController;
   late final FocusNode _searchFocusNode;
@@ -33,16 +27,37 @@ class ProductSearchViewModel {
 
   Timer? _debounce;
 
+  static const int _pageSize = 20;
+  static const int _minQueryLength = 2;
+  static const int _maxRecentSearches = 10;
+  static const double _estimatedRowExtent = 345;
+  static const double _fabRevealOffset = 200;
+
+  String _searchTerm = '';
+
+  int _page = 1;
+  bool _isFetching = false;
+  int? _totalItems;
+
   int _requestId = 0;
 
-  ProductSearchData get _data => _searchCubit.state.data;
+  ListSearchProducts _allProducts = [];
 
-  GenericCubit<FavoritesModel> get _favoritesCubit => _favorites.favoritesCubit;
+  String _errorMessage = '';
+
+  GenericCubit<FavoritesModel> get _favoritesCubit =>
+      _favoritesService.favoritesCubit;
+
+  bool get _canFetchMoreItems =>
+      _totalItems == null || _allProducts.length < (_totalItems ?? 0);
+
+  bool get _availableOnly => _availableOnlyCubit.state.data;
 
   void _init() {
     _searchController = TextEditingController();
     _searchFocusNode = FocusNode();
-    _scrollController = ScrollController()..addListener(_onScroll);
+
+    _setupScrollController();
 
     _loadRecentSearches();
   }
@@ -54,86 +69,22 @@ class ProductSearchViewModel {
     _scrollController.dispose();
     _searchFocusNode.dispose();
     _searchController.dispose();
-
-    _searchCubit.close();
-    _showFAB.close();
-    _currentIndex.close();
   }
 
-  void _onQueryChanged(String value) {
-    _debounce?.cancel();
-
-    final String query = value.trim();
-
-    if (query.length < _minQueryLength) {
-      _requestId++;
-
-      _searchCubit.onUpdateData(
-        _data.copyWith(
-          status: ProductSearchStatus.idle,
-          query: '',
-          products: const [],
-          totalCount: 0,
-          currentPage: 1,
-          isLoadingMore: false,
-          clearErrorMessage: true,
-        ),
-      );
-
-      return;
-    }
-
-    _debounce = Timer(_debounceDuration, () => _search(query));
-  }
-
-  Future<void> _onQuerySubmitted(String value) async {
-    _debounce?.cancel();
-
-    final String query = value.trim();
-
-    if (query.length < _minQueryLength) return;
-
-    await _search(query);
-    await _rememberSearch(query);
-  }
-
-  void _onClearQuery() {
-    _searchController.clear();
-    _onQueryChanged('');
-    _searchFocusNode.requestFocus();
-  }
-
-  Future<void> _toggleAvailableOnly() async {
-    final bool availableOnly = !_data.availableOnly;
-
-    _searchCubit.onUpdateData(_data.copyWith(availableOnly: availableOnly));
-
-    final String query = _data.query;
-
-    if (query.length < _minQueryLength) return;
-
-    await _search(query);
-  }
-
-  void _onRecentSearchTap(String query) {
-    _debounce?.cancel();
-
-    _searchController.text = query;
-    _searchController.selection = TextSelection.collapsed(offset: query.length);
-
-    _searchFocusNode.unfocus();
-
-    _search(query);
+  void _setupScrollController() {
+    _scrollController = ScrollController()..addListener(_onScroll);
   }
 
   void _onScroll() {
     if (!_scrollController.hasClients) return;
 
-    final bool isNearBottom =
-        _scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200;
+    final ScrollPosition position = _scrollController.position;
 
-    if (isNearBottom) _loadMore();
+    if (position.pixels >= position.maxScrollExtent - 200 &&
+        !_isFetching &&
+        _canFetchMoreItems) {
+      unawaited(_productsApi(loadMore: true));
+    }
 
     final double offset = _scrollController.offset;
     final bool isFabVisible = _showFAB.state.data;
@@ -152,7 +103,7 @@ class ProductSearchViewModel {
 
     _scrollController.animateTo(
       0,
-      duration: const Duration(milliseconds: 800),
+      duration: AppDurations.entrance,
       curve: Curves.easeInOut,
     );
   }
@@ -163,11 +114,11 @@ class ProductSearchViewModel {
   }
 
   void _back() {
-    _nav.pop();
+    _navService.pop();
   }
 
   void _openImageSearch() {
-    _nav.pushNamed(
+    _navService.pushNamed(
       RouteNames.homeComingSoon,
       extra: LocaleKeys.homeSmartSearch.tr(),
     );
@@ -176,9 +127,9 @@ class ProductSearchViewModel {
   Future<void> _openProductDetails(ProductSearchProductModel product) async {
     if (product.sku.isEmpty) return;
 
-    await _rememberSearch(_data.query);
+    await _rememberSearch(_searchTerm);
 
-    _nav.pushNamed(
+    _navService.pushNamed(
       RouteNames.productDetails,
       extra: ProductDetailsArgs(
         sku: product.sku,
@@ -189,7 +140,7 @@ class ProductSearchViewModel {
   }
 
   Future<void> _toggleFavorite(ProductSearchProductModel product) async {
-    await _favorites.toggleFavorite(
+    await _favoritesService.toggleFavorite(
       FavoriteProductModel(
         id: product.sku,
         title: product.name,
@@ -204,53 +155,207 @@ class ProductSearchViewModel {
     );
   }
 
-  Future<void> _refresh() async {
-    final String query = _data.query;
+  void _onQueryChanged(String value) {
+    _debounce?.cancel();
+
+    final String query = value.trim();
+
+    if (query.length < _minQueryLength) {
+      // Invalidates anything still in flight, so a late response cannot drop
+      // results onto a screen that has gone back to the recent searches.
+      _requestId++;
+
+      _searchTerm = '';
+      _errorMessage = '';
+      _allProducts = [];
+      _page = 1;
+      _totalItems = null;
+
+      _totalItemsCubit.onUpdateData(0);
+      _hasQueryCubit.onUpdateData(false);
+
+      return;
+    }
+
+    _debounce = Timer(
+      AppDurations.searchDebounce,
+      () => _productsSearch(query),
+    );
+  }
+
+  Future<void> _onQuerySubmitted(String value) async {
+    _debounce?.cancel();
+
+    final String query = value.trim();
 
     if (query.length < _minQueryLength) return;
 
-    await _search(query);
+    _productsSearch(query);
+
+    await _rememberSearch(query);
+  }
+
+  void _onClearQuery() {
+    _searchController.clear();
+    _onQueryChanged('');
+    _searchFocusNode.requestFocus();
+  }
+
+  void _toggleAvailableOnly() {
+    _availableOnlyCubit.onUpdateData(!_availableOnly);
+
+    if (_searchTerm.length < _minQueryLength) return;
+
+    _productsSearch(_searchTerm);
+  }
+
+  void _onRecentSearchTap(String query) {
+    _debounce?.cancel();
+
+    _searchController.text = query;
+    _searchController.selection = TextSelection.collapsed(offset: query.length);
+
+    _searchFocusNode.unfocus();
+
+    _productsSearch(query);
+  }
+
+  void _productsSearch(String query) {
+    _searchTerm = query.trim();
+
+    _requestId++;
+    _page = 1;
+    _totalItems = null;
+
+    _hasQueryCubit.onUpdateData(_searchTerm.length >= _minQueryLength);
+
+    _resetScrollState();
+
+    _loadingCubit.onUpdateData(true);
+
+    unawaited(_productsApi());
+  }
+
+  Future<void> _refresh() async {
+    if (_searchTerm.length < _minQueryLength) return;
+
+    _requestId++;
+    _page = 1;
+    _totalItems = null;
+
+    await _productsApi();
   }
 
   Future<void> _retry() => _refresh();
 
-  void _loadRecentSearches() {
-    _searchCubit.onUpdateData(
-      _data.copyWith(
-        recentSearches: _prefs.getStringList(PrefKeys.recentSearches),
-      ),
-    );
+  Future<void> _productsApi({bool loadMore = false}) async {
+    if (_isFetching) return;
+    _isFetching = true;
+
+    final String currentSearch = _searchTerm;
+    final int requestId = _requestId;
+
+    try {
+      if (LanguageDetector.hasMixedLanguage(currentSearch) && !loadMore) {
+        await _searchBothStores(currentSearch, requestId);
+      } else {
+        await _searchSingleStore(currentSearch, loadMore, requestId);
+      }
+
+      if (_isStale(requestId)) return;
+
+      _errorMessage = '';
+    } catch (error) {
+      if (_isStale(requestId)) return;
+
+      _handleFetchError(error, loadMore: loadMore);
+    } finally {
+      _isFetching = false;
+
+      if (!_loadingCubit.isClosed) _loadingCubit.onUpdateData(false);
+    }
   }
 
-  Future<void> _rememberSearch(String query) async {
-    final String trimmed = query.trim();
+  void _handleFetchError(Object error, {required bool loadMore}) {
+    final String message = errorMessageFrom(error);
 
-    if (trimmed.length < _minQueryLength) return;
+    if (loadMore || _allProducts.isNotEmpty) {
+      _alertService.showError(message);
 
-    final List<String> updated = [
-      trimmed,
-      ..._data.recentSearches.where(
-        (entry) => entry.toLowerCase() != trimmed.toLowerCase(),
-      ),
-    ];
+      _productsCubit.onUpdateData(_allProducts);
 
-    if (updated.length > _maxRecentSearches) {
-      updated.removeRange(_maxRecentSearches, updated.length);
+      return;
     }
 
-    _searchCubit.onUpdateData(_data.copyWith(recentSearches: updated));
+    _errorMessage = message;
 
-    await _prefs.setStringList(PrefKeys.recentSearches, updated);
+    _productsCubit.onUpdateData(const []);
   }
 
-  Future<void> _removeRecentSearch(String query) async {
-    final List<String> updated = _data.recentSearches
-        .where((entry) => entry != query)
-        .toList();
+  Future<void> _searchSingleStore(
+    String currentSearch,
+    bool loadMore,
+    int requestId,
+  ) async {
+    final ProductSearchResponse response = await _fetchPage(
+      currentSearch,
+      _page,
+      storeType: LanguageDetector.storeCodeFor(currentSearch),
+    );
 
-    _searchCubit.onUpdateData(_data.copyWith(recentSearches: updated));
+    if (_isStale(requestId)) return;
 
-    await _prefs.setStringList(PrefKeys.recentSearches, updated);
+    _totalItems = response.totalCount;
+    _totalItemsCubit.onUpdateData(_totalItems ?? 0);
+
+    _allProducts = loadMore
+        ? [..._allProducts, ...response.items]
+        : response.items;
+
+    _productsCubit.onUpdateData(_allProducts);
+
+    _page++;
+  }
+
+  Future<void> _searchBothStores(String currentSearch, int requestId) async {
+    Object? firstError;
+
+    Future<ProductSearchResponse?> attempt(String storeType) async {
+      try {
+        return await _fetchPage(
+          currentSearch,
+          1,
+          storeType: storeType,
+          pageSize: _pageSize * 2,
+        );
+      } catch (error) {
+        firstError ??= error;
+
+        return null;
+      }
+    }
+
+    final List<ProductSearchResponse?> results = await Future.wait([
+      attempt(AppStores.arabic),
+      attempt(AppStores.defaultView),
+    ]);
+
+    if (results.nonNulls.isEmpty) throw firstError!;
+
+    if (_isStale(requestId)) return;
+
+    final ListSearchProducts merged = _mergeAndDeduplicate(
+      results[0]?.items ?? const [],
+      results[1]?.items ?? const [],
+    );
+
+    _allProducts = merged;
+    _totalItems = merged.length;
+
+    _totalItemsCubit.onUpdateData(merged.length);
+    _productsCubit.onUpdateData(merged);
+
+    _page = 2;
   }
 
   Future<ProductSearchResponse> _fetchPage(
@@ -263,56 +368,21 @@ class ProductSearchViewModel {
       searchText: query,
       pageSize: pageSize ?? _pageSize,
       currentPage: page,
-      availableOnly: _data.availableOnly,
+      availableOnly: _availableOnly,
     );
 
-    final Map<String, dynamic> data = await _graphql.query(
+    final Map<String, dynamic> data = await _graphqlService.query(
       GraphQLDocuments.searchProducts,
       variables: request.toVariables(),
-
-      headers: storeType.isEmpty ? const {} : {'store': storeType},
+      headers: {AppStores.header: storeType},
     );
 
     return ProductSearchResponse.fromJson(data);
   }
 
-  Future<ProductSearchResponse> _searchBothStores(String query) async {
-    Object? firstError;
-
-    Future<ProductSearchResponse?> attempt(String storeType) async {
-      try {
-        return await _fetchPage(
-          query,
-          1,
-          storeType: storeType,
-
-          pageSize: _pageSize * 2,
-        );
-      } catch (error) {
-        firstError ??= error;
-
-        return null;
-      }
-    }
-
-    final List<ProductSearchResponse?> results = await Future.wait([
-      attempt('arabic'),
-      attempt(''),
-    ]);
-
-    if (results.nonNulls.isEmpty) throw firstError!;
-
-    final List<ProductSearchProductModel> merged = _mergeAndDeduplicate(
-      results[0]?.items ?? const [],
-      results[1]?.items ?? const [],
-    );
-
-    return ProductSearchResponse(items: merged, totalCount: merged.length);
-  }
-
-  List<ProductSearchProductModel> _mergeAndDeduplicate(
-    List<ProductSearchProductModel> arabicItems,
-    List<ProductSearchProductModel> englishItems,
+  ListSearchProducts _mergeAndDeduplicate(
+    ListSearchProducts arabicItems,
+    ListSearchProducts englishItems,
   ) {
     final Map<String, ProductSearchProductModel> unique =
         <String, ProductSearchProductModel>{};
@@ -329,92 +399,44 @@ class ProductSearchViewModel {
     return unique.values.toList();
   }
 
-  Future<void> _search(String query) async {
-    final int requestId = ++_requestId;
-
-    _resetScrollState();
-
-    _searchCubit.onUpdateData(
-      _data.copyWith(
-        status: ProductSearchStatus.loading,
-        query: query,
-        products: const [],
-        totalCount: 0,
-        currentPage: 1,
-        isLoadingMore: false,
-        clearErrorMessage: true,
-      ),
-    );
-
-    try {
-      final ProductSearchResponse response =
-          LanguageDetector.hasMixedLanguage(query)
-          ? await _searchBothStores(query)
-          : await _fetchPage(
-              query,
-              1,
-              storeType: LanguageDetector.storeHeaderFor(query),
-            );
-
-      if (_isStale(requestId)) return;
-
-      _searchCubit.onUpdateData(
-        _data.copyWith(
-          status: ProductSearchStatus.success,
-          products: response.items,
-          totalCount: response.totalCount,
-          currentPage: 1,
-          clearErrorMessage: true,
-        ),
-      );
-    } catch (error) {
-      if (_isStale(requestId)) return;
-
-      _searchCubit.onUpdateData(
-        _data.copyWith(
-          status: ProductSearchStatus.error,
-          products: const [],
-          errorMessage: errorMessageFrom(error),
-        ),
-      );
-    }
-  }
-
-  Future<void> _loadMore() async {
-    if (_data.isLoadingMore || !_data.hasMore) return;
-    if (_data.status != ProductSearchStatus.success) return;
-
-    final int requestId = ++_requestId;
-    final int nextPage = _data.currentPage + 1;
-    final String query = _data.query;
-
-    _searchCubit.onUpdateData(_data.copyWith(isLoadingMore: true));
-
-    try {
-      final ProductSearchResponse response = await _fetchPage(
-        query,
-        nextPage,
-        storeType: LanguageDetector.storeHeaderFor(query),
-      );
-
-      if (_isStale(requestId)) return;
-
-      _searchCubit.onUpdateData(
-        _data.copyWith(
-          products: [..._data.products, ...response.items],
-          totalCount: response.totalCount,
-          currentPage: nextPage,
-          isLoadingMore: false,
-        ),
-      );
-    } catch (_) {
-      if (_isStale(requestId)) return;
-
-      _searchCubit.onUpdateData(_data.copyWith(isLoadingMore: false));
-    }
-  }
-
   bool _isStale(int requestId) {
-    return requestId != _requestId || _searchCubit.isClosed;
+    return requestId != _requestId || _productsCubit.isClosed;
+  }
+
+  void _loadRecentSearches() {
+    _recentSearchesCubit.onUpdateData(
+      _prefsService.getStringList(PrefKeys.recentSearches),
+    );
+  }
+
+  Future<void> _rememberSearch(String query) async {
+    final String trimmed = query.trim();
+
+    if (trimmed.length < _minQueryLength) return;
+
+    final List<String> updated = [
+      trimmed,
+      ..._recentSearchesCubit.state.data.where(
+        (entry) => entry.toLowerCase() != trimmed.toLowerCase(),
+      ),
+    ];
+
+    if (updated.length > _maxRecentSearches) {
+      updated.removeRange(_maxRecentSearches, updated.length);
+    }
+
+    _recentSearchesCubit.onUpdateData(updated);
+
+    await _prefsService.setStringList(PrefKeys.recentSearches, updated);
+  }
+
+  Future<void> _removeRecentSearch(String query) async {
+    final List<String> updated = _recentSearchesCubit.state.data
+        .where((entry) => entry != query)
+        .toList();
+
+    _recentSearchesCubit.onUpdateData(updated);
+
+    await _prefsService.setStringList(PrefKeys.recentSearches, updated);
   }
 }

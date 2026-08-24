@@ -38,7 +38,7 @@ class RegularLoginForm extends StatelessWidget {
               state.isPasswordHidden
                   ? Icons.visibility_off_outlined
                   : Icons.visibility_outlined,
-              color: const Color(0xFF4F4F4F),
+              color: AppColors.textFormLabel,
               size: 24.sp,
             ),
           ),

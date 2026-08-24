@@ -19,9 +19,9 @@ class RegisterLoginLink extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w700,
-                color: const Color(0xFF173B63),
+                color: AppColors.darkBlue,
                 decoration: TextDecoration.underline,
-                decorationColor: const Color(0xFF173B63),
+                decorationColor: AppColors.darkBlue,
               ),
             ),
           ),

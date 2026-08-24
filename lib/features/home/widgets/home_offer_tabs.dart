@@ -36,7 +36,7 @@ class HomeOfferTabs extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isSelected ? AppColors.primaryRed : AppColors.white,
                 borderRadius: BorderRadius.circular(10.r),
-                border: Border.all(color: const Color(0xFFE8E8E8)),
+                border: Border.all(color: AppColors.borderOfferTab),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.03),
@@ -92,7 +92,7 @@ class _HomeOfferItem extends StatelessWidget {
               width: 86.w,
               height: 86.h,
               decoration: const BoxDecoration(
-                color: Color(0xFFFCEEE8),
+                color: AppColors.peachTint,
                 shape: BoxShape.circle,
               ),
               alignment: Alignment.center,
@@ -113,7 +113,7 @@ class _HomeOfferItem extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w700,
-                color: const Color(0xFF18314F),
+                color: AppColors.titleNavy,
                 height: 1.3,
               ),
             ),
@@ -129,7 +129,7 @@ class _HomeOfferItem extends StatelessWidget {
     }
 
     if (isNetworkImage) {
-      return AppNetworkImage(
+      return CustomAppNetworkImage(
         url: imagePath,
         fit: BoxFit.contain,
         placeholder: _buildPlaceholder(),
@@ -145,11 +145,11 @@ class _HomeOfferItem extends StatelessWidget {
 
   Widget _buildPlaceholder() {
     return Container(
-      color: const Color(0xFFF8DCD2),
+      color: AppColors.peachBorder,
       alignment: Alignment.center,
       child: Icon(
         Icons.local_offer_outlined,
-        color: const Color(0xFFB98B7B),
+        color: AppColors.taupe,
         size: 24.sp,
       ),
     );

@@ -7,25 +7,15 @@ class BrandsShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppShimmer(
-      child: GridView.builder(
+    return CustomAppShimmer(
+      child: CustomAppShimmerGrid(
         itemCount: 12,
-        physics: const AlwaysScrollableScrollPhysics(),
+        crossAxisCount: 3,
+        crossAxisSpacing: 20,
+        mainAxisSpacing: 20,
         padding: EdgeInsets.all(20.r),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 20.w,
-          mainAxisSpacing: 20.h,
-        ),
-        itemBuilder: (context, index) {
-          return Container(
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(14.r),
-              border: Border.all(color: const Color(0xFFEAEAEA)),
-            ),
-          );
-        },
+        borderRadius: 14,
+        borderColor: AppColors.borderLight,
       ),
     );
   }

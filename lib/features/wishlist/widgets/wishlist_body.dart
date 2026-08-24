@@ -16,11 +16,11 @@ class WishlistBody extends StatelessWidget {
         final data = vm._data;
 
         if (data.isLoading) {
-          return const AppLoadingView();
+          return const CustomAppLoadingView();
         }
 
         if (data.favorites.isEmpty) {
-          return AppEmptyView(
+          return CustomAppEmptyView(
             message: LocaleKeys.wishlistEmptyTitle.tr(),
             icon: Icons.favorite_border,
             description: LocaleKeys.wishlistEmptyDesc.tr(),

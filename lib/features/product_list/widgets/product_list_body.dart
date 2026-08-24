@@ -15,17 +15,17 @@ class _ProductListBody extends StatelessWidget {
       builder: (context, state) {
         final List<ProductModel>? products = state.data;
 
-        if (products == null) return const AppLoadingView();
+        if (products == null) return const CustomAppLoadingView();
 
         if (products.isEmpty) {
           if (vm._errorMessage.isNotEmpty) {
-            return AppErrorView(
+            return CustomAppErrorView(
               message: vm._errorMessage,
               onRetry: vm._loadInitialProducts,
             );
           }
 
-          return AppEmptyView(message: LocaleKeys.noProductsFound.tr());
+          return CustomAppEmptyView(message: LocaleKeys.noProductsFound.tr());
         }
 
         return GridView.builder(

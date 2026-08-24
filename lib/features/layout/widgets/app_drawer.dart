@@ -3,9 +3,9 @@ part of '../../home/home_imports.dart';
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
 
-  static const Color _dividerColor = Color(0xFFEDEDED);
-  static const Color _skinAnalysisBgColor = Color(0xFFFDEBEC);
-  static const Color _socialIconColor = Color(0xFF4A4A4A);
+  static const Color _dividerColor = AppColors.borderSoft;
+  static const Color _skinAnalysisBgColor = AppColors.redTintCard;
+  static const Color _socialIconColor = AppColors.textMuted;
 
   NavigationService get _nav => sl<NavigationService>();
 

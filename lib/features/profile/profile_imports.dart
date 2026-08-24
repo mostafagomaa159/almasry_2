@@ -10,6 +10,7 @@ import 'package:almasry_2/core/services/navigation_service.dart';
 import 'package:almasry_2/core/constants/pref_keys.dart';
 import 'package:almasry_2/core/services/shared_prefs_services.dart';
 import 'package:almasry_2/features/profile/widgets/profile_menu_item.dart';
+import 'package:almasry_2/core/localization/app_locale.dart';
 import 'package:almasry_2/core/services/app_startup_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:almasry_2/core/constants/app_images.dart';
 import 'package:almasry_2/core/utils/app_logo.dart';
 import 'package:almasry_2/core/utils/app_direction.dart';
+import 'package:almasry_2/core/widgets/custom_app_card.dart';
 
 part 'view/profile_view.dart';
 part 'widgets/profile_account_view.dart';

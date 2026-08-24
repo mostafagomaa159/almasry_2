@@ -20,18 +20,18 @@ class OtpActionsSection extends StatelessWidget {
             >(
               bloc: vm._authCubit,
               builder: (context, blocState) {
-                return AppButton(
+                return CustomAppButton(
                   title: LocaleKeys.otpVerify.tr(),
                   isLoading: blocState.data.isOtpVerificationLoading,
                   isEnabled: vm._isVerifyEnabled,
                   onPressed: () => vm._verifyOtp(context),
                   height: 54.h,
                   backgroundColor: vm._isVerifyEnabled
-                      ? const Color(0xFFCFCFCF)
-                      : const Color(0xFFD9D9D9),
+                      ? AppColors.borderField
+                      : AppColors.border,
                   borderColor: vm._isVerifyEnabled
-                      ? const Color(0xFFCFCFCF)
-                      : const Color(0xFFD9D9D9),
+                      ? AppColors.borderField
+                      : AppColors.border,
                   textColor: Colors.white,
                   borderRadius: 14,
                   fontSize: 22,

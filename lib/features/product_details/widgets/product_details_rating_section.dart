@@ -31,7 +31,7 @@ class ProductDetailsRatingSection extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w800,
-                    color: const Color(0xFF11385B),
+                    color: AppColors.navyHeading,
                   ),
                 ),
               ),
@@ -104,9 +104,9 @@ class _RatingSummaryCard extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F7F7),
+        color: AppColors.surfaceMuted,
         borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: const Color(0xFFE6E6E6)),
+        border: Border.all(color: AppColors.borderButton),
       ),
       child: Row(
         children: [
@@ -116,7 +116,7 @@ class _RatingSummaryCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.white,
               borderRadius: BorderRadius.circular(14.r),
-              border: Border.all(color: const Color(0xFFE6E6E6)),
+              border: Border.all(color: AppColors.borderButton),
             ),
             alignment: Alignment.center,
             child: Text(
@@ -124,7 +124,7 @@ class _RatingSummaryCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 22.sp,
                 fontWeight: FontWeight.w800,
-                color: const Color(0xFFD7262E),
+                color: AppColors.redHeading,
               ),
             ),
           ),
@@ -146,7 +146,7 @@ class _RatingSummaryCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFF6F6F6F),
+                    color: AppColors.textRatingMuted,
                     height: 1.5,
                   ),
                 ),
@@ -172,7 +172,7 @@ class _ReviewCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: const Color(0xFFE6E6E6)),
+        border: Border.all(color: AppColors.borderButton),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,7 +187,7 @@ class _ReviewCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w700,
-                    color: const Color(0xFF11385B),
+                    color: AppColors.navyHeading,
                   ),
                 ),
               ),
@@ -203,7 +203,7 @@ class _ReviewCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF3A3A3A),
+                color: AppColors.textBody,
               ),
             ),
           ],
@@ -214,7 +214,7 @@ class _ReviewCard extends StatelessWidget {
               review.text,
               style: TextStyle(
                 fontSize: 14.sp,
-                color: const Color(0xFF8C8C8C),
+                color: AppColors.textCaption,
                 height: 1.5,
               ),
             ),
@@ -224,7 +224,7 @@ class _ReviewCard extends StatelessWidget {
             8.verticalSpace,
             Text(
               review.createdAt,
-              style: TextStyle(fontSize: 12.sp, color: const Color(0xFFB0B0B0)),
+              style: TextStyle(fontSize: 12.sp, color: AppColors.textDisabled),
             ),
           ],
         ],
@@ -249,7 +249,7 @@ class _Stars extends StatelessWidget {
         5,
         (index) => Icon(
           index < filled ? Icons.star_rounded : Icons.star_border_rounded,
-          color: const Color(0xFFD7262E),
+          color: AppColors.redHeading,
           size: size.sp,
         ),
       ),

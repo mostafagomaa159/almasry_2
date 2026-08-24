@@ -1,7 +1,6 @@
 import 'package:almasry_2/core/models/response/product_search/product_search_product_model.dart';
 
-/// The `products` payload of the search query — the page of items plus the
-/// total the paging maths needs.
+
 class ProductSearchResponse {
   final List<ProductSearchProductModel> items;
   final int totalCount;

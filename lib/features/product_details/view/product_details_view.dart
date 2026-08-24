@@ -26,6 +26,20 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    return ProductDetailsBody(vm: vm);
+    return Scaffold(
+      backgroundColor: AppColors.surfaceMuted,
+      body: SafeArea(
+        child: Column(
+          children: [
+            ProductDetailsHeader(
+              title: LocaleKeys.productDetailsTitle.tr(),
+              onBack: vm._back,
+            ),
+
+            Expanded(child: ProductDetailsBody(vm: vm)),
+          ],
+        ),
+      ),
+    );
   }
 }
