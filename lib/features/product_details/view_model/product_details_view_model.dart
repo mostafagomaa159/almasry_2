@@ -9,6 +9,7 @@ class ProductDetailsViewModel {
   final FavoritesService _favorites = sl<FavoritesService>();
   final PushNotificationService _push = sl<PushNotificationService>();
   final AlertService _alert = sl<AlertService>();
+  final CartService _cart = sl<CartService>();
 
   static const int _brandProductsPageSize = 10;
 
@@ -22,6 +23,8 @@ class ProductDetailsViewModel {
   ProductDetailModel? get _product => _data.product;
 
   GenericCubit<FavoritesModel> get _favoritesCubit => _favorites.favoritesCubit;
+
+  GenericCubit<CartData> get _cartCubit => _cart.cartCubit;
 
   Future<void> _init({required ProductDetailsArgs args}) async {
     _args = args;
@@ -67,8 +70,26 @@ class ProductDetailsViewModel {
     );
   }
 
-  void _addToBasket() {
-    // TODO: wire to the cart endpoint once it exists.
+  /// Adds the stepper's quantity in one call. `CartService` mints the cart on
+  /// first use, so nothing here has to care whether one exists yet.
+  Future<void> _addToBasket() async {
+    final String sku = _product?.sku ?? _args?.sku ?? '';
+
+    if (sku.trim().isEmpty) return;
+
+    if (await _cart.addProduct(sku: sku, quantity: _data.quantity)) {
+      _alert.showSuccess(LocaleKeys.cartAddedSuccess.tr());
+
+      return;
+    }
+
+    // The service has already turned the failure into copy; this only covers
+    // the case where the server sent no message at all.
+    final String message = _cart.data.errorMessage;
+
+    _alert.showError(
+      message.trim().isEmpty ? LocaleKeys.somethingWentWrong.tr() : message,
+    );
   }
 
   void _addReview() {

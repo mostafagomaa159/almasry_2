@@ -1,6 +1,5 @@
 import 'package:bot_toast/bot_toast.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:almasry_2/core/localization/locale_keys.dart';
+import 'package:almasry_2/core/models/response/checkout/checkout_args_model.dart';
 import 'package:almasry_2/core/models/response/edit_profile/edit_profile_args_model.dart';
 import 'package:almasry_2/core/models/response/my_orders_details/order_details_args_model.dart';
 import 'package:almasry_2/core/models/response/product_details/product_details_args_model.dart';
@@ -8,10 +7,16 @@ import 'package:almasry_2/core/models/response/product_list/product_list_args_mo
 import 'package:almasry_2/core/models/response/login/otp_verification_args_model.dart';
 import 'package:almasry_2/core/models/response/profile/profile_args_model.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
+import 'package:almasry_2/features/address_form/address_form_imports.dart';
 import 'package:almasry_2/features/brands/brands_imports.dart';
+import 'package:almasry_2/features/cart/cart_imports.dart';
 import 'package:almasry_2/features/categories/categories_imports.dart';
+import 'package:almasry_2/features/checkout_payment/checkout_payment_imports.dart';
+import 'package:almasry_2/features/checkout_review/checkout_review_imports.dart';
+import 'package:almasry_2/features/checkout_shipping/checkout_shipping_imports.dart';
 import 'package:almasry_2/features/coming_soon/view/coming_soon_view.dart';
 import 'package:almasry_2/features/contact_us/contact_us_imports.dart';
+import 'package:almasry_2/features/order_confirmed/order_confirmed_imports.dart';
 import 'package:almasry_2/features/edit_profile/edit_profile_imports.dart';
 import 'package:almasry_2/features/home/home_imports.dart';
 import 'package:almasry_2/features/login/login_imports.dart';
@@ -57,6 +62,32 @@ class AppRouter {
         builder: (context, state) => const RegisterCustomerView(),
       ),
 
+      // The checkout steps sit outside the shell: the design has no bottom bar
+      // on them, and stepping back through them should not switch tabs.
+      GoRoute(
+        path: AppRoutes.checkoutShipping,
+        name: RouteNames.checkoutShipping,
+        builder: (context, state) => const CheckoutShippingView(),
+      ),
+      GoRoute(
+        path: AppRoutes.checkoutPayment,
+        name: RouteNames.checkoutPayment,
+        builder: (context, state) => const CheckoutPaymentView(),
+      ),
+      GoRoute(
+        path: AppRoutes.checkoutReview,
+        name: RouteNames.checkoutReview,
+        builder: (context, state) => const CheckoutReviewView(),
+      ),
+      GoRoute(
+        path: AppRoutes.addressForm,
+        name: RouteNames.addressForm,
+        builder: (context, state) {
+          final args = state.extra as AddressFormArgs?;
+          return AddressFormView(args: args);
+        },
+      ),
+
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return LayoutShellView(navigationShell: navigationShell);
@@ -67,9 +98,14 @@ class AppRouter {
               GoRoute(
                 path: AppRoutes.home,
                 name: RouteNames.home,
+                // `is`, not a cast: go_router hands the same `extra` to every
+                // route in the matched chain, so a `goNamed` straight to a
+                // nested route drops that child's argument type in here too
+                // (`homeComingSoon` passes a String).
                 builder: (context, state) {
-                  final ProfileArgs? args = state.extra as ProfileArgs?;
-                  return HomeView(args: args);
+                  final Object? extra = state.extra;
+
+                  return HomeView(args: extra is ProfileArgs ? extra : null);
                 },
                 routes: [
                   GoRoute(
@@ -131,10 +167,21 @@ class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: AppRoutes.comingsoonview,
-                name: RouteNames.comingSoon,
-                builder: (context, state) =>
-                    ComingSoonView(title: LocaleKeys.cart.tr()),
+                path: AppRoutes.cart,
+                name: RouteNames.cart,
+                builder: (context, state) => const CartView(),
+                routes: [
+                  // Nested under the cart so the bottom bar stays visible with
+                  // Cart selected, which is what the design shows.
+                  GoRoute(
+                    path: AppRoutes.orderConfirmed.replaceFirst('/', ''),
+                    name: RouteNames.orderConfirmed,
+                    builder: (context, state) {
+                      final args = state.extra as OrderConfirmedArgs;
+                      return OrderConfirmedView(args: args);
+                    },
+                  ),
+                ],
               ),
             ],
           ),
@@ -144,9 +191,13 @@ class AppRouter {
               GoRoute(
                 path: AppRoutes.profile,
                 name: RouteNames.profile,
+                // Same as `home`: "Track order" on the confirmation screen
+                // does `goNamed(orders, extra: <email String>)`, which rebuilds
+                // this parent with that String as its `extra`.
                 builder: (context, state) {
-                  final ProfileArgs? args = state.extra as ProfileArgs?;
-                  return ProfileView(args: args);
+                  final Object? extra = state.extra;
+
+                  return ProfileView(args: extra is ProfileArgs ? extra : null);
                 },
                 routes: [
                   GoRoute(

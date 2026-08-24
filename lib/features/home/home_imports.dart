@@ -26,6 +26,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:almasry_2/core/models/response/cart/cart_data_model.dart';
+import 'package:almasry_2/core/services/cart_service.dart';
 import 'package:almasry_2/core/services/favorites_service.dart';
 import 'package:almasry_2/core/services/push_notification_service.dart';
 

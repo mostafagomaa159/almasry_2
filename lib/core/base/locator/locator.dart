@@ -1,7 +1,9 @@
+import 'package:almasry_2/core/services/address_book_service.dart';
 import 'package:almasry_2/core/services/alert_service.dart';
 import 'package:almasry_2/core/services/api_services.dart';
 import 'package:almasry_2/core/services/app_startup_service.dart';
 import 'package:almasry_2/core/services/cache_manager_service.dart';
+import 'package:almasry_2/core/services/cart_service.dart';
 import 'package:almasry_2/core/services/auth_session_service.dart';
 import 'package:almasry_2/core/services/favorites_service.dart';
 import 'package:almasry_2/core/services/graphql_service.dart';
@@ -24,6 +26,11 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<AppStartupService>(() => AppStartupService());
 
   sl.registerLazySingleton<FavoritesService>(() => FavoritesService());
+
+  sl.registerLazySingleton<CartService>(() => CartService());
+
+  sl.registerLazySingleton<AddressBookService>(() => AddressBookService());
+
   sl.registerLazySingleton(() => NavigationService());
 
   sl.registerLazySingleton<AlertService>(() => AlertService());

@@ -322,4 +322,409 @@ class GraphQLDocuments {
       }
     }
   ''';
+
+  // ---------------------------------------------------------------------
+  // Cart
+  // ---------------------------------------------------------------------
+
+  /// Returns the masked guest cart id as a bare `String`. Called once, then
+  /// the id is persisted — every other cart call quotes it back.
+  static const String createEmptyCart = r'''
+    mutation CreateEmptyCart {
+      createEmptyCart
+    }
+  ''';
+
+  /// The cart shape every cart call reuses, so add / remove / update and the
+  /// details query all come back with the same payload and the one parser
+  /// handles them all.
+  ///
+  /// `thumbnail` and `price_range` are not in the API brief, but the cart rows
+  /// draw an image and a struck-through regular price, and `price_tiers` is
+  /// empty for products without tier pricing.
+  static const String cartFragment = r'''
+    fragment CartFields on Cart {
+      id
+      total_quantity
+      itemsV2 {
+        total_count
+        items {
+          id
+          uid
+          quantity
+          product {
+            name
+            sku
+            thumbnail {
+              url
+            }
+            price_range {
+              minimum_price {
+                regular_price {
+                  value
+                  currency
+                }
+                final_price {
+                  value
+                  currency
+                }
+              }
+            }
+          }
+          prices {
+            price {
+              value
+              currency
+            }
+            row_total {
+              value
+              currency
+            }
+          }
+        }
+        page_info {
+          page_size
+          current_page
+          total_pages
+        }
+      }
+      prices {
+        grand_total {
+          value
+          currency
+        }
+        subtotal_excluding_tax {
+          value
+          currency
+        }
+        subtotal_including_tax {
+          value
+          currency
+        }
+        discounts {
+          label
+          amount {
+            value
+            currency
+          }
+        }
+        applied_taxes {
+          label
+          amount {
+            value
+            currency
+          }
+        }
+      }
+      selected_payment_method {
+        code
+        title
+        purchase_order_number
+        selected_option
+      }
+      shipping_addresses {
+        firstname
+        lastname
+        street
+        city
+        postcode
+        telephone
+        region {
+          code
+          label
+        }
+        selected_shipping_method {
+          carrier_code
+          carrier_title
+          method_code
+          method_title
+          amount {
+            value
+            currency
+          }
+          price_incl_tax {
+            value
+            currency
+          }
+        }
+      }
+    }
+  ''';
+
+  static const String getCartDetails =
+      '''
+    query GetCartDetails(\$cartId: String!) {
+      cart(cart_id: \$cartId) {
+        ...CartFields
+      }
+    }
+    $cartFragment
+  ''';
+
+  static const String addSimpleProductsToCart =
+      '''
+    mutation AddSimpleProductsToCart(
+      \$cartId: String!
+      \$sku: String!
+      \$quantity: Float!
+    ) {
+      addSimpleProductsToCart(
+        input: {
+          cart_id: \$cartId
+          cart_items: [{ data: { sku: \$sku, quantity: \$quantity } }]
+        }
+      ) {
+        cart {
+          ...CartFields
+        }
+      }
+    }
+    $cartFragment
+  ''';
+
+  static const String removeItemFromCart =
+      '''
+    mutation RemoveItemFromCart(\$cartId: String!, \$cartItemId: Int!) {
+      removeItemFromCart(
+        input: { cart_id: \$cartId, cart_item_id: \$cartItemId }
+      ) {
+        cart {
+          ...CartFields
+        }
+      }
+    }
+    $cartFragment
+  ''';
+
+  /// Not in the API brief — that only documents add and remove — but the cart
+  /// rows carry a stepper, so a quantity has to be settable in one call.
+  /// Magento drops the line itself when the quantity reaches 0.
+  static const String updateCartItems =
+      '''
+    mutation UpdateCartItems(
+      \$cartId: String!
+      \$cartItemId: Int!
+      \$quantity: Float!
+    ) {
+      updateCartItems(
+        input: {
+          cart_id: \$cartId
+          cart_items: [{ cart_item_id: \$cartItemId, quantity: \$quantity }]
+        }
+      ) {
+        cart {
+          ...CartFields
+        }
+      }
+    }
+    $cartFragment
+  ''';
+
+  // ---------------------------------------------------------------------
+  // Checkout
+  // ---------------------------------------------------------------------
+
+  /// Not in the API brief, but `placeOrder` refuses a guest cart without it:
+  /// it answers 200 with `{code: "GUEST_EMAIL_MISSING"}`. Magento validates the
+  /// format, so a bare phone number is rejected.
+  static const String setGuestEmailOnCart = r'''
+    mutation SetGuestEmailOnCart($cartId: String!, $email: String!) {
+      setGuestEmailOnCart(input: { cart_id: $cartId, email: $email }) {
+        cart {
+          email
+        }
+      }
+    }
+  ''';
+
+  /// The governorate list for the address form.
+  ///
+  /// Not in the API brief, but required in practice: Magento rejects an
+  /// address whose `region` string it cannot resolve with "regionId is
+  /// required", and the brief's hard-coded example id (1159) is not even this
+  /// store's Alexandria (1200). So the ids are fetched rather than guessed.
+  ///
+  /// `name` is localised by store view — Arabic on the default view, English
+  /// under `store: default` — while `id` and `code` are the same in both.
+  static const String getCountryRegions = r'''
+    query GetCountryRegions($countryCode: String!) {
+      country(id: $countryCode) {
+        id
+        available_regions {
+          id
+          code
+          name
+        }
+      }
+    }
+  ''';
+
+  static const String setShippingAddressesOnCart = r'''
+    mutation SetShippingAddressesOnCart(
+      $input: SetShippingAddressesOnCartInput!
+    ) {
+      setShippingAddressesOnCart(input: $input) {
+        cart {
+          shipping_addresses {
+            firstname
+            lastname
+            street
+            city
+            postcode
+            telephone
+            region {
+              label
+              code
+            }
+          }
+        }
+      }
+    }
+  ''';
+
+  static const String setBillingAddressOnCart = r'''
+    mutation SetBillingAddressOnCart($input: SetBillingAddressOnCartInput!) {
+      setBillingAddressOnCart(input: $input) {
+        cart {
+          billing_address {
+            firstname
+            lastname
+            company
+            street
+            city
+            postcode
+            telephone
+            region {
+              code
+              label
+            }
+            country {
+              code
+              label
+            }
+          }
+        }
+      }
+    }
+  ''';
+
+  static const String getCartShippingMethods = r'''
+    query GetCartShippingMethods($cartId: String!) {
+      cart(cart_id: $cartId) {
+        email
+        shipping_addresses {
+          available_shipping_methods {
+            amount {
+              value
+              currency
+            }
+            available
+            carrier_code
+            carrier_title
+            method_code
+            method_title
+            price_excl_tax {
+              value
+              currency
+            }
+            price_incl_tax {
+              value
+              currency
+            }
+          }
+          selected_shipping_method {
+            amount {
+              value
+              currency
+            }
+            carrier_code
+            carrier_title
+            method_code
+            method_title
+          }
+        }
+      }
+    }
+  ''';
+
+  static const String setShippingMethodsOnCart = r'''
+    mutation SetShippingMethodsOnCart(
+      $cartId: String!
+      $carrierCode: String!
+      $methodCode: String!
+    ) {
+      setShippingMethodsOnCart(
+        input: {
+          cart_id: $cartId
+          shipping_methods: [
+            { carrier_code: $carrierCode, method_code: $methodCode }
+          ]
+        }
+      ) {
+        cart {
+          shipping_addresses {
+            selected_shipping_method {
+              carrier_code
+              method_code
+            }
+          }
+        }
+      }
+    }
+  ''';
+
+  static const String getAvailablePaymentMethods = r'''
+    query GetAvailablePaymentMethods($cartId: String!) {
+      cart(cart_id: $cartId) {
+        available_payment_methods {
+          code
+          title
+          options {
+            code
+            name
+            logo
+          }
+        }
+      }
+    }
+  ''';
+
+  /// `selected_option` is nullable here: the brief marks it `String!`, but
+  /// Cash on delivery and Instapay have no sub-option to send.
+  static const String setPaymentMethodOnCart = r'''
+    mutation SetPaymentMethodOnCart(
+      $cartId: String!
+      $code: String!
+      $selectedOption: String
+    ) {
+      setPaymentMethodOnCart(
+        input: {
+          cart_id: $cartId
+          payment_method: { code: $code, selected_option: $selectedOption }
+        }
+      ) {
+        cart {
+          selected_payment_method {
+            code
+            title
+            selected_option
+          }
+        }
+      }
+    }
+  ''';
+
+  static const String placeOrder = r'''
+    mutation PlaceOrder($cartId: String!) {
+      placeOrder(input: { cart_id: $cartId }) {
+        orderV2 {
+          number
+        }
+        errors {
+          message
+          code
+        }
+      }
+    }
+  ''';
 }

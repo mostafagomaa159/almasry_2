@@ -7,11 +7,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 /// The red-bordered header used by the inner screens (Brands, Contact us):
 /// back chevron, centred title, and the doctor avatar overlapping the bottom
 /// trailing corner — the same shape as the home header.
+///
+/// [onMenu] swaps the back chevron for a drawer hamburger, which is what the
+/// tab-level screens (Cart) need: they have nothing to pop back to.
 class CustomAppBar extends StatelessWidget {
   final String title;
-  final VoidCallback onBack;
+  final VoidCallback? onBack;
+  final VoidCallback? onMenu;
 
-  const CustomAppBar({super.key, required this.title, required this.onBack});
+  const CustomAppBar({super.key, required this.title, this.onBack, this.onMenu})
+    : assert(
+        onBack != null || onMenu != null,
+        'CustomAppBar needs a leading action: pass onBack or onMenu.',
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -52,12 +60,14 @@ class CustomAppBar extends StatelessWidget {
                     child: Material(
                       color: AppColors.transparent,
                       child: InkWell(
-                        onTap: onBack,
+                        onTap: onMenu ?? onBack,
                         borderRadius: BorderRadius.circular(8.r),
                         child: Padding(
                           padding: EdgeInsets.all(6.w),
                           child: Icon(
-                            AppDirection.chevronBack,
+                            onMenu != null
+                                ? Icons.menu
+                                : AppDirection.chevronBack,
                             size: 28.sp,
                             color: AppColors.textPrimary,
                           ),

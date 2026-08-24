@@ -19,7 +19,9 @@ import 'package:almasry_2/core/models/response/product_details/product_review_mo
 import 'package:almasry_2/core/models/response/product_details/products_by_brand_response.dart';
 import 'package:almasry_2/core/constants/app_graphql.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
+import 'package:almasry_2/core/models/response/cart/cart_data_model.dart';
 import 'package:almasry_2/core/services/alert_service.dart';
+import 'package:almasry_2/core/services/cart_service.dart';
 import 'package:almasry_2/core/services/favorites_service.dart';
 import 'package:almasry_2/core/services/graphql_service.dart';
 import 'package:almasry_2/core/services/navigation_service.dart';

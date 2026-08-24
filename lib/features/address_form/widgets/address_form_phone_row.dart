@@ -1,0 +1,56 @@
+part of '../address_form_imports.dart';
+
+/// The dialling-code chip beside the phone field.
+///
+/// The chip is static: the store ships to Egypt only, so the address always
+/// goes out with `country_code: "EG"`. It is drawn without a dropdown arrow so
+/// it does not advertise a picker that would have nothing to pick.
+class AddressFormPhoneRow extends StatelessWidget {
+  final AddressFormViewModel vm;
+
+  const AddressFormPhoneRow({super.key, required this.vm});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF3F3F3),
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Row(
+            children: <Widget>[
+              Text('🇪🇬', style: TextStyle(fontSize: 20.sp)),
+
+              8.horizontalSpace,
+
+              Text(
+                AddressModel.defaultCountryDialCode,
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF4B4B4B),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        16.horizontalSpace,
+
+        Expanded(
+          child: AddressFormField(
+            label: LocaleKeys.phoneNumber.tr(),
+            hintText: LocaleKeys.phoneNumber.tr(),
+            controller: vm._phoneController,
+            validator: vm._validatePhone,
+            keyboardType: TextInputType.phone,
+          ),
+        ),
+      ],
+    );
+  }
+}

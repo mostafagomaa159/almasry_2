@@ -54,8 +54,6 @@ class BlinkApp extends StatelessWidget {
         supportedLocales: context.supportedLocales,
         localizationsDelegates: context.localizationDelegates,
         routerConfig: AppRouter.router,
-        // Both overlays wrap the whole app so `AlertService` can show a toast
-        // or a blocking loader without a BuildContext.
         builder: EasyLoading.init(builder: BotToastInit()),
       ),
     );

@@ -1,0 +1,38 @@
+part of '../checkout_shipping_imports.dart';
+
+class CheckoutShippingView extends StatefulWidget {
+  const CheckoutShippingView({super.key});
+
+  @override
+  State<CheckoutShippingView> createState() => _CheckoutShippingViewState();
+}
+
+class _CheckoutShippingViewState extends State<CheckoutShippingView> {
+  final CheckoutShippingViewModel vm = CheckoutShippingViewModel();
+
+  @override
+  void initState() {
+    super.initState();
+    vm._init();
+  }
+
+  @override
+  void dispose() {
+    vm._dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.white,
+      body: Column(
+        children: <Widget>[
+          CustomAppBar(title: LocaleKeys.checkoutTitle.tr(), onBack: vm._back),
+          const CheckoutStepper(currentStep: CheckoutStep.address),
+          Expanded(child: CheckoutShippingBody(vm: vm)),
+        ],
+      ),
+    );
+  }
+}

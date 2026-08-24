@@ -5,6 +5,7 @@ class SplashViewModel {
 
   final AppStartupService _startup = sl<AppStartupService>();
   final NavigationService _nav = sl<NavigationService>();
+  final CartService _cart = sl<CartService>();
 
   /// Variables
 
@@ -46,6 +47,12 @@ class SplashViewModel {
   /// Actions
 
   Future<void> _checkAppStart(bool Function() isMounted) async {
+    // Reads the persisted cart behind the splash animation, so the bottom bar
+    // badge is already right on the first frame of whichever tab opens.
+    // Unawaited on purpose: a slow or failed cart read must not hold up the
+    // gate, and `CartService` reports its own failures.
+    unawaited(_cart.loadCart());
+
     final StartupStatus status = await _startup.checkAppStart();
 
     await _onStatusChanged(status, isMounted);

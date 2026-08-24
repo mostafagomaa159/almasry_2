@@ -14,7 +14,16 @@ class AppRoutes {
   static const String productSearch = '/productSearch';
   static const String categories = '/categories';
 
-  static const String comingsoonview = '/comingsoonview';
+  static const String cart = '/cart';
+  static const String orderConfirmed = '/orderConfirmed';
+
+  /// The three checkout steps and the address form sit outside the shell —
+  /// the design has no bottom bar on them.
+  static const String checkoutShipping = '/checkout-shipping';
+  static const String checkoutPayment = '/checkout-payment';
+  static const String checkoutReview = '/checkout-review';
+  static const String addressForm = '/address-form';
+
   static const String homeComingSoon = '/comingSoon';
   static const String brands = '/brands';
   static const String contactUs = '/contactUs';
@@ -38,7 +47,12 @@ class RouteNames {
   static const String productList = 'productList';
   static const String productSearch = 'productSearch';
   static const String categories = 'categories';
-  static const String comingSoon = 'comingsoonview';
+  static const String cart = 'cart';
+  static const String orderConfirmed = 'orderConfirmed';
+  static const String checkoutShipping = 'checkoutShipping';
+  static const String checkoutPayment = 'checkoutPayment';
+  static const String checkoutReview = 'checkoutReview';
+  static const String addressForm = 'addressForm';
   static const String homeComingSoon = 'homeComingSoon';
   static const String brands = 'brands';
   static const String contactUs = 'contactUs';

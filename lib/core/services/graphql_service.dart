@@ -23,6 +23,20 @@ class GraphQLService {
   /// Pass [headers] to override the request headers for this call only —
   /// Magento's `store` header is what selects the Arabic or English store
   /// view, so a search may need to hit both.
+  ///
+  /// [FetchPolicy.noCache], not `networkOnly`: both always hit the network, but
+  /// `networkOnly` also writes the reply into the normalized cache and hands
+  /// back a *re-read* of it. Nothing in this app ever reads that cache, and the
+  /// round trip actively breaks the cart.
+  ///
+  /// Two queries selecting the same entity with different fields is enough to
+  /// do it. `getCartDetails` selects `Cart.id`, so the cart normalizes to
+  /// `Cart:<masked-id>` with a `shipping_addresses` list that has no
+  /// `available_shipping_methods` in it. `getCartShippingMethods` then selects
+  /// `cart` *without* `id`, so on re-read the resolver walks back to that same
+  /// stored entity, finds the field missing, and the whole read comes back null
+  /// as `CacheMissException: Round trip cache re-read failed`. Skipping
+  /// normalization returns the server's own reply and removes the failure mode.
   Future<Map<String, dynamic>> query(
     String document, {
     Map<String, dynamic> variables = const {},
@@ -32,7 +46,7 @@ class GraphQLService {
       QueryOptions(
         document: gql(document),
         variables: variables,
-        fetchPolicy: FetchPolicy.networkOnly,
+        fetchPolicy: FetchPolicy.noCache,
         context: _contextFor(headers),
       ),
     );
@@ -40,8 +54,8 @@ class GraphQLService {
     return _resolve(result);
   }
 
-  /// An empty map has to leave the context untouched: adding an empty
-  /// `HttpLinkHeaders` entry would still key the cache differently.
+  /// An empty map has to leave the context untouched rather than add an empty
+  /// `HttpLinkHeaders` entry.
   Context _contextFor(Map<String, String> headers) {
     if (headers.isEmpty) return const Context();
 

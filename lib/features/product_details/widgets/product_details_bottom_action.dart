@@ -68,43 +68,63 @@ class _AddToBasketRow extends StatelessWidget {
 
         12.horizontalSpace,
 
+        // The spinner comes off the app-global cart state, so the button also
+        // reflects an add started from somewhere else.
         Expanded(
-          child: SizedBox(
-            height: 58.h,
-            child: ElevatedButton(
-              onPressed: vm._addToBasket,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryRed,
-                foregroundColor: AppColors.white,
-                elevation: 0,
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.shopping_basket_outlined,
-                    size: 22.sp,
-                    color: AppColors.white,
-                  ),
-                  8.horizontalSpace,
-                  Flexible(
-                    child: Text(
-                      LocaleKeys.productDetailsAddToBasket.tr(),
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.white,
-                      ),
+          child: BlocBuilder<GenericCubit<CartData>, GenericState<CartData>>(
+            bloc: vm._cartCubit,
+            builder: (context, state) {
+              final bool isAdding = state.data.isAdding;
+
+              return SizedBox(
+                height: 58.h,
+                child: ElevatedButton(
+                  onPressed: isAdding ? null : vm._addToBasket,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryRed,
+                    foregroundColor: AppColors.white,
+                    disabledBackgroundColor: AppColors.primaryRed,
+                    disabledForegroundColor: AppColors.white,
+                    elevation: 0,
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.r),
                     ),
                   ),
-                ],
-              ),
-            ),
+                  child: isAdding
+                      ? SizedBox(
+                          width: 22.w,
+                          height: 22.w,
+                          child: const CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.white,
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.shopping_basket_outlined,
+                              size: 22.sp,
+                              color: AppColors.white,
+                            ),
+                            8.horizontalSpace,
+                            Flexible(
+                              child: Text(
+                                LocaleKeys.productDetailsAddToBasket.tr(),
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
+              );
+            },
           ),
         ),
       ],

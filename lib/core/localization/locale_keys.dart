@@ -287,4 +287,73 @@ class LocaleKeys {
   static const String contactUsSuccess = 'contact_us_success';
   static const String contactUsFailed = 'contact_us_failed';
   static const String contactUsNumbersTitle = 'contact_us_numbers_title';
+
+  // Cart
+  static const String cartEmpty = 'cart_empty';
+  static const String cartSubTotal = 'cart_sub_total';
+  static const String cartShippingCosts = 'cart_shipping_costs';
+  static const String cartDiscount = 'cart_discount';
+  static const String cartGrandTotal = 'cart_grand_total';
+  static const String cartBuy = 'cart_buy';
+  static const String cartAddedSuccess = 'cart_added_success';
+  static const String cartItemRemoved = 'cart_item_removed';
+
+  // Checkout
+  static const String checkoutTitle = 'checkout_title';
+  static const String checkoutShippingAddress = 'checkout_shipping_address';
+  static const String checkoutAddNewAddress = 'checkout_add_new_address';
+  static const String checkoutShowAllAddresses = 'checkout_show_all_addresses';
+  static const String checkoutShowLessAddresses =
+      'checkout_show_less_addresses';
+  static const String checkoutShippingCompany = 'checkout_shipping_company';
+  static const String checkoutProceedToPayment = 'checkout_proceed_to_payment';
+  static const String checkoutOrderReview = 'checkout_order_review';
+  static const String checkoutGoToPayment = 'checkout_go_to_payment';
+  static const String checkoutDefaultAddress = 'checkout_default_address';
+  static const String checkoutPhoneLabel = 'checkout_phone_label';
+  static const String checkoutCityLabel = 'checkout_city_label';
+  static const String checkoutAddressLabel = 'checkout_address_label';
+  static const String checkoutNoAddresses = 'checkout_no_addresses';
+  static const String checkoutSelectAddress = 'checkout_select_address';
+  static const String checkoutSelectShippingMethod =
+      'checkout_select_shipping_method';
+  static const String checkoutSelectPaymentMethod =
+      'checkout_select_payment_method';
+  static const String checkoutNoShippingMethods =
+      'checkout_no_shipping_methods';
+  static const String checkoutNoPaymentMethods = 'checkout_no_payment_methods';
+  static const String checkoutYourProducts = 'checkout_your_products';
+  static const String checkoutOrderDetails = 'checkout_order_details';
+  static const String checkoutBillDetails = 'checkout_bill_details';
+  static const String checkoutTax = 'checkout_tax';
+  static const String checkoutPaymentMethod = 'checkout_payment_method';
+  static const String checkoutDeleteAddress = 'checkout_delete_address';
+  static const String checkoutEmailMissing = 'checkout_email_missing';
+  static const String checkoutPaymentCodHint = 'checkout_payment_cod_hint';
+  static const String checkoutPaymentLinkHint = 'checkout_payment_link_hint';
+
+  // Address form
+  static const String addressFormTitle = 'address_form_title';
+  static const String addressFormEditTitle = 'address_form_edit_title';
+  static const String addressFormAddress = 'address_form_address';
+  static const String addressFormAddressHint = 'address_form_address_hint';
+  static const String addressFormPickOnMap = 'address_form_pick_on_map';
+  static const String addressFormBuilding = 'address_form_building';
+  static const String addressFormBuildingHint = 'address_form_building_hint';
+  static const String addressFormFloor = 'address_form_floor';
+  static const String addressFormFloorHint = 'address_form_floor_hint';
+  static const String addressFormApartment = 'address_form_apartment';
+  static const String addressFormApartmentHint = 'address_form_apartment_hint';
+  static const String addressFormMark = 'address_form_mark';
+  static const String addressFormMarkHint = 'address_form_mark_hint';
+  static const String addressFormGovernment = 'address_form_government';
+  static const String addressFormSave = 'address_form_save';
+  static const String addressFormSaved = 'address_form_saved';
+
+  // Order confirmed
+  static const String orderConfirmedTitle = 'order_confirmed_title';
+  static const String orderConfirmedNumber = 'order_confirmed_number';
+  static const String orderConfirmedDetails = 'order_confirmed_details';
+  static const String orderConfirmedTrack = 'order_confirmed_track';
+  static const String orderConfirmedBackToMain = 'order_confirmed_back_to_main';
 }
