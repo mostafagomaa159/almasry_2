@@ -1,4 +1,5 @@
 import 'package:almasry_2/core/constants/app_api.dart';
+import 'package:almasry_2/core/services/network_logger_service.dart';
 import 'package:graphql/client.dart';
 
 class GraphQLServiceException implements Exception {
@@ -10,8 +11,19 @@ class GraphQLServiceException implements Exception {
   String toString() => message;
 }
 
+
+class _LoggedCall {
+  const _LoggedCall(this.label, this.stopwatch);
+
+  final String label;
+  final Stopwatch stopwatch;
+}
+
 class GraphQLService {
   late final GraphQLClient _client;
+
+
+  static const NetworkLoggerService _logger = NetworkLoggerService();
 
   GraphQLService() {
     _client = GraphQLClient(
@@ -20,28 +32,19 @@ class GraphQLService {
     );
   }
 
-  /// Pass [headers] to override the request headers for this call only —
-  /// Magento's `store` header is what selects the Arabic or English store
-  /// view, so a search may need to hit both.
-  ///
-  /// [FetchPolicy.noCache], not `networkOnly`: both always hit the network, but
-  /// `networkOnly` also writes the reply into the normalized cache and hands
-  /// back a *re-read* of it. Nothing in this app ever reads that cache, and the
-  /// round trip actively breaks the cart.
-  ///
-  /// Two queries selecting the same entity with different fields is enough to
-  /// do it. `getCartDetails` selects `Cart.id`, so the cart normalizes to
-  /// `Cart:<masked-id>` with a `shipping_addresses` list that has no
-  /// `available_shipping_methods` in it. `getCartShippingMethods` then selects
-  /// `cart` *without* `id`, so on re-read the resolver walks back to that same
-  /// stored entity, finds the field missing, and the whole read comes back null
-  /// as `CacheMissException: Round trip cache re-read failed`. Skipping
-  /// normalization returns the server's own reply and removes the failure mode.
+
   Future<Map<String, dynamic>> query(
     String document, {
     Map<String, dynamic> variables = const {},
     Map<String, String> headers = const {},
   }) async {
+    final _LoggedCall call = _logRequest(
+      'QUERY',
+      document,
+      variables,
+      headers,
+    );
+
     final QueryResult result = await _client.query(
       QueryOptions(
         document: gql(document),
@@ -51,11 +54,10 @@ class GraphQLService {
       ),
     );
 
-    return _resolve(result);
+    return _resolve(result, call);
   }
 
-  /// An empty map has to leave the context untouched rather than add an empty
-  /// `HttpLinkHeaders` entry.
+
   Context _contextFor(Map<String, String> headers) {
     if (headers.isEmpty) return const Context();
 
@@ -66,6 +68,13 @@ class GraphQLService {
     String document, {
     Map<String, dynamic> variables = const {},
   }) async {
+    final _LoggedCall call = _logRequest(
+      'MUTATION',
+      document,
+      variables,
+      const {},
+    );
+
     final QueryResult result = await _client.mutate(
       MutationOptions(
         document: gql(document),
@@ -74,15 +83,59 @@ class GraphQLService {
       ),
     );
 
-    return _resolve(result);
+    return _resolve(result, call);
   }
 
-  Map<String, dynamic> _resolve(QueryResult result) {
+
+  _LoggedCall _logRequest(
+    String kind,
+    String document,
+    Map<String, dynamic> variables,
+    Map<String, String> headers,
+  ) {
+    final String label =
+        '$kind ${NetworkLoggerService.operationName(document) ?? 'anonymous'}';
+
+    _logger.open('GRAPHQL $label');
+
+    if (headers.isNotEmpty) {
+      _logger.line('headers:');
+      headers.forEach(_logger.keyValue);
+    }
+
+    if (variables.isNotEmpty) {
+      _logger.section('variables', variables);
+    }
+
+    _logger.close();
+
+    return _LoggedCall(label, Stopwatch()..start());
+  }
+
+  Map<String, dynamic> _resolve(QueryResult result, _LoggedCall call) {
+    final String elapsed = ' (${call.stopwatch.elapsedMilliseconds}ms)';
+
     if (result.hasException) {
-      throw GraphQLServiceException(_extractMessage(result.exception!));
+      final String message = _extractMessage(result.exception!);
+
+      _logger.open('GRAPHQL ERROR ${call.label}$elapsed');
+      _logger.line(message.isEmpty ? '${result.exception}' : message);
+
+
+      if (result.data != null) {
+        _logger.section('partial data', result.data);
+      }
+
+      _logger.close();
+
+      throw GraphQLServiceException(message);
     }
 
     final Map<String, dynamic>? data = result.data;
+
+    _logger.open('GRAPHQL REPLY ${call.label}$elapsed');
+    _logger.section('data', data);
+    _logger.close();
 
     if (data == null) {
       throw const GraphQLServiceException('');

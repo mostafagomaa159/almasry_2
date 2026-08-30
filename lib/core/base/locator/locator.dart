@@ -31,7 +31,7 @@ Future<void> setupServiceLocator() async {
 
   sl.registerLazySingleton<AddressBookService>(() => AddressBookService());
 
-  sl.registerLazySingleton(() => NavigationService());
+  sl.registerLazySingleton<NavigationService>(() => NavigationService());
 
   sl.registerLazySingleton<AlertService>(() => AlertService());
 

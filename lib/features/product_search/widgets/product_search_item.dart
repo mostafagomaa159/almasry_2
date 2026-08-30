@@ -1,8 +1,6 @@
 part of '../product_search_imports.dart';
 
-/// One result card: image with its badge and favourite button, the discount
-/// strip, name, price, and either the quantity stepper or the out-of-stock
-/// banner.
+
 class ProductSearchItem extends StatefulWidget {
   final ProductSearchViewModel vm;
   final ProductSearchProductModel product;
@@ -14,8 +12,7 @@ class ProductSearchItem extends StatefulWidget {
 }
 
 class _ProductSearchItemState extends State<ProductSearchItem> {
-  /// The card's own counter — nothing outside it reads the number until a cart
-  /// endpoint exists, so it stays view-local.
+
   int _quantity = 1;
 
   void _increment() => setState(() => _quantity++);
@@ -23,6 +20,13 @@ class _ProductSearchItemState extends State<ProductSearchItem> {
   void _decrement() {
     if (_quantity <= 1) return;
     setState(() => _quantity--);
+  }
+
+  Future<void> _addToCart() async {
+    await widget.vm._addToCart(
+      sku: widget.product.sku,
+      quantity: _quantity,
+    );
   }
 
   @override
@@ -149,11 +153,7 @@ class _ProductSearchItemState extends State<ProductSearchItem> {
   Widget _cartRow() {
     return Row(
       children: [
-        Icon(
-          Icons.add_shopping_cart_outlined,
-          size: 20.sp,
-          color: AppColors.titleNavy,
-        ),
+        _addToCartButton(),
 
         const Spacer(),
 
@@ -163,6 +163,45 @@ class _ProductSearchItemState extends State<ProductSearchItem> {
           onDecrement: _quantity > 1 ? _decrement : null,
         ),
       ],
+    );
+  }
+
+
+  Widget _addToCartButton() {
+    return BlocBuilder<GenericCubit<CartData>, GenericState<CartData>>(
+      bloc: widget.vm._cartCubit,
+      builder: (context, state) {
+        final bool isAdding = state.data.isAddingSku(widget.product.sku);
+        final bool isEnabled = !isAdding && widget.product.sku.isNotEmpty;
+
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: isEnabled ? _addToCart : null,
+            borderRadius: BorderRadius.circular(8.r),
+            child: SizedBox(
+              width: 34.w,
+              height: 34.h,
+              child: Center(
+                child: isAdding
+                    ? SizedBox(
+                        width: 18.w,
+                        height: 18.h,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.w,
+                          color: AppColors.titleNavy,
+                        ),
+                      )
+                    : Icon(
+                        Icons.add_shopping_cart_outlined,
+                        size: 20.sp,
+                        color: AppColors.titleNavy,
+                      ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

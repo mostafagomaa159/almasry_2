@@ -8,7 +8,7 @@ class ProductSearchViewModel {
   final _prefsService = sl<SharedPrefsServices>();
   final _favoritesService = sl<FavoritesService>();
   final _alertService = sl<AlertService>();
-
+  final _cartService = sl<CartService>();
   final GenericCubit<ListSearchProducts> _productsCubit =
       GenericCubit<ListSearchProducts>([]);
   final _totalItemsCubit = GenericCubit<int>(0);
@@ -18,9 +18,7 @@ class ProductSearchViewModel {
   final GenericCubit<bool> _availableOnlyCubit = GenericCubit<bool>(false);
   final GenericCubit<List<String>> _recentSearchesCubit =
       GenericCubit<List<String>>([]);
-
   final GenericCubit<bool> _hasQueryCubit = GenericCubit<bool>(false);
-
   late final TextEditingController _searchController;
   late final FocusNode _searchFocusNode;
   late final ScrollController _scrollController;
@@ -34,11 +32,9 @@ class ProductSearchViewModel {
   static const double _fabRevealOffset = 200;
 
   String _searchTerm = '';
-
   int _page = 1;
   bool _isFetching = false;
   int? _totalItems;
-
   int _requestId = 0;
 
   ListSearchProducts _allProducts = [];
@@ -47,6 +43,8 @@ class ProductSearchViewModel {
 
   GenericCubit<FavoritesModel> get _favoritesCubit =>
       _favoritesService.favoritesCubit;
+
+  GenericCubit<CartData> get _cartCubit => _cartService.cartCubit;
 
   bool get _canFetchMoreItems =>
       _totalItems == null || _allProducts.length < (_totalItems ?? 0);
@@ -58,13 +56,11 @@ class ProductSearchViewModel {
     _searchFocusNode = FocusNode();
 
     _setupScrollController();
-
     _loadRecentSearches();
   }
 
   void _dispose() {
     _debounce?.cancel();
-
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     _searchFocusNode.dispose();
@@ -155,14 +151,32 @@ class ProductSearchViewModel {
     );
   }
 
+  Future<void> _addToCart({
+    required String sku,
+    required int quantity,
+  }) async {
+    if (sku.trim().isEmpty) return;
+
+    if (await _cartService.addProduct(sku: sku, quantity: quantity)) {
+      _alertService.showSuccess(LocaleKeys.cartAddedSuccess.tr());
+
+      return;
+    }
+
+    final String message = _cartService.data.errorMessage;
+
+    _alertService.showError(
+      message.trim().isEmpty ? LocaleKeys.somethingWentWrong.tr() : message,
+    );
+  }
+
   void _onQueryChanged(String value) {
     _debounce?.cancel();
 
     final String query = value.trim();
 
     if (query.length < _minQueryLength) {
-      // Invalidates anything still in flight, so a late response cannot drop
-      // results onto a screen that has gone back to the recent searches.
+
       _requestId++;
 
       _searchTerm = '';

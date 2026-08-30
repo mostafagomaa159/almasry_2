@@ -5,6 +5,9 @@ class ProductListViewModel {
 
   final ApiService _apiService = sl<ApiService>();
   final NavigationService _nav = sl<NavigationService>();
+  final _cartService = sl<CartService>();
+  final _alertService = sl<AlertService>();
+  final _favoritesService = sl<FavoritesService>();
 
   /// Variables
 
@@ -31,6 +34,14 @@ class ProductListViewModel {
   List<ProductModel> get _loadedProducts =>
       _productsCubit.state.data ?? const [];
 
+  /// Owned by `CartService`, so it is never closed in [_dispose] — the badge
+  /// and every later screen read the same cubit.
+  GenericCubit<CartData> get _cartCubit => _cartService.cartCubit;
+
+  /// Likewise owned by `FavoritesService`, and shared with the wishlist screen.
+  GenericCubit<FavoritesModel> get _favoritesCubit =>
+      _favoritesService.favoritesCubit;
+
   /// Init
 
   Future<void> _init({
@@ -44,7 +55,12 @@ class ProductListViewModel {
 
     _scrollController = ScrollController()..addListener(_onScroll);
 
-    await _loadInitialProducts();
+    // Favourites come from sqflite and the product request doesn't need them,
+    // so the local read runs alongside it rather than before it.
+    await Future.wait([
+      _favoritesService.loadFavorites(),
+      _loadInitialProducts(),
+    ]);
   }
 
   void _dispose() {
@@ -92,6 +108,31 @@ class ProductListViewModel {
     _quantities = updated;
 
     _productsCubit.onUpdateData(_loadedProducts);
+  }
+
+  /// Adds the row's stepper quantity. `CartService` mints the cart on first use
+  /// and has already turned any failure into copy, so the fallback below only
+  /// covers a server reply that carried no message at all.
+  Future<void> _addToCart(String sku) async {
+    if (sku.trim().isEmpty) return;
+
+    final int quantity = _getProductQuantity(sku);
+
+    if (await _cartService.addProduct(sku: sku, quantity: quantity)) {
+      _alertService.showSuccess(LocaleKeys.cartAddedSuccess.tr());
+
+      return;
+    }
+
+    final String message = _cartService.data.errorMessage;
+
+    _alertService.showError(
+      message.trim().isEmpty ? LocaleKeys.somethingWentWrong.tr() : message,
+    );
+  }
+
+  Future<void> _toggleFavorite(FavoriteProductModel product) async {
+    await _favoritesService.toggleFavorite(product);
   }
 
   void _goBack() {

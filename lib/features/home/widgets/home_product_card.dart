@@ -14,6 +14,10 @@ class ProductCard extends StatefulWidget {
   final double rating;
   final bool isNetworkImage;
 
+  /// Defaults to true so a card built from a source that carries no stock
+  /// information keeps its buy controls rather than reading as unavailable.
+  final bool isInStock;
+
   const ProductCard({
     super.key,
     required this.vm,
@@ -28,6 +32,7 @@ class ProductCard extends StatefulWidget {
     required this.pointsText,
     required this.rating,
     this.isNetworkImage = false,
+    this.isInStock = true,
   });
 
   @override
@@ -62,6 +67,10 @@ class _ProductCardState extends State<ProductCard> {
     if (quantity > 1) {
       setState(() => quantity--);
     }
+  }
+
+  Future<void> _addToCart() async {
+    await widget.vm._addToCart(sku: widget.sku, quantity: quantity);
   }
 
   void _openProductDetails() {
@@ -225,51 +234,86 @@ class _ProductCardState extends State<ProductCard> {
 
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.w),
-            child: Row(
-              children: [
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {
-                      // add cart/remove action here
-                    },
-                    borderRadius: BorderRadius.circular(8.r),
-                    child: SizedBox(
-                      width: 28.w,
-                      height: 28.h,
-                      child: Icon(
-                        Icons.add_shopping_cart_outlined,
-                        size: 19.sp,
-                        color: _mutedColor,
-                      ),
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                CustomAppQuantityStepper(
-                  quantity: quantity,
-                  onIncrement: _incrementQuantity,
-                  onDecrement: quantity > 1 ? _decrementQuantity : null,
-                  incrementFirst: false,
-                  boxedButtons: true,
-                  backgroundColor: AppColors.white,
-                  borderColor: AppColors.borderStepper,
-                  borderRadius: 10,
-                  horizontalPadding: 6,
-                  buttonSize: 24,
-                  iconSize: 16,
-                  spacing: 12,
-                  fontSize: 14,
-                  contentColor: _titleColor,
-                  iconColor: _mutedColor,
-                ),
-              ],
-            ),
+            child: widget.isInStock ? _actionRow() : _outOfStockBanner(),
           ),
 
           12.verticalSpace,
         ],
       ),
+    );
+  }
+
+  /// Replaces the whole action row — cart button and stepper both — because
+  /// neither has anything to do for a product that cannot be bought.
+  Widget _outOfStockBanner() {
+    // Shorter than the shared default so the card keeps the same height as its
+    // in-stock neighbours in the horizontal list.
+    return CustomAppStatusBanner(
+      label: LocaleKeys.outOfStock.tr(),
+      height: 32,
+      fontSize: 13,
+    );
+  }
+
+  Widget _actionRow() {
+    return Row(
+      children: [
+        // Per sku, so only this card spins — the cubit is shared by
+        // every card on the screen. A second tap on the same card is
+        // still ignored while its own add is in flight.
+        BlocBuilder<GenericCubit<CartData>, GenericState<CartData>>(
+          bloc: widget.vm._cartCubit,
+          builder: (context, state) {
+            final bool isAdding = state.data.isAddingSku(widget.sku);
+
+            return Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: isAdding ? null : _addToCart,
+                borderRadius: BorderRadius.circular(8.r),
+                child: SizedBox(
+                  width: 28.w,
+                  height: 28.h,
+                  child: isAdding
+                      ? Center(
+                          child: SizedBox(
+                            width: 16.w,
+                            height: 16.h,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.w,
+                              color: _mutedColor,
+                            ),
+                          ),
+                        )
+                      : Icon(
+                          Icons.add_shopping_cart_outlined,
+                          size: 19.sp,
+                          color: _mutedColor,
+                        ),
+                ),
+              ),
+            );
+          },
+        ),
+        const Spacer(),
+        CustomAppQuantityStepper(
+          quantity: quantity,
+          onIncrement: _incrementQuantity,
+          onDecrement: quantity > 1 ? _decrementQuantity : null,
+          incrementFirst: false,
+          boxedButtons: true,
+          backgroundColor: AppColors.white,
+          borderColor: AppColors.borderStepper,
+          borderRadius: 10,
+          horizontalPadding: 6,
+          buttonSize: 24,
+          iconSize: 16,
+          spacing: 12,
+          fontSize: 14,
+          contentColor: _titleColor,
+          iconColor: _mutedColor,
+        ),
+      ],
     );
   }
 }

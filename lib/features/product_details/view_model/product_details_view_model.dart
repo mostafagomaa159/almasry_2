@@ -1,8 +1,5 @@
 part of '../product_details_imports.dart';
 
-/// Drives the product details screen: one GraphQL query for the product, a
-/// second unawaited one for the brand carousel, plus the gallery selection,
-/// quantity stepper, favourites and availability subscription.
 class ProductDetailsViewModel {
   final GraphQLService _graphql = sl<GraphQLService>();
   final NavigationService _nav = sl<NavigationService>();
@@ -70,8 +67,6 @@ class ProductDetailsViewModel {
     );
   }
 
-  /// Adds the stepper's quantity in one call. `CartService` mints the cart on
-  /// first use, so nothing here has to care whether one exists yet.
   Future<void> _addToBasket() async {
     final String sku = _product?.sku ?? _args?.sku ?? '';
 
@@ -83,8 +78,6 @@ class ProductDetailsViewModel {
       return;
     }
 
-    // The service has already turned the failure into copy; this only covers
-    // the case where the server sent no message at all.
     final String message = _cart.data.errorMessage;
 
     _alert.showError(

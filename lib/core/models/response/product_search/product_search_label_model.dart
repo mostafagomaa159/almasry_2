@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:almasry_2/core/constants/app_colors.dart';
 
-/// A merchandising badge Magento renders over the product image (`Global`,
-/// `New`, …). The backend ships the styling as a raw CSS declaration block, so
-/// the two properties the badge actually needs are pulled out of it here and
-/// everything else is ignored.
+
 class ProductSearchLabelModel {
   final String text;
   final String image;
@@ -34,7 +31,6 @@ class ProductSearchLabelModel {
 
   bool get hasImage => image.trim().isNotEmpty;
 
-  /// Nothing to draw — neither copy nor artwork came back.
   bool get isEmpty => !hasText && !hasImage;
 
   Color get backgroundColor =>
@@ -42,8 +38,6 @@ class ProductSearchLabelModel {
 
   Color get textColor => _colorFrom('color') ?? Colors.white;
 
-  /// Reads one declaration out of the CSS block. `color` is matched on a word
-  /// boundary so it can't pick up the `background-color` value instead.
   Color? _colorFrom(String property) {
     if (cssStyle.trim().isEmpty) return null;
 

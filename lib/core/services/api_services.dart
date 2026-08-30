@@ -1,8 +1,17 @@
 import 'package:almasry_2/core/constants/app_api.dart';
+import 'package:almasry_2/core/services/api_logger_interceptor_service.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:almasry_2/core/constants/app_durations.dart';
 
 class ApiService {
+
+  ApiService() {
+    if (kDebugMode) {
+      _dio.interceptors.add(const ApiLoggerInterceptorService());
+    }
+  }
+
   final Dio _dio = Dio(
     BaseOptions(
       baseUrl: ApiConstants.baseUrl,

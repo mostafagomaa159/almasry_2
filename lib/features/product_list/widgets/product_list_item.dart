@@ -34,12 +34,24 @@ class ProductListItem extends StatelessWidget {
     return discount > 0 ? discount : null;
   }
 
-  bool _isOutOfStock() {
-    final stock = product.extensionAttributes?.stockStatus.toLowerCase() ?? '';
-    final qty =
-        int.tryParse(product.extensionAttributes?.sellableQuantity ?? '0') ?? 0;
+  /// The wishlist stores a flat snapshot rather than a product reference, so
+  /// the derived values above are what get written. Prices go in bare, the way
+  /// the other grids store them — the currency label is added on read.
+  FavoriteProductModel _favoriteProduct(String imageUrl) {
+    final num? oldPrice = _oldPrice();
+    final num currentPrice = _currentPrice();
 
-    return stock.contains('out') || qty <= 0;
+    return FavoriteProductModel(
+      id: product.sku,
+      title: product.name,
+      imagePath: imageUrl,
+      price: currentPrice.toStringAsFixed(2),
+      oldPrice: oldPrice != null && oldPrice > currentPrice
+          ? oldPrice.toStringAsFixed(2)
+          : '',
+      category: '',
+      description: '',
+    );
   }
 
   @override
@@ -48,7 +60,10 @@ class ProductListItem extends StatelessWidget {
     final currentPrice = _currentPrice();
     final oldPrice = _oldPrice();
     final discount = _discountPercent();
-    final isOutOfStock = _isOutOfStock();
+
+    // `ProductModel.isInStock`, not a local rule: the home cards read the same
+    // getter, and this grid used to disagree with them on the same product.
+    final isOutOfStock = !product.isInStock;
 
     final sku = product.sku;
     final quantity = vm._getProductQuantity(sku);
@@ -60,11 +75,22 @@ class ProductListItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Align(
+          Align(
             alignment: AlignmentDirectional.topEnd,
-            // Static for now: this grid has no favourites wiring yet, so the
-            // heart reports the unset state and swallows nothing.
-            child: CustomAppFavoriteButton(isFavorite: false),
+            child: BlocBuilder<
+              GenericCubit<FavoritesModel>,
+              GenericState<FavoritesModel>
+            >(
+              bloc: vm._favoritesCubit,
+              builder: (context, state) {
+                return CustomAppFavoriteButton(
+                  isFavorite: state.data.isFavorite(sku),
+                  onTap: sku.isEmpty
+                      ? null
+                      : () => vm._toggleFavorite(_favoriteProduct(imageUrl)),
+                );
+              },
+            ),
           ),
           6.verticalSpace,
           Expanded(
@@ -121,10 +147,43 @@ class ProductListItem extends StatelessWidget {
           else
             Row(
               children: [
-                Icon(
-                  Icons.shopping_cart_outlined,
-                  color: AppColors.titleNavy,
-                  size: 20.sp,
+                // Per sku, so only this card spins — the cubit is shared by the
+                // whole grid. A second tap on the same card is still ignored
+                // while its own add is in flight.
+                BlocBuilder<GenericCubit<CartData>, GenericState<CartData>>(
+                  bloc: vm._cartCubit,
+                  builder: (context, state) {
+                    final bool isAdding = state.data.isAddingSku(sku);
+                    final bool isEnabled = !isAdding && sku.isNotEmpty;
+
+                    return Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: isEnabled ? () => vm._addToCart(sku) : null,
+                        borderRadius: BorderRadius.circular(8.r),
+                        child: SizedBox(
+                          width: 34.w,
+                          height: 34.h,
+                          child: Center(
+                            child: isAdding
+                                ? SizedBox(
+                                    width: 18.w,
+                                    height: 18.h,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.w,
+                                      color: AppColors.titleNavy,
+                                    ),
+                                  )
+                                : Icon(
+                                    Icons.shopping_cart_outlined,
+                                    color: AppColors.titleNavy,
+                                    size: 20.sp,
+                                  ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 const Spacer(),
                 CustomAppQuantityStepper(

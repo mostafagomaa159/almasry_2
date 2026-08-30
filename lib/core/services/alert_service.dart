@@ -6,15 +6,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:almasry_2/core/constants/app_durations.dart';
 
-/// App-wide toasts and blocking loaders, so no feature has to build its own
-/// SnackBar or spin up a dialog just to say "saved" or "something went wrong".
-///
-/// Registered in the locator — reach it with `sl<AlertService>()`. It needs no
-/// [BuildContext], so ViewModels can call it directly.
-///
-/// Text alignment is intentionally [TextAlign.start]: the toasts render inside
-/// `MaterialApp`, so the ambient `Directionality` already flips them for
-/// Arabic.
 class AlertService {
   CancelFunc showFCMAlert({
     required String title,

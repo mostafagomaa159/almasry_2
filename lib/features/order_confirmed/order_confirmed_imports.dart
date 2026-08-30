@@ -1,5 +1,3 @@
-library;
-
 import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:almasry_2/core/constants/pref_keys.dart';

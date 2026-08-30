@@ -15,16 +15,17 @@ class CartData {
   /// stepper without the whole list going into a skeleton.
   final Set<int> busyItemIds;
 
-  /// True while a product is being added from another screen — what the
-  /// product details button reads for its spinner.
-  final bool isAdding;
+  /// Skus with an add in flight. A set rather than a single flag because the
+  /// product grids show many cards off this one cubit — a plain bool would put
+  /// every card on the screen into a spinner for one tap.
+  final Set<String> addingSkus;
 
   const CartData({
     this.status = CartStatus.initial,
     this.cart = const CartModel(),
     this.errorMessage = '',
     this.busyItemIds = const <int>{},
-    this.isAdding = false,
+    this.addingSkus = const <String>{},
   });
 
   CartData copyWith({
@@ -32,7 +33,7 @@ class CartData {
     CartModel? cart,
     String? errorMessage,
     Set<int>? busyItemIds,
-    bool? isAdding,
+    Set<String>? addingSkus,
     bool clearErrorMessage = false,
   }) {
     return CartData(
@@ -42,7 +43,7 @@ class CartData {
           ? ''
           : (errorMessage ?? this.errorMessage),
       busyItemIds: busyItemIds ?? this.busyItemIds,
-      isAdding: isAdding ?? this.isAdding,
+      addingSkus: addingSkus ?? this.addingSkus,
     );
   }
 
@@ -53,4 +54,10 @@ class CartData {
   int get badgeCount => status == CartStatus.success ? cart.totalQuantity : 0;
 
   bool isItemBusy(int itemId) => busyItemIds.contains(itemId);
+
+  /// What a product card reads, so only the tapped card spins.
+  bool isAddingSku(String sku) => addingSkus.contains(sku.trim());
+
+  /// Any add at all — for a single-product screen, where there is only one.
+  bool get isAdding => addingSkus.isNotEmpty;
 }

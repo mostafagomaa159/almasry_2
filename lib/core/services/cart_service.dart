@@ -10,18 +10,7 @@ import 'package:almasry_2/core/services/graphql_service.dart';
 import 'package:almasry_2/core/services/shared_prefs_services.dart';
 import 'package:almasry_2/core/utils/error_message.dart';
 
-/// The one owner of the cart: the masked cart id, its lifecycle, and every
-/// mutation that touches it.
-///
-/// The cart is cross-screen state — the bottom bar badge, product details, the
-/// cart screen and all three checkout steps read it — so it is a
-/// locator-registered singleton with public members rather than a per-screen
-/// ViewModel.
-///
-/// Every mutation selects the whole cart back (see
-/// `GraphQLDocuments.cartFragment`), so one round trip both applies the change
-/// and refreshes the state. Callers get a `bool` and the failure message is
-/// already on the cubit — no screen has to translate an exception.
+
 class CartService {
   final GenericCubit<CartData> cartCubit = GenericCubit<CartData>(
     const CartData(),
@@ -39,8 +28,6 @@ class CartService {
 
   bool get hasCart => cartId.trim().isNotEmpty;
 
-  /// Reads the persisted cart, if there is one. A missing id is not an error —
-  /// it is simply an empty cart, and none is created until something is added.
   Future<void> loadCart() async {
     if (!hasCart) {
       _emit(
@@ -59,17 +46,13 @@ class CartService {
     await _readCart();
   }
 
-  /// Re-reads without dropping what is on screen, for pull-to-refresh and for
-  /// coming back to the cart after a checkout step changed the totals.
+
   Future<void> refresh() async {
     if (!hasCart) return loadCart();
 
     await _readCart();
   }
 
-  /// Mints a cart on first use and keeps the id. Returns an empty string when
-  /// `createEmptyCart` itself fails, which is the one case a caller has to
-  /// check before sending anything else.
   Future<String> ensureCartId() async {
     final String existing = cartId;
 
@@ -103,15 +86,23 @@ class CartService {
     }
   }
 
-  Future<bool> addProduct({required String sku, int quantity = 1}) async {
-    if (sku.trim().isEmpty || quantity <= 0) return false;
 
-    _emit(data.copyWith(isAdding: true, clearErrorMessage: true));
+  Future<bool> addProduct({required String sku, int quantity = 1}) async {
+    final String trimmedSku = sku.trim();
+
+    if (trimmedSku.isEmpty || quantity <= 0) return false;
+
+    _emit(
+      data.copyWith(
+        addingSkus: <String>{...data.addingSkus, trimmedSku},
+        clearErrorMessage: true,
+      ),
+    );
 
     final String id = await ensureCartId();
 
     if (id.isEmpty) {
-      _emit(data.copyWith(isAdding: false));
+      _clearAdding(trimmedSku);
 
       return false;
     }
@@ -121,18 +112,23 @@ class CartService {
       mutationKey: 'addSimpleProductsToCart',
       variables: AddToCartRequest(
         cartId: id,
-        sku: sku.trim(),
+        sku: trimmedSku,
         quantity: quantity,
       ).toVariables(),
     );
 
-    _emit(data.copyWith(isAdding: false));
+    _clearAdding(trimmedSku);
 
     return succeeded;
   }
 
-  /// A [quantity] of 0 or less removes the line instead — which is what the
-  /// stepper's minus button does on the last unit.
+
+  void _clearAdding(String sku) {
+    _emit(
+      data.copyWith(addingSkus: <String>{...data.addingSkus}..remove(sku)),
+    );
+  }
+
   Future<bool> updateQuantity({
     required CartItemModel item,
     required int quantity,
@@ -167,8 +163,7 @@ class CartService {
     );
   }
 
-  /// Called once an order is placed: Magento has already consumed the quote,
-  /// so the id has to go or every later call fails against a dead cart.
+
   Future<void> clearAfterOrder() async {
     await _prefs.remove(PrefKeys.cartId);
 
@@ -249,9 +244,7 @@ class CartService {
     }
   }
 
-  /// A cart id Magento no longer knows — expired, or already turned into an
-  /// order — has to be dropped rather than reported, otherwise the app is
-  /// stuck on an error it can never retry out of.
+
   Future<void> _handleFailure(Object error) async {
     final String message = errorMessageFrom(error);
 

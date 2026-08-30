@@ -1,5 +1,3 @@
-library;
-
 import 'dart:async';
 
 import 'package:almasry_2/core/base/bloc/generic_cubit.dart';

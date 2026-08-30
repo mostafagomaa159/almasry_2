@@ -60,8 +60,6 @@ class ProductSearchProductModel {
           (json['image'] as Map<String, dynamic>?)?['url']?.toString() ?? '',
       regularPrice: regularPrice,
 
-      /// Some rows come back without a final price; the regular one still
-      /// prices the product.
       finalPrice: finalPrice > 0 ? finalPrice : regularPrice,
       labels: labels,
     );
@@ -74,14 +72,10 @@ class ProductSearchProductModel {
     return (price?['value'] as num?)?.toDouble() ?? 0;
   }
 
-  /// `stock_status` is the field the storefront sells on — `sellable_quantity`
-  /// can read 0 on a product Magento still considers in stock.
   bool get isOutOfStock => stockStatus.toUpperCase() != 'IN_STOCK';
 
   bool get hasDiscount => regularPrice > 0 && finalPrice < regularPrice;
 
-  /// `null` when the product isn't discounted, so the card can drop the strip
-  /// entirely instead of printing "0%".
   int? get discountPercent {
     if (!hasDiscount) return null;
 

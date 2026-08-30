@@ -96,6 +96,7 @@ class _HomeProductsSectionState extends State<HomeProductsSection> {
             imagePath: imagePath,
             isNetworkImage: hasNetworkImage,
             title: product.name.isNotEmpty ? product.name : '-',
+            isInStock: product.isInStock,
             price: product.price.toString(),
             oldPrice: '',
             category: '',

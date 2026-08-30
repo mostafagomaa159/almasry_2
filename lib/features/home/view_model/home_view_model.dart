@@ -7,6 +7,8 @@ class HomeViewModel {
   final FavoritesService _favorites = sl<FavoritesService>();
   final NavigationService _nav = sl<NavigationService>();
   final PushNotificationService _push = sl<PushNotificationService>();
+  final _cartService = sl<CartService>();
+  final _alertService = sl<AlertService>();
 
   /// Variables
 
@@ -23,6 +25,8 @@ class HomeViewModel {
 
   GenericCubit<FavoritesModel> get _favoritesCubit => _favorites.favoritesCubit;
 
+  GenericCubit<CartData> get _cartCubit => _cartService.cartCubit;
+
   HomeViewModel() {
     _bannerController = PageController();
   }
@@ -32,8 +36,7 @@ class HomeViewModel {
   Future<void> _init() async {
     _push.dispatchPendingDeepLink();
 
-    // Favourites come from sqflite and nothing in the home request needs them,
-    // so the local read runs alongside the network call instead of before it.
+
     await Future.wait([_favorites.loadFavorites(), _getHomeData()]);
   }
 
@@ -115,6 +118,23 @@ class HomeViewModel {
     await _favorites.toggleFavorite(product);
   }
 
+
+  Future<void> _addToCart({required String sku, required int quantity}) async {
+    if (sku.trim().isEmpty) return;
+
+    if (await _cartService.addProduct(sku: sku, quantity: quantity)) {
+      _alertService.showSuccess(LocaleKeys.cartAddedSuccess.tr());
+
+      return;
+    }
+
+    final String message = _cartService.data.errorMessage;
+
+    _alertService.showError(
+      message.trim().isEmpty ? LocaleKeys.somethingWentWrong.tr() : message,
+    );
+  }
+
   /// Api
 
   Future<List<HomeCmsModel>> _fetchHomeData() async {
@@ -172,10 +192,7 @@ class HomeViewModel {
     }
   }
 
-  /// Loads in two phases: the CMS response paints the page (banners,
-  /// categories, offers, brands, goals, concerns) as soon as it lands, then the
-  /// section products fill in. Everything above the fold comes from phase one,
-  /// so the user isn't held behind the product requests.
+
   Future<void> _getHomeData() async {
     final current = _homeCubit.state.data;
 
@@ -229,9 +246,7 @@ class HomeViewModel {
   }
 
   Future<void> _getSectionProductsFor(_HomeStructure structure) async {
-    // None of these five depend on each other, so they go out together rather
-    // than one round trip after another. [_getProductsForBlock] swallows its
-    // own errors, so one failing section can't take the whole batch down.
+
     final List<List<ProductModel>> sections = await Future.wait([
       _getProductsForBlock(structure.bestSellerBlock),
       _getProductsForBlock(structure.momBabyBlock),

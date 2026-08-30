@@ -1,5 +1,3 @@
-library;
-
 import 'dart:async';
 
 import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
@@ -11,6 +9,7 @@ import 'package:almasry_2/core/constants/app_stores.dart';
 import 'package:almasry_2/core/constants/pref_keys.dart';
 import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:almasry_2/core/models/request/product_search/product_search_request.dart';
+import 'package:almasry_2/core/models/response/cart/cart_data_model.dart';
 import 'package:almasry_2/core/models/response/product_details/product_details_args_model.dart';
 import 'package:almasry_2/core/models/response/favorite/favorite_product_model.dart';
 import 'package:almasry_2/core/models/response/favorite/favorites_model.dart';
@@ -19,6 +18,7 @@ import 'package:almasry_2/core/models/response/product_search/product_search_pro
 import 'package:almasry_2/core/models/response/product_search/product_search_response.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/core/services/alert_service.dart';
+import 'package:almasry_2/core/services/cart_service.dart';
 import 'package:almasry_2/core/services/favorites_service.dart';
 import 'package:almasry_2/core/services/graphql_service.dart';
 import 'package:almasry_2/core/services/navigation_service.dart';

@@ -4,15 +4,7 @@ import 'package:almasry_2/core/constants/pref_keys.dart';
 import 'package:almasry_2/core/models/response/checkout/address_model.dart';
 import 'package:almasry_2/core/services/cache_manager_service.dart';
 
-/// The checkout's address book, held on the device.
-///
-/// Magento's customer-address API is outside this integration — the brief only
-/// exposes the two "set address on cart" mutations, which take a whole address
-/// inline. So the list lives in shared preferences and the chosen entry is
-/// replayed onto the cart at checkout.
-///
-/// Registered in the locator and read by several checkout features, which is
-/// why its members are public.
+
 class AddressBookService {
   final GenericCubit<List<AddressModel>> addressesCubit =
       GenericCubit<List<AddressModel>>(const []);
@@ -21,8 +13,6 @@ class AddressBookService {
 
   List<AddressModel> get addresses => addressesCubit.state.data;
 
-  /// The entry the checkout should preselect: the one flagged default, or the
-  /// first if nothing is flagged.
   AddressModel? get defaultAddress {
     final List<AddressModel> current = addresses;
 
@@ -44,8 +34,7 @@ class AddressBookService {
     addressesCubit.onUpdateData(stored);
   }
 
-  /// Inserts or replaces by id. The first address saved becomes the default on
-  /// its own, so the checkout is never left with nothing selected.
+
   Future<void> save(AddressModel address) async {
     final List<AddressModel> next = List<AddressModel>.from(addresses);
 
@@ -71,7 +60,6 @@ class AddressBookService {
         .where((AddressModel address) => address.id != id)
         .toList();
 
-    // Removing the default would otherwise leave the list with none.
     final bool needsDefault =
         next.isNotEmpty &&
         !next.any((AddressModel address) => address.isDefault);
