@@ -1,5 +1,4 @@
-/// One entry of `media_gallery`. Videos arrive as `ProductVideo` with a
-/// `video_content` block; images carry the same fields minus that.
+
 class ProductMediaModel {
   final String url;
   final String label;

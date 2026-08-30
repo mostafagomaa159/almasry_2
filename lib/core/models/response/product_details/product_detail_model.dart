@@ -6,8 +6,7 @@ import 'package:almasry_2/core/models/response/product_details/product_review_mo
 import 'package:almasry_2/core/models/response/product_search/product_search_label_model.dart';
 import 'package:almasry_2/core/utils/media_url.dart';
 
-/// `products.items[0]` from [GraphQLDocuments.getProductDetail] — everything
-/// the details screen shows, in one object.
+
 class ProductDetailModel {
   final String id;
   final String uid;

@@ -1,11 +1,6 @@
 import 'dart:convert';
 
-/// One row of `custom_attributes` — the source of the "Information" table.
-///
-/// Magento returns the value in one of two places: a free-typed value under
-/// `entered_attribute_value`, or one/many picked options under
-/// `selected_attribute_options`. [displayValue] flattens both into the single
-/// string the table renders.
+
 class ProductCustomAttributeModel {
   final String code;
   final String label;

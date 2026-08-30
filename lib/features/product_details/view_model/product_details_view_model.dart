@@ -1,5 +1,7 @@
 part of '../product_details_imports.dart';
 
+typedef ListRelatedProducts = List<ProductRelatedItemModel>;
+
 class ProductDetailsViewModel {
   final GraphQLService _graphql = sl<GraphQLService>();
   final NavigationService _nav = sl<NavigationService>();
@@ -10,14 +12,32 @@ class ProductDetailsViewModel {
 
   static const int _brandProductsPageSize = 10;
 
-  final GenericCubit<ProductDetailsData> _productDetailsCubit =
-      GenericCubit<ProductDetailsData>(const ProductDetailsData());
+  final GenericCubit<ProductDetailModel?> _productCubit =
+      GenericCubit<ProductDetailModel?>(null);
+
+  final GenericCubit<int> _quantityCubit = GenericCubit<int>(1);
+  final GenericCubit<int> _selectedImageCubit = GenericCubit<int>(0);
+  final GenericCubit<bool> _descriptionCubit = GenericCubit<bool>(false);
+
+  final GenericCubit<bool> _notifySubscribedCubit = GenericCubit<bool>(false);
+  final GenericCubit<bool> _notifyLoadingCubit = GenericCubit<bool>(false);
+
+  final GenericCubit<ListRelatedProducts> _brandProductsCubit =
+      GenericCubit<ListRelatedProducts>([]);
+  final GenericCubit<bool> _brandProductsLoadingCubit = GenericCubit<bool>(
+    false,
+  );
+
+  final PageController _imagePageController = PageController();
+  final ScrollController _thumbnailsController = ScrollController();
 
   ProductDetailsArgs? _args;
 
-  ProductDetailsData get _data => _productDetailsCubit.state.data;
+  String _errorMessage = '';
 
-  ProductDetailModel? get _product => _data.product;
+  ProductDetailModel? get _product => _productCubit.state.data;
+
+  int get _quantity => _quantityCubit.state.data;
 
   GenericCubit<FavoritesModel> get _favoritesCubit => _favorites.favoritesCubit;
 
@@ -32,7 +52,8 @@ class ProductDetailsViewModel {
   }
 
   void _dispose() {
-    _productDetailsCubit.close();
+    _imagePageController.dispose();
+    _thumbnailsController.dispose();
   }
 
   void _back() {
@@ -40,30 +61,57 @@ class ProductDetailsViewModel {
   }
 
   void _incrementQuantity() {
-    _productDetailsCubit.onUpdateData(
-      _data.copyWith(quantity: _data.quantity + 1),
-    );
+    _quantityCubit.onUpdateData(_quantity + 1);
   }
 
   void _decrementQuantity() {
-    if (_data.quantity <= 1) return;
+    if (_quantity <= 1) return;
 
-    _productDetailsCubit.onUpdateData(
-      _data.copyWith(quantity: _data.quantity - 1),
-    );
+    _quantityCubit.onUpdateData(_quantity - 1);
   }
 
   void _toggleDescription() {
-    _productDetailsCubit.onUpdateData(
-      _data.copyWith(isDescriptionExpanded: !_data.isDescriptionExpanded),
-    );
+    _descriptionCubit.onUpdateData(!_descriptionCubit.state.data);
   }
 
   void _selectImage(int index) {
-    if (index == _data.selectedImageIndex) return;
+    if (index == _selectedImageIndex) return;
 
-    _productDetailsCubit.onUpdateData(
-      _data.copyWith(selectedImageIndex: index),
+    if (!_imagePageController.hasClients) {
+      _onImagePageChanged(index);
+
+      return;
+    }
+
+    _imagePageController.animateToPage(
+      index,
+      duration: AppDurations.page,
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _onImagePageChanged(int index) {
+    if (index != _selectedImageCubit.state.data) {
+      _selectedImageCubit.onUpdateData(index);
+    }
+
+    _centerThumbnail(index);
+  }
+
+  void _centerThumbnail(int index) {
+    if (!_thumbnailsController.hasClients) return;
+
+    final ScrollPosition position = _thumbnailsController.position;
+
+    final double target =
+        (index * _thumbnailExtent) +
+        (_thumbnailExtent / 2) -
+        (position.viewportDimension / 2);
+
+    _thumbnailsController.animateTo(
+      target.clamp(position.minScrollExtent, position.maxScrollExtent),
+      duration: AppDurations.page,
+      curve: Curves.easeInOut,
     );
   }
 
@@ -72,7 +120,7 @@ class ProductDetailsViewModel {
 
     if (sku.trim().isEmpty) return;
 
-    if (await _cart.addProduct(sku: sku, quantity: _data.quantity)) {
+    if (await _cart.addProduct(sku: sku, quantity: _quantity)) {
       _alert.showSuccess(LocaleKeys.cartAddedSuccess.tr());
 
       return;
@@ -154,14 +202,12 @@ class ProductDetailsViewModel {
 
     if (count == 0) return 0;
 
-    return _data.selectedImageIndex.clamp(0, count - 1);
+    return _selectedImageCubit.state.data.clamp(0, count - 1);
   }
 
-  String get _selectedImage {
-    final List<String> images = _galleryImages;
-
-    return images.isEmpty ? '' : images[_selectedImageIndex];
-  }
+  /// One thumbnail plus the gap after it — what [_centerThumbnail] scrolls by.
+  /// Mirrors the sizes `_GalleryThumbnails` lays out with.
+  double get _thumbnailExtent => 74.w + 10.w;
 
   String _formatPrice(double? price) {
     if (price == null || price <= 0) return '';
@@ -172,17 +218,17 @@ class ProductDetailsViewModel {
   Future<void> _loadNotifySubscription(String sku) async {
     final bool isSubscribed = await _push.isSubscribed(sku);
 
-    if (!isSubscribed || _productDetailsCubit.isClosed) return;
+    if (!isSubscribed || _notifySubscribedCubit.isClosed) return;
 
-    _productDetailsCubit.onUpdateData(_data.copyWith(isNotifySubscribed: true));
+    _notifySubscribedCubit.onUpdateData(true);
   }
 
   Future<void> _notifyWhenAvailable() async {
     final ProductDetailModel? product = _product;
 
-    if (product == null || _data.isNotifyLoading) return;
+    if (product == null || _notifyLoadingCubit.state.data) return;
 
-    _productDetailsCubit.onUpdateData(_data.copyWith(isNotifyLoading: true));
+    _notifyLoadingCubit.onUpdateData(true);
 
     final bool success = await _push.subscribeToAvailability(
       sku: product.sku,
@@ -192,11 +238,10 @@ class ProductDetailsViewModel {
       notificationBody: LocaleKeys.notificationProductAvailableBody.tr(),
     );
 
-    if (_productDetailsCubit.isClosed) return;
+    if (_notifyLoadingCubit.isClosed) return;
 
-    _productDetailsCubit.onUpdateData(
-      _data.copyWith(isNotifyLoading: false, isNotifySubscribed: success),
-    );
+    _notifyLoadingCubit.onUpdateData(false);
+    _notifySubscribedCubit.onUpdateData(success);
 
     if (success) {
       _alert.showSuccess(LocaleKeys.productDetailsNotifyMeSuccess.tr());
@@ -204,6 +249,16 @@ class ProductDetailsViewModel {
     }
 
     _alert.showError(LocaleKeys.productDetailsNotifyMeFailed.tr());
+  }
+
+  /// A reload brings a different gallery, so both strips go back to the first
+  /// image — the pager only if it is already laid out.
+  void _resetGallery() {
+    _selectedImageCubit.onUpdateData(0);
+
+    if (_imagePageController.hasClients) _imagePageController.jumpToPage(0);
+
+    if (_thumbnailsController.hasClients) _thumbnailsController.jumpTo(0);
   }
 
   Future<void> _refresh() => _getProductDetails(_sku);
@@ -217,9 +272,7 @@ class ProductDetailsViewModel {
 
     if (brandId.isEmpty) return;
 
-    _productDetailsCubit.onUpdateData(
-      _data.copyWith(isBrandProductsLoading: true),
-    );
+    _brandProductsLoadingCubit.onUpdateData(true);
 
     try {
       final ProductsByBrandRequest request = ProductsByBrandRequest(
@@ -232,22 +285,18 @@ class ProductDetailsViewModel {
         variables: request.toVariables(),
       );
 
-      if (_productDetailsCubit.isClosed) return;
+      if (_brandProductsCubit.isClosed) return;
 
-      final List<ProductRelatedItemModel> items =
-          ProductsByBrandResponse.fromJson(
-            data,
-          ).items.where((item) => item.sku != product.sku).toList();
+      final ListRelatedProducts items = ProductsByBrandResponse.fromJson(
+        data,
+      ).items.where((item) => item.sku != product.sku).toList();
 
-      _productDetailsCubit.onUpdateData(
-        _data.copyWith(brandProducts: items, isBrandProductsLoading: false),
-      );
+      _brandProductsCubit.onUpdateData(items);
+      _brandProductsLoadingCubit.onUpdateData(false);
     } catch (_) {
-      if (_productDetailsCubit.isClosed) return;
+      if (_brandProductsLoadingCubit.isClosed) return;
 
-      _productDetailsCubit.onUpdateData(
-        _data.copyWith(isBrandProductsLoading: false),
-      );
+      _brandProductsLoadingCubit.onUpdateData(false);
     }
   }
 
@@ -265,42 +314,46 @@ class ProductDetailsViewModel {
   Future<void> _getProductDetails(String sku) async {
     if (sku.trim().isEmpty) return;
 
-    _productDetailsCubit.onUpdateData(
-      _data.copyWith(
-        status: ProductDetailsStatus.loading,
-        clearErrorMessage: true,
-      ),
-    );
-
     try {
       final ProductDetailModel? product = await _fetchProductDetails(sku);
 
-      if (_productDetailsCubit.isClosed) return;
+      if (_productCubit.isClosed) return;
 
-      _productDetailsCubit.onUpdateData(
-        _data.copyWith(
-          status: ProductDetailsStatus.success,
-          product: product,
+      _errorMessage = '';
 
-          quantity: 1,
-          selectedImageIndex: 0,
-          clearProduct: product == null,
-          clearErrorMessage: true,
+      _quantityCubit.onUpdateData(1);
+      _brandProductsCubit.onUpdateData(const []);
 
-          brandProducts: const [],
-        ),
-      );
+      _resetGallery();
+
+      _productCubit.onUpdateData(product);
 
       unawaited(_getBrandProducts(product));
     } catch (error) {
-      if (_productDetailsCubit.isClosed) return;
-
-      _productDetailsCubit.onUpdateData(
-        _data.copyWith(
-          status: ProductDetailsStatus.error,
-          errorMessage: errorMessageFrom(error),
-        ),
-      );
+      _handleFetchError(error);
     }
+  }
+
+  /// A failed reload keeps the product already on screen and reports the
+  /// failure as a toast — only a first load, with nothing to fall back on,
+  /// hands the screen over to the error view.
+  void _handleFetchError(Object error) {
+    if (_productCubit.isClosed) return;
+
+    final String message = errorMessageFrom(error);
+
+    final ProductDetailModel? product = _product;
+
+    if (product != null) {
+      _alert.showError(message);
+
+      _productCubit.onUpdateData(product);
+
+      return;
+    }
+
+    _errorMessage = message;
+
+    _productCubit.onUpdateData(null);
   }
 }

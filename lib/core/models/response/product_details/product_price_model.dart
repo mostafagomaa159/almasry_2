@@ -1,4 +1,3 @@
-/// The `{ value, currency }` money shape the whole detail query uses.
 class ProductPriceModel {
   final double value;
   final String currency;
@@ -31,8 +30,6 @@ class ProductDiscountModel {
   bool get hasDiscount => percentOff > 0 || amountOff > 0;
 }
 
-/// One side of `price_range`. `maximum_price` omits the discount block in the
-/// query, so it simply comes back empty there.
 class ProductPriceTierRangeModel {
   final ProductPriceModel regularPrice;
   final ProductPriceModel finalPrice;

@@ -1,7 +1,6 @@
 import 'package:almasry_2/core/models/response/product_details/product_related_item_model.dart';
 
-/// The `products` envelope of [GraphQLDocuments.productsByBrand] — the cards
-/// behind "More From This Brand".
+
 class ProductsByBrandResponse {
   final List<ProductRelatedItemModel> items;
   final int totalCount;

@@ -11,15 +11,11 @@ class ProductListViewModel {
 
   /// Variables
 
-  /// The screen's only cubit. `null` means the first page is still loading;
-  /// a list — empty or not — means it has arrived.
   final GenericCubit<List<ProductModel>?> _productsCubit =
       GenericCubit<List<ProductModel>?>(null);
 
   late final ScrollController _scrollController;
 
-  /// Plain fields, not cubits. Each one is written before the cubit emits, so
-  /// the rebuild that emit triggers always reads the matching value.
   String _errorMessage = '';
   bool _isLoadingMore = false;
   Map<String, int> _quantities = const {};
@@ -34,11 +30,9 @@ class ProductListViewModel {
   List<ProductModel> get _loadedProducts =>
       _productsCubit.state.data ?? const [];
 
-  /// Owned by `CartService`, so it is never closed in [_dispose] — the badge
-  /// and every later screen read the same cubit.
+
   GenericCubit<CartData> get _cartCubit => _cartService.cartCubit;
 
-  /// Likewise owned by `FavoritesService`, and shared with the wishlist screen.
   GenericCubit<FavoritesModel> get _favoritesCubit =>
       _favoritesService.favoritesCubit;
 
@@ -55,8 +49,6 @@ class ProductListViewModel {
 
     _scrollController = ScrollController()..addListener(_onScroll);
 
-    // Favourites come from sqflite and the product request doesn't need them,
-    // so the local read runs alongside it rather than before it.
     await Future.wait([
       _favoritesService.loadFavorites(),
       _loadInitialProducts(),
@@ -66,8 +58,6 @@ class ProductListViewModel {
   void _dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
-
-    _productsCubit.close();
   }
 
   /// Actions
@@ -87,8 +77,7 @@ class ProductListViewModel {
     return _quantities[sku] ?? 1;
   }
 
-  /// Re-emits the same list to get a rebuild — `GenericState.changed` makes
-  /// that work.
+
   void _incrementQuantity(String sku) {
     final Map<String, int> updated = Map<String, int>.from(_quantities);
 
@@ -110,9 +99,6 @@ class ProductListViewModel {
     _productsCubit.onUpdateData(_loadedProducts);
   }
 
-  /// Adds the row's stepper quantity. `CartService` mints the cart on first use
-  /// and has already turned any failure into copy, so the fallback below only
-  /// covers a server reply that carried no message at all.
   Future<void> _addToCart(String sku) async {
     if (sku.trim().isEmpty) return;
 

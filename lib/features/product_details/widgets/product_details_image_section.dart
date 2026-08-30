@@ -1,7 +1,5 @@
 part of '../product_details_imports.dart';
 
-/// The main image with the floating action rail, and the gallery thumbnails
-/// under it. Selection lives in the ViewModel, so a refresh resets it.
 class ProductDetailsImageSection extends StatelessWidget {
   final ProductDetailsViewModel vm;
   final ProductDetailModel product;
@@ -27,15 +25,7 @@ class ProductDetailsImageSection extends StatelessWidget {
             child: Stack(
               children: [
                 Positioned.fill(
-                  child: Center(
-                    child: CustomAppNetworkImage(
-                      url: vm._selectedImage,
-                      height: 250.h,
-                      fit: BoxFit.contain,
-                      showLoader: true,
-                      placeholder: const _ImagePlaceholder(),
-                    ),
-                  ),
+                  child: _GalleryPager(vm: vm, images: images),
                 ),
 
                 PositionedDirectional(
@@ -77,6 +67,39 @@ class ProductDetailsImageSection extends StatelessWidget {
   }
 }
 
+class _GalleryPager extends StatelessWidget {
+  const _GalleryPager({required this.vm, required this.images});
+
+  final ProductDetailsViewModel vm;
+  final List<String> images;
+
+  @override
+  Widget build(BuildContext context) {
+    if (images.isEmpty) {
+      return Center(
+        child: SizedBox(height: 250.h, child: const _ImagePlaceholder()),
+      );
+    }
+
+    return PageView.builder(
+      controller: vm._imagePageController,
+      onPageChanged: vm._onImagePageChanged,
+      itemCount: images.length,
+      itemBuilder: (context, index) {
+        return Center(
+          child: CustomAppNetworkImage(
+            url: images[index],
+            height: 250.h,
+            fit: BoxFit.contain,
+            showLoader: true,
+            placeholder: const _ImagePlaceholder(),
+          ),
+        );
+      },
+    );
+  }
+}
+
 class _GalleryThumbnails extends StatelessWidget {
   const _GalleryThumbnails({required this.vm, required this.images});
 
@@ -85,11 +108,17 @@ class _GalleryThumbnails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final int selected = vm._selectedImageIndex;
+    return BlocBuilder<GenericCubit<int>, GenericState<int>>(
+      bloc: vm._selectedImageCubit,
+      builder: (context, state) => _thumbnails(vm._selectedImageIndex),
+    );
+  }
 
+  Widget _thumbnails(int selected) {
     return SizedBox(
       height: 74.h,
       child: ListView.separated(
+        controller: vm._thumbnailsController,
         scrollDirection: Axis.horizontal,
         itemCount: images.length,
         separatorBuilder: (context, index) => 10.horizontalSpace,
@@ -99,7 +128,7 @@ class _GalleryThumbnails extends StatelessWidget {
           return GestureDetector(
             onTap: () => vm._selectImage(index),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 180),
+              duration: AppDurations.highlight,
               width: 74.w,
               padding: EdgeInsets.all(6.w),
               decoration: BoxDecoration(

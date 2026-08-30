@@ -22,10 +22,29 @@ class ProductDetailsDescriptionSection extends StatelessWidget {
 
     if (!hasShort && !hasFull) return const SizedBox.shrink();
 
-    final bool isExpanded = vm._data.isDescriptionExpanded;
-
     final String body = hasShort ? shortDescription : fullDescription;
 
+    return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+      bloc: vm._descriptionCubit,
+      builder: (context, state) {
+        return _card(
+          isExpanded: state.data,
+          body: body,
+          fullDescription: fullDescription,
+          hasShort: hasShort,
+          hasFull: hasFull,
+        );
+      },
+    );
+  }
+
+  Widget _card({
+    required bool isExpanded,
+    required String body,
+    required String fullDescription,
+    required bool hasShort,
+    required bool hasFull,
+  }) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Column(
