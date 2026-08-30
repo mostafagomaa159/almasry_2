@@ -1,15 +1,5 @@
 import 'package:almasry_2/core/models/response/checkout/address_model.dart';
 
-/// Turns an address-book entry into the `CartAddressInput` both address
-/// mutations take.
-///
-/// `region` carries the governorate's English **code**, not its display name:
-/// Magento matches codes, and the Arabic store view returns names it will not
-/// accept back. `region_id` goes with it whenever the form captured one —
-/// without it Magento answers "regionId is required" for anything it cannot
-/// resolve from the string alone. The ids come from
-/// [GraphQLDocuments.getCountryRegions]; do not hard-code them, the brief's
-/// example value is not even this store's.
 Map<String, dynamic> cartAddressInputFrom(AddressModel address) {
   final String region = address.regionCode.trim().isNotEmpty
       ? address.regionCode.trim()

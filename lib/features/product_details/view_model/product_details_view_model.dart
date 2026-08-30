@@ -35,13 +35,14 @@ class ProductDetailsViewModel {
 
   String _errorMessage = '';
 
-  ProductDetailModel? get _product => _productCubit.state.data;
+  ProductDetailModel? _product() => _productCubit.state.data;
 
-  int get _quantity => _quantityCubit.state.data;
+  int _quantity() => _quantityCubit.state.data;
 
-  GenericCubit<FavoritesModel> get _favoritesCubit => _favorites.favoritesCubit;
+  late final GenericCubit<FavoritesModel> _favoritesCubit =
+      _favorites.favoritesCubit;
 
-  GenericCubit<CartData> get _cartCubit => _cart.cartCubit;
+  late final GenericCubit<CartData> _cartCubit = _cart.cartCubit;
 
   Future<void> _init({required ProductDetailsArgs args}) async {
     _args = args;
@@ -61,13 +62,13 @@ class ProductDetailsViewModel {
   }
 
   void _incrementQuantity() {
-    _quantityCubit.onUpdateData(_quantity + 1);
+    _quantityCubit.onUpdateData(_quantity() + 1);
   }
 
   void _decrementQuantity() {
-    if (_quantity <= 1) return;
+    if (_quantity() <= 1) return;
 
-    _quantityCubit.onUpdateData(_quantity - 1);
+    _quantityCubit.onUpdateData(_quantity() - 1);
   }
 
   void _toggleDescription() {
@@ -75,7 +76,7 @@ class ProductDetailsViewModel {
   }
 
   void _selectImage(int index) {
-    if (index == _selectedImageIndex) return;
+    if (index == _selectedImageIndex()) return;
 
     if (!_imagePageController.hasClients) {
       _onImagePageChanged(index);
@@ -104,8 +105,8 @@ class ProductDetailsViewModel {
     final ScrollPosition position = _thumbnailsController.position;
 
     final double target =
-        (index * _thumbnailExtent) +
-        (_thumbnailExtent / 2) -
+        (index * _thumbnailExtent()) +
+        (_thumbnailExtent() / 2) -
         (position.viewportDimension / 2);
 
     _thumbnailsController.animateTo(
@@ -115,12 +116,12 @@ class ProductDetailsViewModel {
     );
   }
 
-  Future<void> _addToBasket() async {
-    final String sku = _product?.sku ?? _args?.sku ?? '';
+  Future<void> _addToCart() async {
+    final String sku = _product()?.sku ?? _args?.sku ?? '';
 
     if (sku.trim().isEmpty) return;
 
-    if (await _cart.addProduct(sku: sku, quantity: _quantity)) {
+    if (await _cart.addToCart(sku: sku, quantity: _quantity())) {
       _alert.showSuccess(LocaleKeys.cartAddedSuccess.tr());
 
       return;
@@ -128,9 +129,11 @@ class ProductDetailsViewModel {
 
     final String message = _cart.data.errorMessage;
 
-    _alert.showError(
-      message.trim().isEmpty ? LocaleKeys.somethingWentWrong.tr() : message,
-    );
+    // Whatever Magento said, or nothing: an add that bounced to the login
+    // screen leaves no message, and there is none to invent.
+    if (message.trim().isEmpty) return;
+
+    _alert.showError(message);
   }
 
   void _addReview() {
@@ -154,7 +157,7 @@ class ProductDetailsViewModel {
   }
 
   Future<void> _toggleFavorite() async {
-    final ProductDetailModel? product = _product;
+    final ProductDetailModel? product = _product();
 
     if (product == null) return;
 
@@ -162,7 +165,7 @@ class ProductDetailsViewModel {
       FavoriteProductModel(
         id: product.sku,
         title: product.name,
-        imagePath: _imagePath,
+        imagePath: _imagePath(),
         price: product.finalPrice.toStringAsFixed(2),
         oldPrice: product.hasDiscount
             ? product.regularPrice.toStringAsFixed(2)
@@ -175,30 +178,30 @@ class ProductDetailsViewModel {
     );
   }
 
-  String get _title {
-    final String name = _product?.name ?? '';
+  String _title() {
+    final String name = _product()?.name ?? '';
 
     return name.isNotEmpty ? name : (_args?.title ?? '');
   }
 
-  String get _imagePath {
-    final String url = _product?.imageUrl ?? '';
+  String _imagePath() {
+    final String url = _product()?.imageUrl ?? '';
 
     return url.isNotEmpty ? url : (_args?.imagePath ?? '');
   }
 
-  String get _sku => _product?.sku ?? _args?.sku ?? '';
+  String _sku() => _product()?.sku ?? _args?.sku ?? '';
 
-  List<String> get _galleryImages {
-    final List<String> urls = _product?.galleryUrls ?? const [];
+  List<String> _galleryImages() {
+    final List<String> urls = _product()?.galleryUrls ?? const [];
 
     if (urls.isNotEmpty) return urls;
 
-    return _imagePath.isEmpty ? const [] : [_imagePath];
+    return _imagePath().isEmpty ? const [] : [_imagePath()];
   }
 
-  int get _selectedImageIndex {
-    final int count = _galleryImages.length;
+  int _selectedImageIndex() {
+    final int count = _galleryImages().length;
 
     if (count == 0) return 0;
 
@@ -207,7 +210,7 @@ class ProductDetailsViewModel {
 
   /// One thumbnail plus the gap after it — what [_centerThumbnail] scrolls by.
   /// Mirrors the sizes `_GalleryThumbnails` lays out with.
-  double get _thumbnailExtent => 74.w + 10.w;
+  double _thumbnailExtent() => 74.w + 10.w;
 
   String _formatPrice(double? price) {
     if (price == null || price <= 0) return '';
@@ -224,7 +227,7 @@ class ProductDetailsViewModel {
   }
 
   Future<void> _notifyWhenAvailable() async {
-    final ProductDetailModel? product = _product;
+    final ProductDetailModel? product = _product();
 
     if (product == null || _notifyLoadingCubit.state.data) return;
 
@@ -232,8 +235,8 @@ class ProductDetailsViewModel {
 
     final bool success = await _push.subscribeToAvailability(
       sku: product.sku,
-      productName: _title,
-      imagePath: _imagePath,
+      productName: _title(),
+      imagePath: _imagePath(),
       notificationTitle: LocaleKeys.notificationProductAvailableTitle.tr(),
       notificationBody: LocaleKeys.notificationProductAvailableBody.tr(),
     );
@@ -261,7 +264,7 @@ class ProductDetailsViewModel {
     if (_thumbnailsController.hasClients) _thumbnailsController.jumpTo(0);
   }
 
-  Future<void> _refresh() => _getProductDetails(_sku);
+  Future<void> _refresh() => _getProductDetails(_sku());
 
   Future<void> _retry() => _refresh();
 
@@ -342,7 +345,7 @@ class ProductDetailsViewModel {
 
     final String message = errorMessageFrom(error);
 
-    final ProductDetailModel? product = _product;
+    final ProductDetailModel? product = _product();
 
     if (product != null) {
       _alert.showError(message);

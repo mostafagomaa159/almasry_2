@@ -335,6 +335,18 @@ class GraphQLDocuments {
     }
   ''';
 
+  /// The signed-in customer's own cart. Idempotent where `createEmptyCart` is
+  /// not: Magento hands back the account's existing quote — or opens one — so
+  /// the basket follows the account onto a new device instead of being minted
+  /// per install.
+  static const String customerCart = r'''
+    query CustomerCart {
+      customerCart {
+        id
+      }
+    }
+  ''';
+
   /// The cart shape every cart call reuses, so add / remove / update and the
   /// details query all come back with the same payload and the one parser
   /// handles them all.

@@ -13,13 +13,11 @@ part of '../checkout_payment_imports.dart';
 /// the ones that do not are a single tap.
 class CheckoutPaymentMethodCard extends StatelessWidget {
   final CheckoutPaymentViewModel vm;
-  final CheckoutPaymentData data;
   final PaymentMethodModel method;
 
   const CheckoutPaymentMethodCard({
     super.key,
     required this.vm,
-    required this.data,
     required this.method,
   });
 
@@ -27,9 +25,25 @@ class CheckoutPaymentMethodCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isSelected = data.selectedCode == method.code;
-    final bool isExpanded = data.expandedCode == method.code;
+    // The selection and the open row move independently, so each has its own
+    // builder; the provider list adds a third for the picked provider.
+    return BlocBuilder<GenericCubit<String>, GenericState<String>>(
+      bloc: vm._selectedCodeCubit,
+      builder: (BuildContext context, GenericState<String> selectedState) {
+        return BlocBuilder<GenericCubit<String>, GenericState<String>>(
+          bloc: vm._expandedCodeCubit,
+          builder: (BuildContext context, GenericState<String> expandedState) {
+            return _card(
+              isSelected: selectedState.data == method.code,
+              isExpanded: expandedState.data == method.code,
+            );
+          },
+        );
+      },
+    );
+  }
 
+  Widget _card({required bool isSelected, required bool isExpanded}) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -123,21 +137,34 @@ class CheckoutPaymentMethodCard extends StatelessWidget {
           ),
 
           if (method.hasOptions && isExpanded)
-            Padding(
-              padding: EdgeInsets.only(bottom: 8.h),
-              child: Column(
-                children: <Widget>[
-                  Divider(height: 1.h, color: const Color(0xFFEDEDED)),
-                  for (final PaymentOptionModel option in method.options)
-                    _OptionRow(
-                      option: option,
-                      isSelected:
-                          data.selectedCode == method.code &&
-                          data.selectedOptionCode == option.code,
-                      onTap: () => vm._selectOption(method, option),
-                    ),
-                ],
-              ),
+            BlocBuilder<GenericCubit<String>, GenericState<String>>(
+              bloc: vm._selectedOptionCubit,
+              builder: (BuildContext context, GenericState<String> state) {
+                return _options(
+                  isMethodSelected: isSelected,
+                  selectedOptionCode: state.data,
+                );
+              },
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _options({
+    required bool isMethodSelected,
+    required String selectedOptionCode,
+  }) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.h),
+      child: Column(
+        children: <Widget>[
+          Divider(height: 1.h, color: const Color(0xFFEDEDED)),
+          for (final PaymentOptionModel option in method.options)
+            _OptionRow(
+              option: option,
+              isSelected: isMethodSelected && selectedOptionCode == option.code,
+              onTap: () => vm._selectOption(method, option),
             ),
         ],
       ),

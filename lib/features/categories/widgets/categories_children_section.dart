@@ -7,13 +7,13 @@ class CategoriesChildrenSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CategoryModel? parentCategory = vm._selectedParentCategory;
+    final CategoryModel? parentCategory = vm._selectedParentCategory();
 
     if (parentCategory == null) {
       return Center(child: Text(LocaleKeys.categoriesNoSelection.tr()));
     }
 
-    final List<CategoryModel> childrenCategories = vm._filteredChildren;
+    final List<CategoryModel> childrenCategories = vm._filteredChildren();
 
     return Padding(
       padding: EdgeInsets.all(16.w),

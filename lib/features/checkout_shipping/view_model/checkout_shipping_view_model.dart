@@ -1,5 +1,8 @@
 part of '../checkout_shipping_imports.dart';
 
+typedef ListAddresses = List<AddressModel>;
+typedef ListShippingMethods = List<ShippingMethodModel>;
+
 /// Step one of the checkout: choose the shipping address, push it onto the
 /// cart, and pick from the shipping methods Magento quotes back for it.
 ///
@@ -9,57 +12,78 @@ part of '../checkout_shipping_imports.dart';
 /// three calls behind one spinner: set shipping address, set billing address,
 /// re-read the available methods.
 class CheckoutShippingViewModel {
-  final GraphQLService _graphql = sl<GraphQLService>();
-  final NavigationService _nav = sl<NavigationService>();
-  final AlertService _alert = sl<AlertService>();
-  final CartService _cart = sl<CartService>();
-  final AddressBookService _addressBook = sl<AddressBookService>();
-  final SharedPrefsServices _prefs = sl<SharedPrefsServices>();
+  final GraphQLService _graphqlService = sl<GraphQLService>();
+  final NavigationService _navService = sl<NavigationService>();
+  final AlertService _alertService = sl<AlertService>();
+  final CartService _cartService = sl<CartService>();
+  final AddressBookService _addressBookService = sl<AddressBookService>();
+  final SharedPrefsServices _prefsService = sl<SharedPrefsServices>();
 
-  final GenericCubit<CheckoutShippingData> _shippingCubit =
-      GenericCubit<CheckoutShippingData>(const CheckoutShippingData());
+  /// The address the cart is being quoted for. Empty before one is picked, and
+  /// before the address book has finished loading.
+  final GenericCubit<String> _selectedAddressIdCubit = GenericCubit<String>('');
 
-  GenericCubit<CheckoutShippingData> get _cubit => _shippingCubit;
+  /// Collapsed, the design shows only the chosen card behind a
+  /// "Show all addresses" link.
+  final GenericCubit<bool> _showAllAddressesCubit = GenericCubit<bool>(false);
 
-  GenericCubit<List<AddressModel>> get _addressesCubit =>
-      _addressBook.addressesCubit;
+  final GenericCubit<ListShippingMethods> _methodsCubit =
+      GenericCubit<ListShippingMethods>([]);
 
-  GenericCubit<CartData> get _cartCubit => _cart.cartCubit;
+  /// `carrier_code|method_code` — see `ShippingMethodModel.key`.
+  final GenericCubit<String> _selectedMethodKeyCubit = GenericCubit<String>('');
 
-  CheckoutShippingData get _data => _shippingCubit.state.data;
+  /// True while the address is being pushed onto the cart and its methods
+  /// re-quoted, which is one visible step even though it is three calls.
+  final GenericCubit<bool> _applyingAddressCubit = GenericCubit<bool>(false);
 
-  CartModel get _cartModel => _cart.cart;
+  final GenericCubit<bool> _settingMethodCubit = GenericCubit<bool>(false);
 
-  List<AddressModel> get _addresses => _addressBook.addresses;
+  late final GenericCubit<ListAddresses> _addressesCubit =
+      _addressBookService.addressesCubit;
+
+  late final GenericCubit<CartData> _cartCubit = _cartService.cartCubit;
+
+  /// A failed address apply takes the whole step, so this is what the body
+  /// swaps its content for. Always set alongside an emit on [_methodsCubit],
+  /// which is what makes the screen rebuild.
+  String _errorMessage = '';
+
+  CartModel _cartModel() => _cartService.cart;
+
+  ListAddresses _addresses() => _addressBookService.addresses;
+
+  ListShippingMethods _methods() => _methodsCubit.state.data;
+
+  bool _hasAddress() => _selectedAddressIdCubit.state.data.trim().isNotEmpty;
+
+  bool _hasMethod() => _selectedMethodKeyCubit.state.data.trim().isNotEmpty;
 
   Future<void> _init() async {
-    await _addressBook.load();
+    await _addressBookService.load();
 
-    final AddressModel? preselected = _addressBook.defaultAddress;
+    final AddressModel? preselected = _addressBookService.defaultAddress;
 
-    if (preselected == null) {
-      _shippingCubit.onUpdateData(
-        _data.copyWith(status: CheckoutShippingStatus.success),
-      );
-
-      return;
-    }
+    if (preselected == null) return;
 
     await _selectAddress(preselected);
   }
 
   void _dispose() {
-    _shippingCubit.close();
+    _selectedAddressIdCubit.close();
+    _showAllAddressesCubit.close();
+    _methodsCubit.close();
+    _selectedMethodKeyCubit.close();
+    _applyingAddressCubit.close();
+    _settingMethodCubit.close();
   }
 
   void _back() {
-    _nav.pop();
+    _navService.pop();
   }
 
   void _toggleShowAllAddresses() {
-    _shippingCubit.onUpdateData(
-      _data.copyWith(showAllAddresses: !_data.showAllAddresses),
-    );
+    _showAllAddressesCubit.onUpdateData(!_showAllAddressesCubit.state.data);
   }
 
   Future<void> _addNewAddress() => _openAddressForm();
@@ -74,14 +98,15 @@ class CheckoutShippingViewModel {
   /// selection, and an edit to the selected one has to be re-sent, because
   /// Magento is still quoting the old street.
   Future<void> _openAddressForm({AddressModel? address}) async {
-    final AddressModel? before = _selectedAddress;
+    final AddressModel? before = _selectedAddress();
 
-    await _nav.pushNamedAndReturn(
+    await _navService.pushNamedAndReturn(
       RouteNames.addressForm,
       extra: address == null ? null : AddressFormArgs(address: address),
     );
 
-    final AddressModel? after = _selectedAddress ?? _addressBook.defaultAddress;
+    final AddressModel? after =
+        _selectedAddress() ?? _addressBookService.defaultAddress;
 
     if (after == null) return;
 
@@ -93,21 +118,17 @@ class CheckoutShippingViewModel {
   }
 
   Future<void> _deleteAddress(AddressModel address) async {
-    await _addressBook.remove(address.id);
+    await _addressBookService.remove(address.id);
 
-    if (_data.selectedAddressId != address.id) return;
+    if (_selectedAddressIdCubit.state.data != address.id) return;
 
     // The quote belonged to the address that just went away, so it has to be
     // dropped rather than left on screen against a different address.
-    _shippingCubit.onUpdateData(
-      _data.copyWith(
-        selectedAddressId: '',
-        methods: const [],
-        clearSelectedMethod: true,
-      ),
-    );
+    _selectedAddressIdCubit.onUpdateData('');
+    _selectedMethodKeyCubit.onUpdateData('');
+    _methodsCubit.onUpdateData(const []);
 
-    final AddressModel? next = _addressBook.defaultAddress;
+    final AddressModel? next = _addressBookService.defaultAddress;
 
     if (next != null) await _selectAddress(next);
   }
@@ -115,27 +136,23 @@ class CheckoutShippingViewModel {
   /// Re-applies even when the same card is tapped again: the address may have
   /// just been edited, and the quote has to follow it.
   Future<void> _selectAddress(AddressModel address) async {
-    _shippingCubit.onUpdateData(
-      _data.copyWith(
-        selectedAddressId: address.id,
-        isApplyingAddress: true,
-        status: CheckoutShippingStatus.loading,
-        methods: const [],
-        clearSelectedMethod: true,
-        clearErrorMessage: true,
-      ),
-    );
+    _errorMessage = '';
 
-    final String cartId = await _cart.ensureCartId();
+    _selectedAddressIdCubit.onUpdateData(address.id);
+    _selectedMethodKeyCubit.onUpdateData('');
+    _applyingAddressCubit.onUpdateData(true);
+    _methodsCubit.onUpdateData(const []);
+
+    final String cartId = await _cartService.ensureCartId();
 
     if (cartId.isEmpty) {
-      _fail(_cart.data.errorMessage);
+      _fail(_cartService.data.errorMessage);
 
       return;
     }
 
     try {
-      await _graphql.mutate(
+      await _graphqlService.mutate(
         GraphQLDocuments.setShippingAddressesOnCart,
         variables: SetShippingAddressRequest(
           cartId: cartId,
@@ -145,7 +162,7 @@ class CheckoutShippingViewModel {
 
       // The design has no separate billing step, so the shipping address is
       // replayed as the billing one — `placeOrder` rejects a cart without it.
-      await _graphql.mutate(
+      await _graphqlService.mutate(
         GraphQLDocuments.setBillingAddressOnCart,
         variables: SetBillingAddressRequest(
           cartId: cartId,
@@ -161,52 +178,37 @@ class CheckoutShippingViewModel {
     }
   }
 
-  /// `placeOrder` refuses a guest cart with no email
-  /// (`code: "GUEST_EMAIL_MISSING"`), and nothing in the checkout design
-  /// collects one — so it comes from the account: the address typed at login,
-  /// or the one saved in the profile. Both land on `PrefKeys.email`.
+  /// Magento wants an email on a guest cart before `placeOrder` will run, so
+  /// the account's is sent along with the address when there is one — the OTP
+  /// login persists whatever the customer record carries, and the profile's
+  /// email field writes the same key.
   ///
-  /// Its own failures are swallowed rather than failing the address step: a
-  /// missing or malformed account email is not a reason to hide the address
-  /// list, so [_proceed] reports it at the point the user tries to move on.
+  /// Nothing here gates the step and nothing here reports: this screen no
+  /// longer decides whether the cart is orderable. If Magento still refuses at
+  /// `placeOrder`, its own words are what the review screen shows.
   Future<void> _setGuestEmail(String cartId) async {
-    final String email = _prefs.getString(PrefKeys.email).trim();
+    final String email = _prefsService.getString(PrefKeys.email).trim();
 
-    if (email.isEmpty) {
-      _shippingCubit.onUpdateData(
-        _data.copyWith(isEmailReady: false, clearEmailError: true),
-      );
-
-      return;
-    }
+    if (email.isEmpty) return;
 
     try {
-      await _graphql.mutate(
+      await _graphqlService.mutate(
         GraphQLDocuments.setGuestEmailOnCart,
         variables: {'cartId': cartId, 'email': email},
       );
-
-      _shippingCubit.onUpdateData(
-        _data.copyWith(isEmailReady: true, clearEmailError: true),
-      );
-    } catch (error) {
-      // Magento validates the format, so a bad stored address lands here.
-      _shippingCubit.onUpdateData(
-        _data.copyWith(
-          isEmailReady: false,
-          emailErrorMessage: errorMessageFrom(error),
-        ),
-      );
+    } catch (_) {
+      // Magento validates the format, so a bad stored address lands here. It
+      // is not this step's business — carry on to the shipping methods.
     }
   }
 
   Future<void> _loadShippingMethods(String cartId) async {
-    final Map<String, dynamic> response = await _graphql.query(
+    final Map<String, dynamic> response = await _graphqlService.query(
       GraphQLDocuments.getCartShippingMethods,
       variables: {'cartId': cartId},
     );
 
-    final List<ShippingMethodModel> methods = _methodsFrom(response);
+    final ListShippingMethods methods = _methodsFrom(response);
 
     // Magento may already hold a method from an earlier visit; honour it so
     // the radio matches the cart, otherwise take the first quote.
@@ -216,16 +218,11 @@ class CheckoutShippingViewModel {
         ? current.key
         : (methods.isEmpty ? '' : methods.first.key);
 
-    _shippingCubit.onUpdateData(
-      _data.copyWith(
-        status: CheckoutShippingStatus.success,
-        isApplyingAddress: false,
-        methods: methods,
-        selectedMethodKey: selectedKey,
-        clearSelectedMethod: selectedKey.isEmpty,
-        clearErrorMessage: true,
-      ),
-    );
+    _errorMessage = '';
+
+    _applyingAddressCubit.onUpdateData(false);
+    _selectedMethodKeyCubit.onUpdateData(selectedKey);
+    _methodsCubit.onUpdateData(methods);
 
     if (selectedKey.isEmpty) return;
 
@@ -236,13 +233,14 @@ class CheckoutShippingViewModel {
 
   Future<void> _selectMethod(ShippingMethodModel? method) async {
     if (method == null || method.isEmpty) return;
-    if (method.key == _data.selectedMethodKey && _cartModel.shippingCost > 0) {
+    if (method.key == _selectedMethodKeyCubit.state.data &&
+        _cartModel().shippingCost > 0) {
       return;
     }
 
-    _shippingCubit.onUpdateData(
-      _data.copyWith(selectedMethodKey: method.key, clearErrorMessage: true),
-    );
+    _errorMessage = '';
+
+    _selectedMethodKeyCubit.onUpdateData(method.key);
 
     await _applyMethod(method);
   }
@@ -255,13 +253,13 @@ class CheckoutShippingViewModel {
   }) async {
     if (method == null || method.isEmpty) return;
 
-    _shippingCubit.onUpdateData(_data.copyWith(isSettingMethod: true));
+    _settingMethodCubit.onUpdateData(true);
 
     try {
-      await _graphql.mutate(
+      await _graphqlService.mutate(
         GraphQLDocuments.setShippingMethodsOnCart,
         variables: SetShippingMethodRequest(
-          cartId: _cart.cartId,
+          cartId: _cartService.cartId,
           carrierCode: method.carrierCode,
           methodCode: method.methodCode,
         ).toVariables(),
@@ -269,16 +267,16 @@ class CheckoutShippingViewModel {
 
       // Re-read rather than trust the mutation's slim selection: the grand
       // total now includes delivery and the totals card reads it off the cart.
-      await _cart.refresh();
+      await _cartService.refresh();
     } catch (error) {
-      if (!silent) _alert.showError(errorMessageFrom(error));
+      if (!silent) _alertService.showError(errorMessageFrom(error));
     } finally {
-      _shippingCubit.onUpdateData(_data.copyWith(isSettingMethod: false));
+      _settingMethodCubit.onUpdateData(false);
     }
   }
 
   Future<void> _retry() async {
-    final AddressModel? address = _selectedAddress;
+    final AddressModel? address = _selectedAddress();
 
     if (address == null) return _init();
 
@@ -286,36 +284,24 @@ class CheckoutShippingViewModel {
   }
 
   void _proceed() {
-    if (!_data.hasAddress) {
-      _alert.showError(LocaleKeys.checkoutSelectAddress.tr());
+    if (!_hasAddress()) {
+      _alertService.showError(LocaleKeys.checkoutSelectAddress.tr());
 
       return;
     }
 
-    if (!_data.hasMethod) {
-      _alert.showError(LocaleKeys.checkoutSelectShippingMethod.tr());
+    if (!_hasMethod()) {
+      _alertService.showError(LocaleKeys.checkoutSelectShippingMethod.tr());
 
       return;
     }
 
-    // Caught here rather than at `placeOrder`, which is two screens and a
-    // payment choice later.
-    if (!_data.isEmailReady) {
-      _alert.showError(
-        _data.emailErrorMessage.isNotEmpty
-            ? _data.emailErrorMessage
-            : LocaleKeys.checkoutEmailMissing.tr(),
-      );
-
-      return;
-    }
-
-    _nav.pushNamed(RouteNames.checkoutPayment);
+    _navService.pushNamed(RouteNames.checkoutPayment);
   }
 
-  AddressModel? get _selectedAddress {
-    for (final AddressModel address in _addresses) {
-      if (address.id == _data.selectedAddressId) return address;
+  AddressModel? _selectedAddress() {
+    for (final AddressModel address in _addresses()) {
+      if (address.id == _selectedAddressIdCubit.state.data) return address;
     }
 
     return null;
@@ -323,32 +309,32 @@ class CheckoutShippingViewModel {
 
   /// Collapsed the list shows the chosen card alone; expanded it shows the
   /// whole book with the chosen one first.
-  List<AddressModel> get _visibleAddresses {
-    final AddressModel? selected = _selectedAddress;
+  ListAddresses _visibleAddresses() {
+    final AddressModel? selected = _selectedAddress();
 
-    if (_data.showAllAddresses) {
-      if (selected == null) return _addresses;
+    if (_showAllAddressesCubit.state.data) {
+      if (selected == null) return _addresses();
 
       return <AddressModel>[
         selected,
-        ..._addresses.where((AddressModel item) => item.id != selected.id),
+        ..._addresses().where((AddressModel item) => item.id != selected.id),
       ];
     }
 
     if (selected != null) return <AddressModel>[selected];
 
-    return _addresses.isEmpty ? const [] : <AddressModel>[_addresses.first];
+    return _addresses().isEmpty ? const [] : <AddressModel>[_addresses().first];
   }
 
   ShippingMethodModel? _methodByKey(String key) {
-    for (final ShippingMethodModel method in _data.methods) {
+    for (final ShippingMethodModel method in _methods()) {
       if (method.key == key) return method;
     }
 
     return null;
   }
 
-  List<ShippingMethodModel> _methodsFrom(Map<String, dynamic> response) {
+  ListShippingMethods _methodsFrom(Map<String, dynamic> response) {
     return (_firstAddress(response)?['available_shipping_methods']
                 as List<dynamic>? ??
             const [])
@@ -379,14 +365,13 @@ class CheckoutShippingViewModel {
     return addresses.isEmpty ? null : addresses.first;
   }
 
+  /// The message plus the emit that shows it: the body reads [_errorMessage]
+  /// inside its builder on [_methodsCubit].
   void _fail(String message) {
-    _shippingCubit.onUpdateData(
-      _data.copyWith(
-        status: CheckoutShippingStatus.error,
-        isApplyingAddress: false,
-        isSettingMethod: false,
-        errorMessage: message,
-      ),
-    );
+    _errorMessage = message;
+
+    _applyingAddressCubit.onUpdateData(false);
+    _settingMethodCubit.onUpdateData(false);
+    _methodsCubit.onUpdateData(const []);
   }
 }

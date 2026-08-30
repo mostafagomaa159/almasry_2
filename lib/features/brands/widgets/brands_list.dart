@@ -70,7 +70,7 @@ class _BrandsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool hasMore = vm._canFetchMoreItems;
+    final bool hasMore = vm._canFetchMoreItems();
 
     return Scrollbar(
       controller: vm._scrollController,

@@ -4,31 +4,34 @@ part of '../checkout_review_imports.dart';
 /// are changed in the cart, not on the way to paying.
 class CheckoutReviewProductsSection extends StatelessWidget {
   final CheckoutReviewViewModel vm;
-  final CheckoutReviewData data;
   final CartModel cart;
 
   const CheckoutReviewProductsSection({
     super.key,
     required this.vm,
-    required this.data,
     required this.cart,
   });
 
   @override
   Widget build(BuildContext context) {
-    return CheckoutReviewSection(
-      title: LocaleKeys.checkoutYourProducts.tr(),
-      isExpanded: data.isProductsExpanded,
-      onToggle: vm._toggleProducts,
-      child: Column(
-        children: <Widget>[
-          for (final CartItemModel item in cart.items)
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.h),
-              child: _ProductRow(item: item),
-            ),
-        ],
-      ),
+    return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+      bloc: vm._productsExpandedCubit,
+      builder: (BuildContext context, GenericState<bool> state) {
+        return CheckoutReviewSection(
+          title: LocaleKeys.checkoutYourProducts.tr(),
+          isExpanded: state.data,
+          onToggle: vm._toggleProducts,
+          child: Column(
+            children: <Widget>[
+              for (final CartItemModel item in cart.items)
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.h),
+                  child: _ProductRow(item: item),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

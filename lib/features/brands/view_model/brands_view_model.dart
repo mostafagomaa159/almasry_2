@@ -38,7 +38,7 @@ class BrandsViewModel {
 
   String _errorMessage = '';
 
-  bool get _canFetchMoreItems =>
+  bool _canFetchMoreItems() =>
       _totalItems == null || _allBrands.length < (_totalItems ?? 0);
 
   void _init() {
@@ -64,7 +64,7 @@ class BrandsViewModel {
 
     if (position.pixels >= position.maxScrollExtent - 200 &&
         !_isFetching &&
-        _canFetchMoreItems) {
+        _canFetchMoreItems()) {
       unawaited(_brandsApi(loadMore: true));
     }
 

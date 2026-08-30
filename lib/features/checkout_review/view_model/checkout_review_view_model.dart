@@ -6,85 +6,84 @@ part of '../checkout_review_imports.dart';
 /// payment method were all written onto the cart by the earlier steps, and
 /// `CartService` re-read it after each one.
 class CheckoutReviewViewModel {
-  final GraphQLService _graphql = sl<GraphQLService>();
-  final NavigationService _nav = sl<NavigationService>();
-  final AlertService _alert = sl<AlertService>();
-  final CartService _cart = sl<CartService>();
+  final GraphQLService _graphqlService = sl<GraphQLService>();
+  final NavigationService _navService = sl<NavigationService>();
+  final AlertService _alertService = sl<AlertService>();
+  final CartService _cartService = sl<CartService>();
 
-  final GenericCubit<CheckoutReviewData> _reviewCubit =
-      GenericCubit<CheckoutReviewData>(const CheckoutReviewData());
+  /// The design opens with all three sections expanded and lets each collapse
+  /// on its own, so they are three cubits rather than one selected index.
+  final GenericCubit<bool> _productsExpandedCubit = GenericCubit<bool>(true);
+  final GenericCubit<bool> _orderExpandedCubit = GenericCubit<bool>(true);
+  final GenericCubit<bool> _billExpandedCubit = GenericCubit<bool>(true);
 
-  GenericCubit<CheckoutReviewData> get _cubit => _reviewCubit;
+  final GenericCubit<bool> _placingOrderCubit = GenericCubit<bool>(false);
 
-  GenericCubit<CartData> get _cartCubit => _cart.cartCubit;
+  late final GenericCubit<CartData> _cartCubit = _cartService.cartCubit;
 
-  CheckoutReviewData get _data => _reviewCubit.state.data;
-
-  CartModel get _cartModel => _cart.cart;
+  CartModel _cartModel() => _cartService.cart;
 
   void _init() {}
 
   void _dispose() {
-    _reviewCubit.close();
+    _productsExpandedCubit.close();
+    _orderExpandedCubit.close();
+    _billExpandedCubit.close();
+    _placingOrderCubit.close();
   }
 
   void _back() {
-    _nav.pop();
+    _navService.pop();
   }
 
   void _toggleProducts() {
-    _reviewCubit.onUpdateData(
-      _data.copyWith(isProductsExpanded: !_data.isProductsExpanded),
-    );
+    _productsExpandedCubit.onUpdateData(!_productsExpandedCubit.state.data);
   }
 
   void _toggleOrderDetails() {
-    _reviewCubit.onUpdateData(
-      _data.copyWith(isOrderDetailsExpanded: !_data.isOrderDetailsExpanded),
-    );
+    _orderExpandedCubit.onUpdateData(!_orderExpandedCubit.state.data);
   }
 
   void _toggleBill() {
-    _reviewCubit.onUpdateData(
-      _data.copyWith(isBillExpanded: !_data.isBillExpanded),
-    );
+    _billExpandedCubit.onUpdateData(!_billExpandedCubit.state.data);
   }
 
   String _shippingAddressLine() {
-    final CartModel cart = _cartModel;
+    final CartModel cart = _cartModel();
 
     return cart.shippingAddress?.summaryLine ?? '';
   }
 
   String _shippingCompanyLine() {
-    final ShippingMethodModel? method = _cartModel.selectedShippingMethod;
+    final ShippingMethodModel? method = _cartModel().selectedShippingMethod;
 
     return method == null ? '' : method.displayTitle;
   }
 
-  String _paymentMethodLine() => _cartModel.selectedPaymentMethod.displayTitle;
+  String _paymentMethodLine() =>
+      _cartModel().selectedPaymentMethod.displayTitle;
 
   /// `placeOrder` answers 200 with an `errors` list when it refuses, so a
   /// successful call is not a successful order — [PlaceOrderResponse.isSuccess]
   /// is what decides.
   Future<void> _placeOrder() async {
-    if (_data.isPlacingOrder) return;
+    if (_placingOrderCubit.state.data) return;
 
-    _reviewCubit.onUpdateData(_data.copyWith(isPlacingOrder: true));
+    _placingOrderCubit.onUpdateData(true);
 
     // Read before the cart is cleared — the confirmation screen prints it.
-    final double grandTotal = _cartModel.grandTotal;
+    final double grandTotal = _cartModel().grandTotal;
 
     try {
-      final Map<String, dynamic> json = await _graphql.mutate(
+      final Map<String, dynamic> json = await _graphqlService.mutate(
         GraphQLDocuments.placeOrder,
-        variables: {'cartId': _cart.cartId},
+        variables: {'cartId': _cartService.cartId},
       );
 
       final PlaceOrderResponse response = PlaceOrderResponse.fromJson(json);
 
       if (!response.isSuccess) {
-        _alert.showError(
+        _alertService.showError(
           response.errors.isEmpty
               ? LocaleKeys.somethingWentWrong.tr()
               : response.errors.first,
@@ -93,11 +92,11 @@ class CheckoutReviewViewModel {
         return;
       }
 
-      await _cart.clearAfterOrder();
+      await _cartService.clearAfterOrder();
 
       // `goNamed`, not push: the quote is gone, so the three checkout steps
       // behind this must not stay on the stack to be walked back into.
-      _nav.goNamed(
+      _navService.goNamed(
         RouteNames.orderConfirmed,
         extra: OrderConfirmedArgs(
           orderNumber: response.orderNumber,
@@ -105,9 +104,9 @@ class CheckoutReviewViewModel {
         ),
       );
     } catch (error) {
-      _alert.showError(errorMessageFrom(error));
+      _alertService.showError(errorMessageFrom(error));
     } finally {
-      _reviewCubit.onUpdateData(_data.copyWith(isPlacingOrder: false));
+      _placingOrderCubit.onUpdateData(false);
     }
   }
 }

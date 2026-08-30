@@ -1,5 +1,10 @@
+import 'dart:async';
+
+import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/constants/app_api.dart';
+import 'package:almasry_2/core/constants/pref_keys.dart';
 import 'package:almasry_2/core/services/network_logger_service.dart';
+import 'package:almasry_2/core/services/shared_prefs_services.dart';
 import 'package:graphql/client.dart';
 
 class GraphQLServiceException implements Exception {
@@ -11,7 +16,6 @@ class GraphQLServiceException implements Exception {
   String toString() => message;
 }
 
-
 class _LoggedCall {
   const _LoggedCall(this.label, this.stopwatch);
 
@@ -22,7 +26,6 @@ class _LoggedCall {
 class GraphQLService {
   late final GraphQLClient _client;
 
-
   static const NetworkLoggerService _logger = NetworkLoggerService();
 
   GraphQLService() {
@@ -32,18 +35,12 @@ class GraphQLService {
     );
   }
 
-
   Future<Map<String, dynamic>> query(
     String document, {
     Map<String, dynamic> variables = const {},
     Map<String, String> headers = const {},
   }) async {
-    final _LoggedCall call = _logRequest(
-      'QUERY',
-      document,
-      variables,
-      headers,
-    );
+    final _LoggedCall call = _logRequest('QUERY', document, variables, headers);
 
     final QueryResult result = await _client.query(
       QueryOptions(
@@ -57,11 +54,47 @@ class GraphQLService {
     return _resolve(result, call);
   }
 
+  /// Every call carries the customer token once there is one, which is what
+  /// makes the cart a *customer* cart: Magento then resolves `customerCart`,
+  /// accepts `placeOrder` without a guest email, and files the order under the
+  /// account. Without a token the same calls run as a guest, which is still
+  /// the case for the email/password path while its endpoint is a stub.
+  Map<String, String> _headersWith(Map<String, String> headers) {
+    final String token = _customerToken;
+
+    if (token.isEmpty) return headers;
+
+    return <String, String>{...headers, 'Authorization': 'Bearer $token'};
+  }
 
   Context _contextFor(Map<String, String> headers) {
-    if (headers.isEmpty) return const Context();
+    final Map<String, String> all = _headersWith(headers);
 
-    return const Context().withEntry(HttpLinkHeaders(headers: headers));
+    if (all.isEmpty) return const Context();
+
+    return const Context().withEntry(HttpLinkHeaders(headers: all));
+  }
+
+  String get _customerToken =>
+      sl<SharedPrefsServices>().getString(PrefKeys.customerToken).trim();
+
+  /// A token Magento no longer accepts would otherwise fail every call on the
+  /// screen, browsing included, with no way back. Dropping it puts the app on
+  /// the guest footing it had before the login.
+  void _forgetTokenIfRejected(String message) {
+    if (_customerToken.isEmpty) return;
+
+    final String lower = message.toLowerCase();
+
+    final bool isAuthFailure =
+        lower.contains("isn't authorized") ||
+        lower.contains('is not authorized') ||
+        lower.contains('token is expired') ||
+        lower.contains('current customer');
+
+    if (!isAuthFailure) return;
+
+    unawaited(sl<SharedPrefsServices>().remove(PrefKeys.customerToken));
   }
 
   Future<Map<String, dynamic>> mutate(
@@ -80,12 +113,12 @@ class GraphQLService {
         document: gql(document),
         variables: variables,
         fetchPolicy: FetchPolicy.noCache,
+        context: _contextFor(const {}),
       ),
     );
 
     return _resolve(result, call);
   }
-
 
   _LoggedCall _logRequest(
     String kind,
@@ -121,12 +154,13 @@ class GraphQLService {
       _logger.open('GRAPHQL ERROR ${call.label}$elapsed');
       _logger.line(message.isEmpty ? '${result.exception}' : message);
 
-
       if (result.data != null) {
         _logger.section('partial data', result.data);
       }
 
       _logger.close();
+
+      _forgetTokenIfRejected(message);
 
       throw GraphQLServiceException(message);
     }

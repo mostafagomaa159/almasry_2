@@ -9,7 +9,7 @@ class RegisterForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<GenericCubit<UserModel>, GenericState<UserModel>>(
       bloc: vm._authCubit,
-      builder: (context, _) => _buildForm(context, vm._data),
+      builder: (context, _) => _buildForm(context, vm._data()),
     );
   }
 

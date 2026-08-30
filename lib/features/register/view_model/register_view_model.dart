@@ -20,9 +20,9 @@ class RegisterViewModel {
   late final FocusNode _emailFocusNode;
   late final FocusNode _passwordFocusNode;
 
-  GenericCubit<UserModel> get _authCubit => _auth.authCubit;
+  late final GenericCubit<UserModel> _authCubit = _auth.authCubit;
 
-  UserModel get _data => _auth.authCubit.state.data;
+  UserModel _data() => _auth.authCubit.state.data;
 
   /// Init
 

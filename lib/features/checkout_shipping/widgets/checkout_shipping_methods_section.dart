@@ -7,18 +7,32 @@ part of '../checkout_shipping_imports.dart';
 /// delivers here".
 class CheckoutShippingMethodsSection extends StatelessWidget {
   final CheckoutShippingViewModel vm;
-  final CheckoutShippingData data;
+  final ListShippingMethods methods;
 
   const CheckoutShippingMethodsSection({
     super.key,
     required this.vm,
-    required this.data,
+    required this.methods,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (!data.hasAddress) return const SizedBox.shrink();
+    return BlocBuilder<GenericCubit<String>, GenericState<String>>(
+      bloc: vm._selectedAddressIdCubit,
+      builder: (BuildContext context, GenericState<String> addressState) {
+        if (addressState.data.trim().isEmpty) return const SizedBox.shrink();
 
+        return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+          bloc: vm._applyingAddressCubit,
+          builder: (BuildContext context, GenericState<bool> applyingState) {
+            return _section(isApplyingAddress: applyingState.data);
+          },
+        );
+      },
+    );
+  }
+
+  Widget _section({required bool isApplyingAddress}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -33,18 +47,13 @@ class CheckoutShippingMethodsSection extends StatelessWidget {
 
         14.verticalSpace,
 
-        if (data.isApplyingAddress)
+        if (isApplyingAddress)
           const _MethodsLoader()
-        else if (data.methods.isEmpty)
+        else if (methods.isEmpty)
           CustomAppEmptyView(message: LocaleKeys.checkoutNoShippingMethods.tr())
         else
-          for (final ShippingMethodModel method in data.methods)
-            _MethodRow(
-              method: method,
-              isSelected: method.key == data.selectedMethodKey,
-              isBusy: data.isSettingMethod,
-              onTap: () => vm._selectMethod(method),
-            ),
+          for (final ShippingMethodModel method in methods)
+            _MethodRow(vm: vm, method: method),
       ],
     );
   }
@@ -71,27 +80,39 @@ class _MethodsLoader extends StatelessWidget {
   }
 }
 
+/// Each row watches the selection and the in-flight apply itself, so choosing
+/// a carrier redraws the two radios that changed rather than the whole step.
 class _MethodRow extends StatelessWidget {
+  final CheckoutShippingViewModel vm;
   final ShippingMethodModel method;
-  final bool isSelected;
-  final bool isBusy;
-  final VoidCallback onTap;
 
-  const _MethodRow({
-    required this.method,
-    required this.isSelected,
-    required this.isBusy,
-    required this.onTap,
-  });
+  const _MethodRow({required this.vm, required this.method});
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<GenericCubit<String>, GenericState<String>>(
+      bloc: vm._selectedMethodKeyCubit,
+      builder: (BuildContext context, GenericState<String> selectedState) {
+        return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+          bloc: vm._settingMethodCubit,
+          builder: (BuildContext context, GenericState<bool> busyState) {
+            return _row(
+              isSelected: method.key == selectedState.data,
+              isBusy: busyState.data,
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _row({required bool isSelected, required bool isBusy}) {
     final Color color = isSelected
         ? AppColors.primaryRed
         : const Color(0xFF3B3B3B);
 
     return InkWell(
-      onTap: isBusy ? null : onTap,
+      onTap: isBusy ? null : () => vm._selectMethod(method),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 10.h),
         child: Row(

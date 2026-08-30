@@ -4,41 +4,44 @@ part of '../checkout_review_imports.dart';
 /// below it: tax, delivery and discount.
 class CheckoutReviewBillSection extends StatelessWidget {
   final CheckoutReviewViewModel vm;
-  final CheckoutReviewData data;
   final CartModel cart;
 
   const CheckoutReviewBillSection({
     super.key,
     required this.vm,
-    required this.data,
     required this.cart,
   });
 
   @override
   Widget build(BuildContext context) {
-    return CheckoutReviewSection(
-      title: LocaleKeys.checkoutBillDetails.tr(),
-      isExpanded: data.isBillExpanded,
-      onToggle: vm._toggleBill,
-      child: Column(
-        children: <Widget>[
-          CheckoutReviewRow(
-            label: LocaleKeys.checkoutTax.tr(),
-            value: formatPrice(cart.taxTotal),
-            isCompact: true,
+    return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+      bloc: vm._billExpandedCubit,
+      builder: (BuildContext context, GenericState<bool> state) {
+        return CheckoutReviewSection(
+          title: LocaleKeys.checkoutBillDetails.tr(),
+          isExpanded: state.data,
+          onToggle: vm._toggleBill,
+          child: Column(
+            children: <Widget>[
+              CheckoutReviewRow(
+                label: LocaleKeys.checkoutTax.tr(),
+                value: formatPrice(cart.taxTotal),
+                isCompact: true,
+              ),
+              CheckoutReviewRow(
+                label: LocaleKeys.cartShippingCosts.tr(),
+                value: formatPrice(cart.shippingCost),
+                isCompact: true,
+              ),
+              CheckoutReviewRow(
+                label: LocaleKeys.cartDiscount.tr(),
+                value: formatPrice(cart.discountTotal),
+                isCompact: true,
+              ),
+            ],
           ),
-          CheckoutReviewRow(
-            label: LocaleKeys.cartShippingCosts.tr(),
-            value: formatPrice(cart.shippingCost),
-            isCompact: true,
-          ),
-          CheckoutReviewRow(
-            label: LocaleKeys.cartDiscount.tr(),
-            value: formatPrice(cart.discountTotal),
-            isCompact: true,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

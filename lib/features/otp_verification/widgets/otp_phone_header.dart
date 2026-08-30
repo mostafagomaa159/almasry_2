@@ -30,7 +30,7 @@ class OtpPhoneHeader extends StatelessWidget {
         ),
         4.verticalSpace,
         Text(
-          vm._maskedPhone,
+          vm._maskedPhone(),
           style: const TextStyle(
             fontSize: 18,
             color: AppColors.textSlateDark,

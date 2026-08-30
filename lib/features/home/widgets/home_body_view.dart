@@ -10,7 +10,7 @@ class HomeBodyView extends StatelessWidget {
     return BlocBuilder<GenericCubit<HomeModel>, GenericState<HomeModel>>(
       bloc: vm._homeCubit,
       builder: (context, state) {
-        final data = vm._data;
+        final data = vm._data();
 
         if (data.isLoading) {
           return const CustomAppLoadingView();

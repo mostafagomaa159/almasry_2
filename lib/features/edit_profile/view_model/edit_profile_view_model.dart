@@ -17,7 +17,7 @@ class EditProfileViewModel {
   late final TextEditingController _birthDateController;
   late final TextEditingController _diseaseTypeController;
 
-  EditProfileModel get _data => _editProfileCubit.state.data;
+  EditProfileModel _data() => _editProfileCubit.state.data;
 
   /// Init
 

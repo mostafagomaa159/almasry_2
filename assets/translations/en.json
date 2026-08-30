@@ -123,6 +123,9 @@
   "product_details_description_value": "95% Cotton, 5% Spandex, Features: Casual, Short Sleeve, Letter Print, V-Neck, Fashion Tees. The fabric is soft and has some stretch. Occasion: Casual, Office, Beach, School, Home, Street. Season: Spring, Summer, Autumn, Winter.",
 
   "retry": "Retry",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "sign_in_to_continue": "Sign in to continue",
   "coming_soon": "Coming soon",
   "something_went_wrong": "Something went wrong",
   "server_error": "Server error",
@@ -281,7 +284,6 @@
   "checkout_tax": "Tax",
   "checkout_payment_method": "Payment method",
   "checkout_delete_address": "Delete address",
-  "checkout_email_missing": "Add your email address in your profile to complete the order",
   "checkout_payment_cod_hint": "Pay in cash upon receipt of the order",
   "checkout_payment_link_hint": "You will receive the payment link immediately on WhatsApp.",
 

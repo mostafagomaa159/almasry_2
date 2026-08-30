@@ -2,6 +2,7 @@ import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
 import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/models/response/splash/startup_model.dart';
 import 'package:almasry_2/core/constants/pref_keys.dart';
+import 'package:almasry_2/core/services/cart_service.dart';
 import 'package:almasry_2/core/services/shared_prefs_services.dart';
 
 class AppStartupService {
@@ -58,6 +59,12 @@ class AppStartupService {
 
   Future<void> logout() async {
     await _prefs.setBool(PrefKeys.isLoggedIn, false);
+
+    // The customer token outlives nothing: leaving it behind would keep the
+    // next visitor signed in to Magento while the app shows them as a guest.
+    await _prefs.remove(PrefKeys.customerToken);
+
+    await sl<CartService>().clearForLogout();
 
     splashCubit.onUpdateData(
       splashCubit.state.data.copyWith(status: StartupStatus.unauthenticated),

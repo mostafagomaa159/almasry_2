@@ -12,9 +12,14 @@ class PrefKeys {
 
   static const String recentSearches = 'recent_searches';
 
-  /// The masked guest cart id handed back by `createEmptyCart`. Kept so the
-  /// basket survives a restart instead of a new cart being minted every run.
+  /// The masked cart id — `customerCart` for a signed-in customer, otherwise
+  /// `createEmptyCart`. Kept so the basket survives a restart instead of a new
+  /// cart being minted every run.
   static const String cartId = 'cart_id';
+
+  /// Magento's customer token, from the OTP login reply. Its presence is what
+  /// turns every GraphQL call into a customer call — see `GraphQLService`.
+  static const String customerToken = 'customer_token';
 
   /// Cache keys — see `CacheManagerService`.
   static const String cachedBrands = 'cached_brands';

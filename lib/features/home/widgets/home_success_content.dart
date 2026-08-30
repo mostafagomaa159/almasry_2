@@ -7,7 +7,7 @@ class HomeSuccessContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final data = vm._data;
+    final data = vm._data();
 
     return RefreshIndicator(
       onRefresh: vm._getHomeData,

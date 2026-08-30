@@ -7,7 +7,7 @@ class CategoriesSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<CategoryModel> categories = vm._categories;
+    final List<CategoryModel> categories = vm._categories();
 
     return Container(
       width: 110.w,

@@ -23,13 +23,13 @@ class OtpActionsSection extends StatelessWidget {
                 return CustomAppButton(
                   title: LocaleKeys.otpVerify.tr(),
                   isLoading: blocState.data.isOtpVerificationLoading,
-                  isEnabled: vm._isVerifyEnabled,
+                  isEnabled: vm._isVerifyEnabled(),
                   onPressed: () => vm._verifyOtp(context),
                   height: 54.h,
-                  backgroundColor: vm._isVerifyEnabled
+                  backgroundColor: vm._isVerifyEnabled()
                       ? AppColors.borderField
                       : AppColors.border,
-                  borderColor: vm._isVerifyEnabled
+                  borderColor: vm._isVerifyEnabled()
                       ? AppColors.borderField
                       : AppColors.border,
                   textColor: Colors.white,

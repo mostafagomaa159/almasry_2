@@ -58,7 +58,7 @@ class ProductDetailsSummarySection extends StatelessWidget {
           10.verticalSpace,
 
           Text(
-            vm._title,
+            vm._title(),
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.w800,

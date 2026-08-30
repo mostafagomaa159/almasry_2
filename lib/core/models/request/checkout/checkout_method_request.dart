@@ -19,11 +19,6 @@ class SetShippingMethodRequest {
   }
 }
 
-/// Variables for [GraphQLDocuments.setPaymentMethodOnCart].
-///
-/// [selectedOption] is sent as null rather than an empty string for the
-/// methods that have no sub-option — Magento validates the value when one is
-/// present, so `""` is rejected where `null` is accepted.
 class SetPaymentMethodRequest {
   final String cartId;
   final String code;

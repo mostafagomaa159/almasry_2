@@ -7,7 +7,7 @@ class EditProfileForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final data = vm._data;
+    final data = vm._data();
 
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 22.w),

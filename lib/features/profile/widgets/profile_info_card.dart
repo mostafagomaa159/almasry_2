@@ -67,7 +67,7 @@ class ProfileInfoCard extends StatelessWidget {
               children: [
                 4.verticalSpace,
                 Text(
-                  vm._displayName,
+                  vm._displayName(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24.sp,
@@ -77,7 +77,7 @@ class ProfileInfoCard extends StatelessWidget {
                 ),
                 2.verticalSpace,
                 Text(
-                  vm._displayEmail,
+                  vm._displayEmail(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16.sp,
@@ -89,27 +89,27 @@ class ProfileInfoCard extends StatelessWidget {
                 _buildInfoRow(
                   context: context,
                   label: LocaleKeys.profilePhoneLabel.tr(),
-                  value: vm._displayPhone,
+                  value: vm._displayPhone(),
                 ),
                 _buildInfoRow(
                   context: context,
                   label: LocaleKeys.profileGenderLabel.tr(),
-                  value: vm._displayGender,
+                  value: vm._displayGender(),
                 ),
                 _buildInfoRow(
                   context: context,
                   label: LocaleKeys.profileBirthDateLabel.tr(),
-                  value: vm._displayBirthDate,
+                  value: vm._displayBirthDate(),
                 ),
                 _buildInfoRow(
                   context: context,
                   label: LocaleKeys.profilePregnancyLabel.tr(),
-                  value: vm._displayPregnancy,
+                  value: vm._displayPregnancy(),
                 ),
                 _buildInfoRow(
                   context: context,
                   label: LocaleKeys.profileChronicDiseaseLabel.tr(),
-                  value: vm._displayChronicDisease,
+                  value: vm._displayChronicDisease(),
                 ),
               ],
             ),

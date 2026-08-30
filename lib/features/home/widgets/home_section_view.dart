@@ -7,7 +7,7 @@ class HomeSectionsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final data = vm._data;
+    final data = vm._data();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

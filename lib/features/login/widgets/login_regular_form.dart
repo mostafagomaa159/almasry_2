@@ -7,7 +7,7 @@ class RegularLoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UserModel state = vm._data;
+    final UserModel state = vm._data();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

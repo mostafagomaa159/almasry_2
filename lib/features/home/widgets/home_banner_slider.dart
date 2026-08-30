@@ -7,8 +7,8 @@ class HomeBannerSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final banners = vm._data.banners;
-    final currentIndex = vm._data.currentBannerIndex;
+    final banners = vm._data().banners;
+    final currentIndex = vm._data().currentBannerIndex;
 
     if (banners.isEmpty) return const SizedBox.shrink();
 

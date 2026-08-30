@@ -24,9 +24,9 @@ class ProfileViewModel {
         ProfileData(isGuest: args?.isGuest == true, currentLanguageCode: 'en'),
       );
 
-  ProfileData get _data => _profileCubit.state.data;
+  ProfileData _data() => _profileCubit.state.data;
 
-  ProfileArgs get _currentProfile => _currentProfileCubit.state.data;
+  ProfileArgs _currentProfile() => _currentProfileCubit.state.data;
 
   /// Init
 
@@ -63,7 +63,7 @@ class ProfileViewModel {
     final String savedFirstName = _prefs.getString(PrefKeys.firstName);
     final String savedLastName = _prefs.getString(PrefKeys.lastName);
 
-    final current = _currentProfile;
+    final current = _currentProfile();
 
     _currentProfileCubit.onUpdateData(
       ProfileArgs(
@@ -103,9 +103,9 @@ class ProfileViewModel {
 
   /// Display values
 
-  String get _displayName {
-    final String? firstName = _currentProfile.firstName?.trim();
-    final String? lastName = _currentProfile.lastName?.trim();
+  String _displayName() {
+    final String? firstName = _currentProfile().firstName?.trim();
+    final String? lastName = _currentProfile().lastName?.trim();
 
     final List<String> parts = [
       if (firstName != null && firstName.isNotEmpty) firstName,
@@ -119,48 +119,48 @@ class ProfileViewModel {
     return LocaleKeys.profileNameNotAdded.tr();
   }
 
-  String get _displayEmail {
-    final String? email = _currentProfile.email?.trim();
+  String _displayEmail() {
+    final String? email = _currentProfile().email?.trim();
     if (email != null && email.isNotEmpty) {
       return email;
     }
     return LocaleKeys.profileEmailNotAdded.tr();
   }
 
-  String get _displayPhone {
-    final String? phone = _currentProfile.phone?.trim();
+  String _displayPhone() {
+    final String? phone = _currentProfile().phone?.trim();
     if (phone != null && phone.isNotEmpty) {
       return phone;
     }
     return LocaleKeys.profilePhoneNotAdded.tr();
   }
 
-  String get _displayGender {
-    final String? gender = _currentProfile.gender?.trim();
+  String _displayGender() {
+    final String? gender = _currentProfile().gender?.trim();
     if (gender != null && gender.isNotEmpty) {
       return gender;
     }
     return LocaleKeys.profileNotAdded.tr();
   }
 
-  String get _displayBirthDate {
-    final String? birthDate = _currentProfile.birthDate?.trim();
+  String _displayBirthDate() {
+    final String? birthDate = _currentProfile().birthDate?.trim();
     if (birthDate != null && birthDate.isNotEmpty) {
       return birthDate;
     }
     return LocaleKeys.profileNotAdded.tr();
   }
 
-  String get _displayPregnancy {
-    final String? hasPregnancy = _currentProfile.hasPregnancy?.trim();
+  String _displayPregnancy() {
+    final String? hasPregnancy = _currentProfile().hasPregnancy?.trim();
     if (hasPregnancy != null && hasPregnancy.isNotEmpty) {
       return hasPregnancy;
     }
     return LocaleKeys.profileNotAdded.tr();
   }
 
-  String get _displayChronicDisease {
-    final String? chronicDisease = _currentProfile.chronicDisease?.trim();
+  String _displayChronicDisease() {
+    final String? chronicDisease = _currentProfile().chronicDisease?.trim();
     if (chronicDisease != null && chronicDisease.isNotEmpty) {
       return chronicDisease;
     }
@@ -200,7 +200,7 @@ class ProfileViewModel {
   }
 
   void _openOrders() {
-    final email = _currentProfile.email?.trim();
+    final email = _currentProfile().email?.trim();
 
     if (email == null || email.isEmpty) return;
 
@@ -219,15 +219,15 @@ class ProfileViewModel {
     final Object? result = await _nav.pushNamedAndReturn(
       RouteNames.editProfile,
       extra: EditProfileArgs(
-        firstName: _currentProfile.firstName,
-        lastName: _currentProfile.lastName,
-        email: _currentProfile.email,
-        phone: _currentProfile.phone,
-        gender: _currentProfile.gender,
-        birthDate: _currentProfile.birthDate,
-        hasPregnancy: _currentProfile.hasPregnancy,
-        chronicDisease: _currentProfile.chronicDisease,
-        diseaseType: _currentProfile.diseaseType,
+        firstName: _currentProfile().firstName,
+        lastName: _currentProfile().lastName,
+        email: _currentProfile().email,
+        phone: _currentProfile().phone,
+        gender: _currentProfile().gender,
+        birthDate: _currentProfile().birthDate,
+        hasPregnancy: _currentProfile().hasPregnancy,
+        chronicDisease: _currentProfile().chronicDisease,
+        diseaseType: _currentProfile().diseaseType,
       ),
     );
 

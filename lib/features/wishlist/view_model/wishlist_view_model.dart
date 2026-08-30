@@ -8,9 +8,10 @@ class WishlistViewModel {
 
   /// Variables
 
-  GenericCubit<FavoritesModel> get _favoritesCubit => _favorites.favoritesCubit;
+  late final GenericCubit<FavoritesModel> _favoritesCubit =
+      _favorites.favoritesCubit;
 
-  FavoritesModel get _data => _favorites.favoritesCubit.state.data;
+  FavoritesModel _data() => _favorites.favoritesCubit.state.data;
 
   /// Init
 

@@ -27,13 +27,11 @@ class ProductListViewModel {
   int _currentPage = 1;
   bool _hasMore = true;
 
-  List<ProductModel> get _loadedProducts =>
-      _productsCubit.state.data ?? const [];
+  List<ProductModel> _loadedProducts() => _productsCubit.state.data ?? const [];
 
+  late final GenericCubit<CartData> _cartCubit = _cartService.cartCubit;
 
-  GenericCubit<CartData> get _cartCubit => _cartService.cartCubit;
-
-  GenericCubit<FavoritesModel> get _favoritesCubit =>
+  late final GenericCubit<FavoritesModel> _favoritesCubit =
       _favoritesService.favoritesCubit;
 
   /// Init
@@ -77,14 +75,13 @@ class ProductListViewModel {
     return _quantities[sku] ?? 1;
   }
 
-
   void _incrementQuantity(String sku) {
     final Map<String, int> updated = Map<String, int>.from(_quantities);
 
     updated[sku] = (updated[sku] ?? 1) + 1;
     _quantities = updated;
 
-    _productsCubit.onUpdateData(_loadedProducts);
+    _productsCubit.onUpdateData(_loadedProducts());
   }
 
   void _decrementQuantity(String sku) {
@@ -96,7 +93,7 @@ class ProductListViewModel {
     updated[sku] = currentQuantity - 1;
     _quantities = updated;
 
-    _productsCubit.onUpdateData(_loadedProducts);
+    _productsCubit.onUpdateData(_loadedProducts());
   }
 
   Future<void> _addToCart(String sku) async {
@@ -104,7 +101,7 @@ class ProductListViewModel {
 
     final int quantity = _getProductQuantity(sku);
 
-    if (await _cartService.addProduct(sku: sku, quantity: quantity)) {
+    if (await _cartService.addToCart(sku: sku, quantity: quantity)) {
       _alertService.showSuccess(LocaleKeys.cartAddedSuccess.tr());
 
       return;
@@ -112,9 +109,11 @@ class ProductListViewModel {
 
     final String message = _cartService.data.errorMessage;
 
-    _alertService.showError(
-      message.trim().isEmpty ? LocaleKeys.somethingWentWrong.tr() : message,
-    );
+    // Whatever Magento said, or nothing: an add that bounced to the login
+    // screen leaves no message, and there is none to invent.
+    if (message.trim().isEmpty) return;
+
+    _alertService.showError(message);
   }
 
   Future<void> _toggleFavorite(FavoriteProductModel product) async {
@@ -198,7 +197,7 @@ class ProductListViewModel {
     _isLoadingMore = true;
 
     /// Same list, but the emit still forces the trailing spinner in.
-    _productsCubit.onUpdateData(_loadedProducts);
+    _productsCubit.onUpdateData(_loadedProducts());
 
     final int nextPage = _currentPage + 1;
 
@@ -212,7 +211,7 @@ class ProductListViewModel {
       final ProductListModel result = await _fetchProducts(request);
 
       final List<ProductModel> updatedProducts = [
-        ..._loadedProducts,
+        ..._loadedProducts(),
         ...result.items,
       ];
 
@@ -225,7 +224,7 @@ class ProductListViewModel {
       /// A failed "load more" keeps the pages already on screen.
       _isLoadingMore = false;
 
-      _productsCubit.onUpdateData(_loadedProducts);
+      _productsCubit.onUpdateData(_loadedProducts());
     }
   }
 }

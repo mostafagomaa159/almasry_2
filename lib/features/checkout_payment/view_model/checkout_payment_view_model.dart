@@ -1,50 +1,81 @@
 part of '../checkout_payment_imports.dart';
 
-/// Step two of the checkout: pick a payment method.
-///
-/// The choice is only pushed to Magento when the user moves on, not on every
-/// tap — the review screen reads `cart.selected_payment_method`, so the
-/// mutation has to land before navigating but need not land before that.
+typedef ListPaymentMethods = List<PaymentMethodModel>;
+
 class CheckoutPaymentViewModel {
-  final GraphQLService _graphql = sl<GraphQLService>();
-  final NavigationService _nav = sl<NavigationService>();
-  final AlertService _alert = sl<AlertService>();
-  final CartService _cart = sl<CartService>();
+  final GraphQLService _graphqlService = sl<GraphQLService>();
+  final NavigationService _navService = sl<NavigationService>();
+  final AlertService _alertService = sl<AlertService>();
+  final CartService _cartService = sl<CartService>();
 
-  final GenericCubit<CheckoutPaymentData> _paymentCubit =
-      GenericCubit<CheckoutPaymentData>(const CheckoutPaymentData());
+  final GenericCubit<ListPaymentMethods> _methodsCubit =
+      GenericCubit<ListPaymentMethods>([]);
 
-  GenericCubit<CheckoutPaymentData> get _cubit => _paymentCubit;
+  final GenericCubit<bool> _loadingCubit = GenericCubit<bool>(true);
 
-  GenericCubit<CartData> get _cartCubit => _cart.cartCubit;
+  /// The Magento payment method `code`.
+  final GenericCubit<String> _selectedCodeCubit = GenericCubit<String>('');
 
-  CheckoutPaymentData get _data => _paymentCubit.state.data;
+  /// The sub-option code, for the methods that carry a list of providers.
+  /// Empty for the ones that do not.
+  final GenericCubit<String> _selectedOptionCubit = GenericCubit<String>('');
+
+  /// Which expandable row is open. Independent of the selection: the design
+  /// lets a row be opened to look at its providers without choosing it.
+  final GenericCubit<String> _expandedCodeCubit = GenericCubit<String>('');
+
+  final GenericCubit<bool> _submittingCubit = GenericCubit<bool>(false);
+
+  late final GenericCubit<CartData> _cartCubit = _cartService.cartCubit;
+
+  String _errorMessage = '';
 
   Future<void> _init() => _loadMethods();
 
   void _dispose() {
-    _paymentCubit.close();
+    _methodsCubit.close();
+    _loadingCubit.close();
+    _selectedCodeCubit.close();
+    _selectedOptionCubit.close();
+    _expandedCodeCubit.close();
+    _submittingCubit.close();
   }
 
   void _back() {
-    _nav.pop();
+    _navService.pop();
+  }
+
+  ListPaymentMethods _methods() => _methodsCubit.state.data;
+
+  PaymentMethodModel? _selectedMethod() {
+    for (final PaymentMethodModel method in _methods()) {
+      if (method.code == _selectedCodeCubit.state.data) return method;
+    }
+
+    return null;
+  }
+
+  /// A method with providers is not a complete choice until one is picked, so
+  /// the button stays inert until then.
+  bool _canProceed() {
+    final PaymentMethodModel? method = _selectedMethod();
+
+    if (method == null) return false;
+
+    return !method.hasOptions ||
+        _selectedOptionCubit.state.data.trim().isNotEmpty;
   }
 
   Future<void> _loadMethods() async {
-    _paymentCubit.onUpdateData(
-      _data.copyWith(
-        status: CheckoutPaymentStatus.loading,
-        clearErrorMessage: true,
-      ),
-    );
+    _loadingCubit.onUpdateData(true);
 
     try {
-      final Map<String, dynamic> response = await _graphql.query(
+      final Map<String, dynamic> response = await _graphqlService.query(
         GraphQLDocuments.getAvailablePaymentMethods,
-        variables: {'cartId': _cart.cartId},
+        variables: {'cartId': _cartService.cartId},
       );
 
-      final List<PaymentMethodModel> methods =
+      final ListPaymentMethods methods =
           ((response['cart']
                           as Map<
                             String,
@@ -57,29 +88,26 @@ class CheckoutPaymentViewModel {
               .where((PaymentMethodModel method) => method.code.isNotEmpty)
               .toList();
 
-      _paymentCubit.onUpdateData(
-        _data
-            .copyWith(status: CheckoutPaymentStatus.success, methods: methods)
-            .copyWith(
-              selectedCode: _initialCode(methods),
-              selectedOptionCode: _initialOptionCode(methods),
-            ),
-      );
+      _errorMessage = '';
+
+      _methodsCubit.onUpdateData(methods);
+      _selectedCodeCubit.onUpdateData(_initialCode(methods));
+      _selectedOptionCubit.onUpdateData(_initialOptionCode(methods));
     } catch (error) {
-      _paymentCubit.onUpdateData(
-        _data.copyWith(
-          status: CheckoutPaymentStatus.error,
-          errorMessage: errorMessageFrom(error),
-        ),
-      );
+      _errorMessage = errorMessageFrom(error);
+
+      /// Empty list + a message is what the body reads as "error".
+      _methodsCubit.onUpdateData(const []);
+    } finally {
+      _loadingCubit.onUpdateData(false);
     }
   }
 
   /// Honours whatever the cart already holds — coming back from the review
   /// step should not silently reset the choice — and otherwise preselects the
   /// first method, which is how the design opens.
-  String _initialCode(List<PaymentMethodModel> methods) {
-    final String onCart = _cart.cart.selectedPaymentMethod.code;
+  String _initialCode(ListPaymentMethods methods) {
+    final String onCart = _cartService.cart.selectedPaymentMethod.code;
 
     for (final PaymentMethodModel method in methods) {
       if (method.code == onCart) return onCart;
@@ -88,7 +116,7 @@ class CheckoutPaymentViewModel {
     return methods.isEmpty ? '' : methods.first.code;
   }
 
-  String _initialOptionCode(List<PaymentMethodModel> methods) {
+  String _initialOptionCode(ListPaymentMethods methods) {
     if (methods.isEmpty) return '';
 
     final String code = _initialCode(methods);
@@ -100,7 +128,8 @@ class CheckoutPaymentViewModel {
 
     if (!method.hasOptions) return '';
 
-    final String onCart = _cart.cart.selectedPaymentMethod.selectedOption;
+    final String onCart =
+        _cartService.cart.selectedPaymentMethod.selectedOption;
 
     for (final PaymentOptionModel option in method.options) {
       if (option.code == onCart) return onCart;
@@ -112,72 +141,57 @@ class CheckoutPaymentViewModel {
   /// Picking a method opens it if it has providers, and preselects the first
   /// one so the row is a complete choice on a single tap.
   void _selectMethod(PaymentMethodModel method) {
-    _paymentCubit.onUpdateData(
-      _data.copyWith(
-        selectedCode: method.code,
-        selectedOptionCode: method.hasOptions
-            ? method.options.first.code
-            : null,
-        clearSelectedOption: !method.hasOptions,
-        expandedCode: method.hasOptions ? method.code : null,
-        clearExpanded: !method.hasOptions,
-      ),
+    _selectedCodeCubit.onUpdateData(method.code);
+
+    _selectedOptionCubit.onUpdateData(
+      method.hasOptions ? method.options.first.code : '',
     );
+
+    _expandedCodeCubit.onUpdateData(method.hasOptions ? method.code : '');
   }
 
   void _selectOption(PaymentMethodModel method, PaymentOptionModel option) {
-    _paymentCubit.onUpdateData(
-      _data.copyWith(
-        selectedCode: method.code,
-        selectedOptionCode: option.code,
-        expandedCode: method.code,
-      ),
-    );
+    _selectedCodeCubit.onUpdateData(method.code);
+    _selectedOptionCubit.onUpdateData(option.code);
+    _expandedCodeCubit.onUpdateData(method.code);
   }
 
   void _toggleExpanded(PaymentMethodModel method) {
-    final bool isOpen = _data.expandedCode == method.code;
+    final bool isOpen = _expandedCodeCubit.state.data == method.code;
 
-    _paymentCubit.onUpdateData(
-      _data.copyWith(
-        expandedCode: isOpen ? null : method.code,
-        clearExpanded: isOpen,
-      ),
-    );
+    _expandedCodeCubit.onUpdateData(isOpen ? '' : method.code);
   }
 
   Future<void> _proceed() async {
-    if (_data.isSubmitting) return;
+    if (_submittingCubit.state.data) return;
 
-    if (!_data.canProceed) {
-      _alert.showError(LocaleKeys.checkoutSelectPaymentMethod.tr());
+    if (!_canProceed()) {
+      _alertService.showError(LocaleKeys.checkoutSelectPaymentMethod.tr());
 
       return;
     }
 
-    _paymentCubit.onUpdateData(
-      _data.copyWith(isSubmitting: true, clearErrorMessage: true),
-    );
+    _submittingCubit.onUpdateData(true);
 
     try {
-      await _graphql.mutate(
+      await _graphqlService.mutate(
         GraphQLDocuments.setPaymentMethodOnCart,
         variables: SetPaymentMethodRequest(
-          cartId: _cart.cartId,
-          code: _data.selectedCode,
-          selectedOption: _data.selectedOptionCode,
+          cartId: _cartService.cartId,
+          code: _selectedCodeCubit.state.data,
+          selectedOption: _selectedOptionCubit.state.data,
         ).toVariables(),
       );
 
       // The review screen prints the method off the cart, so it has to see the
       // one that was just set.
-      await _cart.refresh();
+      await _cartService.refresh();
 
-      _nav.pushNamed(RouteNames.checkoutReview);
+      _navService.pushNamed(RouteNames.checkoutReview);
     } catch (error) {
-      _alert.showError(errorMessageFrom(error));
+      _alertService.showError(errorMessageFrom(error));
     } finally {
-      _paymentCubit.onUpdateData(_data.copyWith(isSubmitting: false));
+      _submittingCubit.onUpdateData(false);
     }
   }
 

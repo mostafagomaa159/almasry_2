@@ -12,7 +12,7 @@ class ProductDetailsImageSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> images = vm._galleryImages;
+    final List<String> images = vm._galleryImages();
 
     return Container(
       width: double.infinity,
@@ -110,7 +110,7 @@ class _GalleryThumbnails extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<GenericCubit<int>, GenericState<int>>(
       bloc: vm._selectedImageCubit,
-      builder: (context, state) => _thumbnails(vm._selectedImageIndex),
+      builder: (context, state) => _thumbnails(vm._selectedImageIndex()),
     );
   }
 

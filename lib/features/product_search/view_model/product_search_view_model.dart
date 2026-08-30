@@ -41,15 +41,15 @@ class ProductSearchViewModel {
 
   String _errorMessage = '';
 
-  GenericCubit<FavoritesModel> get _favoritesCubit =>
+  late final GenericCubit<FavoritesModel> _favoritesCubit =
       _favoritesService.favoritesCubit;
 
-  GenericCubit<CartData> get _cartCubit => _cartService.cartCubit;
+  late final GenericCubit<CartData> _cartCubit = _cartService.cartCubit;
 
-  bool get _canFetchMoreItems =>
+  bool _canFetchMoreItems() =>
       _totalItems == null || _allProducts.length < (_totalItems ?? 0);
 
-  bool get _availableOnly => _availableOnlyCubit.state.data;
+  bool _availableOnly() => _availableOnlyCubit.state.data;
 
   void _init() {
     _searchController = TextEditingController();
@@ -78,7 +78,7 @@ class ProductSearchViewModel {
 
     if (position.pixels >= position.maxScrollExtent - 200 &&
         !_isFetching &&
-        _canFetchMoreItems) {
+        _canFetchMoreItems()) {
       unawaited(_productsApi(loadMore: true));
     }
 
@@ -151,13 +151,10 @@ class ProductSearchViewModel {
     );
   }
 
-  Future<void> _addToCart({
-    required String sku,
-    required int quantity,
-  }) async {
+  Future<void> _addToCart({required String sku, required int quantity}) async {
     if (sku.trim().isEmpty) return;
 
-    if (await _cartService.addProduct(sku: sku, quantity: quantity)) {
+    if (await _cartService.addToCart(sku: sku, quantity: quantity)) {
       _alertService.showSuccess(LocaleKeys.cartAddedSuccess.tr());
 
       return;
@@ -165,9 +162,11 @@ class ProductSearchViewModel {
 
     final String message = _cartService.data.errorMessage;
 
-    _alertService.showError(
-      message.trim().isEmpty ? LocaleKeys.somethingWentWrong.tr() : message,
-    );
+    // Whatever Magento said, or nothing: an add that bounced to the login
+    // screen leaves no message, and there is none to invent.
+    if (message.trim().isEmpty) return;
+
+    _alertService.showError(message);
   }
 
   void _onQueryChanged(String value) {
@@ -176,7 +175,6 @@ class ProductSearchViewModel {
     final String query = value.trim();
 
     if (query.length < _minQueryLength) {
-
       _requestId++;
 
       _searchTerm = '';
@@ -216,7 +214,7 @@ class ProductSearchViewModel {
   }
 
   void _toggleAvailableOnly() {
-    _availableOnlyCubit.onUpdateData(!_availableOnly);
+    _availableOnlyCubit.onUpdateData(!_availableOnly());
 
     if (_searchTerm.length < _minQueryLength) return;
 
@@ -382,7 +380,7 @@ class ProductSearchViewModel {
       searchText: query,
       pageSize: pageSize ?? _pageSize,
       currentPage: page,
-      availableOnly: _availableOnly,
+      availableOnly: _availableOnly(),
     );
 
     final Map<String, dynamic> data = await _graphqlService.query(

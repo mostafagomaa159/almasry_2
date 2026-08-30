@@ -84,7 +84,7 @@ class _AddToBasketRow extends StatelessWidget {
               return SizedBox(
                 height: 58.h,
                 child: ElevatedButton(
-                  onPressed: isAdding ? null : vm._addToBasket,
+                  onPressed: isAdding ? null : vm._addToCart,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryRed,
                     foregroundColor: AppColors.white,

@@ -21,11 +21,12 @@ class HomeViewModel {
   Timer? _bannerTimer;
   int _lastBannersLength = 0;
 
-  HomeModel get _data => _homeCubit.state.data;
+  HomeModel _data() => _homeCubit.state.data;
 
-  GenericCubit<FavoritesModel> get _favoritesCubit => _favorites.favoritesCubit;
+  late final GenericCubit<FavoritesModel> _favoritesCubit =
+      _favorites.favoritesCubit;
 
-  GenericCubit<CartData> get _cartCubit => _cartService.cartCubit;
+  late final GenericCubit<CartData> _cartCubit = _cartService.cartCubit;
 
   HomeViewModel() {
     _bannerController = PageController();
@@ -35,7 +36,6 @@ class HomeViewModel {
 
   Future<void> _init() async {
     _push.dispatchPendingDeepLink();
-
 
     await Future.wait([_favorites.loadFavorites(), _getHomeData()]);
   }
@@ -118,11 +118,10 @@ class HomeViewModel {
     await _favorites.toggleFavorite(product);
   }
 
-
   Future<void> _addToCart({required String sku, required int quantity}) async {
     if (sku.trim().isEmpty) return;
 
-    if (await _cartService.addProduct(sku: sku, quantity: quantity)) {
+    if (await _cartService.addToCart(sku: sku, quantity: quantity)) {
       _alertService.showSuccess(LocaleKeys.cartAddedSuccess.tr());
 
       return;
@@ -130,9 +129,11 @@ class HomeViewModel {
 
     final String message = _cartService.data.errorMessage;
 
-    _alertService.showError(
-      message.trim().isEmpty ? LocaleKeys.somethingWentWrong.tr() : message,
-    );
+    // Whatever Magento said, or nothing: an add that bounced to the login
+    // screen leaves no message, and there is none to invent.
+    if (message.trim().isEmpty) return;
+
+    _alertService.showError(message);
   }
 
   /// Api
@@ -192,7 +193,6 @@ class HomeViewModel {
     }
   }
 
-
   Future<void> _getHomeData() async {
     final current = _homeCubit.state.data;
 
@@ -246,7 +246,6 @@ class HomeViewModel {
   }
 
   Future<void> _getSectionProductsFor(_HomeStructure structure) async {
-
     final List<List<ProductModel>> sections = await Future.wait([
       _getProductsForBlock(structure.bestSellerBlock),
       _getProductsForBlock(structure.momBabyBlock),

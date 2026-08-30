@@ -8,19 +8,19 @@ class CheckoutShippingBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // The methods cubit is the screen-level signal: every failure emits on it,
+    // so this builder is where the error view takes over.
     return BlocBuilder<
-      GenericCubit<CheckoutShippingData>,
-      GenericState<CheckoutShippingData>
+      GenericCubit<ListShippingMethods>,
+      GenericState<ListShippingMethods>
     >(
-      bloc: vm._cubit,
-      builder: (BuildContext context, GenericState<CheckoutShippingData> state) {
-        final CheckoutShippingData data = state.data;
-
-        // A failed address apply takes the whole step: there is nothing valid
-        // to pick a carrier from until it succeeds.
-        if (data.status == CheckoutShippingStatus.error) {
+      bloc: vm._methodsCubit,
+      builder: (BuildContext context, GenericState<ListShippingMethods> state) {
+        // A failed address apply takes the whole step: there is nothing
+        // valid to pick a carrier from until it succeeds.
+        if (vm._errorMessage.isNotEmpty) {
           return CustomAppErrorView(
-            message: data.errorMessage,
+            message: vm._errorMessage,
             onRetry: vm._retry,
           );
         }
@@ -35,12 +35,12 @@ class CheckoutShippingBody extends StatelessWidget {
 
                   28.verticalSpace,
 
-                  CheckoutShippingMethodsSection(vm: vm, data: data),
+                  CheckoutShippingMethodsSection(vm: vm, methods: state.data),
                 ],
               ),
             ),
 
-            CheckoutShippingSummary(vm: vm, data: data),
+            CheckoutShippingSummary(vm: vm),
           ],
         );
       },

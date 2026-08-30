@@ -10,7 +10,7 @@ class OrderDetailsViewModel {
   final GenericCubit<OrderDetailsModel> _orderDetailsCubit =
       GenericCubit<OrderDetailsModel>(const OrderDetailsModel());
 
-  OrderDetailsModel get _data => _orderDetailsCubit.state.data;
+  OrderDetailsModel _data() => _orderDetailsCubit.state.data;
 
   /// Init
 

@@ -9,7 +9,7 @@ class OrderConfirmedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final OrderConfirmedArgs data = vm._data;
+    final OrderConfirmedArgs data = vm._data();
 
     return Container(
       width: double.infinity,

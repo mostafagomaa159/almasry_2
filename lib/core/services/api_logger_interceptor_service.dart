@@ -1,7 +1,6 @@
 import 'package:almasry_2/core/services/network_logger_service.dart';
 import 'package:dio/dio.dart';
 
-
 class ApiLoggerInterceptorService extends Interceptor {
   const ApiLoggerInterceptorService({
     this.logger = const NetworkLoggerService(),
@@ -15,10 +14,7 @@ class ApiLoggerInterceptorService extends Interceptor {
   static const String _startKey = 'api_logger_start';
 
   @override
-  void onRequest(
-    RequestOptions options,
-    RequestInterceptorHandler handler,
-  ) {
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     options.extra[_startKey] = DateTime.now().millisecondsSinceEpoch;
 
     logger.open('REQUEST ${options.method} ${options.uri}');

@@ -36,7 +36,7 @@ class _ProfileViewState extends State<ProfileView> {
       value: vm._profileCubit,
       child: BlocBuilder<GenericCubit<ProfileData>, GenericState<ProfileData>>(
         builder: (context, state) {
-          final data = vm._data;
+          final data = vm._data();
 
           if (data.isGuest) {
             return GuestProfileView(

@@ -22,23 +22,22 @@ class CategoriesViewModel {
 
   /// Getters
 
-  List<CategoryModel> get _categories =>
-      _categoriesCubit.state.data ?? const [];
+  List<CategoryModel> _categories() => _categoriesCubit.state.data ?? const [];
 
-  CategoryModel? get _selectedParentCategory {
-    if (_categories.isEmpty) return null;
+  CategoryModel? _selectedParentCategory() {
+    if (_categories().isEmpty) return null;
 
     if (_selectedParentIndex < 0 ||
-        _selectedParentIndex >= _categories.length) {
-      return _categories.first;
+        _selectedParentIndex >= _categories().length) {
+      return _categories().first;
     }
 
-    return _categories[_selectedParentIndex];
+    return _categories()[_selectedParentIndex];
   }
 
-  List<CategoryModel> get _filteredChildren {
+  List<CategoryModel> _filteredChildren() {
     final List<CategoryModel> children =
-        _selectedParentCategory?.childrenData ?? <CategoryModel>[];
+        _selectedParentCategory()?.childrenData ?? <CategoryModel>[];
 
     final String query = _searchQuery.trim().toLowerCase();
 
@@ -69,20 +68,20 @@ class CategoriesViewModel {
     _searchQuery = '';
     _searchController.clear();
 
-    _categoriesCubit.onUpdateData(_categories);
+    _categoriesCubit.onUpdateData(_categories());
   }
 
   void _updateSearchQuery(String value) {
     _searchQuery = value;
 
-    _categoriesCubit.onUpdateData(_categories);
+    _categoriesCubit.onUpdateData(_categories());
   }
 
   void _clearSearch() {
     _searchQuery = '';
     _searchController.clear();
 
-    _categoriesCubit.onUpdateData(_categories);
+    _categoriesCubit.onUpdateData(_categories());
   }
 
   Future<void> _retry() async {

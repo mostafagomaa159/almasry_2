@@ -15,7 +15,7 @@ class OrdersViewModel {
   bool _isFetching = false;
   int? _totalItems;
 
-  bool get canFetchMoreItems =>
+  bool canFetchMoreItems() =>
       _totalItems == null ||
       _ordersCubit.state.data.length < (_totalItems ?? 0);
 
@@ -55,7 +55,7 @@ class OrdersViewModel {
   /// Api
 
   Future<void> _ordersApi(String email) async {
-    if (_isFetching || !canFetchMoreItems) return;
+    if (_isFetching || !canFetchMoreItems()) return;
 
     _isFetching = true;
 

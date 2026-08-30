@@ -9,7 +9,11 @@ import 'package:almasry_2/core/models/request/login/forget_password_model.dart';
 import 'package:almasry_2/core/models/response/login/activate_account_model.dart';
 import 'package:almasry_2/core/models/response/login/register_customer_otp_model.dart';
 import 'package:almasry_2/core/models/response/login/user_model.dart';
+import 'package:almasry_2/core/constants/pref_keys.dart';
 import 'package:almasry_2/core/services/api_services.dart';
+import 'package:almasry_2/core/services/app_startup_service.dart';
+import 'package:almasry_2/core/services/cart_service.dart';
+import 'package:almasry_2/core/services/shared_prefs_services.dart';
 import 'package:dio/dio.dart';
 import 'package:almasry_2/core/utils/error_message.dart';
 import 'package:almasry_2/core/constants/app_durations.dart';
@@ -18,6 +22,8 @@ class AuthSessionService {
   /// Services
 
   final ApiService _apiService = sl<ApiService>();
+  final SharedPrefsServices _prefs = sl<SharedPrefsServices>();
+  final AppStartupService _startup = sl<AppStartupService>();
 
   /// Variables
 
@@ -327,6 +333,39 @@ class AuthSessionService {
     return startPhoneAuth(phone);
   }
 
+  /// A verified OTP is a login, so it has to leave the same trace the email
+  /// path does — before this, the phone flow marked nothing and the app still
+  /// considered the user a guest on the next screen.
+  ///
+  /// The email is written when the reply carries one: the checkout sends it to
+  /// Magento with the cart, and a phone-registered customer never types it.
+  Future<void> _saveOtpSession({
+    required String phone,
+    required RegisterCustomerOtpModel response,
+  }) async {
+    await _prefs.setString(PrefKeys.phone, phone);
+
+    final String email = (response.email ?? '').trim();
+
+    if (email.isNotEmpty) await _prefs.setString(PrefKeys.email, email);
+
+    // The token is the point of this reply: from here every GraphQL call runs
+    // as the customer, which is what makes the cart theirs and lets
+    // `placeOrder` file the order under the account.
+    final String token = (response.token ?? '').trim();
+
+    if (token.isNotEmpty) {
+      await _prefs.setString(PrefKeys.customerToken, token);
+
+      // The reply also carries `cart_id`, which this ignores on purpose: it is
+      // undocumented whether that id is the masked one GraphQL wants, and
+      // `customerCart` answers the same question authoritatively.
+      await sl<CartService>().adoptCustomerCart();
+    }
+
+    await _startup.saveLoggedIn();
+  }
+
   Future<bool> verifyOtpCode(String otp) async {
     final trimmedOtp = otp.trim();
 
@@ -410,6 +449,8 @@ class AuthSessionService {
         );
         return false;
       }
+
+      await _saveOtpSession(phone: phone, response: loginResponse);
 
       authCubit.onUpdateData(
         authCubit.state.data.copyWith(

@@ -1,23 +1,27 @@
 part of '../address_form_imports.dart';
 
-/// Drives the add / edit address screen: the controllers, the governorate
-/// list, validation, and the write into `AddressBookService`.
-///
-/// The book is local — Magento's customer-address API is not part of this
-/// integration — so saving never leaves the device. The one thing that *is*
-/// fetched is the governorate list, because Magento will not accept an address
-/// without a `region_id` it recognises.
+typedef ListRegions = List<RegionModel>;
+
 class AddressFormViewModel {
-  final AddressBookService _addressBook = sl<AddressBookService>();
-  final GraphQLService _graphql = sl<GraphQLService>();
-  final CacheManagerService _cache = sl<CacheManagerService>();
+  final AddressBookService _addressBookService = sl<AddressBookService>();
+  final GraphQLService _graphqlService = sl<GraphQLService>();
+  final CacheManagerService _cacheService = sl<CacheManagerService>();
   final NavigationService _nav = sl<NavigationService>();
   final AlertService _alert = sl<AlertService>();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final GenericCubit<AddressFormData> _formCubit =
-      GenericCubit<AddressFormData>(const AddressFormData());
+  /// The governorate list is the only thing on this form that has to be
+  /// fetched, so these three describe that fetch alone. The text fields need
+  /// no state — their controllers hold it.
+  final GenericCubit<ListRegions> _regionsCubit = GenericCubit<ListRegions>([]);
+  final GenericCubit<bool> _regionsLoadingCubit = GenericCubit<bool>(true);
+
+  /// Magento's `region_id`. Null until the user picks, which is what the
+  /// dropdown's validator rejects.
+  final GenericCubit<int?> _selectedRegionCubit = GenericCubit<int?>(null);
+
+  final GenericCubit<bool> _savingCubit = GenericCubit<bool>(false);
 
   late final TextEditingController _firstNameController;
   late final TextEditingController _lastNameController;
@@ -30,14 +34,11 @@ class AddressFormViewModel {
 
   AddressModel? _editing;
 
-  /// The regions fetch is kicked off from `didChangeDependencies` — reading the
-  /// locale needs a settled `BuildContext` — so it needs its own guard against
-  /// running more than once.
   bool _regionsRequested = false;
 
-  AddressFormData get _data => _formCubit.state.data;
+  String _errorMessage = '';
 
-  bool get _isEditing => _editing != null;
+  bool _isEditing() => _editing != null;
 
   void _init({required AddressFormArgs? args}) {
     _editing = args?.address;
@@ -64,7 +65,10 @@ class AddressFormViewModel {
     _apartmentController.dispose();
     _markController.dispose();
 
-    _formCubit.close();
+    _regionsCubit.close();
+    _regionsLoadingCubit.close();
+    _selectedRegionCubit.close();
+    _savingCubit.close();
   }
 
   void _back() {
@@ -72,9 +76,19 @@ class AddressFormViewModel {
   }
 
   String _title() {
-    return _isEditing
+    return _isEditing()
         ? LocaleKeys.addressFormEditTitle.tr()
         : LocaleKeys.addressFormTitle.tr();
+  }
+
+  ListRegions _regions() => _regionsCubit.state.data;
+
+  RegionModel? _selectedRegion() {
+    for (final RegionModel region in _regions()) {
+      if (region.id == _selectedRegionCubit.state.data) return region;
+    }
+
+    return null;
   }
 
   /// Cache-first so the dropdown is populated on the frame the screen opens;
@@ -87,7 +101,7 @@ class AddressFormViewModel {
   }
 
   Future<void> _regionsApi(String languageCode) async {
-    final List<RegionModel> cached = await _cache.getCachedData<RegionModel>(
+    final ListRegions cached = await _cacheService.getCachedData<RegionModel>(
       key: PrefKeys.cachedRegions(languageCode),
       fromJson: RegionModel.fromJson,
     );
@@ -95,7 +109,7 @@ class AddressFormViewModel {
     if (cached.isNotEmpty) _emitRegions(cached);
 
     try {
-      final Map<String, dynamic> response = await _graphql.query(
+      final Map<String, dynamic> response = await _graphqlService.query(
         GraphQLDocuments.getCountryRegions,
         variables: {'countryCode': AddressModel.countryIsoCode},
         // The names come back in the store view's language: the default view is
@@ -103,7 +117,7 @@ class AddressFormViewModel {
         headers: languageCode == 'ar' ? const {} : const {'store': 'default'},
       );
 
-      final List<RegionModel> regions = RegionModel.listFrom(response);
+      final ListRegions regions = RegionModel.listFrom(response);
 
       if (regions.isEmpty) {
         if (cached.isEmpty) _failRegions(LocaleKeys.somethingWentWrong.tr());
@@ -113,7 +127,7 @@ class AddressFormViewModel {
 
       _emitRegions(regions);
 
-      await _cache.cacheData<RegionModel>(
+      await _cacheService.cacheData<RegionModel>(
         data: regions,
         key: PrefKeys.cachedRegions(languageCode),
         toJson: (RegionModel region) => region.toJson(),
@@ -122,25 +136,27 @@ class AddressFormViewModel {
       // A stale list is still a usable one, so a failed refresh behind cached
       // regions is not worth reporting.
       if (cached.isEmpty) _failRegions(errorMessageFrom(error));
+    } finally {
+      if (!_regionsLoadingCubit.isClosed) {
+        _regionsLoadingCubit.onUpdateData(false);
+      }
     }
   }
 
-  void _emitRegions(List<RegionModel> regions) {
-    _formCubit.onUpdateData(
-      _data.copyWith(
-        status: RegionsStatus.success,
-        regions: regions,
-        selectedRegionId: _resolveSelectedId(regions),
-        clearErrorMessage: true,
-      ),
-    );
+  void _emitRegions(ListRegions regions) {
+    if (_regionsCubit.isClosed) return;
+
+    _errorMessage = '';
+
+    _regionsCubit.onUpdateData(regions);
+    _selectedRegionCubit.onUpdateData(_resolveSelectedId(regions));
   }
 
   /// Keeps whatever is already picked, then falls back to matching the address
   /// being edited — by id first, then by code or name, so an address saved
   /// before the dropdown existed still reopens on the right governorate.
-  int? _resolveSelectedId(List<RegionModel> regions) {
-    final int? current = _data.selectedRegionId;
+  int? _resolveSelectedId(ListRegions regions) {
+    final int? current = _selectedRegionCubit.state.data;
 
     if (current != null && regions.any((RegionModel r) => r.id == current)) {
       return current;
@@ -165,27 +181,26 @@ class AddressFormViewModel {
     return null;
   }
 
+  /// An empty list plus a message is what the field reads as "error".
   void _failRegions(String message) {
-    _formCubit.onUpdateData(
-      _data.copyWith(status: RegionsStatus.error, errorMessage: message),
-    );
+    if (_regionsCubit.isClosed) return;
+
+    _errorMessage = message;
+
+    _regionsCubit.onUpdateData(const []);
   }
 
   Future<void> _retryRegions(BuildContext context) async {
-    _formCubit.onUpdateData(
-      _data.copyWith(status: RegionsStatus.loading, clearErrorMessage: true),
-    );
+    _errorMessage = '';
+
+    _regionsLoadingCubit.onUpdateData(true);
+    _regionsCubit.onUpdateData(const []);
 
     await _regionsApi(context.locale.languageCode);
   }
 
   void _selectRegion(int? regionId) {
-    _formCubit.onUpdateData(
-      _data.copyWith(
-        selectedRegionId: regionId,
-        clearSelectedRegion: regionId == null,
-      ),
-    );
+    _selectedRegionCubit.onUpdateData(regionId);
   }
 
   String? _validateName(String? value) => Validators.validateName(value ?? '');
@@ -202,20 +217,22 @@ class AddressFormViewModel {
   }
 
   Future<void> _save() async {
-    if (_data.isSaving) return;
+    if (_savingCubit.state.data) return;
 
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    _formCubit.onUpdateData(_data.copyWith(isSaving: true));
+    _savingCubit.onUpdateData(true);
 
     try {
-      await _addressBook.save(_buildAddress());
+      await _addressBookService.save(_buildAddress());
 
       _alert.showSuccess(LocaleKeys.addressFormSaved.tr());
 
       _nav.pop();
     } finally {
-      _formCubit.onUpdateData(_data.copyWith(isSaving: false));
+      // The pop above disposes this ViewModel, so the cubit may already be
+      // closed by the time the save settles.
+      if (!_savingCubit.isClosed) _savingCubit.onUpdateData(false);
     }
   }
 
@@ -223,7 +240,7 @@ class AddressFormViewModel {
   /// timestamp id, which is enough to be unique in a device-local list.
   AddressModel _buildAddress() {
     final AddressModel? existing = _editing;
-    final RegionModel? region = _data.selectedRegion;
+    final RegionModel? region = _selectedRegion();
 
     return AddressModel(
       id: existing?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),

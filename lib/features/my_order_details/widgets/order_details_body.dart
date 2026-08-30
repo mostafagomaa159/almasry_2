@@ -13,7 +13,7 @@ class OrderDetailsBody extends StatelessWidget {
     >(
       bloc: vm._orderDetailsCubit,
       builder: (context, state) {
-        final data = vm._data;
+        final data = vm._data();
 
         if (data.isLoading && data.order == null) {
           return const Center(child: CircularProgressIndicator());

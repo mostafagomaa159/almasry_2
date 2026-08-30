@@ -4,13 +4,8 @@ part of '../checkout_payment_imports.dart';
 /// this point in the flow already carries the shipping quote.
 class CheckoutPaymentSummary extends StatelessWidget {
   final CheckoutPaymentViewModel vm;
-  final CheckoutPaymentData data;
 
-  const CheckoutPaymentSummary({
-    super.key,
-    required this.vm,
-    required this.data,
-  });
+  const CheckoutPaymentSummary({super.key, required this.vm});
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +14,19 @@ class CheckoutPaymentSummary extends StatelessWidget {
       builder: (BuildContext context, GenericState<CartData> state) {
         final CartModel cart = state.data.cart;
 
-        return CartTotalsCard(
-          subtotal: cart.subtotal,
-          shippingCost: cart.shippingCost,
-          discount: cart.discountTotal,
-          grandTotal: cart.grandTotal,
-          actionTitle: LocaleKeys.checkoutOrderReview.tr(),
-          onAction: vm._proceed,
-          isLoading: data.isSubmitting,
+        return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+          bloc: vm._submittingCubit,
+          builder: (BuildContext context, GenericState<bool> submittingState) {
+            return CartTotalsCard(
+              subtotal: cart.subtotal,
+              shippingCost: cart.shippingCost,
+              discount: cart.discountTotal,
+              grandTotal: cart.grandTotal,
+              actionTitle: LocaleKeys.checkoutOrderReview.tr(),
+              onAction: vm._proceed,
+              isLoading: submittingState.data,
+            );
+          },
         );
       },
     );

@@ -138,6 +138,9 @@ class LocaleKeys {
 
   // Common
   static const String retry = 'retry';
+  static const String cancel = 'cancel';
+  static const String confirm = 'confirm';
+  static const String signInToContinue = 'sign_in_to_continue';
   static const String comingSoon = 'coming_soon';
   static const String somethingWentWrong = 'something_went_wrong';
   static const String serverError = 'server_error';
@@ -328,7 +331,6 @@ class LocaleKeys {
   static const String checkoutTax = 'checkout_tax';
   static const String checkoutPaymentMethod = 'checkout_payment_method';
   static const String checkoutDeleteAddress = 'checkout_delete_address';
-  static const String checkoutEmailMissing = 'checkout_email_missing';
   static const String checkoutPaymentCodHint = 'checkout_payment_cod_hint';
   static const String checkoutPaymentLinkHint = 'checkout_payment_link_hint';
 

@@ -20,9 +20,9 @@ class LoginViewModel {
 
   final GenericCubit<bool> _isRegularLoginCubit = GenericCubit<bool>(true);
 
-  GenericCubit<UserModel> get _authCubit => _auth.authCubit;
+  late final GenericCubit<UserModel> _authCubit = _auth.authCubit;
 
-  UserModel get _data => _auth.authCubit.state.data;
+  UserModel _data() => _auth.authCubit.state.data;
 
   /// Init
 
@@ -138,7 +138,7 @@ class LoginViewModel {
 
     if (!context.mounted || !success) return;
 
-    final verificationPhone = _data.verificationPhone ?? phone;
+    final verificationPhone = _data().verificationPhone ?? phone;
 
     _nav.pushNamed(
       RouteNames.otpVerification,

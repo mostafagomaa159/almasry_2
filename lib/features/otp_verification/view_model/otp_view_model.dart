@@ -14,14 +14,15 @@ class OtpViewModel {
 
   final GenericCubit<String> _otpTextCubit = GenericCubit<String>('');
 
-  GenericCubit<UserModel> get _authCubit => _auth.authCubit;
+  late final GenericCubit<UserModel> _authCubit = _auth.authCubit;
 
-  UserModel get _data => _auth.authCubit.state.data;
+  UserModel _data() => _auth.authCubit.state.data;
 
-  String get _maskedPhone => _maskPhone(_phone);
+  String _maskedPhone() => _maskPhone(_phone);
 
-  bool get _isVerifyEnabled =>
-      _otpController.text.trim().length == 5 && !_data.isOtpVerificationLoading;
+  bool _isVerifyEnabled() =>
+      _otpController.text.trim().length == 5 &&
+      !_data().isOtpVerificationLoading;
 
   /// Init
 

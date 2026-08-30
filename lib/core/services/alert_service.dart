@@ -82,6 +82,75 @@ class AlertService {
     );
   }
 
+  /// A notification that asks instead of telling. It carries its own two
+  /// actions and waits — no timeout, because a prompt that vanished on its own
+  /// would be answering for the user. Cancel closes it and reports nothing;
+  /// only [onConfirm] reaches the caller.
+  CancelFunc showConfirmation({
+    required String title,
+    required String confirmTitle,
+    required String cancelTitle,
+    required VoidCallback onConfirm,
+  }) {
+    return BotToast.showNotification(
+      onlyOne: true,
+      title: (_) => Text(
+        title,
+        textAlign: TextAlign.start,
+        style: TextStyle(
+          color: AppColors.darkBlue,
+          fontSize: 15.sp,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+      subtitle: (cancel) => Padding(
+        padding: EdgeInsets.only(top: 4.h),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton(
+              onPressed: cancel,
+              child: Text(
+                cancelTitle,
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+
+            8.horizontalSpace,
+
+            TextButton(
+              onPressed: () {
+                cancel();
+
+                onConfirm();
+              },
+              child: Text(
+                confirmTitle,
+                style: TextStyle(
+                  color: AppColors.primaryRed,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      backgroundColor: AppColors.white,
+      backButtonBehavior: BackButtonBehavior.close,
+      animationDuration: AppDurations.alertSlide,
+      animationReverseDuration: AppDurations.alertSlide,
+      duration: null,
+      borderRadius: 12.r,
+      margin: EdgeInsets.all(5.r),
+      contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
+    );
+  }
+
   CancelFunc showSuccess(String title) =>
       showAlert(title: title, isSuccess: true);
 

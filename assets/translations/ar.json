@@ -124,6 +124,9 @@
   "product_details_description_value": "95٪ قطن، 5٪ سباندكس، المميزات: كاجوال، كم قصير، طباعة حروف، رقبة على شكل V، قماش ناعم وبه بعض المرونة. مناسب للاستخدام اليومي والعمل والشاطئ والمدرسة والمنزل والشارع. مناسب لفصول الربيع والصيف والخريف والشتاء.",
 
   "retry": "إعادة المحاولة",
+  "cancel": "إلغاء",
+  "confirm": "تأكيد",
+  "sign_in_to_continue": "سجّل الدخول للمتابعة",
   "coming_soon": "قريبًا",
   "something_went_wrong": "حدث خطأ غير متوقع",
   "server_error": "خطأ في الخادم",
@@ -282,7 +285,6 @@
   "checkout_tax": "الضريبة",
   "checkout_payment_method": "طريقة الدفع",
   "checkout_delete_address": "حذف العنوان",
-  "checkout_email_missing": "أضف بريدك الإلكتروني في ملفك الشخصي لإتمام الطلب",
   "checkout_payment_cod_hint": "الدفع نقدًا عند استلام الطلب",
   "checkout_payment_link_hint": "سيصلك رابط الدفع فورًا على واتساب.",
 

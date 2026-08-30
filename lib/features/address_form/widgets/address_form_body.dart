@@ -117,23 +117,19 @@ class AddressFormBody extends StatelessWidget {
 
           40.verticalSpace,
 
-          BlocBuilder<
-            GenericCubit<AddressFormData>,
-            GenericState<AddressFormData>
-          >(
-            bloc: vm._formCubit,
-            builder:
-                (BuildContext context, GenericState<AddressFormData> state) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24.w),
-                    child: CustomAppButton(
-                      title: LocaleKeys.addressFormSave.tr(),
-                      onPressed: vm._save,
-                      isLoading: state.data.isSaving,
-                      borderRadius: 12,
-                    ),
-                  );
-                },
+          BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+            bloc: vm._savingCubit,
+            builder: (BuildContext context, GenericState<bool> state) {
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                child: CustomAppButton(
+                  title: LocaleKeys.addressFormSave.tr(),
+                  onPressed: vm._save,
+                  isLoading: state.data,
+                  borderRadius: 12,
+                ),
+              );
+            },
           ),
         ],
       ),

@@ -7,7 +7,7 @@ class AppDrawer extends StatelessWidget {
   static const Color _skinAnalysisBgColor = AppColors.redTintCard;
   static const Color _socialIconColor = AppColors.textMuted;
 
-  NavigationService get _nav => sl<NavigationService>();
+  NavigationService _nav() => sl<NavigationService>();
 
   void _close(BuildContext context) {
     Scaffold.of(context).closeDrawer();
@@ -15,17 +15,17 @@ class AppDrawer extends StatelessWidget {
 
   void _openBrands(BuildContext context) {
     _close(context);
-    _nav.pushNamed(RouteNames.brands);
+    _nav().pushNamed(RouteNames.brands);
   }
 
   void _openContactUs(BuildContext context) {
     _close(context);
-    _nav.pushNamed(RouteNames.contactUs);
+    _nav().pushNamed(RouteNames.contactUs);
   }
 
   void _openComingSoon(BuildContext context, String title) {
     _close(context);
-    _nav.pushNamed(RouteNames.homeComingSoon, extra: title);
+    _nav().pushNamed(RouteNames.homeComingSoon, extra: title);
   }
 
   void _openSocialLink(String url) {
