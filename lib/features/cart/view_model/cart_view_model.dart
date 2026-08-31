@@ -1,19 +1,16 @@
 part of '../cart_imports.dart';
 
 class CartViewModel {
-  final CartService _cartService = sl<CartService>();
-  final NavigationService _navService = sl<NavigationService>();
-  final AlertService _alertService = sl<AlertService>();
+  final _cartService = sl<CartService>();
+  final _navService = sl<NavigationService>();
+  final _alertService = sl<AlertService>();
 
-  late final GenericCubit<CartData> _cartCubit = _cartService.cartCubit;
-
-  /// The payload, on the other hand, has to be read on every call — it is
-  /// whatever the service last emitted.
-  CartData _data() => _cartService.data;
+  late final GenericCubit<CartModel> _cartCubit = _cartService.cartCubit;
+  late final GenericCubit<bool> _loadingCubit = _cartService.loadingCubit;
+  late final GenericCubit<Set<int>> _busyItemsCubit =
+      _cartService.busyItemsCubit;
 
   Future<void> _init() => _cartService.loadCart();
-
-  void _dispose() {}
 
   Future<void> _refresh() => _cartService.refresh();
 
@@ -37,7 +34,7 @@ class CartViewModel {
   }
 
   void _buy() {
-    if (_data().cart.isEmpty) return;
+    if (_cartService.cart.isEmpty) return;
 
     _navService.pushNamed(RouteNames.checkoutShipping);
   }

@@ -26,7 +26,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<GenericCubit<FavoritesModel>>.value(
+    return BlocProvider<GenericCubit<ListFavorites>>.value(
       value: vm._favoritesCubit,
       child: Container(
         color: AppColors.surfaceScaffold,

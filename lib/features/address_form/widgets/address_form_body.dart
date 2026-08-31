@@ -1,7 +1,5 @@
 part of '../address_form_imports.dart';
 
-/// The scrolling form: names, phone, location, unit details, governorate, and
-/// the save button.
 class AddressFormBody extends StatelessWidget {
   final AddressFormViewModel vm;
 

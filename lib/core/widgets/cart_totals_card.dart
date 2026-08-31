@@ -5,12 +5,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// The grey totals panel pinned to the bottom of the cart and of all three
-/// checkout steps, with that screen's primary action inside it.
-///
-/// A null [shippingCost] drops the shipping row entirely — the cart quotes no
-/// shipping until a method has been picked, and showing "L.E 0.00" there would
-/// read as free delivery.
 class CartTotalsCard extends StatelessWidget {
   final double subtotal;
   final double? shippingCost;

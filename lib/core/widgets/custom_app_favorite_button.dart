@@ -2,12 +2,6 @@ import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// The heart that sits over a product image, and the filled circle the wishlist
-/// uses to drop an item.
-///
-/// It only draws [isFavorite] — subscribing to `FavoritesService` stays with the
-/// caller, since some screens read the global cubit and others already have the
-/// flag in hand. A null [onTap] renders the button as a static badge.
 class CustomAppFavoriteButton extends StatelessWidget {
   final bool isFavorite;
   final VoidCallback? onTap;
@@ -16,21 +10,16 @@ class CustomAppFavoriteButton extends StatelessWidget {
   final double iconSize;
   final Color backgroundColor;
 
-  /// `null` draws no border.
   final Color? borderColor;
 
-  /// Ignored when [isCircle] is set.
   final double borderRadius;
   final bool isCircle;
 
   final Color activeColor;
   final Color inactiveColor;
 
-  /// Uses `favorite_border_rounded` for the unset state instead of the squarer
-  /// `favorite_border`. Both are in the design, on different cards.
   final bool roundedOutline;
 
-  /// `null` draws no shadow.
   final double? shadowOpacity;
   final double shadowBlur;
   final double shadowOffsetY;

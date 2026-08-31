@@ -1,4 +1,3 @@
-/// One entry of `reviews.items`.
 class ProductReviewModel {
   final String summary;
   final String text;

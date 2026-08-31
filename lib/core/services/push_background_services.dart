@@ -3,7 +3,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:almasry_2/firebase_options.dart';
 
-
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

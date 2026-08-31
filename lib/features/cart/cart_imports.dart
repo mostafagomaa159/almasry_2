@@ -3,7 +3,6 @@ import 'package:almasry_2/core/base/bloc/generic_state.dart';
 import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:almasry_2/core/localization/locale_keys.dart';
-import 'package:almasry_2/core/models/response/cart/cart_data_model.dart';
 import 'package:almasry_2/core/models/response/cart/cart_item_model.dart';
 import 'package:almasry_2/core/models/response/cart/cart_model.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';

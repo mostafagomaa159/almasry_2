@@ -1,52 +1,65 @@
 part of '../home_imports.dart';
 
 class HomeViewModel {
-  /// Services
-
-  final ApiService _apiService = sl<ApiService>();
-  final FavoritesService _favorites = sl<FavoritesService>();
-  final NavigationService _nav = sl<NavigationService>();
-  final PushNotificationService _push = sl<PushNotificationService>();
+  final _apiService = sl<ApiService>();
+  final _favoritesService = sl<FavoritesService>();
+  final _navService = sl<NavigationService>();
+  final _pushService = sl<PushNotificationService>();
   final _cartService = sl<CartService>();
   final _alertService = sl<AlertService>();
 
-  /// Variables
+  final GenericCubit<bool> _loadingCubit = GenericCubit<bool>(false);
 
-  final GenericCubit<HomeModel> _homeCubit = GenericCubit<HomeModel>(
-    const HomeModel(),
-  );
+  final GenericCubit<_HomeStructure?> _structureCubit =
+      GenericCubit<_HomeStructure?>(null);
+
+  final GenericCubit<bool> _productsLoadingCubit = GenericCubit<bool>(false);
+
+  final GenericCubit<int> _bannerIndexCubit = GenericCubit<int>(0);
+
+  final GenericCubit<int> _offerTabCubit = GenericCubit<int>(0);
 
   late final PageController _bannerController;
 
   Timer? _bannerTimer;
   int _lastBannersLength = 0;
 
-  HomeModel _data() => _homeCubit.state.data;
+  String _errorMessage = '';
 
-  late final GenericCubit<FavoritesModel> _favoritesCubit =
-      _favorites.favoritesCubit;
+  List<ProductModel> _bestSellerProducts = const [];
+  List<ProductModel> _momBabyProducts = const [];
+  List<ProductModel> _homeCareProducts = const [];
+  List<ProductModel> _feminineCareProducts = const [];
+  List<ProductModel> _menCareProducts = const [];
 
-  late final GenericCubit<CartData> _cartCubit = _cartService.cartCubit;
+  _HomeStructure? _structure() => _structureCubit.state.data;
+
+  late final GenericCubit<ListFavorites> _favoritesCubit =
+      _favoritesService.favoritesCubit;
+
+  late final GenericCubit<Set<String>> _addingSkusCubit =
+      _cartService.addingSkusCubit;
 
   HomeViewModel() {
     _bannerController = PageController();
   }
 
-  /// Init
-
   Future<void> _init() async {
-    _push.dispatchPendingDeepLink();
+    _pushService.dispatchPendingDeepLink();
 
-    await Future.wait([_favorites.loadFavorites(), _getHomeData()]);
+    await Future.wait([_favoritesService.loadFavorites(), _getHomeData()]);
   }
 
   void _dispose() {
     _bannerTimer?.cancel();
     _bannerController.dispose();
-    _homeCubit.close();
-  }
 
-  /// Banner auto-slide
+    _loadingCubit.close();
+    _structureCubit.close();
+    _productsLoadingCubit.close();
+    _bannerIndexCubit.close();
+    _offerTabCubit.close();
+  }
 
   void _startBannerAutoSlide(int bannersLength) {
     _bannerTimer?.cancel();
@@ -81,23 +94,17 @@ class HomeViewModel {
   }
 
   void _changeBannerIndex(int index) {
-    _homeCubit.onUpdateData(
-      _homeCubit.state.data.copyWith(currentBannerIndex: index),
-    );
+    _bannerIndexCubit.onUpdateData(index);
   }
 
   void changeOfferTab(int index) {
-    _homeCubit.onUpdateData(
-      _homeCubit.state.data.copyWith(selectedOfferTabIndex: index),
-    );
+    _offerTabCubit.onUpdateData(index);
   }
-
-  /// Actions
 
   void _openProductList(HomeSubCategoryModel item) {
     if (item.id.trim().isEmpty) return;
 
-    _nav.pushNamed(
+    _navService.pushNamed(
       RouteNames.productList,
       extra: ProductListArgs(title: item.name, categoryId: item.id),
     );
@@ -108,14 +115,14 @@ class HomeViewModel {
     required String title,
     required String imagePath,
   }) {
-    _nav.pushNamed(
+    _navService.pushNamed(
       RouteNames.productDetails,
       extra: ProductDetailsArgs(sku: sku, title: title, imagePath: imagePath),
     );
   }
 
   Future<void> _toggleFavorite(FavoriteProductModel product) async {
-    await _favorites.toggleFavorite(product);
+    await _favoritesService.toggleFavorite(product);
   }
 
   Future<void> _addToCart({required String sku, required int quantity}) async {
@@ -127,16 +134,12 @@ class HomeViewModel {
       return;
     }
 
-    final String message = _cartService.data.errorMessage;
+    final String message = _cartService.errorMessage;
 
-    // Whatever Magento said, or nothing: an add that bounced to the login
-    // screen leaves no message, and there is none to invent.
     if (message.trim().isEmpty) return;
 
     _alertService.showError(message);
   }
-
-  /// Api
 
   Future<List<HomeCmsModel>> _fetchHomeData() async {
     final response = await _apiService.get(endPoint: ApiConstants.homeCmsPage);
@@ -194,54 +197,32 @@ class HomeViewModel {
   }
 
   Future<void> _getHomeData() async {
-    final current = _homeCubit.state.data;
+    _errorMessage = '';
 
-    _homeCubit.onUpdateData(
-      current.copyWith(isLoading: true, clearErrorMessage: true),
-    );
+    _loadingCubit.onUpdateData(true);
 
     try {
       final response = await _fetchHomeData();
       final _HomeStructure structure = _mapHomeStructure(response);
 
-      // Phase one — paint.
-      _homeCubit.onUpdateData(
-        _homeCubit.state.data.copyWith(
-          isLoading: false,
-          isProductsLoading: true,
-          clearErrorMessage: true,
-          banners: structure.banners,
-          secondaryBanners: structure.secondaryBanners,
-          offers: structure.offers,
-          categories: structure.categories,
-          goals: structure.goals,
-          concerns: structure.concerns,
-          brands: structure.brands,
-          bestSellerBlock: structure.bestSellerBlock,
-          momBabyBlock: structure.momBabyBlock,
-          homeCareBlock: structure.homeCareBlock,
-          feminineCareBlock: structure.feminineCareBlock,
-          menCareBlock: structure.menCareBlock,
-          bestSellerProducts: const [],
-          momBabyProducts: const [],
-          homeCareProducts: const [],
-          feminineCareProducts: const [],
-          menCareProducts: const [],
-        ),
-      );
+      _bestSellerProducts = const [];
+      _momBabyProducts = const [];
+      _homeCareProducts = const [];
+      _feminineCareProducts = const [];
+      _menCareProducts = const [];
+
+      _productsLoadingCubit.onUpdateData(true);
+      _loadingCubit.onUpdateData(false);
+      _structureCubit.onUpdateData(structure);
 
       _syncBannerTimer(structure.banners.length);
 
-      // Phase two — fill the product rows in.
       await _getSectionProductsFor(structure);
     } catch (e) {
-      _homeCubit.onUpdateData(
-        _homeCubit.state.data.copyWith(
-          isLoading: false,
-          isProductsLoading: false,
-          errorMessage: e.toString(),
-        ),
-      );
+      _errorMessage = e.toString();
+
+      _productsLoadingCubit.onUpdateData(false);
+      _loadingCubit.onUpdateData(false);
     }
   }
 
@@ -254,18 +235,15 @@ class HomeViewModel {
       _getProductsForBlock(structure.menCareBlock),
     ]);
 
-    if (_homeCubit.isClosed) return;
+    if (_productsLoadingCubit.isClosed) return;
 
-    _homeCubit.onUpdateData(
-      _homeCubit.state.data.copyWith(
-        isProductsLoading: false,
-        bestSellerProducts: sections[0],
-        momBabyProducts: sections[1],
-        homeCareProducts: sections[2],
-        feminineCareProducts: sections[3],
-        menCareProducts: sections[4],
-      ),
-    );
+    _bestSellerProducts = sections[0];
+    _momBabyProducts = sections[1];
+    _homeCareProducts = sections[2];
+    _feminineCareProducts = sections[3];
+    _menCareProducts = sections[4];
+
+    _productsLoadingCubit.onUpdateData(false);
   }
 
   _HomeStructure _mapHomeStructure(List<HomeCmsModel> response) {
@@ -339,8 +317,6 @@ class HomeViewModel {
   }
 }
 
-/// Everything the CMS response carries on its own — no product requests
-/// involved, so phase one can render straight from it.
 class _HomeStructure {
   final List<HomeSliderItemModel> banners;
   final List<HomeSliderItemModel> secondaryBanners;

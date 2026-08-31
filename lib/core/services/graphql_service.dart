@@ -26,7 +26,7 @@ class _LoggedCall {
 class GraphQLService {
   late final GraphQLClient _client;
 
-  static const NetworkLoggerService _logger = NetworkLoggerService();
+  final _loggerService = sl<NetworkLoggerService>();
 
   GraphQLService() {
     _client = GraphQLClient(
@@ -54,11 +54,6 @@ class GraphQLService {
     return _resolve(result, call);
   }
 
-  /// Every call carries the customer token once there is one, which is what
-  /// makes the cart a *customer* cart: Magento then resolves `customerCart`,
-  /// accepts `placeOrder` without a guest email, and files the order under the
-  /// account. Without a token the same calls run as a guest, which is still
-  /// the case for the email/password path while its endpoint is a stub.
   Map<String, String> _headersWith(Map<String, String> headers) {
     final String token = _customerToken;
 
@@ -78,9 +73,6 @@ class GraphQLService {
   String get _customerToken =>
       sl<SharedPrefsServices>().getString(PrefKeys.customerToken).trim();
 
-  /// A token Magento no longer accepts would otherwise fail every call on the
-  /// screen, browsing included, with no way back. Dropping it puts the app on
-  /// the guest footing it had before the login.
   void _forgetTokenIfRejected(String message) {
     if (_customerToken.isEmpty) return;
 
@@ -129,18 +121,18 @@ class GraphQLService {
     final String label =
         '$kind ${NetworkLoggerService.operationName(document) ?? 'anonymous'}';
 
-    _logger.open('GRAPHQL $label');
+    _loggerService.open('GRAPHQL $label');
 
     if (headers.isNotEmpty) {
-      _logger.line('headers:');
-      headers.forEach(_logger.keyValue);
+      _loggerService.line('headers:');
+      headers.forEach(_loggerService.keyValue);
     }
 
     if (variables.isNotEmpty) {
-      _logger.section('variables', variables);
+      _loggerService.section('variables', variables);
     }
 
-    _logger.close();
+    _loggerService.close();
 
     return _LoggedCall(label, Stopwatch()..start());
   }
@@ -151,14 +143,14 @@ class GraphQLService {
     if (result.hasException) {
       final String message = _extractMessage(result.exception!);
 
-      _logger.open('GRAPHQL ERROR ${call.label}$elapsed');
-      _logger.line(message.isEmpty ? '${result.exception}' : message);
+      _loggerService.open('GRAPHQL ERROR ${call.label}$elapsed');
+      _loggerService.line(message.isEmpty ? '${result.exception}' : message);
 
       if (result.data != null) {
-        _logger.section('partial data', result.data);
+        _loggerService.section('partial data', result.data);
       }
 
-      _logger.close();
+      _loggerService.close();
 
       _forgetTokenIfRejected(message);
 
@@ -167,9 +159,9 @@ class GraphQLService {
 
     final Map<String, dynamic>? data = result.data;
 
-    _logger.open('GRAPHQL REPLY ${call.label}$elapsed');
-    _logger.section('data', data);
-    _logger.close();
+    _loggerService.open('GRAPHQL REPLY ${call.label}$elapsed');
+    _loggerService.section('data', data);
+    _loggerService.close();
 
     if (data == null) {
       throw const GraphQLServiceException('');

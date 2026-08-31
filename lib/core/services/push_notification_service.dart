@@ -17,20 +17,17 @@ import 'package:almasry_2/core/services/navigation_service.dart';
 import 'package:bot_toast/bot_toast.dart';
 
 class PushNotificationService {
-  /// Services
-
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
 
+  final _dbService = sl<DbServices>();
+
   NavigationService get _nav => sl<NavigationService>();
 
   AlertService get _alert => sl<AlertService>();
 
-  /// Constants
-
-  // Must match `default_notification_channel_id` in AndroidManifest.xml.
   static const String channelId = 'almasry_product_availability';
 
   static const String _channelName = 'Product availability';
@@ -38,8 +35,6 @@ class PushNotificationService {
       'Alerts you when a product you asked about is back in stock.';
 
   static const int _availabilityAlertId = 4001;
-
-  /// Variables
 
   String? _fcmToken;
 
@@ -50,8 +45,6 @@ class PushNotificationService {
   String? get fcmToken => _fcmToken;
 
   bool get hasPendingDeepLink => _pendingDeepLink != null;
-
-  /// Init
 
   Future<void> init() async {
     if (_isInitialized) return;
@@ -93,8 +86,6 @@ class PushNotificationService {
     );
   }
 
-  /// Permissions
-
   Future<bool> requestPermission() async {
     final settings = await _messaging.requestPermission();
 
@@ -111,8 +102,6 @@ class PushNotificationService {
         >();
   }
 
-  /// Token
-
   Future<String?> getToken() async {
     if (_fcmToken != null) return _fcmToken;
     await _refreshToken();
@@ -128,8 +117,6 @@ class PushNotificationService {
     }
   }
 
-  /// Subscriptions
-
   Future<bool> subscribeToAvailability({
     required String sku,
     required String productName,
@@ -142,7 +129,7 @@ class PushNotificationService {
 
     if (token == null || token.isEmpty) return false;
 
-    await DbServices.instance.addNotifySubscription(
+    await _dbService.addNotifySubscription(
       NotifySubscriptionModel(
         sku: sku,
         productName: productName,
@@ -167,10 +154,8 @@ class PushNotificationService {
   }
 
   Future<bool> isSubscribed(String sku) {
-    return DbServices.instance.isNotifySubscribed(sku);
+    return _dbService.isNotifySubscribed(sku);
   }
-
-  /// Scheduling
 
   Future<void> scheduleAvailabilityAlert({
     required ProductDetailsArgs product,
@@ -227,12 +212,7 @@ class PushNotificationService {
     );
   }
 
-  /// Incoming messages
-
   void _listenForMessages() {
-    // Foreground messages become an in-app banner rather than a system
-    // notification — the app is already on screen, so a tray entry would be
-    // easy to miss and awkward to tap through.
     FirebaseMessaging.onMessage.listen((message) {
       final notification = message.notification;
       if (notification == null) return;
@@ -258,9 +238,6 @@ class PushNotificationService {
     required String body,
     ProductDetailsArgs? product,
   }) {
-    // `cancel` is only available once the banner exists, so the tap handler
-    // has to close over it lazily — otherwise the banner would linger on top
-    // of the product page for its full four seconds.
     late final CancelFunc cancel;
 
     cancel = _alert.showFCMAlert(
@@ -293,8 +270,6 @@ class PushNotificationService {
     }
   }
 
-  /// Deep linking
-
   void _handleTap(ProductDetailsArgs? product) {
     if (product == null) return;
 
@@ -315,8 +290,6 @@ class PushNotificationService {
   void _navigateToProduct(ProductDetailsArgs product) {
     _nav.pushNamed(RouteNames.productDetails, extra: product);
   }
-
-  /// Payload
 
   String _encodePayload(ProductDetailsArgs? product) {
     if (product == null) return '';

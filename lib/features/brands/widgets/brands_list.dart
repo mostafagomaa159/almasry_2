@@ -34,8 +34,6 @@ class BrandsList extends StatelessWidget {
   }
 }
 
-/// The error and empty states. Both are centred boxes, but they still have to
-/// scroll or [CustomAppRefreshIndicator] would have nothing to pull on.
 class _BrandsPlaceholder extends StatelessWidget {
   const _BrandsPlaceholder({required this.vm});
 
@@ -156,8 +154,6 @@ class _BrandNameLabel extends StatelessWidget {
   }
 }
 
-/// Covers the previous results while a search is in flight, so the grid never
-/// looks like it answered the new query with the old brands.
 class _BrandsSearchOverlay extends StatelessWidget {
   const _BrandsSearchOverlay({required this.vm});
 

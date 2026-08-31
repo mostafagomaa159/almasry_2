@@ -1,7 +1,5 @@
 part of '../cart_imports.dart';
 
-/// The empty cart: the pharmacy logo over a single line. Deliberately not
-/// `CustomAppEmptyView` — the design uses the brand mark rather than an icon.
 class CartEmptyView extends StatelessWidget {
   const CartEmptyView({super.key});
 

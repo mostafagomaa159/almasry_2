@@ -9,8 +9,6 @@ class CustomAppButton extends StatelessWidget {
   final bool isPrimary;
   final bool isLoading;
 
-  /// `false` greys the button out and drops its tap handler, without the
-  /// spinner [isLoading] brings.
   final bool isEnabled;
   final Color? backgroundColor;
   final Color? borderColor;

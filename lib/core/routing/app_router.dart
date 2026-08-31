@@ -35,7 +35,6 @@ import 'package:go_router/go_router.dart';
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: AppRoutes.splash,
-    // Lets BotToast dismiss its toasts when the route underneath them changes.
     observers: [BotToastNavigatorObserver()],
     routes: [
       GoRoute(
@@ -62,8 +61,6 @@ class AppRouter {
         builder: (context, state) => const RegisterCustomerView(),
       ),
 
-      // The checkout steps sit outside the shell: the design has no bottom bar
-      // on them, and stepping back through them should not switch tabs.
       GoRoute(
         path: AppRoutes.checkoutShipping,
         name: RouteNames.checkoutShipping,
@@ -98,10 +95,6 @@ class AppRouter {
               GoRoute(
                 path: AppRoutes.home,
                 name: RouteNames.home,
-                // `is`, not a cast: go_router hands the same `extra` to every
-                // route in the matched chain, so a `goNamed` straight to a
-                // nested route drops that child's argument type in here too
-                // (`homeComingSoon` passes a String).
                 builder: (context, state) {
                   final Object? extra = state.extra;
 
@@ -171,8 +164,6 @@ class AppRouter {
                 name: RouteNames.cart,
                 builder: (context, state) => const CartView(),
                 routes: [
-                  // Nested under the cart so the bottom bar stays visible with
-                  // Cart selected, which is what the design shows.
                   GoRoute(
                     path: AppRoutes.orderConfirmed.replaceFirst('/', ''),
                     name: RouteNames.orderConfirmed,
@@ -191,9 +182,6 @@ class AppRouter {
               GoRoute(
                 path: AppRoutes.profile,
                 name: RouteNames.profile,
-                // Same as `home`: "Track order" on the confirmation screen
-                // does `goNamed(orders, extra: <email String>)`, which rebuilds
-                // this parent with that String as its `extra`.
                 builder: (context, state) {
                   final Object? extra = state.extra;
 

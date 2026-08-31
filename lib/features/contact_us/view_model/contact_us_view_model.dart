@@ -1,9 +1,9 @@
 part of '../contact_us_imports.dart';
 
 class ContactUsViewModel {
-  final GraphQLService _graphql = sl<GraphQLService>();
-  final NavigationService _nav = sl<NavigationService>();
-  final AlertService _alert = sl<AlertService>();
+  final _graphqlService = sl<GraphQLService>();
+  final _navService = sl<NavigationService>();
+  final _alertService = sl<AlertService>();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -46,7 +46,7 @@ class ContactUsViewModel {
   }
 
   void _back() {
-    _nav.pop();
+    _navService.pop();
   }
 
   String? _validateName(String? value) => Validators.validateName(value ?? '');
@@ -77,7 +77,7 @@ class ContactUsViewModel {
     );
 
     try {
-      final Map<String, dynamic> json = await _graphql.mutate(
+      final Map<String, dynamic> json = await _graphqlService.mutate(
         GraphQLDocuments.submitContactForm,
         variables: request.toVariables(),
       );
@@ -86,16 +86,16 @@ class ContactUsViewModel {
           SubmitContactFormResponse.fromJson(json);
 
       if (!response.status) {
-        _alert.showError(LocaleKeys.contactUsFailed.tr());
+        _alertService.showError(LocaleKeys.contactUsFailed.tr());
 
         return;
       }
 
       _clearForm();
 
-      _alert.showSuccess(LocaleKeys.contactUsSuccess.tr());
+      _alertService.showSuccess(LocaleKeys.contactUsSuccess.tr());
     } catch (_) {
-      _alert.showError(LocaleKeys.contactUsFailed.tr());
+      _alertService.showError(LocaleKeys.contactUsFailed.tr());
     } finally {
       _loadingCubit.onUpdateData(false);
     }

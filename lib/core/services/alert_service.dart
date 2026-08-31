@@ -82,10 +82,6 @@ class AlertService {
     );
   }
 
-  /// A notification that asks instead of telling. It carries its own two
-  /// actions and waits — no timeout, because a prompt that vanished on its own
-  /// would be answering for the user. Cancel closes it and reports nothing;
-  /// only [onConfirm] reaches the caller.
   CancelFunc showConfirmation({
     required String title,
     required String confirmTitle,

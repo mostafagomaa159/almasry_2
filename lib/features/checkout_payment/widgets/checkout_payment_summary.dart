@@ -1,7 +1,5 @@
 part of '../checkout_payment_imports.dart';
 
-/// The totals panel with the "Order Review" action. Reads the cart, which by
-/// this point in the flow already carries the shipping quote.
 class CheckoutPaymentSummary extends StatelessWidget {
   final CheckoutPaymentViewModel vm;
 
@@ -9,10 +7,10 @@ class CheckoutPaymentSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GenericCubit<CartData>, GenericState<CartData>>(
+    return BlocBuilder<GenericCubit<CartModel>, GenericState<CartModel>>(
       bloc: vm._cartCubit,
-      builder: (BuildContext context, GenericState<CartData> state) {
-        final CartModel cart = state.data.cart;
+      builder: (BuildContext context, GenericState<CartModel> state) {
+        final CartModel cart = state.data;
 
         return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
           bloc: vm._submittingCubit,

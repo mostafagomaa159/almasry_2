@@ -2,8 +2,6 @@ import 'package:almasry_2/core/widgets/custom_app_badge.dart';
 import 'package:flutter/material.dart';
 import 'package:almasry_2/core/constants/app_colors.dart';
 
-/// The order state rendered as a pill. Only the colour mapping lives here —
-/// the pill itself is an [CustomAppBadge].
 class CustomOrderStatusChip extends StatelessWidget {
   final String status;
 

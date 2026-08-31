@@ -1,11 +1,5 @@
 part of '../address_form_imports.dart';
 
-/// The "Government" governorate picker.
-///
-/// A dropdown rather than the design's plain text line, on purpose: Magento
-/// rejects an address whose region it cannot resolve ("regionId is required"),
-/// so the value has to come from its own list — a typed governorate name
-/// cannot be turned into a `region_id`.
 class AddressFormGovernmentField extends StatelessWidget {
   final AddressFormViewModel vm;
 
@@ -117,8 +111,6 @@ class _AddressFormRegionsDropdown extends StatelessWidget {
   }
 }
 
-/// The list is not optional, so a failed fetch gets its own retry rather than
-/// leaving an empty dropdown the user cannot get past.
 class _RegionsError extends StatelessWidget {
   final AddressFormViewModel vm;
   final String message;

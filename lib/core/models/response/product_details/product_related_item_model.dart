@@ -1,7 +1,6 @@
 import 'package:almasry_2/core/models/response/product_details/product_price_model.dart';
 import 'package:almasry_2/core/utils/media_url.dart';
 
-
 class ProductRelatedItemModel {
   final String uid;
   final String sku;

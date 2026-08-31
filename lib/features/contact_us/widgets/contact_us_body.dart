@@ -1,7 +1,5 @@
 part of '../contact_us_imports.dart';
 
-/// The scrolling form, the note under it, the submit button and the phone
-/// numbers section.
 class ContactUsBody extends StatelessWidget {
   final ContactUsViewModel vm;
 

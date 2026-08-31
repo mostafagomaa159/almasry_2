@@ -14,8 +14,6 @@ class ProductCard extends StatefulWidget {
   final double rating;
   final bool isNetworkImage;
 
-  /// Defaults to true so a card built from a source that carries no stock
-  /// information keeps its buy controls rather than reading as unavailable.
   final bool isInStock;
 
   const ProductCard({
@@ -98,8 +96,6 @@ class _ProductCardState extends State<ProductCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // The tap target covers the image and copy but stops above the cart
-          // row, so the stepper's own buttons are not swallowed by it.
           Material(
             color: Colors.transparent,
             borderRadius: radius,
@@ -148,14 +144,17 @@ class _ProductCardState extends State<ProductCard> {
                             alignment: AlignmentDirectional.topEnd,
                             child:
                                 BlocBuilder<
-                                  GenericCubit<FavoritesModel>,
-                                  GenericState<FavoritesModel>
+                                  GenericCubit<ListFavorites>,
+                                  GenericState<ListFavorites>
                                 >(
                                   builder: (context, state) {
+                                    final bool isFavorite = widget
+                                        .vm
+                                        ._favoritesService
+                                        .isFavorite(widget.sku);
+
                                     return CustomAppFavoriteButton(
-                                      isFavorite: state.data.isFavorite(
-                                        widget.sku,
-                                      ),
+                                      isFavorite: isFavorite,
                                       onTap: _toggleFavorite,
                                       roundedOutline: false,
                                       inactiveColor:
@@ -243,11 +242,7 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
-  /// Replaces the whole action row — cart button and stepper both — because
-  /// neither has anything to do for a product that cannot be bought.
   Widget _outOfStockBanner() {
-    // Shorter than the shared default so the card keeps the same height as its
-    // in-stock neighbours in the horizontal list.
     return CustomAppStatusBanner(
       label: LocaleKeys.outOfStock.tr(),
       height: 32,
@@ -258,13 +253,10 @@ class _ProductCardState extends State<ProductCard> {
   Widget _actionRow() {
     return Row(
       children: [
-        // Per sku, so only this card spins — the cubit is shared by
-        // every card on the screen. A second tap on the same card is
-        // still ignored while its own add is in flight.
-        BlocBuilder<GenericCubit<CartData>, GenericState<CartData>>(
-          bloc: widget.vm._cartCubit,
+        BlocBuilder<GenericCubit<Set<String>>, GenericState<Set<String>>>(
+          bloc: widget.vm._addingSkusCubit,
           builder: (context, state) {
-            final bool isAdding = state.data.isAddingSku(widget.sku);
+            final bool isAdding = state.data.contains(widget.sku.trim());
 
             return Material(
               color: Colors.transparent,

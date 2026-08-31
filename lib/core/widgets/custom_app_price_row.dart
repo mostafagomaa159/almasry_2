@@ -2,34 +2,19 @@ import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// The current price with the pre-discount one struck through beside or below
-/// it.
-///
-/// Both strings arrive pre-formatted — currency symbol, decimals and locale are
-/// the caller's business, because the four screens using this build them from
-/// different models.
-///
-/// [oldPrice] is drawn whenever it is non-null, *including* when it is empty:
-/// the wishlist stores an empty string for "no old price" and still reserves
-/// the line. Pass null to collapse it instead.
 class CustomAppPriceRow extends StatelessWidget {
   final String price;
   final String? oldPrice;
 
-  /// [Axis.horizontal] puts the old price beside the current one and lets it
-  /// ellipsize; [Axis.vertical] stacks them.
   final Axis axis;
 
   final TextStyle? priceStyle;
 
-  /// `TextDecoration.lineThrough` is applied on top of whatever is passed, so
-  /// an override never has to remember it.
   final TextStyle? oldPriceStyle;
 
   final double spacing;
   final MainAxisAlignment mainAxisAlignment;
 
-  /// Defaults per axis: centred across a row, leading-aligned down a column.
   final CrossAxisAlignment? crossAxisAlignment;
 
   const CustomAppPriceRow({
@@ -91,8 +76,6 @@ class CustomAppPriceRow extends StatelessWidget {
       );
     }
 
-    // Deliberately not `MainAxisSize.min`: the home card centres this row
-    // inside a full-width padding, which only works while the row fills it.
     return Row(
       mainAxisAlignment: mainAxisAlignment,
       crossAxisAlignment: crossAxisAlignment ?? CrossAxisAlignment.center,

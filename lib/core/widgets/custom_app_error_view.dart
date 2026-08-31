@@ -4,16 +4,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// Shown when a screen's request fails. Omit [onRetry] for the cases that only
-/// report the message.
-///
-/// Server copy is not length-checked at the call site, and a long message used
-/// to overflow the body it was handed — so this scrolls when it has to.
-///
-/// It only adds a scroll view when it was given a bounded height. Some callers
-/// (`_ProductDetailsPlaceholder`, `_ProductSearchPlaceholder`) already wrap it
-/// in one so pull-to-refresh has something to pull on; nesting a second
-/// scrollable inside that unbounded space would throw.
 class CustomAppErrorView extends StatelessWidget {
   final String message;
   final VoidCallback? onRetry;
@@ -49,10 +39,6 @@ class CustomAppErrorView extends StatelessWidget {
     );
   }
 
-  /// `min` with `center` centres inside whatever minimum height the parent
-  /// imposes — the scroll branch's [ConstrainedBox], or the viewport-height
-  /// floor the placeholder wrappers set — and hugs its content when there is
-  /// none.
   Widget _content() {
     return Column(
       mainAxisSize: MainAxisSize.min,

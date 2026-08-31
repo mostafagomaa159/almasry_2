@@ -1,16 +1,5 @@
 part of '../checkout_payment_imports.dart';
 
-/// One payment method: a radio, its title and hint line, and an icon on the
-/// trailing edge.
-///
-/// The icon is derived from the method code rather than pulled off the payload:
-/// the schema gives no logo at method level, and borrowing the first option's
-/// mislabels the row — this store's `bankcards` options carry Instapay
-/// artwork. The real provider logos appear on the option rows, where they
-/// belong.
-///
-/// Methods that carry providers grow a chevron and expand into a nested list;
-/// the ones that do not are a single tap.
 class CheckoutPaymentMethodCard extends StatelessWidget {
   final CheckoutPaymentViewModel vm;
   final PaymentMethodModel method;
@@ -25,8 +14,6 @@ class CheckoutPaymentMethodCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // The selection and the open row move independently, so each has its own
-    // builder; the provider list adds a third for the picked provider.
     return BlocBuilder<GenericCubit<String>, GenericState<String>>(
       bloc: vm._selectedCodeCubit,
       builder: (BuildContext context, GenericState<String> selectedState) {

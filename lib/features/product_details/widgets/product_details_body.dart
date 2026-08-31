@@ -48,8 +48,6 @@ class ProductDetailsBody extends StatelessWidget {
   }
 }
 
-/// The error and empty states are centred boxes, but they still have to scroll
-/// or [CustomAppRefreshIndicator] would have nothing to pull on.
 class _ProductDetailsPlaceholder extends StatelessWidget {
   const _ProductDetailsPlaceholder({required this.vm});
 

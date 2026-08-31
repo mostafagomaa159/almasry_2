@@ -1,7 +1,5 @@
 part of '../product_details_imports.dart';
 
-/// The rating summary, the review count, and the reviews themselves — the
-/// "Comments (N)" block at the bottom of the design.
 class ProductDetailsRatingSection extends StatelessWidget {
   final ProductDetailsViewModel vm;
   final ProductDetailModel product;

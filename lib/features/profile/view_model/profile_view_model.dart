@@ -1,15 +1,11 @@
 part of '../profile_imports.dart';
 
 class ProfileViewModel {
-  /// Services
+  final _navService = sl<NavigationService>();
+  final _startupService = sl<AppStartupService>();
+  final _userProfileService = sl<UserProfileService>();
 
-  final NavigationService _nav = sl<NavigationService>();
-  final AppStartupService _startup = sl<AppStartupService>();
-  final SharedPrefsServices _prefs = sl<SharedPrefsServices>();
-
-  /// Variables
-
-  final GenericCubit<ProfileData> _profileCubit;
+  final GenericCubit<String> _languageCodeCubit = GenericCubit<String>('en');
 
   final GenericCubit<ProfileArgs> _currentProfileCubit =
       GenericCubit<ProfileArgs>(const ProfileArgs(source: ''));
@@ -20,73 +16,50 @@ class ProfileViewModel {
 
   ProfileViewModel({ProfileArgs? args})
     : _args = args,
-      _profileCubit = GenericCubit<ProfileData>(
-        ProfileData(isGuest: args?.isGuest == true, currentLanguageCode: 'en'),
-      );
+      _isGuest = args?.isGuest == true || !sl<UserProfileService>().isSignedIn;
 
-  ProfileData _data() => _profileCubit.state.data;
+  final bool _isGuest;
+
+  String _languageCode() => _languageCodeCubit.state.data;
 
   ProfileArgs _currentProfile() => _currentProfileCubit.state.data;
 
-  /// Init
-
   void _initLanguage(BuildContext context) {
-    _profileCubit.onUpdateData(
-      _profileCubit.state.data.copyWith(
-        currentLanguageCode: context.locale.languageCode,
-      ),
-    );
+    _languageCodeCubit.onUpdateData(context.locale.languageCode);
   }
 
   void _initAccount() {
     _currentProfileCubit.onUpdateData(
       ProfileArgs(
-        firstName: _args?.firstName,
-        lastName: _args?.lastName,
-        email: _args?.email,
-        phone: _args?.phone,
-        gender: _args?.gender,
-        birthDate: _args?.birthDate,
-        hasPregnancy: _args?.hasPregnancy,
-        chronicDisease: _args?.chronicDisease,
-        diseaseType: _args?.diseaseType,
+        firstName: _stored(_userProfileService.firstName, _args?.firstName),
+        lastName: _stored(_userProfileService.lastName, _args?.lastName),
+        email: _stored(_userProfileService.email, _args?.email),
+        phone: _stored(_userProfileService.phone, _args?.phone),
+        gender: _stored(_userProfileService.gender, _args?.gender),
+        birthDate: _stored(_userProfileService.birthDate, _args?.birthDate),
+        hasPregnancy: _stored(
+          _userProfileService.hasPregnancy,
+          _args?.hasPregnancy,
+        ),
+        chronicDisease: _stored(
+          _userProfileService.chronicDisease,
+          _args?.chronicDisease,
+        ),
+        diseaseType: _stored(
+          _userProfileService.diseaseType,
+          _args?.diseaseType,
+        ),
         source: '',
       ),
     );
-
-    _mergeSavedProfileData();
   }
 
-  void _mergeSavedProfileData() {
-    final String savedEmail = _prefs.getString(PrefKeys.email);
-    final String savedPhone = _prefs.getString(PrefKeys.phone);
-    final String savedFirstName = _prefs.getString(PrefKeys.firstName);
-    final String savedLastName = _prefs.getString(PrefKeys.lastName);
+  String? _stored(String value, String? fromArgs) {
+    if (value.trim().isNotEmpty) return value.trim();
 
-    final current = _currentProfile();
+    final String fallback = fromArgs?.trim() ?? '';
 
-    _currentProfileCubit.onUpdateData(
-      ProfileArgs(
-        firstName: current.firstName?.trim().isNotEmpty == true
-            ? current.firstName
-            : (savedFirstName.isNotEmpty ? savedFirstName : null),
-        lastName: current.lastName?.trim().isNotEmpty == true
-            ? current.lastName
-            : (savedLastName.isNotEmpty ? savedLastName : null),
-        email: current.email?.trim().isNotEmpty == true
-            ? current.email
-            : (savedEmail.isNotEmpty ? savedEmail : null),
-        phone: current.phone?.trim().isNotEmpty == true
-            ? current.phone
-            : (savedPhone.isNotEmpty ? savedPhone : null),
-        gender: current.gender,
-        birthDate: current.birthDate,
-        hasPregnancy: current.hasPregnancy,
-        chronicDisease: current.chronicDisease,
-        diseaseType: current.diseaseType,
-        source: current.source,
-      ),
-    );
+    return fallback.isEmpty ? null : fallback;
   }
 
   Future<void> _initGuest() async {
@@ -96,12 +69,10 @@ class ProfileViewModel {
   }
 
   void _dispose() {
-    _profileCubit.close();
+    _languageCodeCubit.close();
     _currentProfileCubit.close();
     _appVersionCubit.close();
   }
-
-  /// Display values
 
   String _displayName() {
     final String? firstName = _currentProfile().firstName?.trim();
@@ -167,35 +138,28 @@ class ProfileViewModel {
     return LocaleKeys.profileNotAdded.tr();
   }
 
-  /// Language
-
   Future<void> _changeLanguage(
     BuildContext context,
     String languageCode,
   ) async {
-    if (_profileCubit.state.data.currentLanguageCode == languageCode) return;
+    if (_languageCode() == languageCode) return;
 
     await AppLocale.setLanguage(context, languageCode);
 
-    _profileCubit.onUpdateData(
-      _profileCubit.state.data.copyWith(currentLanguageCode: languageCode),
-    );
+    _languageCodeCubit.onUpdateData(languageCode);
   }
 
   Future<void> _toggleLanguage(BuildContext context) async {
-    final String newLanguageCode =
-        _profileCubit.state.data.currentLanguageCode == 'ar' ? 'en' : 'ar';
+    final String newLanguageCode = _languageCode() == 'ar' ? 'en' : 'ar';
 
     await _changeLanguage(context, newLanguageCode);
   }
 
-  /// Actions
-
   void _onBackTap() {
-    if (_nav.canPop) {
-      _nav.pop();
+    if (_navService.canPop) {
+      _navService.pop();
     } else {
-      _nav.goNamed(RouteNames.home);
+      _navService.goNamed(RouteNames.home);
     }
   }
 
@@ -204,19 +168,19 @@ class ProfileViewModel {
 
     if (email == null || email.isEmpty) return;
 
-    _nav.pushNamed(RouteNames.orders, extra: email);
+    _navService.pushNamed(RouteNames.orders, extra: email);
   }
 
   void _openWishlist() {
-    _nav.pushNamed(RouteNames.wishlist);
+    _navService.pushNamed(RouteNames.wishlist);
   }
 
   void _goToLogin() {
-    _nav.goNamed(RouteNames.login);
+    _navService.goNamed(RouteNames.login);
   }
 
   Future<void> _openEditProfile() async {
-    final Object? result = await _nav.pushNamedAndReturn(
+    final Object? result = await _navService.pushNamedAndReturn(
       RouteNames.editProfile,
       extra: EditProfileArgs(
         firstName: _currentProfile().firstName,
@@ -232,39 +196,27 @@ class ProfileViewModel {
     );
 
     if (result is EditProfileArgs) {
-      await _prefs.setString(PrefKeys.firstName, result.firstName ?? '');
-      await _prefs.setString(PrefKeys.lastName, result.lastName ?? '');
-      await _prefs.setString(PrefKeys.email, result.email ?? '');
-      await _prefs.setString(PrefKeys.phone, result.phone ?? '');
-
-      _currentProfileCubit.onUpdateData(
-        ProfileArgs(
-          firstName: result.firstName,
-          lastName: result.lastName,
-          email: result.email,
-          phone: result.phone,
-          gender: result.gender,
-          birthDate: result.birthDate,
-          hasPregnancy: result.hasPregnancy,
-          chronicDisease: result.chronicDisease,
-          diseaseType: result.diseaseType,
-          source: '',
-        ),
+      await _userProfileService.save(
+        firstName: result.firstName ?? '',
+        lastName: result.lastName ?? '',
+        email: result.email ?? '',
+        phone: result.phone ?? '',
+        gender: result.gender ?? '',
+        birthDate: result.birthDate ?? '',
+        hasPregnancy: result.hasPregnancy ?? '',
+        chronicDisease: result.chronicDisease ?? '',
+        diseaseType: result.diseaseType ?? '',
       );
+
+      _initAccount();
     }
   }
 
   Future<void> _logout(BuildContext context) async {
-    await _prefs.remove(PrefKeys.isLoggedIn);
-    await _prefs.remove(PrefKeys.email);
-    await _prefs.remove(PrefKeys.phone);
-    await _prefs.remove(PrefKeys.firstName);
-    await _prefs.remove(PrefKeys.lastName);
-
-    await _startup.logout();
+    await _startupService.logout();
 
     if (!context.mounted) return;
 
-    _nav.goNamed(RouteNames.login);
+    _navService.goNamed(RouteNames.login);
   }
 }

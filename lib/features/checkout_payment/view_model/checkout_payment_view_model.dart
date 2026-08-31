@@ -3,43 +3,29 @@ part of '../checkout_payment_imports.dart';
 typedef ListPaymentMethods = List<PaymentMethodModel>;
 
 class CheckoutPaymentViewModel {
-  final GraphQLService _graphqlService = sl<GraphQLService>();
-  final NavigationService _navService = sl<NavigationService>();
-  final AlertService _alertService = sl<AlertService>();
-  final CartService _cartService = sl<CartService>();
+  final _graphqlService = sl<GraphQLService>();
+  final _navService = sl<NavigationService>();
+  final _alertService = sl<AlertService>();
+  final _cartService = sl<CartService>();
 
   final GenericCubit<ListPaymentMethods> _methodsCubit =
       GenericCubit<ListPaymentMethods>([]);
 
   final GenericCubit<bool> _loadingCubit = GenericCubit<bool>(true);
 
-  /// The Magento payment method `code`.
   final GenericCubit<String> _selectedCodeCubit = GenericCubit<String>('');
 
-  /// The sub-option code, for the methods that carry a list of providers.
-  /// Empty for the ones that do not.
   final GenericCubit<String> _selectedOptionCubit = GenericCubit<String>('');
 
-  /// Which expandable row is open. Independent of the selection: the design
-  /// lets a row be opened to look at its providers without choosing it.
   final GenericCubit<String> _expandedCodeCubit = GenericCubit<String>('');
 
   final GenericCubit<bool> _submittingCubit = GenericCubit<bool>(false);
 
-  late final GenericCubit<CartData> _cartCubit = _cartService.cartCubit;
+  late final GenericCubit<CartModel> _cartCubit = _cartService.cartCubit;
 
   String _errorMessage = '';
 
   Future<void> _init() => _loadMethods();
-
-  void _dispose() {
-    _methodsCubit.close();
-    _loadingCubit.close();
-    _selectedCodeCubit.close();
-    _selectedOptionCubit.close();
-    _expandedCodeCubit.close();
-    _submittingCubit.close();
-  }
 
   void _back() {
     _navService.pop();
@@ -55,8 +41,6 @@ class CheckoutPaymentViewModel {
     return null;
   }
 
-  /// A method with providers is not a complete choice until one is picked, so
-  /// the button stays inert until then.
   bool _canProceed() {
     final PaymentMethodModel? method = _selectedMethod();
 
@@ -96,16 +80,12 @@ class CheckoutPaymentViewModel {
     } catch (error) {
       _errorMessage = errorMessageFrom(error);
 
-      /// Empty list + a message is what the body reads as "error".
       _methodsCubit.onUpdateData(const []);
     } finally {
       _loadingCubit.onUpdateData(false);
     }
   }
 
-  /// Honours whatever the cart already holds — coming back from the review
-  /// step should not silently reset the choice — and otherwise preselects the
-  /// first method, which is how the design opens.
   String _initialCode(ListPaymentMethods methods) {
     final String onCart = _cartService.cart.selectedPaymentMethod.code;
 
@@ -138,8 +118,6 @@ class CheckoutPaymentViewModel {
     return method.options.first.code;
   }
 
-  /// Picking a method opens it if it has providers, and preselects the first
-  /// one so the row is a complete choice on a single tap.
   void _selectMethod(PaymentMethodModel method) {
     _selectedCodeCubit.onUpdateData(method.code);
 
@@ -183,8 +161,6 @@ class CheckoutPaymentViewModel {
         ).toVariables(),
       );
 
-      // The review screen prints the method off the cart, so it has to see the
-      // one that was just set.
       await _cartService.refresh();
 
       _navService.pushNamed(RouteNames.checkoutReview);
@@ -195,8 +171,6 @@ class CheckoutPaymentViewModel {
     }
   }
 
-  /// The API gives a code and a title but no copy, and the design carries a
-  /// line under each row — so the wording is chosen here.
   String _hintFor(PaymentMethodModel method) {
     final String code = method.code.toLowerCase();
 
@@ -211,7 +185,6 @@ class CheckoutPaymentViewModel {
         : LocaleKeys.checkoutPaymentLinkHint.tr();
   }
 
-  /// Only used when a method has no provider logo of its own.
   IconData _iconFor(PaymentMethodModel method) {
     final String code = method.code.toLowerCase();
 

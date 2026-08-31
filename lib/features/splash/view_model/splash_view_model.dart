@@ -1,20 +1,14 @@
 part of '../splash_imports.dart';
 
 class SplashViewModel {
-  /// Services
-
-  final AppStartupService _startup = sl<AppStartupService>();
-  final NavigationService _nav = sl<NavigationService>();
-  final CartService _cart = sl<CartService>();
-
-  /// Variables
+  final _startupService = sl<AppStartupService>();
+  final _navService = sl<NavigationService>();
+  final _cartService = sl<CartService>();
 
   late final AnimationController _controller;
   late final Animation<double> _fadeAnimation;
   late final Animation<double> _scaleAnimation;
   late final Animation<Offset> _slideAnimation;
-
-  /// Init
 
   void _init(TickerProvider vsync) {
     _controller = AnimationController(
@@ -44,16 +38,10 @@ class SplashViewModel {
     _controller.dispose();
   }
 
-  /// Actions
-
   Future<void> _checkAppStart(bool Function() isMounted) async {
-    // Reads the persisted cart behind the splash animation, so the bottom bar
-    // badge is already right on the first frame of whichever tab opens.
-    // Unawaited on purpose: a slow or failed cart read must not hold up the
-    // gate, and `CartService` reports its own failures.
-    unawaited(_cart.loadCart());
+    unawaited(_cartService.loadCart());
 
-    final StartupStatus status = await _startup.checkAppStart();
+    final StartupStatus status = await _startupService.checkAppStart();
 
     await _onStatusChanged(status, isMounted);
   }
@@ -65,21 +53,21 @@ class SplashViewModel {
     switch (status) {
       case StartupStatus.firstTime:
         await Future.delayed(AppDurations.splashHold);
-        await _startup.completeFirstTime();
+        await _startupService.completeFirstTime();
         if (!isMounted()) return;
-        _nav.goNamed(RouteNames.login);
+        _navService.goNamed(RouteNames.login);
         break;
 
       case StartupStatus.authenticated:
         await Future.delayed(AppDurations.splashHold);
         if (!isMounted()) return;
-        _nav.goNamed(RouteNames.home);
+        _navService.goNamed(RouteNames.home);
         break;
 
       case StartupStatus.unauthenticated:
         await Future.delayed(AppDurations.splashHold);
         if (!isMounted()) return;
-        _nav.goNamed(RouteNames.login);
+        _navService.goNamed(RouteNames.login);
         break;
 
       case StartupStatus.initial:

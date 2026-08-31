@@ -1,9 +1,5 @@
 part of '../product_search_imports.dart';
 
-/// Everything below the "Available only" chip: the first-load skeleton, the
-/// error and empty states, and the results grid — all of it under
-/// pull-to-refresh, with a shimmer covering the previous results while a new
-/// query is in flight.
 class ProductSearchList extends StatelessWidget {
   const ProductSearchList({super.key, required this.vm});
 
@@ -43,8 +39,6 @@ class ProductSearchList extends StatelessWidget {
   }
 }
 
-/// The error and empty states. Both are centred boxes, but they still have to
-/// scroll or [CustomAppRefreshIndicator] would have nothing to pull on.
 class _ProductSearchPlaceholder extends StatelessWidget {
   const _ProductSearchPlaceholder({required this.vm});
 
@@ -115,8 +109,6 @@ class _ProductSearchGrid extends StatelessWidget {
   }
 }
 
-/// Covers the previous results while a search is in flight, so the grid never
-/// looks like it answered the new query with the old products.
 class _ProductSearchOverlay extends StatelessWidget {
   const _ProductSearchOverlay({required this.vm});
 

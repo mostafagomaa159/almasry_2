@@ -5,15 +5,10 @@ import '../models/response/favorite/favorite_product_model.dart';
 import '../models/response/notify_me/notify_subscription_model.dart';
 
 class DbServices {
-  DbServices._();
-
-  static final DbServices instance = DbServices._();
-
-  static Database? _database;
+  Database? _database;
 
   static const String _databaseName = 'favorites.db';
 
-  // Bump this and extend `onUpgrade` whenever a table changes.
   static const int _databaseVersion = 2;
 
   static const String tableName = 'favorites';
@@ -108,8 +103,6 @@ class DbServices {
       await addFavorite(product);
     }
   }
-
-  /// Notify-me subscriptions
 
   Future<void> addNotifySubscription(
     NotifySubscriptionModel subscription,

@@ -163,12 +163,12 @@ class _FavoriteButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<
-      GenericCubit<FavoritesModel>,
-      GenericState<FavoritesModel>
+      GenericCubit<ListFavorites>,
+      GenericState<ListFavorites>
     >(
       bloc: vm._favoritesCubit,
       builder: (context, state) {
-        final bool isFavorite = state.data.isFavorite(product.sku);
+        final bool isFavorite = vm._favoritesService.isFavorite(product.sku);
 
         return _ActionButton(
           icon: isFavorite ? Icons.favorite : Icons.favorite_border,

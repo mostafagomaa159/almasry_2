@@ -1,6 +1,5 @@
 part of '../checkout_payment_imports.dart';
 
-/// The payment method list plus the pinned totals panel.
 class CheckoutPaymentBody extends StatelessWidget {
   final CheckoutPaymentViewModel vm;
 
@@ -53,7 +52,6 @@ class CheckoutPaymentBody extends StatelessWidget {
   }
 }
 
-/// No methods on screen: the request failed, or this cart genuinely has none.
 class _PaymentPlaceholder extends StatelessWidget {
   const _PaymentPlaceholder({required this.vm});
 

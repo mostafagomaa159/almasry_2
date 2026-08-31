@@ -2,12 +2,6 @@ import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// The flat full-width bar that replaces a card's action row when the product
-/// cannot be bought — "out of stock" today, and whatever else the catalogue
-/// starts reporting later.
-///
-/// It takes an already-translated [label] rather than a status enum, because
-/// the two call sites reach it from different models.
 class CustomAppStatusBanner extends StatelessWidget {
   final String label;
   final Color backgroundColor;

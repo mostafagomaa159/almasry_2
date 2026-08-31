@@ -1,6 +1,5 @@
 part of '../product_search_imports.dart';
 
-
 class ProductSearchItem extends StatefulWidget {
   final ProductSearchViewModel vm;
   final ProductSearchProductModel product;
@@ -12,7 +11,6 @@ class ProductSearchItem extends StatefulWidget {
 }
 
 class _ProductSearchItemState extends State<ProductSearchItem> {
-
   int _quantity = 1;
 
   void _increment() => setState(() => _quantity++);
@@ -23,10 +21,7 @@ class _ProductSearchItemState extends State<ProductSearchItem> {
   }
 
   Future<void> _addToCart() async {
-    await widget.vm._addToCart(
-      sku: widget.product.sku,
-      quantity: _quantity,
-    );
+    await widget.vm._addToCart(sku: widget.product.sku, quantity: _quantity);
   }
 
   @override
@@ -121,13 +116,13 @@ class _ProductSearchItemState extends State<ProductSearchItem> {
 
   Widget _favoriteButton(ProductSearchProductModel product) {
     return BlocBuilder<
-      GenericCubit<FavoritesModel>,
-      GenericState<FavoritesModel>
+      GenericCubit<ListFavorites>,
+      GenericState<ListFavorites>
     >(
       bloc: widget.vm._favoritesCubit,
       builder: (context, state) {
         return CustomAppFavoriteButton(
-          isFavorite: state.data.isFavorite(product.sku),
+          isFavorite: widget.vm._favoritesService.isFavorite(product.sku),
           onTap: () => widget.vm._toggleFavorite(product),
         );
       },
@@ -166,12 +161,11 @@ class _ProductSearchItemState extends State<ProductSearchItem> {
     );
   }
 
-
   Widget _addToCartButton() {
-    return BlocBuilder<GenericCubit<CartData>, GenericState<CartData>>(
-      bloc: widget.vm._cartCubit,
+    return BlocBuilder<GenericCubit<Set<String>>, GenericState<Set<String>>>(
+      bloc: widget.vm._addingSkusCubit,
       builder: (context, state) {
-        final bool isAdding = state.data.isAddingSku(widget.product.sku);
+        final bool isAdding = state.data.contains(widget.product.sku.trim());
         final bool isEnabled = !isAdding && widget.product.sku.isNotEmpty;
 
         return Material(

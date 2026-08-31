@@ -1,7 +1,5 @@
 part of '../product_search_imports.dart';
 
-/// The grid's skeleton — same two-column geometry and card aspect ratio as
-/// `_ProductSearchGrid`, so results drop straight into the layout they replace.
 class ProductSearchShimmer extends StatelessWidget {
   const ProductSearchShimmer({super.key});
 

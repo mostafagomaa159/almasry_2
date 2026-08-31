@@ -1,11 +1,5 @@
 part of '../checkout_shipping_imports.dart';
 
-/// The totals panel with the "Proceed to Payment" action.
-///
-/// Reads the cart rather than the screen's own state: once a shipping method
-/// is set, Magento re-quotes the grand total with delivery in it, and the cart
-/// is the thing that got re-read. The spinner is the two in-flight flags —
-/// applying an address and setting a method are one wait to the user.
 class CheckoutShippingSummary extends StatelessWidget {
   final CheckoutShippingViewModel vm;
 
@@ -13,10 +7,10 @@ class CheckoutShippingSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GenericCubit<CartData>, GenericState<CartData>>(
+    return BlocBuilder<GenericCubit<CartModel>, GenericState<CartModel>>(
       bloc: vm._cartCubit,
-      builder: (BuildContext context, GenericState<CartData> state) {
-        final CartModel cart = state.data.cart;
+      builder: (BuildContext context, GenericState<CartModel> state) {
+        final CartModel cart = state.data;
 
         return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
           bloc: vm._applyingAddressCubit,

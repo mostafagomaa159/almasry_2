@@ -1,7 +1,5 @@
 part of '../checkout_review_imports.dart';
 
-/// "Order Details" — where it ships, who ships it, how it is paid. All three
-/// are read off the cart, which is what Magento will actually use.
 class CheckoutReviewOrderSection extends StatelessWidget {
   final CheckoutReviewViewModel vm;
 

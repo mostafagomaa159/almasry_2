@@ -1,7 +1,5 @@
 part of '../product_details_imports.dart';
 
-/// The "Details" card: the short description always, the full one revealed by
-/// "Show more". Expansion is ViewModel state, so it survives a rebuild.
 class ProductDetailsDescriptionSection extends StatelessWidget {
   final ProductDetailsViewModel vm;
   final ProductDetailModel product;

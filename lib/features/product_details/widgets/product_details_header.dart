@@ -1,7 +1,5 @@
 part of '../product_details_imports.dart';
 
-/// The red-bordered screen header: back chevron, centred title and the doctor
-/// avatar.
 class ProductDetailsHeader extends StatelessWidget {
   final String title;
   final VoidCallback onBack;

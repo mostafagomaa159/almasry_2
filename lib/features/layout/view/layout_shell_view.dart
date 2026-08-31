@@ -18,15 +18,13 @@ class LayoutShellView extends StatelessWidget {
       backgroundColor: AppColors.surfaceScaffold,
       drawer: const AppDrawer(),
       body: navigationShell,
-      // The badge follows the app-global cart, so it updates from wherever a
-      // product was added — not just from the cart tab.
       bottomNavigationBar:
-          BlocBuilder<GenericCubit<CartData>, GenericState<CartData>>(
+          BlocBuilder<GenericCubit<CartModel>, GenericState<CartModel>>(
             bloc: sl<CartService>().cartCubit,
-            builder: (BuildContext context, GenericState<CartData> state) {
+            builder: (BuildContext context, GenericState<CartModel> state) {
               return HomeBottomNavBar(
                 selectedIndex: navigationShell.currentIndex,
-                cartCount: state.data.badgeCount,
+                cartCount: state.data.totalQuantity,
                 onTap: _onTap,
               );
             },

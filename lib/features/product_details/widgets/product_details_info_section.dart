@@ -1,8 +1,5 @@
 part of '../product_details_imports.dart';
 
-/// The "Information" table. Rows now come from the backend's own
-/// `custom_attributes` — label included — so a new attribute appears without a
-/// code change, and the hardcoded attribute-code list is gone.
 class ProductDetailsInfoSection extends StatelessWidget {
   final ProductDetailModel product;
 

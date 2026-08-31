@@ -34,9 +34,6 @@ class ProductListItem extends StatelessWidget {
     return discount > 0 ? discount : null;
   }
 
-  /// The wishlist stores a flat snapshot rather than a product reference, so
-  /// the derived values above are what get written. Prices go in bare, the way
-  /// the other grids store them — the currency label is added on read.
   FavoriteProductModel _favoriteProduct(String imageUrl) {
     final num? oldPrice = _oldPrice();
     final num currentPrice = _currentPrice();
@@ -61,8 +58,6 @@ class ProductListItem extends StatelessWidget {
     final oldPrice = _oldPrice();
     final discount = _discountPercent();
 
-    // `ProductModel.isInStock`, not a local rule: the home cards read the same
-    // getter, and this grid used to disagree with them on the same product.
     final isOutOfStock = !product.isInStock;
 
     final sku = product.sku;
@@ -77,20 +72,22 @@ class ProductListItem extends StatelessWidget {
         children: [
           Align(
             alignment: AlignmentDirectional.topEnd,
-            child: BlocBuilder<
-              GenericCubit<FavoritesModel>,
-              GenericState<FavoritesModel>
-            >(
-              bloc: vm._favoritesCubit,
-              builder: (context, state) {
-                return CustomAppFavoriteButton(
-                  isFavorite: state.data.isFavorite(sku),
-                  onTap: sku.isEmpty
-                      ? null
-                      : () => vm._toggleFavorite(_favoriteProduct(imageUrl)),
-                );
-              },
-            ),
+            child:
+                BlocBuilder<
+                  GenericCubit<ListFavorites>,
+                  GenericState<ListFavorites>
+                >(
+                  bloc: vm._favoritesCubit,
+                  builder: (context, state) {
+                    return CustomAppFavoriteButton(
+                      isFavorite: vm._favoritesService.isFavorite(sku),
+                      onTap: sku.isEmpty
+                          ? null
+                          : () =>
+                                vm._toggleFavorite(_favoriteProduct(imageUrl)),
+                    );
+                  },
+                ),
           ),
           6.verticalSpace,
           Expanded(
@@ -147,13 +144,13 @@ class ProductListItem extends StatelessWidget {
           else
             Row(
               children: [
-                // Per sku, so only this card spins — the cubit is shared by the
-                // whole grid. A second tap on the same card is still ignored
-                // while its own add is in flight.
-                BlocBuilder<GenericCubit<CartData>, GenericState<CartData>>(
-                  bloc: vm._cartCubit,
+                BlocBuilder<
+                  GenericCubit<Set<String>>,
+                  GenericState<Set<String>>
+                >(
+                  bloc: vm._addingSkusCubit,
                   builder: (context, state) {
-                    final bool isAdding = state.data.isAddingSku(sku);
+                    final bool isAdding = state.data.contains(sku.trim());
                     final bool isEnabled = !isAdding && sku.isNotEmpty;
 
                     return Material(

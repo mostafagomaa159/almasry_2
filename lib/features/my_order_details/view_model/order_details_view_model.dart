@@ -1,35 +1,29 @@
 part of '../my_order_imports.dart';
 
 class OrderDetailsViewModel {
-  /// Services
+  final _apiService = sl<ApiService>();
 
-  final ApiService _apiService = sl<ApiService>();
+  final GenericCubit<OrderModel?> _orderCubit = GenericCubit<OrderModel?>(null);
 
-  /// Variables
+  final GenericCubit<bool> _loadingCubit = GenericCubit<bool>(false);
 
-  final GenericCubit<OrderDetailsModel> _orderDetailsCubit =
-      GenericCubit<OrderDetailsModel>(const OrderDetailsModel());
+  String _errorMessage = '';
 
-  OrderDetailsModel _data() => _orderDetailsCubit.state.data;
-
-  /// Init
+  OrderModel? _order() => _orderCubit.state.data;
 
   Future<void> _init({required String orderId}) async {
     await _loadOrderDetails(orderId: orderId);
   }
 
   void _dispose() {
-    _orderDetailsCubit.close();
+    _orderCubit.close();
+    _loadingCubit.close();
   }
 
-  /// Api
-
   Future<void> _loadOrderDetails({required String orderId}) async {
-    final current = _orderDetailsCubit.state.data;
+    _errorMessage = '';
 
-    _orderDetailsCubit.onUpdateData(
-      current.copyWith(isLoading: true, clearErrorMessage: true),
-    );
+    _loadingCubit.onUpdateData(true);
 
     try {
       final response = await _apiService.get(
@@ -39,29 +33,22 @@ class OrderDetailsViewModel {
       final data = response.data;
 
       if (data is Map<String, dynamic>) {
-        _orderDetailsCubit.onUpdateData(
-          _orderDetailsCubit.state.data.copyWith(
-            isLoading: false,
-            order: OrderModel.fromJson(data),
-            clearErrorMessage: true,
-          ),
-        );
+        _orderCubit.onUpdateData(OrderModel.fromJson(data));
+
         return;
       }
 
-      _orderDetailsCubit.onUpdateData(
-        _orderDetailsCubit.state.data.copyWith(
-          isLoading: false,
-          errorMessage: LocaleKeys.invalidResponseFormat.tr(),
-        ),
-      );
+      _fail(LocaleKeys.invalidResponseFormat.tr());
     } catch (error) {
-      _orderDetailsCubit.onUpdateData(
-        _orderDetailsCubit.state.data.copyWith(
-          isLoading: false,
-          errorMessage: errorMessageFrom(error),
-        ),
-      );
+      _fail(errorMessageFrom(error));
+    } finally {
+      _loadingCubit.onUpdateData(false);
     }
+  }
+
+  void _fail(String message) {
+    _errorMessage = message;
+
+    _orderCubit.onUpdateData(_order());
   }
 }

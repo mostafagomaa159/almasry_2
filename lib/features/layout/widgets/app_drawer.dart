@@ -28,9 +28,7 @@ class AppDrawer extends StatelessWidget {
     _nav().pushNamed(RouteNames.homeComingSoon, extra: title);
   }
 
-  void _openSocialLink(String url) {
-    // TODO: open [url] once url_launcher is added to pubspec.yaml.
-  }
+  void _openSocialLink(String url) {}
 
   @override
   Widget build(BuildContext context) {
@@ -89,9 +87,6 @@ class _DrawerHeaderRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      /// Directional, not LTRB: the title sits on the start edge and the close
-      /// button on the end, so the wide padding has to follow them when the
-      /// locale flips.
       padding: EdgeInsetsDirectional.fromSTEB(20.w, 24.h, 12.w, 24.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -221,7 +216,6 @@ class _DrawerSocialRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // TODO: swap for the real brand icons under assets/icons.
           _SocialIcon(
             icon: Icons.camera_alt_outlined,
             onTap: () => onTap(AppSocialLinks.instagram),

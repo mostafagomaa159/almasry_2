@@ -2,12 +2,6 @@ import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:almasry_2/core/utils/app_direction.dart';
 import 'package:flutter/material.dart';
 
-/// The plain white app bar — flat, centred title — that the screens outside the
-/// red [CustomAppBar] treatment use.
-///
-/// Leave [onBack] null to keep Flutter's automatic leading (the shell decides
-/// whether a back arrow belongs there); pass it to take the button over, which
-/// is what any screen navigating through `NavigationService` wants.
 class CustomAppTitleAppBar extends StatelessWidget
     implements PreferredSizeWidget {
   final String title;

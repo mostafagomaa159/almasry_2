@@ -1,15 +1,11 @@
 part of '../product_list_imports.dart';
 
 class ProductListViewModel {
-  /// Services
-
-  final ApiService _apiService = sl<ApiService>();
-  final NavigationService _nav = sl<NavigationService>();
+  final _apiService = sl<ApiService>();
+  final _navService = sl<NavigationService>();
   final _cartService = sl<CartService>();
   final _alertService = sl<AlertService>();
   final _favoritesService = sl<FavoritesService>();
-
-  /// Variables
 
   final GenericCubit<List<ProductModel>?> _productsCubit =
       GenericCubit<List<ProductModel>?>(null);
@@ -20,7 +16,6 @@ class ProductListViewModel {
   bool _isLoadingMore = false;
   Map<String, int> _quantities = const {};
 
-  /// Paging bookkeeping — nothing renders it.
   String _title = '';
   String _categoryId = '';
   bool _isBrand = false;
@@ -29,12 +24,11 @@ class ProductListViewModel {
 
   List<ProductModel> _loadedProducts() => _productsCubit.state.data ?? const [];
 
-  late final GenericCubit<CartData> _cartCubit = _cartService.cartCubit;
+  late final GenericCubit<Set<String>> _addingSkusCubit =
+      _cartService.addingSkusCubit;
 
-  late final GenericCubit<FavoritesModel> _favoritesCubit =
+  late final GenericCubit<ListFavorites> _favoritesCubit =
       _favoritesService.favoritesCubit;
-
-  /// Init
 
   Future<void> _init({
     required String title,
@@ -57,8 +51,6 @@ class ProductListViewModel {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
   }
-
-  /// Actions
 
   void _onScroll() {
     if (!_scrollController.hasClients) return;
@@ -107,10 +99,8 @@ class ProductListViewModel {
       return;
     }
 
-    final String message = _cartService.data.errorMessage;
+    final String message = _cartService.errorMessage;
 
-    // Whatever Magento said, or nothing: an add that bounced to the login
-    // screen leaves no message, and there is none to invent.
     if (message.trim().isEmpty) return;
 
     _alertService.showError(message);
@@ -121,14 +111,14 @@ class ProductListViewModel {
   }
 
   void _goBack() {
-    _nav.pop();
+    _navService.pop();
   }
 
   void _navToProductDetails(ProductModel product) {
     final String sku = product.sku;
     if (sku.isEmpty) return;
 
-    _nav.pushNamed(
+    _navService.pushNamed(
       RouteNames.productDetails,
       extra: ProductDetailsArgs(
         sku: sku,
@@ -137,8 +127,6 @@ class ProductListViewModel {
       ),
     );
   }
-
-  /// Api
 
   Future<ProductListModel> _fetchProducts(ProductListRequest request) async {
     final response = await _apiService.get(endPoint: request.endPoint);
@@ -166,7 +154,6 @@ class ProductListViewModel {
     _isLoadingMore = false;
     _quantities = const {};
 
-    /// Back to `null` so the spinner replaces whatever was on screen.
     _productsCubit.onUpdateData(null);
 
     try {
@@ -184,7 +171,6 @@ class ProductListViewModel {
     } catch (error) {
       _errorMessage = errorMessageFrom(error);
 
-      /// Empty list + a message is what the body reads as "error".
       _productsCubit.onUpdateData(const []);
     }
   }
@@ -196,7 +182,6 @@ class ProductListViewModel {
 
     _isLoadingMore = true;
 
-    /// Same list, but the emit still forces the trailing spinner in.
     _productsCubit.onUpdateData(_loadedProducts());
 
     final int nextPage = _currentPage + 1;
@@ -221,7 +206,6 @@ class ProductListViewModel {
 
       _productsCubit.onUpdateData(updatedProducts);
     } catch (_) {
-      /// A failed "load more" keeps the pages already on screen.
       _isLoadingMore = false;
 
       _productsCubit.onUpdateData(_loadedProducts());

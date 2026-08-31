@@ -2,14 +2,11 @@ part of '../brands_imports.dart';
 
 typedef ListBrands = List<BrandModel>;
 
-/// Drives the brands screen: a cache-first listing, submit-driven search that
-/// queries both store views for mixed-script terms, scroll paging, and the
-/// scroll-to-top button.
 class BrandsViewModel {
-  final NavigationService _navService = sl<NavigationService>();
-  final GraphQLService _graphqlService = sl<GraphQLService>();
-  final CacheManagerService _cacheService = sl<CacheManagerService>();
-  final AlertService _alertService = sl<AlertService>();
+  final _navService = sl<NavigationService>();
+  final _graphqlService = sl<GraphQLService>();
+  final _cacheService = sl<CacheManagerService>();
+  final _alertService = sl<AlertService>();
 
   final GenericCubit<ListBrands> _brandsCubit = GenericCubit<ListBrands>([]);
   final GenericCubit<int> _totalItemsCubit = GenericCubit<int>(0);

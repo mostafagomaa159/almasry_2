@@ -1,9 +1,5 @@
 part of '../cart_imports.dart';
 
-/// Picks between the skeleton, the error, the empty state and the item list.
-///
-/// The cubit comes from `CartService`, so it is passed explicitly with `bloc:`
-/// rather than resolved from the tree — nothing above this provides it.
 class CartBody extends StatelessWidget {
   final CartViewModel vm;
 
@@ -11,27 +7,16 @@ class CartBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GenericCubit<CartData>, GenericState<CartData>>(
+    return BlocBuilder<GenericCubit<CartModel>, GenericState<CartModel>>(
       bloc: vm._cartCubit,
-      builder: (BuildContext context, GenericState<CartData> state) {
-        final CartData data = state.data;
-        final CartModel cart = data.cart;
+      builder: (BuildContext context, GenericState<CartModel> state) {
+        final CartModel cart = state.data;
 
-        // A refresh behind an already-painted list keeps the list, so the
-        // skeleton and the error only take over when there is nothing to show.
         if (cart.isEmpty) {
-          if (data.status == CartStatus.initial || data.isLoading) {
-            return const CartShimmer();
-          }
-
-          if (data.status == CartStatus.error) {
-            return CustomAppErrorView(
-              message: data.errorMessage,
-              onRetry: vm._retry,
-            );
-          }
-
-          return const CartEmptyView();
+          return _CartPlaceholder(
+            vm: vm,
+            hasLoaded: state is GenericUpdateState,
+          );
         }
 
         return Column(
@@ -39,33 +24,75 @@ class CartBody extends StatelessWidget {
             Expanded(
               child: CustomAppRefreshIndicator(
                 onRefresh: vm._refresh,
-                child: ListView.separated(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 16.w,
-                    vertical: 16.h,
-                  ),
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  itemCount: cart.items.length,
-                  separatorBuilder: (BuildContext context, int index) =>
-                      12.verticalSpace,
-                  itemBuilder: (BuildContext context, int index) {
-                    final CartItemModel item = cart.items[index];
-
-                    return FadeInUp(
-                      duration: const Duration(milliseconds: 250),
-                      child: CartItemTile(
-                        vm: vm,
-                        item: item,
-                        isBusy: data.isItemBusy(item.numericId),
-                      ),
-                    );
-                  },
-                ),
+                child: _CartItemList(vm: vm, cart: cart),
               ),
             ),
 
             CartSummary(vm: vm, cart: cart),
           ],
+        );
+      },
+    );
+  }
+}
+
+class _CartPlaceholder extends StatelessWidget {
+  const _CartPlaceholder({required this.vm, required this.hasLoaded});
+
+  final CartViewModel vm;
+  final bool hasLoaded;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+      bloc: vm._loadingCubit,
+      builder: (BuildContext context, GenericState<bool> state) {
+        if (!hasLoaded || state.data) return const CartShimmer();
+
+        if (vm._cartService.errorMessage.isNotEmpty) {
+          return CustomAppErrorView(
+            message: vm._cartService.errorMessage,
+            onRetry: vm._retry,
+          );
+        }
+
+        return const CartEmptyView();
+      },
+    );
+  }
+}
+
+class _CartItemList extends StatelessWidget {
+  const _CartItemList({required this.vm, required this.cart});
+
+  final CartViewModel vm;
+  final CartModel cart;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<GenericCubit<Set<int>>, GenericState<Set<int>>>(
+      bloc: vm._busyItemsCubit,
+      builder: (BuildContext context, GenericState<Set<int>> state) {
+        final Set<int> busyItemIds = state.data;
+
+        return ListView.separated(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: cart.items.length,
+          separatorBuilder: (BuildContext context, int index) =>
+              12.verticalSpace,
+          itemBuilder: (BuildContext context, int index) {
+            final CartItemModel item = cart.items[index];
+
+            return FadeInUp(
+              duration: const Duration(milliseconds: 250),
+              child: CartItemTile(
+                vm: vm,
+                item: item,
+                isBusy: busyItemIds.contains(item.numericId),
+              ),
+            );
+          },
         );
       },
     );

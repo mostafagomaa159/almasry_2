@@ -1,4 +1,3 @@
-/// Variables for [GraphQLDocuments.setShippingMethodsOnCart].
 class SetShippingMethodRequest {
   final String cartId;
   final String carrierCode;

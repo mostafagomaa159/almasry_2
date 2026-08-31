@@ -1,8 +1,6 @@
 import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
-/// Pull-to-refresh in the app's colours. Thin on purpose — it exists so every
-/// screen gets the same spinner without repeating the theming.
 class CustomAppRefreshIndicator extends StatelessWidget {
   final Future<void> Function() onRefresh;
   final Widget child;

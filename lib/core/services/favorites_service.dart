@@ -1,42 +1,46 @@
 import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
+import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/models/response/favorite/favorite_product_model.dart';
-import 'package:almasry_2/core/models/response/favorite/favorites_model.dart';
 import 'package:almasry_2/core/services/db_services.dart';
 
 class FavoritesService {
-  final GenericCubit<FavoritesModel> favoritesCubit =
-      GenericCubit<FavoritesModel>(FavoritesModel.initial());
+  final _dbService = sl<DbServices>();
+
+  final GenericCubit<ListFavorites> favoritesCubit =
+      GenericCubit<ListFavorites>(const []);
+
+  final GenericCubit<bool> loadingCubit = GenericCubit<bool>(false);
+
+  ListFavorites get favorites => favoritesCubit.state.data;
+
+  bool isFavorite(String productId) {
+    return favorites.any((FavoriteProductModel item) => item.id == productId);
+  }
 
   Future<void> loadFavorites() async {
-    favoritesCubit.onUpdateData(
-      favoritesCubit.state.data.copyWith(isLoading: true),
-    );
+    loadingCubit.onUpdateData(true);
 
-    final favorites = await DbServices.instance.getFavorites();
+    final ListFavorites stored = await _dbService.getFavorites();
 
-    favoritesCubit.onUpdateData(
-      favoritesCubit.state.data.copyWith(
-        isLoading: false,
-        favorites: favorites,
-      ),
-    );
+    favoritesCubit.onUpdateData(stored);
+
+    loadingCubit.onUpdateData(false);
   }
 
   Future<void> toggleFavorite(FavoriteProductModel product) async {
-    await DbServices.instance.toggleFavorite(product);
+    await _dbService.toggleFavorite(product);
+
     await loadFavorites();
   }
 
   Future<void> removeFavorite(String productId) async {
-    await DbServices.instance.removeFavorite(productId);
-    await loadFavorites();
-  }
+    await _dbService.removeFavorite(productId);
 
-  bool isFavorite(String productId) {
-    return favoritesCubit.state.data.isFavorite(productId);
+    await loadFavorites();
   }
 
   void dispose() {
     favoritesCubit.close();
+    loadingCubit.close();
   }
 }

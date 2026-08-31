@@ -1,6 +1,5 @@
 part of '../checkout_review_imports.dart';
 
-/// The totals panel whose action places the order.
 class CheckoutReviewSummary extends StatelessWidget {
   final CheckoutReviewViewModel vm;
   final CartModel cart;

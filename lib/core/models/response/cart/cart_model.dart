@@ -2,7 +2,6 @@ import 'package:almasry_2/core/models/response/cart/cart_item_model.dart';
 import 'package:almasry_2/core/models/response/cart/cart_prices_model.dart';
 import 'package:almasry_2/core/models/response/checkout/shipping_method_model.dart';
 
-/// `cart.selected_payment_method`.
 class CartPaymentMethodModel {
   final String code;
   final String title;
@@ -24,11 +23,6 @@ class CartPaymentMethodModel {
 
   bool get isEmpty => code.trim().isEmpty;
 
-  /// "installments - Souhoola" on the order review.
-  ///
-  /// The cart returns the option's *code* (`souhoola`), not its display name —
-  /// only `available_payment_methods` carries that — so the code is title-cased
-  /// rather than re-queried just for a label.
   String get displayTitle {
     final String label = title.trim().isNotEmpty ? title.trim() : code;
 
@@ -49,8 +43,6 @@ class CartPaymentMethodModel {
   }
 }
 
-/// One entry of `cart.shipping_addresses`. The cart is single-shipment here,
-/// so only the first is ever read.
 class CartShippingAddressModel {
   final String firstName;
   final String lastName;
@@ -90,9 +82,6 @@ class CartShippingAddressModel {
   String get summaryLine => street.join(' - ');
 }
 
-/// The whole `cart` payload — what `GraphQLDocuments.cartFragment` selects, so
-/// the details query and every add / remove / update mutation parse the same
-/// way and each one leaves the app holding a complete cart.
 class CartModel {
   final String id;
   final int totalQuantity;
@@ -110,8 +99,6 @@ class CartModel {
     this.shippingAddress,
   });
 
-  /// Digs the cart out of whichever wrapper the operation used — `cart` for the
-  /// query, `<mutationName>.cart` for the mutations.
   factory CartModel.fromResponse(
     Map<String, dynamic> json, {
     String? mutationKey,
@@ -141,8 +128,6 @@ class CartModel {
 
     return CartModel(
       id: json?['id']?.toString() ?? '',
-      // `total_quantity` counts units; the badge falls back to the line count
-      // for the stores that leave it null.
       totalQuantity:
           (json?['total_quantity'] as num?)?.toInt() ??
           items.fold(0, (int sum, CartItemModel item) => sum + item.quantity),
@@ -172,8 +157,6 @@ class CartModel {
 
   double get taxTotal => prices.taxTotal;
 
-  /// Magento's `grand_total` only includes shipping once a method is set, so
-  /// before that step the screens add the quoted cost themselves.
   double get grandTotal {
     if (!prices.grandTotal.isZero) return prices.grandTotal.value;
 

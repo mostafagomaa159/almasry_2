@@ -1,4 +1,3 @@
-/// Variables for [GraphQLDocuments.getProductDetail].
 class ProductDetailRequest {
   final String sku;
 

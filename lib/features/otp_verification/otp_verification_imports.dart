@@ -4,7 +4,6 @@ import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
 import 'package:almasry_2/core/base/bloc/generic_state.dart';
 import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/models/response/login/otp_verification_args_model.dart';
-import 'package:almasry_2/core/models/response/login/user_model.dart';
 import 'package:almasry_2/core/models/response/profile/profile_args_model.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/core/services/auth_session_service.dart';

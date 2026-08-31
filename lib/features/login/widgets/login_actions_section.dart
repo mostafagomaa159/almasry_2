@@ -12,11 +12,11 @@ class LoginActionsSection extends StatelessWidget {
       builder: (context, tabState) {
         final bool isRegularLoginSelected = tabState.data;
 
-        return BlocBuilder<GenericCubit<UserModel>, GenericState<UserModel>>(
-          bloc: vm._authCubit,
-          builder: (context, state) {
-            final UserModel data = state.data;
-
+        return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+          bloc: isRegularLoginSelected
+              ? vm._loadingCubit
+              : vm._phoneAuthLoadingCubit,
+          builder: (context, loadingState) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -27,9 +27,7 @@ class LoginActionsSection extends StatelessWidget {
                   onPressed: isRegularLoginSelected
                       ? () => vm._submitRegularLogin(context)
                       : () => vm._submitPhoneLogin(context),
-                  isLoading: isRegularLoginSelected
-                      ? data.isLoading
-                      : data.isPhoneAuthLoading,
+                  isLoading: loadingState.data,
                 ),
                 16.verticalSpace,
                 CustomAppButton(

@@ -1,7 +1,5 @@
 part of '../product_search_imports.dart';
 
-/// Switches between the recent searches and the results: an untouched or
-/// too-short query shows the former, anything else the stock filter and list.
 class ProductSearchBody extends StatelessWidget {
   final ProductSearchViewModel vm;
 

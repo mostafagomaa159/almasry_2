@@ -4,12 +4,6 @@ import 'package:almasry_2/core/utils/app_direction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// The red-bordered header used by the inner screens (Brands, Contact us):
-/// back chevron, centred title, and the doctor avatar overlapping the bottom
-/// trailing corner — the same shape as the home header.
-///
-/// [onMenu] swaps the back chevron for a drawer hamburger, which is what the
-/// tab-level screens (Cart) need: they have nothing to pop back to.
 class CustomAppBar extends StatelessWidget {
   final String title;
   final VoidCallback? onBack;

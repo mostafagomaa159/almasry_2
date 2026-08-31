@@ -1,10 +1,5 @@
 part of '../checkout_shipping_imports.dart';
 
-/// The "Shipping Company" radio list.
-///
-/// Hidden entirely until an address is chosen — Magento cannot quote a carrier
-/// without one, so an empty list before that point would read as "nobody
-/// delivers here".
 class CheckoutShippingMethodsSection extends StatelessWidget {
   final CheckoutShippingViewModel vm;
   final ListShippingMethods methods;
@@ -80,8 +75,6 @@ class _MethodsLoader extends StatelessWidget {
   }
 }
 
-/// Each row watches the selection and the in-flight apply itself, so choosing
-/// a carrier redraws the two radios that changed rather than the whole step.
 class _MethodRow extends StatelessWidget {
   final CheckoutShippingViewModel vm;
   final ShippingMethodModel method;

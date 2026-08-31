@@ -18,9 +18,6 @@ class _AddressFormViewState extends State<AddressFormView> {
     vm._init(args: widget.args);
   }
 
-  /// The governorate list is fetched here rather than in [initState]: choosing
-  /// the store view means reading the locale, and that needs a settled
-  /// `BuildContext`. The ViewModel guards against the repeat calls this gets.
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();

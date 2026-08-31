@@ -1,10 +1,5 @@
 part of '../checkout_review_imports.dart';
 
-/// The collapsible shell the three review sections share: a title row with a
-/// chevron, and a horizontal rule above and below.
-///
-/// A presentational leaf, so it takes its title and child rather than the
-/// ViewModel.
 class CheckoutReviewSection extends StatelessWidget {
   final String title;
   final bool isExpanded;
@@ -67,13 +62,10 @@ class CheckoutReviewSection extends StatelessWidget {
   }
 }
 
-/// A label / value line, used by both the order and bill sections.
 class CheckoutReviewRow extends StatelessWidget {
   final String label;
   final String value;
 
-  /// The bill rows put the amount hard against the trailing edge; the order
-  /// rows give the value its own column so long addresses wrap.
   final bool isCompact;
 
   const CheckoutReviewRow({

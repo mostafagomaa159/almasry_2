@@ -20,4 +20,3 @@ part 'widgets/edit_profile_dropdown_field.dart';
 part 'widgets/edit_profile_form.dart';
 part 'widgets/edit_profile_header.dart';
 part 'widgets/edit_profile_text_field.dart';
-part '../../core/models/response/edit_profile/edit_profile_model.dart';

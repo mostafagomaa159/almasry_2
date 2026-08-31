@@ -3,38 +3,23 @@ part of '../checkout_shipping_imports.dart';
 typedef ListAddresses = List<AddressModel>;
 typedef ListShippingMethods = List<ShippingMethodModel>;
 
-/// Step one of the checkout: choose the shipping address, push it onto the
-/// cart, and pick from the shipping methods Magento quotes back for it.
-///
-/// The order matters and is not negotiable — Magento only quotes shipping
-/// methods for a cart that already has a shipping address, and only accepts a
-/// payment method once a shipping method is set. So picking an address fires
-/// three calls behind one spinner: set shipping address, set billing address,
-/// re-read the available methods.
 class CheckoutShippingViewModel {
-  final GraphQLService _graphqlService = sl<GraphQLService>();
-  final NavigationService _navService = sl<NavigationService>();
-  final AlertService _alertService = sl<AlertService>();
-  final CartService _cartService = sl<CartService>();
-  final AddressBookService _addressBookService = sl<AddressBookService>();
-  final SharedPrefsServices _prefsService = sl<SharedPrefsServices>();
+  final _graphqlService = sl<GraphQLService>();
+  final _navService = sl<NavigationService>();
+  final _alertService = sl<AlertService>();
+  final _cartService = sl<CartService>();
+  final _addressBookService = sl<AddressBookService>();
+  final _prefsService = sl<SharedPrefsServices>();
 
-  /// The address the cart is being quoted for. Empty before one is picked, and
-  /// before the address book has finished loading.
   final GenericCubit<String> _selectedAddressIdCubit = GenericCubit<String>('');
 
-  /// Collapsed, the design shows only the chosen card behind a
-  /// "Show all addresses" link.
   final GenericCubit<bool> _showAllAddressesCubit = GenericCubit<bool>(false);
 
   final GenericCubit<ListShippingMethods> _methodsCubit =
       GenericCubit<ListShippingMethods>([]);
 
-  /// `carrier_code|method_code` — see `ShippingMethodModel.key`.
   final GenericCubit<String> _selectedMethodKeyCubit = GenericCubit<String>('');
 
-  /// True while the address is being pushed onto the cart and its methods
-  /// re-quoted, which is one visible step even though it is three calls.
   final GenericCubit<bool> _applyingAddressCubit = GenericCubit<bool>(false);
 
   final GenericCubit<bool> _settingMethodCubit = GenericCubit<bool>(false);
@@ -42,11 +27,8 @@ class CheckoutShippingViewModel {
   late final GenericCubit<ListAddresses> _addressesCubit =
       _addressBookService.addressesCubit;
 
-  late final GenericCubit<CartData> _cartCubit = _cartService.cartCubit;
+  late final GenericCubit<CartModel> _cartCubit = _cartService.cartCubit;
 
-  /// A failed address apply takes the whole step, so this is what the body
-  /// swaps its content for. Always set alongside an emit on [_methodsCubit],
-  /// which is what makes the screen rebuild.
   String _errorMessage = '';
 
   CartModel _cartModel() => _cartService.cart;
@@ -69,15 +51,6 @@ class CheckoutShippingViewModel {
     await _selectAddress(preselected);
   }
 
-  void _dispose() {
-    _selectedAddressIdCubit.close();
-    _showAllAddressesCubit.close();
-    _methodsCubit.close();
-    _selectedMethodKeyCubit.close();
-    _applyingAddressCubit.close();
-    _settingMethodCubit.close();
-  }
-
   void _back() {
     _navService.pop();
   }
@@ -91,12 +64,6 @@ class CheckoutShippingViewModel {
   Future<void> _editAddress(AddressModel address) =>
       _openAddressForm(address: address);
 
-  /// Waits for the form to close, then reconciles the quote with the book.
-  ///
-  /// The address card list updates itself — it watches `AddressBookService` —
-  /// but the *cart* does not: the first address ever saved has to become the
-  /// selection, and an edit to the selected one has to be re-sent, because
-  /// Magento is still quoting the old street.
   Future<void> _openAddressForm({AddressModel? address}) async {
     final AddressModel? before = _selectedAddress();
 
@@ -110,8 +77,6 @@ class CheckoutShippingViewModel {
 
     if (after == null) return;
 
-    // Equality ignores the default flag, so saving an unrelated address — or
-    // cancelling out of the form — costs nothing.
     if (before == after) return;
 
     await _selectAddress(after);
@@ -122,8 +87,6 @@ class CheckoutShippingViewModel {
 
     if (_selectedAddressIdCubit.state.data != address.id) return;
 
-    // The quote belonged to the address that just went away, so it has to be
-    // dropped rather than left on screen against a different address.
     _selectedAddressIdCubit.onUpdateData('');
     _selectedMethodKeyCubit.onUpdateData('');
     _methodsCubit.onUpdateData(const []);
@@ -133,8 +96,6 @@ class CheckoutShippingViewModel {
     if (next != null) await _selectAddress(next);
   }
 
-  /// Re-applies even when the same card is tapped again: the address may have
-  /// just been edited, and the quote has to follow it.
   Future<void> _selectAddress(AddressModel address) async {
     _errorMessage = '';
 
@@ -146,7 +107,7 @@ class CheckoutShippingViewModel {
     final String cartId = await _cartService.ensureCartId();
 
     if (cartId.isEmpty) {
-      _fail(_cartService.data.errorMessage);
+      _fail(_cartService.errorMessage);
 
       return;
     }
@@ -160,8 +121,6 @@ class CheckoutShippingViewModel {
         ).toVariables(),
       );
 
-      // The design has no separate billing step, so the shipping address is
-      // replayed as the billing one — `placeOrder` rejects a cart without it.
       await _graphqlService.mutate(
         GraphQLDocuments.setBillingAddressOnCart,
         variables: SetBillingAddressRequest(
@@ -178,14 +137,6 @@ class CheckoutShippingViewModel {
     }
   }
 
-  /// Magento wants an email on a guest cart before `placeOrder` will run, so
-  /// the account's is sent along with the address when there is one — the OTP
-  /// login persists whatever the customer record carries, and the profile's
-  /// email field writes the same key.
-  ///
-  /// Nothing here gates the step and nothing here reports: this screen no
-  /// longer decides whether the cart is orderable. If Magento still refuses at
-  /// `placeOrder`, its own words are what the review screen shows.
   Future<void> _setGuestEmail(String cartId) async {
     final String email = _prefsService.getString(PrefKeys.email).trim();
 
@@ -196,10 +147,7 @@ class CheckoutShippingViewModel {
         GraphQLDocuments.setGuestEmailOnCart,
         variables: {'cartId': cartId, 'email': email},
       );
-    } catch (_) {
-      // Magento validates the format, so a bad stored address lands here. It
-      // is not this step's business — carry on to the shipping methods.
-    }
+    } catch (_) {}
   }
 
   Future<void> _loadShippingMethods(String cartId) async {
@@ -210,8 +158,6 @@ class CheckoutShippingViewModel {
 
     final ListShippingMethods methods = _methodsFrom(response);
 
-    // Magento may already hold a method from an earlier visit; honour it so
-    // the radio matches the cart, otherwise take the first quote.
     final ShippingMethodModel? current = _selectedMethodFrom(response);
 
     final String selectedKey = current != null && !current.isEmpty
@@ -226,8 +172,6 @@ class CheckoutShippingViewModel {
 
     if (selectedKey.isEmpty) return;
 
-    // The totals need the carrier's price, which only lands on the cart once
-    // the method is actually set.
     await _applyMethod(_methodByKey(selectedKey), silent: true);
   }
 
@@ -245,8 +189,6 @@ class CheckoutShippingViewModel {
     await _applyMethod(method);
   }
 
-  /// [silent] keeps the automatic first-quote apply from flashing an error
-  /// toast on a screen the user has not touched yet.
   Future<void> _applyMethod(
     ShippingMethodModel? method, {
     bool silent = false,
@@ -265,8 +207,6 @@ class CheckoutShippingViewModel {
         ).toVariables(),
       );
 
-      // Re-read rather than trust the mutation's slim selection: the grand
-      // total now includes delivery and the totals card reads it off the cart.
       await _cartService.refresh();
     } catch (error) {
       if (!silent) _alertService.showError(errorMessageFrom(error));
@@ -307,8 +247,6 @@ class CheckoutShippingViewModel {
     return null;
   }
 
-  /// Collapsed the list shows the chosen card alone; expanded it shows the
-  /// whole book with the chosen one first.
   ListAddresses _visibleAddresses() {
     final AddressModel? selected = _selectedAddress();
 
@@ -365,8 +303,6 @@ class CheckoutShippingViewModel {
     return addresses.isEmpty ? null : addresses.first;
   }
 
-  /// The message plus the emit that shows it: the body reads [_errorMessage]
-  /// inside its builder on [_methodsCubit].
   void _fail(String message) {
     _errorMessage = message;
 

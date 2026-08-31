@@ -1,6 +1,5 @@
 import 'package:almasry_2/core/models/response/product_details/product_detail_model.dart';
 
-
 class GetProductDetailResponse {
   final ProductDetailModel? product;
 

@@ -1,8 +1,5 @@
 part of '../brands_imports.dart';
 
-/// Scroll-to-top button, shown once you are far enough down the grid that
-/// getting back would otherwise be a long swipe. Its label is the total number
-/// of brands the query matched.
 class BrandsFloat extends StatelessWidget {
   const BrandsFloat({super.key, required this.vm});
 

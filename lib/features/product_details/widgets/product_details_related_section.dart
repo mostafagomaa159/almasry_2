@@ -1,8 +1,5 @@
 part of '../product_details_imports.dart';
 
-/// "More From This Brand" — the brand's other products, fetched separately.
-/// Falls back to the curated related/upsell/cross-sell sets when the product
-/// carries no brand id. Tapping a card reopens this screen on that SKU.
 class ProductDetailsRelatedSection extends StatelessWidget {
   final ProductDetailsViewModel vm;
   final ProductDetailModel product;
@@ -30,8 +27,6 @@ class ProductDetailsRelatedSection extends StatelessWidget {
     );
   }
 
-  /// Nothing to show yet: a shimmer while the brand request is still out,
-  /// otherwise the section collapses.
   Widget _placeholder() {
     return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
       bloc: vm._brandProductsLoadingCubit,

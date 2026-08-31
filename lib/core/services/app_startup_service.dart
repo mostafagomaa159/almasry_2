@@ -4,16 +4,15 @@ import 'package:almasry_2/core/models/response/splash/startup_model.dart';
 import 'package:almasry_2/core/constants/pref_keys.dart';
 import 'package:almasry_2/core/services/cart_service.dart';
 import 'package:almasry_2/core/services/shared_prefs_services.dart';
+import 'package:almasry_2/core/services/user_profile_service.dart';
 
 class AppStartupService {
   final SharedPrefsServices _prefs = sl<SharedPrefsServices>();
 
-  final GenericCubit<SplashData> splashCubit = GenericCubit<SplashData>(
-    const SplashData(),
+  final GenericCubit<StartupStatus> splashCubit = GenericCubit<StartupStatus>(
+    StartupStatus.initial,
   );
 
-  /// Returns the resolved status so callers can act on it directly, and still
-  /// broadcasts it on [splashCubit] for anything watching app-wide.
   Future<StartupStatus> checkAppStart() async {
     final bool isFirstTime = _prefs.getBool(
       PrefKeys.isFirstTime,
@@ -35,7 +34,7 @@ class AppStartupService {
       status = StartupStatus.unauthenticated;
     }
 
-    splashCubit.onUpdateData(splashCubit.state.data.copyWith(status: status));
+    splashCubit.onUpdateData(status);
 
     return status;
   }
@@ -43,32 +42,26 @@ class AppStartupService {
   Future<void> completeFirstTime() async {
     await _prefs.setBool(PrefKeys.isFirstTime, false);
 
-    splashCubit.onUpdateData(
-      splashCubit.state.data.copyWith(status: StartupStatus.unauthenticated),
-    );
+    splashCubit.onUpdateData(StartupStatus.unauthenticated);
   }
 
   Future<void> saveLoggedIn() async {
     await _prefs.setBool(PrefKeys.isLoggedIn, true);
     await _prefs.setBool(PrefKeys.isFirstTime, false);
 
-    splashCubit.onUpdateData(
-      splashCubit.state.data.copyWith(status: StartupStatus.authenticated),
-    );
+    splashCubit.onUpdateData(StartupStatus.authenticated);
   }
 
   Future<void> logout() async {
     await _prefs.setBool(PrefKeys.isLoggedIn, false);
 
-    // The customer token outlives nothing: leaving it behind would keep the
-    // next visitor signed in to Magento while the app shows them as a guest.
     await _prefs.remove(PrefKeys.customerToken);
 
     await sl<CartService>().clearForLogout();
 
-    splashCubit.onUpdateData(
-      splashCubit.state.data.copyWith(status: StartupStatus.unauthenticated),
-    );
+    await sl<UserProfileService>().clear();
+
+    splashCubit.onUpdateData(StartupStatus.unauthenticated);
   }
 
   void dispose() {

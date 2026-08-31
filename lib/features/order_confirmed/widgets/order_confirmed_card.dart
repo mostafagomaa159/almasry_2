@@ -1,7 +1,5 @@
 part of '../order_confirmed_imports.dart';
 
-/// The order summary card: number, status pill, grand total, and the link into
-/// the order list.
 class OrderConfirmedCard extends StatelessWidget {
   final OrderConfirmedViewModel vm;
 
@@ -96,9 +94,6 @@ class OrderConfirmedCard extends StatelessWidget {
   }
 }
 
-/// The dark pill beside the order number. Deliberately not the shared
-/// `CustomOrderStatusChip`: that one is pastel-per-status and this design wants one
-/// solid dark blue pill.
 class _StatusPill extends StatelessWidget {
   final String status;
 

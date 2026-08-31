@@ -21,7 +21,6 @@ Map<String, dynamic> cartAddressInputFrom(AddressModel address) {
   };
 }
 
-/// Variables for [GraphQLDocuments.setShippingAddressesOnCart].
 class SetShippingAddressRequest {
   final String cartId;
   final AddressModel address;
@@ -43,8 +42,6 @@ class SetShippingAddressRequest {
   }
 }
 
-/// Variables for [GraphQLDocuments.setBillingAddressOnCart]. The checkout has
-/// no separate billing step, so this replays the shipping address.
 class SetBillingAddressRequest {
   final String cartId;
   final AddressModel address;

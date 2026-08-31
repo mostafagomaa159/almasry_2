@@ -1,8 +1,5 @@
 import 'package:almasry_2/core/constants/app_api.dart';
 
-/// Magento is inconsistent about media URLs: `image.url` comes back absolute,
-/// while `thumbnail.url` and `small_image.url` are catalogue-relative
-/// (`/i/s/isg009085.jpg`). This makes both usable by `CustomAppNetworkImage`.
 String mediaUrlFrom(String? path) {
   final String trimmed = path?.trim() ?? '';
 

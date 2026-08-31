@@ -1,9 +1,9 @@
 part of '../order_confirmed_imports.dart';
 
 class OrderConfirmedViewModel {
-  final NavigationService _navService = sl<NavigationService>();
+  final _navService = sl<NavigationService>();
 
-  final SharedPrefsServices _prefs = sl<SharedPrefsServices>();
+  final _prefs = sl<SharedPrefsServices>();
 
   OrderConfirmedArgs? _args;
 
@@ -13,8 +13,6 @@ class OrderConfirmedViewModel {
   void _init({required OrderConfirmedArgs args}) {
     _args = args;
   }
-
-  void _dispose() {}
 
   void _openOrders() {
     _navService.goNamed(

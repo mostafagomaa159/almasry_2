@@ -1,11 +1,6 @@
 import 'package:almasry_2/core/models/response/cart/cart_money_model.dart';
 import 'package:almasry_2/core/utils/media_url.dart';
 
-/// One line of `cart.itemsV2.items`.
-///
-/// [id] is the numeric handle the `removeItemFromCart` / `updateCartItems`
-/// mutations take as `cart_item_id`; Magento types it as a `String` on the
-/// item itself, so [numericId] does the conversion in one place.
 class CartItemModel {
   final String id;
   final String uid;
@@ -14,11 +9,8 @@ class CartItemModel {
   final String sku;
   final String imageUrl;
 
-  /// The unit price actually charged.
   final double unitPrice;
 
-  /// The pre-discount unit price. Equal to [unitPrice] when nothing is off,
-  /// which is what tells the row whether to strike a price through.
   final double regularUnitPrice;
 
   final double rowTotal;
@@ -59,8 +51,6 @@ class CartItemModel {
       minimumPrice['regular_price'] as Map<String, dynamic>?,
     );
 
-    // `prices.price` is what the cart charges; the catalogue price is only a
-    // fallback for the odd product whose price_range comes back empty.
     final double unitPrice = linePrice.isZero
         ? finalPrice.value
         : linePrice.value;
@@ -82,8 +72,6 @@ class CartItemModel {
     );
   }
 
-  /// 0 when the id is not a number — the callers treat that as "not
-  /// removable" rather than firing a mutation that cannot match a line.
   int get numericId => int.tryParse(id) ?? 0;
 
   bool get hasDiscount => regularUnitPrice > unitPrice;

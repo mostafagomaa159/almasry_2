@@ -12,8 +12,8 @@ class LoginFormSection extends StatelessWidget {
       builder: (context, tabState) {
         final bool isRegularLoginSelected = tabState.data;
 
-        return BlocBuilder<GenericCubit<UserModel>, GenericState<UserModel>>(
-          bloc: vm._authCubit,
+        return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+          bloc: vm._validationCubit,
           builder: (context, state) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,

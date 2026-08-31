@@ -1,48 +1,26 @@
 import 'package:equatable/equatable.dart';
 
-/// One entry of the checkout address book.
-///
-/// Magento's customer-address API is not part of this integration — the brief
-/// only exposes `setShippingAddressesOnCart` / `setBillingAddressOnCart`,
-/// which take a whole address inline. So the book is kept on the device by
-/// `AddressBookService` and each entry is replayed into the cart at checkout,
-/// which is also why this model is JSON round-trippable in both directions.
-///
-/// [Equatable] so the checkout can tell an edit that changed the delivery
-/// point from one that did not, and skip re-quoting when nothing moved.
 class AddressModel extends Equatable {
-  /// Local identity only — Magento never sees it.
   final String id;
 
   final String firstName;
   final String lastName;
 
-  /// Stored without the dialling code; [fullPhone] puts them back together.
   final String phone;
   final String countryCode;
 
-  /// The free-text line under the map, e.g. "25 Makram Ebeid St, Nasr City".
   final String addressLine;
 
   final String buildingNumber;
   final String floor;
   final String apartment;
 
-  /// The optional landmark the form calls "Mark".
   final String mark;
 
-  /// The governorate's display name — what the form's "Government" dropdown
-  /// shows, localised by store view. Sent as Magento's `city`.
   final String government;
 
-  /// Magento's `region_id`. Not optional in practice: without it Magento
-  /// rejects the address with "regionId is required" unless it can resolve
-  /// [regionCode] on its own, which it only manages for exact matches.
   final int? regionId;
 
-  /// The governorate's stable English handle (`Cairo`, `Kafr Al sheikh`),
-  /// which is what Magento wants in `region` — the localised name is not
-  /// accepted there.
   final String regionCode;
 
   final double? latitude;
@@ -72,8 +50,6 @@ class AddressModel extends Equatable {
   static const String defaultCountryDialCode = '+20';
   static const String countryIsoCode = 'EG';
 
-  /// The form has no postcode field and Magento rejects an address without
-  /// one, so every address ships with this placeholder.
   static const String defaultPostcode = '00000';
 
   factory AddressModel.fromJson(Map<String, dynamic> json) {
@@ -94,6 +70,27 @@ class AddressModel extends Equatable {
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
       isDefault: json['is_default'] as bool? ?? false,
+    );
+  }
+
+  factory AddressModel.flagged(AddressModel source, {required bool isDefault}) {
+    return AddressModel(
+      id: source.id,
+      firstName: source.firstName,
+      lastName: source.lastName,
+      phone: source.phone,
+      countryCode: source.countryCode,
+      addressLine: source.addressLine,
+      buildingNumber: source.buildingNumber,
+      floor: source.floor,
+      apartment: source.apartment,
+      mark: source.mark,
+      government: source.government,
+      regionId: source.regionId,
+      regionCode: source.regionCode,
+      latitude: source.latitude,
+      longitude: source.longitude,
+      isDefault: isDefault,
     );
   }
 
@@ -118,48 +115,8 @@ class AddressModel extends Equatable {
     };
   }
 
-  AddressModel copyWith({
-    String? id,
-    String? firstName,
-    String? lastName,
-    String? phone,
-    String? countryCode,
-    String? addressLine,
-    String? buildingNumber,
-    String? floor,
-    String? apartment,
-    String? mark,
-    String? government,
-    int? regionId,
-    String? regionCode,
-    double? latitude,
-    double? longitude,
-    bool? isDefault,
-  }) {
-    return AddressModel(
-      id: id ?? this.id,
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
-      phone: phone ?? this.phone,
-      countryCode: countryCode ?? this.countryCode,
-      addressLine: addressLine ?? this.addressLine,
-      buildingNumber: buildingNumber ?? this.buildingNumber,
-      floor: floor ?? this.floor,
-      apartment: apartment ?? this.apartment,
-      mark: mark ?? this.mark,
-      government: government ?? this.government,
-      regionId: regionId ?? this.regionId,
-      regionCode: regionCode ?? this.regionCode,
-      latitude: latitude ?? this.latitude,
-      longitude: longitude ?? this.longitude,
-      isDefault: isDefault ?? this.isDefault,
-    );
-  }
-
   String get fullPhone => '$countryCode$phone';
 
-  /// "Cairo / Nasr City" on the address card. The area is pulled off the tail
-  /// of the free-text line, which is how the map picker writes it.
   String get cityLine {
     final String area = addressLine.split(',').last.trim();
 
@@ -169,8 +126,6 @@ class AddressModel extends Equatable {
     return '${government.trim()} / $area';
   }
 
-  /// The second Magento street line: everything the form collects that is not
-  /// part of the free-text address.
   String get detailsLine {
     final List<String> parts = <String>[
       if (buildingNumber.trim().isNotEmpty) buildingNumber.trim(),
@@ -182,7 +137,6 @@ class AddressModel extends Equatable {
     return parts.join(' - ');
   }
 
-  /// What the address card and the order review print.
   String get summaryLine {
     final String details = detailsLine;
 
@@ -200,8 +154,6 @@ class AddressModel extends Equatable {
     ];
   }
 
-  /// [isDefault] is left out on purpose: flagging a different card default does
-  /// not move the parcel, so it must not force the cart to be re-quoted.
   @override
   List<Object?> get props => [
     id,

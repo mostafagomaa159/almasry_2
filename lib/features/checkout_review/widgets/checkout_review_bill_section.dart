@@ -1,7 +1,5 @@
 part of '../checkout_review_imports.dart';
 
-/// "Bill details" — the breakdown that is not already in the totals panel
-/// below it: tax, delivery and discount.
 class CheckoutReviewBillSection extends StatelessWidget {
   final CheckoutReviewViewModel vm;
   final CartModel cart;

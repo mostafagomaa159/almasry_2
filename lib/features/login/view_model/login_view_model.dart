@@ -1,14 +1,10 @@
 part of '../login_imports.dart';
 
 class LoginViewModel {
-  /// Services
-
-  final AuthSessionService _auth = sl<AuthSessionService>();
-  final AppStartupService _startup = sl<AppStartupService>();
-  final NavigationService _nav = sl<NavigationService>();
-  final SharedPrefsServices _prefs = sl<SharedPrefsServices>();
-
-  /// Variables
+  final _authService = sl<AuthSessionService>();
+  final _startupService = sl<AppStartupService>();
+  final _navService = sl<NavigationService>();
+  final _userProfileService = sl<UserProfileService>();
 
   late final TextEditingController _emailOrPhoneController;
   late final TextEditingController _passwordController;
@@ -20,11 +16,13 @@ class LoginViewModel {
 
   final GenericCubit<bool> _isRegularLoginCubit = GenericCubit<bool>(true);
 
-  late final GenericCubit<UserModel> _authCubit = _auth.authCubit;
-
-  UserModel _data() => _auth.authCubit.state.data;
-
-  /// Init
+  late final GenericCubit<bool> _validationCubit = _authService.validationCubit;
+  late final GenericCubit<bool> _loadingCubit = _authService.loadingCubit;
+  late final GenericCubit<bool> _phoneAuthLoadingCubit =
+      _authService.phoneAuthLoadingCubit;
+  late final GenericCubit<bool> _passwordHiddenCubit =
+      _authService.passwordHiddenCubit;
+  late final GenericCubit<bool> _rememberMeCubit = _authService.rememberMeCubit;
 
   void _init() {
     _emailOrPhoneController = TextEditingController();
@@ -48,32 +46,28 @@ class LoginViewModel {
     _isRegularLoginCubit.close();
   }
 
-  /// Form state
-
   void _onTabChanged(BuildContext context, bool isRegularLoginSelected) {
     _isRegularLoginCubit.onUpdateData(isRegularLoginSelected);
 
     FocusHelper.unfocusKeyboard(context);
-    _auth.clearLoginValidationErrors();
+    _authService.clearLoginValidationErrors();
   }
 
   void _clearLoginErrors() {
-    _auth.clearLoginValidationErrors();
+    _authService.clearLoginValidationErrors();
   }
 
   void _togglePasswordVisibility() {
-    _auth.togglePasswordVisibility();
+    _authService.togglePasswordVisibility();
   }
 
   void _toggleRememberMe() {
-    _auth.toggleRememberMe();
+    _authService.toggleRememberMe();
   }
 
   void _focusPassword() {
     _passwordFocusNode.requestFocus();
   }
-
-  /// Actions
 
   Future<void> _submitRegularLogin(BuildContext context) async {
     FocusHelper.unfocusKeyboard(context);
@@ -86,7 +80,7 @@ class LoginViewModel {
     );
     final String? passwordError = Validators.validatePassword(password);
 
-    _auth.setLoginValidationErrors(
+    _authService.setLoginValidationErrors(
       emailOrPhoneError: emailOrPhoneError,
       passwordError: passwordError,
     );
@@ -101,21 +95,19 @@ class LoginViewModel {
       return;
     }
 
-    await _auth.login();
-    await _startup.saveLoggedIn();
-    await _prefs.setBool(PrefKeys.isLoggedIn, true);
+    await _authService.login();
+
+    await _startupService.saveLoggedIn();
 
     if (emailOrPhone.contains('@')) {
-      await _prefs.setString(PrefKeys.email, emailOrPhone);
-      await _prefs.remove(PrefKeys.phone);
+      await _userProfileService.save(email: emailOrPhone, phone: '');
     } else {
-      await _prefs.setString(PrefKeys.phone, emailOrPhone);
-      await _prefs.remove(PrefKeys.email);
+      await _userProfileService.save(phone: emailOrPhone, email: '');
     }
 
     if (!context.mounted) return;
 
-    _nav.goNamed(RouteNames.home);
+    _navService.goNamed(RouteNames.home);
   }
 
   Future<void> _submitPhoneLogin(BuildContext context) async {
@@ -124,7 +116,7 @@ class LoginViewModel {
     final String phone = _phoneController.text.trim();
     final String? phoneError = Validators.validatePhone(phone);
 
-    _auth.setLoginValidationErrors(
+    _authService.setLoginValidationErrors(
       emailOrPhoneError: phoneError,
       passwordError: null,
     );
@@ -134,25 +126,25 @@ class LoginViewModel {
       return;
     }
 
-    final bool success = await _auth.sendVerificationCode(phone);
+    final bool success = await _authService.sendVerificationCode(phone);
 
     if (!context.mounted || !success) return;
 
-    final verificationPhone = _data().verificationPhone ?? phone;
+    final String verificationPhone = _authService.verificationPhone ?? phone;
 
-    _nav.pushNamed(
+    _navService.pushNamed(
       RouteNames.otpVerification,
       extra: OtpVerificationArgs(phone: verificationPhone),
     );
   }
 
   void _goToRegisterScreen() {
-    _nav.pushNamed(RouteNames.signup);
+    _navService.pushNamed(RouteNames.signup);
   }
 
   void _continueAsGuest(BuildContext context) {
     FocusHelper.unfocusKeyboard(context);
-    _nav.goNamed(
+    _navService.goNamed(
       RouteNames.home,
       extra: const ProfileArgs(isGuest: true, source: 'guest'),
     );

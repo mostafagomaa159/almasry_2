@@ -5,14 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:almasry_2/core/constants/app_colors.dart';
 
-/// A section title with the optional "more ›" affordance trailing it.
-///
-/// Started life inside the home feature; it is here because nothing about it is
-/// home-specific and the categories and details screens want the same row.
 class CustomAppSectionHeader extends StatelessWidget {
   final String title;
 
-  /// Defaults to [LocaleKeys.homeMore].
   final String? actionTitle;
 
   final VoidCallback? onActionTap;

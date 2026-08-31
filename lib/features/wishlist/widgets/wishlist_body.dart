@@ -8,33 +8,45 @@ class WishlistBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<
-      GenericCubit<FavoritesModel>,
-      GenericState<FavoritesModel>
+      GenericCubit<ListFavorites>,
+      GenericState<ListFavorites>
     >(
       bloc: vm._favoritesCubit,
       builder: (context, state) {
-        final data = vm._data();
+        final ListFavorites favorites = state.data;
 
-        if (data.isLoading) {
-          return const CustomAppLoadingView();
-        }
-
-        if (data.favorites.isEmpty) {
-          return CustomAppEmptyView(
-            message: LocaleKeys.wishlistEmptyTitle.tr(),
-            icon: Icons.favorite_border,
-            description: LocaleKeys.wishlistEmptyDesc.tr(),
-          );
-        }
+        if (favorites.isEmpty) return _WishlistPlaceholder(vm: vm);
 
         return ListView.builder(
           padding: EdgeInsets.all(16.w),
-          itemCount: data.favorites.length,
+          itemCount: favorites.length,
           itemBuilder: (context, index) {
-            final product = data.favorites[index];
+            final FavoriteProductModel product = favorites[index];
 
             return WishlistItemCard(vm: vm, product: product);
           },
+        );
+      },
+    );
+  }
+}
+
+class _WishlistPlaceholder extends StatelessWidget {
+  const _WishlistPlaceholder({required this.vm});
+
+  final WishlistViewModel vm;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+      bloc: vm._loadingCubit,
+      builder: (context, state) {
+        if (state.data) return const CustomAppLoadingView();
+
+        return CustomAppEmptyView(
+          message: LocaleKeys.wishlistEmptyTitle.tr(),
+          icon: Icons.favorite_border,
+          description: LocaleKeys.wishlistEmptyDesc.tr(),
         );
       },
     );

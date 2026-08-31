@@ -6,12 +6,10 @@ class CustomAppTextField extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode? focusNode;
 
-  /// Optional caption drawn above the field.
   final String? label;
   final String hintText;
   final String? errorText;
 
-  /// Set this instead of [errorText] when the field sits inside a `Form`.
   final FormFieldValidator<String>? validator;
   final bool obscureText;
   final TextInputType keyboardType;

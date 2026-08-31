@@ -4,10 +4,10 @@ import 'package:almasry_2/core/services/network_logger_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// Captures what the logger would print, by swapping the global `debugPrint`
-/// the way the framework's own tests do.
-List<String> _capture(void Function(NetworkLoggerService logger) body,
-    {NetworkLoggerService logger = const NetworkLoggerService(enabled: true)}) {
+List<String> _capture(
+  void Function(NetworkLoggerService logger) body, {
+  NetworkLoggerService logger = const NetworkLoggerService(enabled: true),
+}) {
   final List<String> lines = <String>[];
   final DebugPrintCallback original = debugPrint;
 
@@ -27,11 +27,11 @@ List<String> _capture(void Function(NetworkLoggerService logger) body,
 void main() {
   group('line chunking', () {
     test('keeps every emitted line inside logcat\'s byte budget', () {
-      // 2 bytes per character in UTF-8 — the case that used to be cut off
-      // mid-character, losing the rest of the line.
       final String arabic = 'بانادول جوينت ' * 400;
 
-      final List<String> lines = _capture((NetworkLoggerService l) => l.line(arabic));
+      final List<String> lines = _capture(
+        (NetworkLoggerService l) => l.line(arabic),
+      );
 
       expect(lines.length, greaterThan(1));
 
@@ -43,20 +43,20 @@ void main() {
     test('loses no characters and prefixes every continuation', () {
       final String arabic = 'بانادول جوينت ' * 400;
 
-      final List<String> lines = _capture((NetworkLoggerService l) => l.line(arabic));
+      final List<String> lines = _capture(
+        (NetworkLoggerService l) => l.line(arabic),
+      );
 
       expect(lines.every((String line) => line.startsWith('│ ')), isTrue);
-      expect(
-        lines.map((String line) => line.substring(2)).join(),
-        arabic,
-      );
+      expect(lines.map((String line) => line.substring(2)).join(), arabic);
     });
 
     test('splits on character boundaries, never mid-rune', () {
-      // A 4-byte rune straddling the budget is the surrogate-pair case.
       final String emoji = '💊' * 400;
 
-      final List<String> lines = _capture((NetworkLoggerService l) => l.line(emoji));
+      final List<String> lines = _capture(
+        (NetworkLoggerService l) => l.line(emoji),
+      );
 
       for (final String line in lines) {
         expect(line.substring(2).runes.every((int r) => r == 0x1F48A), isTrue);
@@ -111,7 +111,8 @@ void main() {
   group('secrets and gating', () {
     test('masks the bearer token', () {
       final List<String> lines = _capture(
-        (NetworkLoggerService l) => l.keyValue('Authorization', 'Bearer abc123'),
+        (NetworkLoggerService l) =>
+            l.keyValue('Authorization', 'Bearer abc123'),
       );
 
       expect(lines.single, contains('*** (13 chars)'));
@@ -119,14 +120,11 @@ void main() {
     });
 
     test('prints nothing when disabled', () {
-      final List<String> lines = _capture(
-        (NetworkLoggerService l) {
-          l.open('REQUEST');
-          l.section('body', <String, Object?>{'a': 1});
-          l.close();
-        },
-        logger: const NetworkLoggerService(enabled: false),
-      );
+      final List<String> lines = _capture((NetworkLoggerService l) {
+        l.open('REQUEST');
+        l.section('body', <String, Object?>{'a': 1});
+        l.close();
+      }, logger: const NetworkLoggerService(enabled: false));
 
       expect(lines, isEmpty);
     });
@@ -134,11 +132,15 @@ void main() {
 
   test('reads the operation name off a GraphQL document', () {
     expect(
-      NetworkLoggerService.operationName('query GetProductDetail(\$sku: String!) {'),
+      NetworkLoggerService.operationName(
+        'query GetProductDetail(\$sku: String!) {',
+      ),
       'GetProductDetail',
     );
     expect(
-      NetworkLoggerService.operationName('  mutation PlaceOrder(\$cartId: String!) {'),
+      NetworkLoggerService.operationName(
+        '  mutation PlaceOrder(\$cartId: String!) {',
+      ),
       'PlaceOrder',
     );
     expect(NetworkLoggerService.operationName('{ products { sku } }'), isNull);

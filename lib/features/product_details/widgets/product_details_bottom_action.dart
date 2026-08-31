@@ -1,7 +1,5 @@
 part of '../product_details_imports.dart';
 
-/// The pinned card at the bottom: quantity plus "Add to cart" when the product
-/// is sellable, the availability subscription when it is not.
 class ProductDetailsBottomAction extends StatelessWidget {
   final ProductDetailsViewModel vm;
   final ProductDetailModel product;
@@ -73,64 +71,63 @@ class _AddToBasketRow extends StatelessWidget {
 
         12.horizontalSpace,
 
-        // The spinner comes off the app-global cart state, so the button also
-        // reflects an add started from somewhere else.
         Expanded(
-          child: BlocBuilder<GenericCubit<CartData>, GenericState<CartData>>(
-            bloc: vm._cartCubit,
-            builder: (context, state) {
-              final bool isAdding = state.data.isAdding;
+          child:
+              BlocBuilder<GenericCubit<Set<String>>, GenericState<Set<String>>>(
+                bloc: vm._addingSkusCubit,
+                builder: (context, state) {
+                  final bool isAdding = state.data.isNotEmpty;
 
-              return SizedBox(
-                height: 58.h,
-                child: ElevatedButton(
-                  onPressed: isAdding ? null : vm._addToCart,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryRed,
-                    foregroundColor: AppColors.white,
-                    disabledBackgroundColor: AppColors.primaryRed,
-                    disabledForegroundColor: AppColors.white,
-                    elevation: 0,
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                  ),
-                  child: isAdding
-                      ? SizedBox(
-                          width: 22.w,
-                          height: 22.w,
-                          child: const CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AppColors.white,
-                          ),
-                        )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.shopping_basket_outlined,
-                              size: 22.sp,
-                              color: AppColors.white,
-                            ),
-                            8.horizontalSpace,
-                            Flexible(
-                              child: Text(
-                                LocaleKeys.productDetailsAddToBasket.tr(),
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w700,
+                  return SizedBox(
+                    height: 58.h,
+                    child: ElevatedButton(
+                      onPressed: isAdding ? null : vm._addToCart,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryRed,
+                        foregroundColor: AppColors.white,
+                        disabledBackgroundColor: AppColors.primaryRed,
+                        disabledForegroundColor: AppColors.white,
+                        elevation: 0,
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.r),
+                        ),
+                      ),
+                      child: isAdding
+                          ? SizedBox(
+                              width: 22.w,
+                              height: 22.w,
+                              child: const CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.white,
+                              ),
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.shopping_basket_outlined,
+                                  size: 22.sp,
                                   color: AppColors.white,
                                 ),
-                              ),
+                                8.horizontalSpace,
+                                Flexible(
+                                  child: Text(
+                                    LocaleKeys.productDetailsAddToBasket.tr(),
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                ),
-              );
-            },
-          ),
+                    ),
+                  );
+                },
+              ),
         ),
       ],
     );
@@ -144,8 +141,6 @@ class _NotifyMeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Two builders because the subscription flag and the in-flight spinner
-    // are two cubits, each changing on its own.
     return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
       bloc: vm._notifySubscribedCubit,
       builder: (context, subscribedState) {

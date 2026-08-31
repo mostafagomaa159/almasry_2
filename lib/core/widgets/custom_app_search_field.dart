@@ -2,8 +2,6 @@ import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// The filled, borderless search box used by home, brands and categories.
-/// Pass [onClear] to get the trailing clear button.
 class CustomAppSearchField extends StatelessWidget {
   final TextEditingController? controller;
   final String hintText;
@@ -14,8 +12,6 @@ class CustomAppSearchField extends StatelessWidget {
   final FocusNode? focusNode;
   final bool autofocus;
 
-  /// For the boxes that only look like a field — home's, which opens the
-  /// search screen instead of taking input. Pair it with [onTap].
   final bool readOnly;
 
   final VoidCallback? onTap;

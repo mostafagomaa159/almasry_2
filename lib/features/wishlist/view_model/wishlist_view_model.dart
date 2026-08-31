@@ -1,32 +1,24 @@
 part of '../wishlist_imports.dart';
 
 class WishlistViewModel {
-  /// Services
+  final _favoritesService = sl<FavoritesService>();
+  final _navService = sl<NavigationService>();
 
-  final FavoritesService _favorites = sl<FavoritesService>();
-  final NavigationService _nav = sl<NavigationService>();
+  late final GenericCubit<ListFavorites> _favoritesCubit =
+      _favoritesService.favoritesCubit;
 
-  /// Variables
-
-  late final GenericCubit<FavoritesModel> _favoritesCubit =
-      _favorites.favoritesCubit;
-
-  FavoritesModel _data() => _favorites.favoritesCubit.state.data;
-
-  /// Init
+  late final GenericCubit<bool> _loadingCubit = _favoritesService.loadingCubit;
 
   void _init() {
-    _favorites.loadFavorites();
+    _favoritesService.loadFavorites();
   }
 
-  /// Actions
-
   Future<void> _removeFromWishlist(String productId) async {
-    await _favorites.removeFavorite(productId);
+    await _favoritesService.removeFavorite(productId);
   }
 
   void _openDetails(FavoriteProductModel product) {
-    _nav.pushNamed(
+    _navService.pushNamed(
       RouteNames.productDetails,
       extra: ProductDetailsArgs(
         sku: product.id,

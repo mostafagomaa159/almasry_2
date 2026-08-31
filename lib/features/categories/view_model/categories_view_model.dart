@@ -1,26 +1,16 @@
 part of '../categories_imports.dart';
 
 class CategoriesViewModel {
-  /// Services
-
-  final ApiService _apiService = sl<ApiService>();
-
-  /// Variables
+  final _apiService = sl<ApiService>();
 
   final TextEditingController _searchController = TextEditingController();
 
-  /// The screen's only cubit. `null` means the categories are still loading;
-  /// a list — empty or not — means the request finished.
   final GenericCubit<List<CategoryModel>?> _categoriesCubit =
       GenericCubit<List<CategoryModel>?>(null);
 
-  /// Plain fields, not cubits. Each one is written before the cubit emits, so
-  /// the rebuild that emit triggers always reads the matching value.
   String _errorMessage = '';
   int _selectedParentIndex = 0;
   String _searchQuery = '';
-
-  /// Getters
 
   List<CategoryModel> _categories() => _categoriesCubit.state.data ?? const [];
 
@@ -48,8 +38,6 @@ class CategoriesViewModel {
     }).toList();
   }
 
-  /// Init
-
   void _init() {
     _getCategories();
   }
@@ -59,10 +47,6 @@ class CategoriesViewModel {
     _categoriesCubit.close();
   }
 
-  /// Actions
-
-  /// Selection and search are plain fields, so they re-emit the same list to
-  /// get a rebuild — `GenericState.changed` makes that work.
   void _selectParentCategory(int index) {
     _selectedParentIndex = index;
     _searchQuery = '';
@@ -88,15 +72,12 @@ class CategoriesViewModel {
     await _getCategories();
   }
 
-  /// Api
-
   Future<void> _getCategories() async {
     _errorMessage = '';
     _selectedParentIndex = 0;
     _searchQuery = '';
     _searchController.clear();
 
-    /// Back to `null` so the spinner replaces whatever was on screen.
     _categoriesCubit.onUpdateData(null);
 
     try {
@@ -108,7 +89,6 @@ class CategoriesViewModel {
     } catch (error) {
       _errorMessage = errorMessageFrom(error);
 
-      /// Empty list + a message is what the body reads as "error".
       _categoriesCubit.onUpdateData(const []);
     }
   }

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 class ProductCustomAttributeModel {
   final String code;
   final String label;

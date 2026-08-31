@@ -17,8 +17,6 @@ class AppRoutes {
   static const String cart = '/cart';
   static const String orderConfirmed = '/orderConfirmed';
 
-  /// The three checkout steps and the address form sit outside the shell —
-  /// the design has no bottom bar on them.
   static const String checkoutShipping = '/checkout-shipping';
   static const String checkoutPayment = '/checkout-payment';
   static const String checkoutReview = '/checkout-review';

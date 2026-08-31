@@ -1,12 +1,8 @@
 part of '../orders_imports.dart';
 
 class OrdersViewModel {
-  /// Services
-
-  final ApiService _apiService = sl<ApiService>();
-  final NavigationService _nav = sl<NavigationService>();
-
-  /// Variables
+  final _apiService = sl<ApiService>();
+  final _navService = sl<NavigationService>();
 
   final GenericCubit<List<OrderModel>> _ordersCubit =
       GenericCubit<List<OrderModel>>([]);
@@ -19,8 +15,6 @@ class OrdersViewModel {
       _totalItems == null ||
       _ordersCubit.state.data.length < (_totalItems ?? 0);
 
-  /// Init
-
   Future<void> _init({required String email}) async {
     await _ordersApi(email);
   }
@@ -29,10 +23,8 @@ class OrdersViewModel {
     _ordersCubit.close();
   }
 
-  /// Actions
-
   void _openOrderDetails(OrderModel order) {
-    _nav.pushNamed(
+    _navService.pushNamed(
       RouteNames.orderDetails,
       extra: OrderDetailsArgs(
         orderId: order.entityId,
@@ -51,8 +43,6 @@ class OrdersViewModel {
     _totalItems = null;
     _ordersCubit.onUpdateData([]);
   }
-
-  /// Api
 
   Future<void> _ordersApi(String email) async {
     if (_isFetching || !canFetchMoreItems()) return;

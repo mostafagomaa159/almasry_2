@@ -1,12 +1,10 @@
 part of '../register_imports.dart';
 
 class RegisterViewModel {
-  /// Services
-
-  final AuthSessionService _auth = sl<AuthSessionService>();
-  final NavigationService _nav = sl<NavigationService>();
-
-  /// Variables
+  final _authService = sl<AuthSessionService>();
+  final _navService = sl<NavigationService>();
+  final _startupService = sl<AppStartupService>();
+  final _userProfileService = sl<UserProfileService>();
 
   late final TextEditingController _firstNameController;
   late final TextEditingController _lastNameController;
@@ -20,11 +18,10 @@ class RegisterViewModel {
   late final FocusNode _emailFocusNode;
   late final FocusNode _passwordFocusNode;
 
-  late final GenericCubit<UserModel> _authCubit = _auth.authCubit;
-
-  UserModel _data() => _auth.authCubit.state.data;
-
-  /// Init
+  late final GenericCubit<bool> _validationCubit = _authService.validationCubit;
+  late final GenericCubit<bool> _loadingCubit = _authService.loadingCubit;
+  late final GenericCubit<bool> _passwordHiddenCubit =
+      _authService.passwordHiddenCubit;
 
   void _init() {
     _firstNameController = TextEditingController();
@@ -54,14 +51,12 @@ class RegisterViewModel {
     _passwordFocusNode.dispose();
   }
 
-  /// Form state
-
   void _clearRegisterErrors() {
-    _auth.clearRegisterValidationErrors();
+    _authService.clearRegisterValidationErrors();
   }
 
   void _togglePasswordVisibility() {
-    _auth.togglePasswordVisibility();
+    _authService.togglePasswordVisibility();
   }
 
   void _focusLastName() {
@@ -79,8 +74,6 @@ class RegisterViewModel {
   void _focusPassword() {
     _passwordFocusNode.requestFocus();
   }
-
-  /// Actions
 
   Future<void> _toggleLanguage(BuildContext context) {
     return AppLocale.toggleLanguage(context);
@@ -101,7 +94,7 @@ class RegisterViewModel {
     final String? emailError = Validators.validateEmail(email);
     final String? passwordError = Validators.validateStrongPassword(password);
 
-    _auth.setRegisterValidationErrors(
+    _authService.setRegisterValidationErrors(
       firstNameError: firstNameError,
       lastNameError: lastNameError,
       phoneError: phoneError,
@@ -134,11 +127,20 @@ class RegisterViewModel {
       return;
     }
 
-    await _auth.register();
+    await _authService.register();
+
+    await _userProfileService.save(
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phone: phone,
+    );
+
+    await _startupService.saveLoggedIn();
 
     if (!context.mounted) return;
 
-    _nav.goNamed(
+    _navService.goNamed(
       RouteNames.home,
       extra: ProfileArgs(
         firstName: firstName,
@@ -152,6 +154,6 @@ class RegisterViewModel {
 
   void _goToLogin(BuildContext context) {
     FocusHelper.unfocusKeyboard(context);
-    _nav.goNamed(RouteNames.login);
+    _navService.goNamed(RouteNames.login);
   }
 }

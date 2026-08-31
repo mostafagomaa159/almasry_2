@@ -1,13 +1,5 @@
 part of '../checkout_shipping_imports.dart';
 
-/// One saved address.
-///
-/// The red border marks the card the cart is quoted against; the corner ribbon
-/// marks the address flagged default in the book. They usually coincide,
-/// because the default is what the screen preselects.
-///
-/// The default address has no delete button: removing it would leave the book
-/// with nothing flagged.
 class CheckoutAddressCard extends StatelessWidget {
   final CheckoutShippingViewModel vm;
   final AddressModel address;
@@ -132,8 +124,6 @@ class CheckoutAddressCard extends StatelessWidget {
     );
   }
 
-  /// A rotated banner clipped by the card's rounded corner, which is how the
-  /// design draws it.
   Widget _defaultRibbon() {
     return Transform.rotate(
       angle: 0.785398,

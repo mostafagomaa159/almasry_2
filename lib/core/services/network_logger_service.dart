@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
-
 class NetworkLoggerService {
   const NetworkLoggerService({
     this.enabled = kDebugMode,
@@ -14,7 +13,6 @@ class NetworkLoggerService {
 
   final bool enabled;
 
-
   final bool redactSecrets;
 
   final int? maxBodyChars;
@@ -22,7 +20,6 @@ class NetworkLoggerService {
   final int? maxStringChars;
 
   static const JsonEncoder _encoder = JsonEncoder.withIndent('  ');
-
 
   static const int _maxLineBytes = 700;
 
@@ -38,7 +35,6 @@ class NetworkLoggerService {
   void line(String text) => _emit(text, '│ ');
 
   void close() => _emit('└${'─' * 40}');
-
 
   void section(String label, Object? body) {
     if (!enabled) return;
@@ -81,7 +77,6 @@ class NetworkLoggerService {
 
       return _truncate(_encode(_elide(fields)));
     }
-
 
     if (body is String) {
       try {

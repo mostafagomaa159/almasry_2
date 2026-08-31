@@ -4,12 +4,6 @@ import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/services/shared_prefs_services.dart';
 import 'package:flutter/foundation.dart';
 
-/// Stores JSON-encodable lists in shared preferences so a screen can paint
-/// last session's data immediately and refresh behind it, instead of showing a
-/// skeleton on every cold start.
-///
-/// There is no expiry: callers are expected to re-fetch after reading, so the
-/// cache is never more than one app-open stale.
 class CacheManagerService {
   SharedPrefsServices get _prefs => sl<SharedPrefsServices>();
 

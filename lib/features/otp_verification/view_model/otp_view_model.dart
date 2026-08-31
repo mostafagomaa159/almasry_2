@@ -1,12 +1,8 @@
 part of '../otp_verification_imports.dart';
 
 class OtpViewModel {
-  /// Services
-
-  final AuthSessionService _auth = sl<AuthSessionService>();
-  final NavigationService _nav = sl<NavigationService>();
-
-  /// Variables
+  final _authService = sl<AuthSessionService>();
+  final _navService = sl<NavigationService>();
 
   late final TextEditingController _otpController;
 
@@ -14,17 +10,17 @@ class OtpViewModel {
 
   final GenericCubit<String> _otpTextCubit = GenericCubit<String>('');
 
-  late final GenericCubit<UserModel> _authCubit = _auth.authCubit;
-
-  UserModel _data() => _auth.authCubit.state.data;
+  late final GenericCubit<bool> _validationCubit = _authService.validationCubit;
+  late final GenericCubit<bool> _otpLoadingCubit = _authService.otpLoadingCubit;
+  late final GenericCubit<bool> _phoneAuthLoadingCubit =
+      _authService.phoneAuthLoadingCubit;
+  late final GenericCubit<int> _otpCountdownCubit =
+      _authService.otpCountdownCubit;
 
   String _maskedPhone() => _maskPhone(_phone);
 
   bool _isVerifyEnabled() =>
-      _otpController.text.trim().length == 5 &&
-      !_data().isOtpVerificationLoading;
-
-  /// Init
+      _otpController.text.trim().length == 5 && !_otpLoadingCubit.state.data;
 
   void _init(String phone) {
     _phone = phone;
@@ -36,13 +32,9 @@ class OtpViewModel {
     _otpTextCubit.close();
   }
 
-  /// Form state
-
   void _onOtpChanged(String value) {
     _otpTextCubit.onUpdateData(value);
   }
-
-  /// Helpers
 
   String _maskPhone(String phone) {
     final cleaned = phone.replaceAll(' ', '');
@@ -53,18 +45,16 @@ class OtpViewModel {
     return '$start${'_' * (cleaned.length - 4)}$end';
   }
 
-  /// Actions
-
   Future<void> _verifyOtp(BuildContext context) async {
     FocusScope.of(context).unfocus();
 
     final otp = _otpController.text.trim();
 
-    final success = await _auth.verifyOtpCode(otp);
+    final success = await _authService.verifyOtpCode(otp);
 
     if (!context.mounted || !success) return;
 
-    _nav.goNamed(
+    _navService.goNamed(
       RouteNames.home,
       extra: ProfileArgs(phone: _phone, source: 'otp_login'),
     );
@@ -73,7 +63,7 @@ class OtpViewModel {
   Future<void> _resendCode(BuildContext context) async {
     FocusScope.of(context).unfocus();
 
-    final success = await _auth.resendVerificationCode();
+    final success = await _authService.resendVerificationCode();
 
     if (!context.mounted || !success) return;
 
@@ -83,6 +73,6 @@ class OtpViewModel {
   }
 
   void _goBack() {
-    _nav.pop();
+    _navService.pop();
   }
 }

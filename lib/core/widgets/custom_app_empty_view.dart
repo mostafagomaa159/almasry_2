@@ -2,9 +2,6 @@ import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// Shown when a request succeeded but returned nothing. [icon] and
-/// [description] are optional — without them this is the plain centred line
-/// most lists use.
 class CustomAppEmptyView extends StatelessWidget {
   final String message;
   final IconData? icon;

@@ -1,8 +1,5 @@
 part of '../product_search_imports.dart';
 
-/// What the screen shows before the first search: the prompt, and the queries
-/// the user has run before. Each row re-runs its query; the trailing cross
-/// forgets it.
 class ProductSearchRecentSearches extends StatelessWidget {
   final ProductSearchViewModel vm;
 

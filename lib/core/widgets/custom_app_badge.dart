@@ -2,12 +2,6 @@ import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// A small filled pill of text — the order status chip, the merchandising
-/// label over a product image, and anything else that is one word on a colour.
-///
-/// Both colours are required rather than defaulted: every caller derives them
-/// from data (an order state, a CSS payload), so a default would only ever be
-/// wrong.
 class CustomAppBadge extends StatelessWidget {
   final String label;
   final Color backgroundColor;
@@ -57,14 +51,11 @@ class CustomAppBadge extends StatelessWidget {
   }
 }
 
-/// Kept beside [CustomAppBadge] because it is the same pill with a tap and a
-/// selected state — the "available only" filter, and any chip added next to it.
 class CustomAppChoiceChip extends StatelessWidget {
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
 
-  /// Grows a circular clear button at the leading edge once selected.
   final bool showClearWhenSelected;
 
   final Color selectedColor;

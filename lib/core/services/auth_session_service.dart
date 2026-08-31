@@ -8,77 +8,88 @@ import 'package:almasry_2/core/models/request/login/auth_after_otp_model.dart';
 import 'package:almasry_2/core/models/request/login/forget_password_model.dart';
 import 'package:almasry_2/core/models/response/login/activate_account_model.dart';
 import 'package:almasry_2/core/models/response/login/register_customer_otp_model.dart';
-import 'package:almasry_2/core/models/response/login/user_model.dart';
 import 'package:almasry_2/core/constants/pref_keys.dart';
 import 'package:almasry_2/core/services/api_services.dart';
 import 'package:almasry_2/core/services/app_startup_service.dart';
 import 'package:almasry_2/core/services/cart_service.dart';
 import 'package:almasry_2/core/services/shared_prefs_services.dart';
+import 'package:almasry_2/core/services/user_profile_service.dart';
 import 'package:dio/dio.dart';
 import 'package:almasry_2/core/utils/error_message.dart';
 import 'package:almasry_2/core/constants/app_durations.dart';
 
 class AuthSessionService {
-  /// Services
+  final _apiService = sl<ApiService>();
+  final _prefsService = sl<SharedPrefsServices>();
+  final _startupService = sl<AppStartupService>();
+  final _cartService = sl<CartService>();
+  final _userProfileService = sl<UserProfileService>();
 
-  final ApiService _apiService = sl<ApiService>();
-  final SharedPrefsServices _prefs = sl<SharedPrefsServices>();
-  final AppStartupService _startup = sl<AppStartupService>();
+  final GenericCubit<bool> passwordHiddenCubit = GenericCubit<bool>(true);
+  final GenericCubit<bool> rememberMeCubit = GenericCubit<bool>(false);
 
-  /// Variables
+  final GenericCubit<bool> loadingCubit = GenericCubit<bool>(false);
+  final GenericCubit<bool> phoneAuthLoadingCubit = GenericCubit<bool>(false);
+  final GenericCubit<bool> otpLoadingCubit = GenericCubit<bool>(false);
 
-  final GenericCubit<UserModel> authCubit = GenericCubit<UserModel>(
-    const UserModel(),
+  final GenericCubit<bool> validationCubit = GenericCubit<bool>(false);
+
+  final GenericCubit<int> otpCountdownCubit = GenericCubit<int>(
+    _otpCountdownStart,
   );
 
-  /// State
+  String? emailOrPhoneError;
+  String? passwordError;
+
+  String? firstNameError;
+  String? lastNameError;
+  String? phoneError;
+  String? emailError;
+
+  String? otpError;
+  String? authErrorMessage;
+
+  String? verificationPhone;
+  String? verificationCode;
+
+  static const int _otpCountdownStart = 30;
+
+  bool get canResendOtp => otpCountdownCubit.state.data == 0;
+
+  bool get hasValidationError =>
+      emailOrPhoneError != null ||
+      passwordError != null ||
+      firstNameError != null ||
+      lastNameError != null ||
+      phoneError != null ||
+      emailError != null ||
+      otpError != null ||
+      authErrorMessage != null;
 
   void togglePasswordVisibility() {
-    authCubit.onUpdateData(
-      authCubit.state.data.copyWith(
-        isPasswordHidden: !authCubit.state.data.isPasswordHidden,
-      ),
-    );
-  }
-
-  void toggleConfirmPasswordVisibility() {
-    authCubit.onUpdateData(
-      authCubit.state.data.copyWith(
-        isConfirmPasswordHidden: !authCubit.state.data.isConfirmPasswordHidden,
-      ),
-    );
+    passwordHiddenCubit.onUpdateData(!passwordHiddenCubit.state.data);
   }
 
   void toggleRememberMe() {
-    authCubit.onUpdateData(
-      authCubit.state.data.copyWith(
-        rememberMe: !authCubit.state.data.rememberMe,
-      ),
-    );
+    rememberMeCubit.onUpdateData(!rememberMeCubit.state.data);
   }
 
   void setLoginValidationErrors({
     String? emailOrPhoneError,
     String? passwordError,
   }) {
-    authCubit.onUpdateData(
-      authCubit.state.data.copyWith(
-        emailOrPhoneError: emailOrPhoneError,
-        passwordError: passwordError,
-        clearNameError: true,
-        clearConfirmPasswordError: true,
-      ),
-    );
+    this.emailOrPhoneError = emailOrPhoneError;
+    this.passwordError = passwordError;
+
+    validationCubit.onUpdateData(hasValidationError);
   }
 
   void clearLoginValidationErrors() {
-    authCubit.onUpdateData(
-      authCubit.state.data.copyWith(
-        clearEmailOrPhoneError: true,
-        clearPasswordError: true,
-        clearAuthErrorMessage: true,
-      ),
-    );
+    emailOrPhoneError = null;
+    passwordError = null;
+    authErrorMessage = null;
+
+    validationCubit.onUpdateData(hasValidationError);
   }
 
   void setRegisterValidationErrors({
@@ -88,85 +99,73 @@ class AuthSessionService {
     String? emailError,
     String? passwordError,
   }) {
-    authCubit.onUpdateData(
-      authCubit.state.data.copyWith(
-        firstNameError: firstNameError,
-        lastNameError: lastNameError,
-        phoneError: phoneError,
-        emailError: emailError,
-        passwordError: passwordError,
-      ),
-    );
+    this.firstNameError = firstNameError;
+    this.lastNameError = lastNameError;
+    this.phoneError = phoneError;
+    this.emailError = emailError;
+    this.passwordError = passwordError;
+
+    validationCubit.onUpdateData(hasValidationError);
   }
 
   void clearRegisterValidationErrors() {
-    authCubit.onUpdateData(
-      authCubit.state.data.copyWith(
-        clearFirstNameError: true,
-        clearLastNameError: true,
-        clearPhoneError: true,
-        clearEmailError: true,
-        clearPasswordError: true,
-        clearAuthErrorMessage: true,
-      ),
-    );
+    firstNameError = null;
+    lastNameError = null;
+    phoneError = null;
+    emailError = null;
+    passwordError = null;
+    authErrorMessage = null;
+
+    validationCubit.onUpdateData(hasValidationError);
   }
 
   void clearValidationErrors() {
-    authCubit.onUpdateData(
-      authCubit.state.data.copyWith(
-        clearNameError: true,
-        clearEmailOrPhoneError: true,
-        clearPasswordError: true,
-        clearConfirmPasswordError: true,
-        clearFirstNameError: true,
-        clearLastNameError: true,
-        clearPhoneError: true,
-        clearEmailError: true,
-        clearOtpError: true,
-        clearAuthErrorMessage: true,
-      ),
-    );
+    emailOrPhoneError = null;
+    passwordError = null;
+    firstNameError = null;
+    lastNameError = null;
+    phoneError = null;
+    emailError = null;
+    otpError = null;
+    authErrorMessage = null;
+
+    validationCubit.onUpdateData(hasValidationError);
   }
 
   void setVerificationPhone(String phone) {
-    authCubit.onUpdateData(
-      authCubit.state.data.copyWith(
-        verificationPhone: phone,
-        isPhoneAuthSuccess: true,
-        clearOtpError: true,
-        clearAuthErrorMessage: true,
-      ),
-    );
+    verificationPhone = phone;
+    otpError = null;
+    authErrorMessage = null;
+
+    validationCubit.onUpdateData(hasValidationError);
   }
 
   void clearOtpState() {
-    authCubit.onUpdateData(
-      authCubit.state.data.copyWith(
-        isPhoneAuthLoading: false,
-        isOtpVerificationLoading: false,
-        isPhoneAuthSuccess: false,
-        isOtpVerified: false,
-        otpCountdownSeconds: 30,
-        canResendOtp: false,
-        clearOtpError: true,
-        clearAuthErrorMessage: true,
-        clearVerificationPhone: true,
-        clearVerificationCode: true,
-      ),
-    );
+    otpError = null;
+    authErrorMessage = null;
+    verificationPhone = null;
+    verificationCode = null;
+
+    phoneAuthLoadingCubit.onUpdateData(false);
+    otpLoadingCubit.onUpdateData(false);
+    otpCountdownCubit.onUpdateData(_otpCountdownStart);
+
+    validationCubit.onUpdateData(hasValidationError);
   }
 
   void updateOtpCountdown(int seconds) {
-    authCubit.onUpdateData(
-      authCubit.state.data.copyWith(
-        otpCountdownSeconds: seconds,
-        canResendOtp: seconds == 0,
-      ),
-    );
+    otpCountdownCubit.onUpdateData(seconds);
   }
 
-  /// Helpers
+  void dispose() {
+    passwordHiddenCubit.close();
+    rememberMeCubit.close();
+    loadingCubit.close();
+    phoneAuthLoadingCubit.close();
+    otpLoadingCubit.close();
+    validationCubit.close();
+    otpCountdownCubit.close();
+  }
 
   String _normalizePhone(String phone) {
     final cleaned = phone.trim().replaceAll(' ', '');
@@ -178,7 +177,19 @@ class AuthSessionService {
     return cleaned;
   }
 
-  /// Api
+  void _failPhoneAuth(String message) {
+    authErrorMessage = message;
+
+    phoneAuthLoadingCubit.onUpdateData(false);
+    validationCubit.onUpdateData(hasValidationError);
+  }
+
+  void _failOtp(String message) {
+    authErrorMessage = message;
+
+    otpLoadingCubit.onUpdateData(false);
+    validationCubit.onUpdateData(hasValidationError);
+  }
 
   Future<Map<String, dynamic>> _forgetPassword({
     required ForgetPasswordModel request,
@@ -215,62 +226,46 @@ class AuthSessionService {
     );
   }
 
-  /// Flows
-
   Future<void> login() async {
-    authCubit.onUpdateData(
-      authCubit.state.data.copyWith(
-        isLoading: true,
-        clearAuthErrorMessage: true,
-      ),
-    );
+    authErrorMessage = null;
+
+    validationCubit.onUpdateData(hasValidationError);
+    loadingCubit.onUpdateData(true);
 
     try {
       await Future.delayed(AppDurations.authStub);
-
-      authCubit.onUpdateData(authCubit.state.data.copyWith(isLoading: false));
     } catch (e) {
-      authCubit.onUpdateData(
-        authCubit.state.data.copyWith(
-          isLoading: false,
-          authErrorMessage: e.toString(),
-        ),
-      );
+      authErrorMessage = e.toString();
+
+      validationCubit.onUpdateData(hasValidationError);
+    } finally {
+      loadingCubit.onUpdateData(false);
     }
   }
 
   Future<void> register() async {
-    authCubit.onUpdateData(
-      authCubit.state.data.copyWith(
-        isLoading: true,
-        clearAuthErrorMessage: true,
-      ),
-    );
+    authErrorMessage = null;
+
+    validationCubit.onUpdateData(hasValidationError);
+    loadingCubit.onUpdateData(true);
 
     try {
       await Future.delayed(AppDurations.authStub);
-
-      authCubit.onUpdateData(authCubit.state.data.copyWith(isLoading: false));
     } catch (e) {
-      authCubit.onUpdateData(
-        authCubit.state.data.copyWith(
-          isLoading: false,
-          authErrorMessage: e.toString(),
-        ),
-      );
+      authErrorMessage = e.toString();
+
+      validationCubit.onUpdateData(hasValidationError);
+    } finally {
+      loadingCubit.onUpdateData(false);
     }
   }
 
   Future<bool> startPhoneAuth(String phone) async {
-    authCubit.onUpdateData(
-      authCubit.state.data.copyWith(
-        isPhoneAuthLoading: true,
-        isPhoneAuthSuccess: false,
-        isOtpVerified: false,
-        clearOtpError: true,
-        clearAuthErrorMessage: true,
-      ),
-    );
+    otpError = null;
+    authErrorMessage = null;
+
+    validationCubit.onUpdateData(hasValidationError);
+    phoneAuthLoadingCubit.onUpdateData(true);
 
     try {
       final normalizedPhone = _normalizePhone(phone);
@@ -282,49 +277,27 @@ class AuthSessionService {
       final code = (response['code'] ?? '').toString();
 
       if (status != 'success' || code.isEmpty) {
-        authCubit.onUpdateData(
-          authCubit.state.data.copyWith(
-            isPhoneAuthLoading: false,
-            isPhoneAuthSuccess: false,
-            authErrorMessage:
-                (response['message'] ?? LocaleKeys.otpSendFailed.tr())
-                    .toString(),
-          ),
+        _failPhoneAuth(
+          (response['message'] ?? LocaleKeys.otpSendFailed.tr()).toString(),
         );
+
         return false;
       }
 
-      authCubit.onUpdateData(
-        authCubit.state.data.copyWith(
-          isPhoneAuthLoading: false,
-          isPhoneAuthSuccess: true,
-          verificationPhone: normalizedPhone,
-          verificationCode: code,
-          otpCountdownSeconds: 30,
-          canResendOtp: false,
-          clearOtpError: true,
-          clearAuthErrorMessage: true,
-        ),
-      );
+      verificationPhone = normalizedPhone;
+      verificationCode = code;
+
+      otpCountdownCubit.onUpdateData(_otpCountdownStart);
+      phoneAuthLoadingCubit.onUpdateData(false);
 
       return true;
     } on DioException catch (e) {
-      authCubit.onUpdateData(
-        authCubit.state.data.copyWith(
-          isPhoneAuthLoading: false,
-          isPhoneAuthSuccess: false,
-          authErrorMessage: errorMessageFrom(e),
-        ),
-      );
+      _failPhoneAuth(errorMessageFrom(e));
+
       return false;
     } catch (e) {
-      authCubit.onUpdateData(
-        authCubit.state.data.copyWith(
-          isPhoneAuthLoading: false,
-          isPhoneAuthSuccess: false,
-          authErrorMessage: e.toString(),
-        ),
-      );
+      _failPhoneAuth(e.toString());
+
       return false;
     }
   }
@@ -333,90 +306,72 @@ class AuthSessionService {
     return startPhoneAuth(phone);
   }
 
-  /// A verified OTP is a login, so it has to leave the same trace the email
-  /// path does — before this, the phone flow marked nothing and the app still
-  /// considered the user a guest on the next screen.
-  ///
-  /// The email is written when the reply carries one: the checkout sends it to
-  /// Magento with the cart, and a phone-registered customer never types it.
   Future<void> _saveOtpSession({
     required String phone,
     required RegisterCustomerOtpModel response,
   }) async {
-    await _prefs.setString(PrefKeys.phone, phone);
-
     final String email = (response.email ?? '').trim();
 
-    if (email.isNotEmpty) await _prefs.setString(PrefKeys.email, email);
+    await _userProfileService.save(
+      phone: phone,
+      email: email.isEmpty ? null : email,
+    );
 
-    // The token is the point of this reply: from here every GraphQL call runs
-    // as the customer, which is what makes the cart theirs and lets
-    // `placeOrder` file the order under the account.
     final String token = (response.token ?? '').trim();
 
     if (token.isNotEmpty) {
-      await _prefs.setString(PrefKeys.customerToken, token);
+      await _prefsService.setString(PrefKeys.customerToken, token);
 
-      // The reply also carries `cart_id`, which this ignores on purpose: it is
-      // undocumented whether that id is the masked one GraphQL wants, and
-      // `customerCart` answers the same question authoritatively.
-      await sl<CartService>().adoptCustomerCart();
+      await _cartService.adoptCustomerCart();
     }
 
-    await _startup.saveLoggedIn();
+    await _startupService.saveLoggedIn();
   }
 
   Future<bool> verifyOtpCode(String otp) async {
     final trimmedOtp = otp.trim();
 
     if (trimmedOtp.length != 5) {
-      authCubit.onUpdateData(
-        authCubit.state.data.copyWith(
-          otpError: LocaleKeys.otpInvalidLength.tr(),
-        ),
-      );
+      otpError = LocaleKeys.otpInvalidLength.tr();
+
+      validationCubit.onUpdateData(hasValidationError);
+
       return false;
     }
 
-    final phone = authCubit.state.data.verificationPhone;
-    final savedCode = authCubit.state.data.verificationCode;
+    final phone = verificationPhone;
+    final savedCode = verificationCode;
 
     if (phone == null || phone.isEmpty) {
-      authCubit.onUpdateData(
-        authCubit.state.data.copyWith(
-          authErrorMessage: LocaleKeys.otpPhoneMissing.tr(),
-        ),
-      );
+      authErrorMessage = LocaleKeys.otpPhoneMissing.tr();
+
+      validationCubit.onUpdateData(hasValidationError);
+
       return false;
     }
 
     if (savedCode == null || savedCode.isEmpty) {
-      authCubit.onUpdateData(
-        authCubit.state.data.copyWith(
-          authErrorMessage: LocaleKeys.otpCodeMissing.tr(),
-        ),
-      );
+      authErrorMessage = LocaleKeys.otpCodeMissing.tr();
+
+      validationCubit.onUpdateData(hasValidationError);
+
       return false;
     }
 
     if (trimmedOtp != savedCode) {
-      authCubit.onUpdateData(
-        authCubit.state.data.copyWith(
-          otpError: LocaleKeys.otpIncorrect.tr(),
-          clearAuthErrorMessage: true,
-        ),
-      );
+      otpError = LocaleKeys.otpIncorrect.tr();
+      authErrorMessage = null;
+
+      validationCubit.onUpdateData(hasValidationError);
+
       return false;
     }
 
-    authCubit.onUpdateData(
-      authCubit.state.data.copyWith(
-        isOtpVerificationLoading: true,
-        isOtpVerified: false,
-        clearOtpError: true,
-        clearAuthErrorMessage: true,
-      ),
-    );
+    otpError = null;
+    authErrorMessage = null;
+
+    validationCubit.onUpdateData(hasValidationError);
+    otpLoadingCubit.onUpdateData(true);
 
     try {
       final activateRequest = ActivateAccountRequest(customerId: savedCode);
@@ -424,14 +379,8 @@ class AuthSessionService {
       final activateResponse = await _activateAccount(request: activateRequest);
 
       if ((activateResponse.status ?? '').toLowerCase() != 'success') {
-        authCubit.onUpdateData(
-          authCubit.state.data.copyWith(
-            isOtpVerificationLoading: false,
-            isOtpVerified: false,
-            authErrorMessage:
-                activateResponse.message ?? LocaleKeys.otpActivateFailed.tr(),
-          ),
-        );
+        _failOtp(activateResponse.message ?? LocaleKeys.otpActivateFailed.tr());
+
         return false;
       }
 
@@ -440,58 +389,35 @@ class AuthSessionService {
       final loginResponse = await _loginAfterOtp(request: loginRequest);
 
       if ((loginResponse.token ?? '').isEmpty) {
-        authCubit.onUpdateData(
-          authCubit.state.data.copyWith(
-            isOtpVerificationLoading: false,
-            isOtpVerified: false,
-            authErrorMessage: LocaleKeys.otpLoginFailed.tr(),
-          ),
-        );
+        _failOtp(LocaleKeys.otpLoginFailed.tr());
+
         return false;
       }
 
       await _saveOtpSession(phone: phone, response: loginResponse);
 
-      authCubit.onUpdateData(
-        authCubit.state.data.copyWith(
-          isOtpVerificationLoading: false,
-          isOtpVerified: true,
-          clearOtpError: true,
-          clearAuthErrorMessage: true,
-        ),
-      );
+      otpLoadingCubit.onUpdateData(false);
 
       return true;
     } on DioException catch (e) {
-      authCubit.onUpdateData(
-        authCubit.state.data.copyWith(
-          isOtpVerificationLoading: false,
-          isOtpVerified: false,
-          authErrorMessage: errorMessageFrom(e),
-        ),
-      );
+      _failOtp(errorMessageFrom(e));
+
       return false;
     } catch (e) {
-      authCubit.onUpdateData(
-        authCubit.state.data.copyWith(
-          isOtpVerificationLoading: false,
-          isOtpVerified: false,
-          authErrorMessage: e.toString(),
-        ),
-      );
+      _failOtp(e.toString());
+
       return false;
     }
   }
 
   Future<bool> resendVerificationCode() async {
-    final phone = authCubit.state.data.verificationPhone;
+    final phone = verificationPhone;
 
     if (phone == null || phone.isEmpty) {
-      authCubit.onUpdateData(
-        authCubit.state.data.copyWith(
-          authErrorMessage: LocaleKeys.otpResendPhoneMissing.tr(),
-        ),
-      );
+      authErrorMessage = LocaleKeys.otpResendPhoneMissing.tr();
+
+      validationCubit.onUpdateData(hasValidationError);
+
       return false;
     }
 

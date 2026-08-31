@@ -7,8 +7,8 @@ class HomeBannerSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final banners = vm._data().banners;
-    final currentIndex = vm._data().currentBannerIndex;
+    final List<HomeSliderItemModel> banners =
+        vm._structure()?.banners ?? const [];
 
     if (banners.isEmpty) return const SizedBox.shrink();
 
@@ -43,22 +43,29 @@ class HomeBannerSlider extends StatelessWidget {
           ),
         ),
         8.verticalSpace,
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-            banners.length,
-            (index) => Container(
-              width: currentIndex == index ? 14.w : 8.w,
-              height: 8.h,
-              margin: EdgeInsets.symmetric(horizontal: 3.w),
-              decoration: BoxDecoration(
-                color: currentIndex == index
-                    ? AppColors.primaryRed
-                    : Colors.grey.shade400,
-                borderRadius: BorderRadius.circular(20.r),
+        BlocBuilder<GenericCubit<int>, GenericState<int>>(
+          bloc: vm._bannerIndexCubit,
+          builder: (context, state) {
+            final int currentIndex = state.data;
+
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                banners.length,
+                (index) => Container(
+                  width: currentIndex == index ? 14.w : 8.w,
+                  height: 8.h,
+                  margin: EdgeInsets.symmetric(horizontal: 3.w),
+                  decoration: BoxDecoration(
+                    color: currentIndex == index
+                        ? AppColors.primaryRed
+                        : Colors.grey.shade400,
+                    borderRadius: BorderRadius.circular(20.r),
+                  ),
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ],
     );

@@ -41,10 +41,11 @@ class ProductSearchViewModel {
 
   String _errorMessage = '';
 
-  late final GenericCubit<FavoritesModel> _favoritesCubit =
+  late final GenericCubit<ListFavorites> _favoritesCubit =
       _favoritesService.favoritesCubit;
 
-  late final GenericCubit<CartData> _cartCubit = _cartService.cartCubit;
+  late final GenericCubit<Set<String>> _addingSkusCubit =
+      _cartService.addingSkusCubit;
 
   bool _canFetchMoreItems() =>
       _totalItems == null || _allProducts.length < (_totalItems ?? 0);
@@ -160,10 +161,8 @@ class ProductSearchViewModel {
       return;
     }
 
-    final String message = _cartService.data.errorMessage;
+    final String message = _cartService.errorMessage;
 
-    // Whatever Magento said, or nothing: an add that bounced to the login
-    // screen leaves no message, and there is none to invent.
     if (message.trim().isEmpty) return;
 
     _alertService.showError(message);

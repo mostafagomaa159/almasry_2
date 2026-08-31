@@ -1,10 +1,5 @@
 part of '../cart_imports.dart';
 
-/// One cart row: thumbnail, name, the charged price with the pre-discount one
-/// struck through beneath it, and the quantity stepper.
-///
-/// [isBusy] is per-row rather than per-screen, so tapping one stepper does not
-/// freeze the others.
 class CartItemTile extends StatelessWidget {
   final CartViewModel vm;
   final CartItemModel item;
@@ -89,9 +84,6 @@ class CartItemTile extends StatelessWidget {
   }
 }
 
-/// Plus, count, minus — in that order, matching the product details stepper.
-/// The minus button removes the line on the last unit, so it is never
-/// disabled.
 class _CartQuantityStepper extends StatelessWidget {
   final int quantity;
   final bool isBusy;

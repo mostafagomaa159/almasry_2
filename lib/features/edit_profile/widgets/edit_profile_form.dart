@@ -7,8 +7,6 @@ class EditProfileForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final data = vm._data();
-
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 22.w),
       child: Column(
@@ -74,31 +72,46 @@ class EditProfileForm extends StatelessWidget {
             onTap: () => vm._selectBirthDate(context),
             onChanged: (_) {},
           ),
-          EditProfileDropdownField(
-            label: LocaleKeys.profileGenderLabel.tr(),
-            hintText: LocaleKeys.choose.tr(),
-            value: data.gender.isEmpty ? null : data.gender,
-            items: vm._genderItems(),
-            onChanged: (value) {
-              vm._updateGender(value ?? '');
+          BlocBuilder<GenericCubit<String>, GenericState<String>>(
+            bloc: vm._genderCubit,
+            builder: (context, state) {
+              return EditProfileDropdownField(
+                label: LocaleKeys.profileGenderLabel.tr(),
+                hintText: LocaleKeys.choose.tr(),
+                value: state.data.isEmpty ? null : state.data,
+                items: vm._genderItems(),
+                onChanged: (value) {
+                  vm._updateGender(value ?? '');
+                },
+              );
             },
           ),
-          EditProfileDropdownField(
-            label: LocaleKeys.profilePregnancyLabel.tr(),
-            hintText: LocaleKeys.choose.tr(),
-            value: data.hasPregnancy.isEmpty ? null : data.hasPregnancy,
-            items: vm._yesNoItems(),
-            onChanged: (value) {
-              vm._updateHasPregnancy(value ?? '');
+          BlocBuilder<GenericCubit<String>, GenericState<String>>(
+            bloc: vm._hasPregnancyCubit,
+            builder: (context, state) {
+              return EditProfileDropdownField(
+                label: LocaleKeys.profilePregnancyLabel.tr(),
+                hintText: LocaleKeys.choose.tr(),
+                value: state.data.isEmpty ? null : state.data,
+                items: vm._yesNoItems(),
+                onChanged: (value) {
+                  vm._updateHasPregnancy(value ?? '');
+                },
+              );
             },
           ),
-          EditProfileDropdownField(
-            label: LocaleKeys.profileChronicDiseaseLabel.tr(),
-            hintText: LocaleKeys.choose.tr(),
-            value: data.chronicDisease.isEmpty ? null : data.chronicDisease,
-            items: vm._yesNoItems(),
-            onChanged: (value) {
-              vm._updateChronicDisease(value ?? '');
+          BlocBuilder<GenericCubit<String>, GenericState<String>>(
+            bloc: vm._chronicDiseaseCubit,
+            builder: (context, state) {
+              return EditProfileDropdownField(
+                label: LocaleKeys.profileChronicDiseaseLabel.tr(),
+                hintText: LocaleKeys.choose.tr(),
+                value: state.data.isEmpty ? null : state.data,
+                items: vm._yesNoItems(),
+                onChanged: (value) {
+                  vm._updateChronicDisease(value ?? '');
+                },
+              );
             },
           ),
           EditProfileTextField(
@@ -109,19 +122,24 @@ class EditProfileForm extends StatelessWidget {
             onChanged: vm._updateDiseaseType,
           ),
           26.verticalSpace,
-          Center(
-            child: CustomAppButton(
-              title: LocaleKeys.save.tr(),
-              isLoading: data.isSaving,
-              onPressed: vm._saveProfile,
-              width: 206.w,
-              height: 49.h,
-              backgroundColor: AppColors.redSave,
-              borderColor: AppColors.redSave,
-              borderRadius: 12,
-              fontSize: 19,
-              elevation: 4,
-            ),
+          BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+            bloc: vm._savingCubit,
+            builder: (context, state) {
+              return Center(
+                child: CustomAppButton(
+                  title: LocaleKeys.save.tr(),
+                  isLoading: state.data,
+                  onPressed: vm._saveProfile,
+                  width: 206.w,
+                  height: 49.h,
+                  backgroundColor: AppColors.redSave,
+                  borderColor: AppColors.redSave,
+                  borderRadius: 12,
+                  fontSize: 19,
+                  elevation: 4,
+                ),
+              );
+            },
           ),
           30.verticalSpace,
         ],

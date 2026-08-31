@@ -11,7 +11,7 @@ class PhoneLoginForm extends StatelessWidget {
       controller: vm._phoneController,
       focusNode: vm._phoneFocusNode,
       hintText: LocaleKeys.phoneNumber.tr(),
-      errorText: vm._data().emailOrPhoneError,
+      errorText: vm._authService.emailOrPhoneError,
       keyboardType: TextInputType.phone,
       textInputAction: TextInputAction.done,
       onChanged: (_) => vm._clearLoginErrors(),

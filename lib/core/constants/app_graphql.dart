@@ -1,10 +1,6 @@
-/// GraphQL documents, kept next to [ApiConstants] so every endpoint the app
-/// talks to lives under `core/constants`.
 class GraphQLDocuments {
   GraphQLDocuments._();
 
-  /// Everything the product details screen renders, in one round trip —
-  /// gallery, prices, specifications, reviews and the related carousels.
   static const String getProductDetail = r'''
     query GetProductDetail($sku: String!) {
       products(filter: { sku: { eq: $sku } }) {
@@ -207,9 +203,6 @@ class GraphQLDocuments {
     }
   ''';
 
-  /// Backs "More From This Brand". `related_products` is a curated list the
-  /// catalogue leaves empty, so the carousel filters the catalogue on the
-  /// brand attribute instead.
   static const String productsByBrand = r'''
     query ProductsByBrand($brandId: String!, $pageSize: Int!) {
       products(filter: { brand: { eq: $brandId } }, pageSize: $pageSize) {
@@ -252,9 +245,6 @@ class GraphQLDocuments {
     }
   ''';
 
-  /// One document serves both search modes — Magento's `search` argument
-  /// matches the SKU as well as the name, so the screen never has to ask the
-  /// user which one they typed.
   static const String searchProducts = r'''
     query SearchProducts(
       $searchText: String!
@@ -323,22 +313,12 @@ class GraphQLDocuments {
     }
   ''';
 
-  // ---------------------------------------------------------------------
-  // Cart
-  // ---------------------------------------------------------------------
-
-  /// Returns the masked guest cart id as a bare `String`. Called once, then
-  /// the id is persisted — every other cart call quotes it back.
   static const String createEmptyCart = r'''
     mutation CreateEmptyCart {
       createEmptyCart
     }
   ''';
 
-  /// The signed-in customer's own cart. Idempotent where `createEmptyCart` is
-  /// not: Magento hands back the account's existing quote — or opens one — so
-  /// the basket follows the account onto a new device instead of being minted
-  /// per install.
   static const String customerCart = r'''
     query CustomerCart {
       customerCart {
@@ -347,13 +327,6 @@ class GraphQLDocuments {
     }
   ''';
 
-  /// The cart shape every cart call reuses, so add / remove / update and the
-  /// details query all come back with the same payload and the one parser
-  /// handles them all.
-  ///
-  /// `thumbnail` and `price_range` are not in the API brief, but the cart rows
-  /// draw an image and a struck-through regular price, and `price_tiers` is
-  /// empty for products without tier pricing.
   static const String cartFragment = r'''
     fragment CartFields on Cart {
       id
@@ -508,9 +481,6 @@ class GraphQLDocuments {
     $cartFragment
   ''';
 
-  /// Not in the API brief — that only documents add and remove — but the cart
-  /// rows carry a stepper, so a quantity has to be settable in one call.
-  /// Magento drops the line itself when the quantity reaches 0.
   static const String updateCartItems =
       '''
     mutation UpdateCartItems(
@@ -532,13 +502,6 @@ class GraphQLDocuments {
     $cartFragment
   ''';
 
-  // ---------------------------------------------------------------------
-  // Checkout
-  // ---------------------------------------------------------------------
-
-  /// Not in the API brief, but `placeOrder` refuses a guest cart without it:
-  /// it answers 200 with `{code: "GUEST_EMAIL_MISSING"}`. Magento validates the
-  /// format, so a bare phone number is rejected.
   static const String setGuestEmailOnCart = r'''
     mutation SetGuestEmailOnCart($cartId: String!, $email: String!) {
       setGuestEmailOnCart(input: { cart_id: $cartId, email: $email }) {
@@ -549,15 +512,6 @@ class GraphQLDocuments {
     }
   ''';
 
-  /// The governorate list for the address form.
-  ///
-  /// Not in the API brief, but required in practice: Magento rejects an
-  /// address whose `region` string it cannot resolve with "regionId is
-  /// required", and the brief's hard-coded example id (1159) is not even this
-  /// store's Alexandria (1200). So the ids are fetched rather than guessed.
-  ///
-  /// `name` is localised by store view — Arabic on the default view, English
-  /// under `store: default` — while `id` and `code` are the same in both.
   static const String getCountryRegions = r'''
     query GetCountryRegions($countryCode: String!) {
       country(id: $countryCode) {
@@ -701,8 +655,6 @@ class GraphQLDocuments {
     }
   ''';
 
-  /// `selected_option` is nullable here: the brief marks it `String!`, but
-  /// Cash on delivery and Instapay have no sub-option to send.
   static const String setPaymentMethodOnCart = r'''
     mutation SetPaymentMethodOnCart(
       $cartId: String!

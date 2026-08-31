@@ -1,7 +1,5 @@
 import 'package:almasry_2/core/models/response/cart/cart_money_model.dart';
 
-/// One entry of `prices.discounts` or `prices.applied_taxes` — both are a
-/// label with an amount.
 class CartAmountLineModel {
   final String label;
   final CartMoneyModel amount;
@@ -19,8 +17,6 @@ class CartAmountLineModel {
   }
 }
 
-/// `cart.prices`. The totals card reads [subtotal], [discountTotal],
-/// [taxTotal] and [grandTotal]; the raw lists stay for the bill breakdown.
 class CartPricesModel {
   final CartMoneyModel grandTotal;
   final CartMoneyModel subtotalExcludingTax;
@@ -59,8 +55,6 @@ class CartPricesModel {
         .toList();
   }
 
-  /// Prefer the tax-inclusive subtotal — the store quotes prices with tax in
-  /// them — and fall back to the exclusive one when tax is not configured.
   double get subtotal => subtotalIncludingTax.isZero
       ? subtotalExcludingTax.value
       : subtotalIncludingTax.value;

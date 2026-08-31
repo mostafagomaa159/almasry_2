@@ -1,12 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// The app's navigation icons, in one place so "which way does this point"
-/// is never decided at a call site.
-///
-/// These deliberately do **not** mirror with the locale: the product shows a
-/// left-pointing back chevron and a right-pointing forward chevron in both
-/// Arabic and English. That is why nothing here takes a [BuildContext] —
-/// adding one back would be the first step toward re-introducing mirroring.
 class AppDirection {
   const AppDirection._();
 

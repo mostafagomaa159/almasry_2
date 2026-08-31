@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:almasry_2/core/constants/app_colors.dart';
 
-
 class ProductSearchLabelModel {
   final String text;
   final String image;
@@ -58,7 +57,6 @@ class ProductSearchLabelModel {
 
     if (hex.length != 3 && hex.length != 6) return null;
 
-    /// `#fff` is the same colour as `#ffffff`.
     final String expanded = hex.length == 3
         ? hex.split('').map((char) => '$char$char').join()
         : hex;

@@ -1,10 +1,5 @@
 part of '../address_form_imports.dart';
 
-/// The dialling-code chip beside the phone field.
-///
-/// The chip is static: the store ships to Egypt only, so the address always
-/// goes out with `country_code: "EG"`. It is drawn without a dropdown arrow so
-/// it does not advertise a picker that would have nothing to pick.
 class AddressFormPhoneRow extends StatelessWidget {
   final AddressFormViewModel vm;
 

@@ -1,7 +1,5 @@
 part of '../brands_imports.dart';
 
-/// The grid's skeleton — same tile shape and spacing as `_BrandsGrid`, so the
-/// real brands drop straight into the layout they replace.
 class BrandsShimmer extends StatelessWidget {
   const BrandsShimmer({super.key});
 

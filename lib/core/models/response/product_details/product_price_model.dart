@@ -77,7 +77,6 @@ class ProductPriceRangeModel {
   }
 }
 
-/// A "buy N, pay this each" row from `price_tiers`.
 class ProductPriceTierModel {
   final double quantity;
   final ProductPriceModel finalPrice;

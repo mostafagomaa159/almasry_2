@@ -14,15 +14,12 @@ class OtpActionsSection extends StatelessWidget {
         BlocBuilder<GenericCubit<String>, GenericState<String>>(
           bloc: vm._otpTextCubit,
           builder: (context, otpState) {
-            return BlocBuilder<
-              GenericCubit<UserModel>,
-              GenericState<UserModel>
-            >(
-              bloc: vm._authCubit,
+            return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+              bloc: vm._otpLoadingCubit,
               builder: (context, blocState) {
                 return CustomAppButton(
                   title: LocaleKeys.otpVerify.tr(),
-                  isLoading: blocState.data.isOtpVerificationLoading,
+                  isLoading: blocState.data,
                   isEnabled: vm._isVerifyEnabled(),
                   onPressed: () => vm._verifyOtp(context),
                   height: 54.h,

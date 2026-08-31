@@ -1,16 +1,6 @@
 part of '../address_form_imports.dart';
 
-/// One field of the address form: a bold dark-blue caption over an underlined
-/// input.
-///
-/// Deliberately not `CustomAppTextField` — that one draws a filled, fully bordered
-/// box, and this screen's fields are bare underlines.
-///
-/// A presentational leaf, so it keeps its parameters rather than taking the
-/// ViewModel.
 class AddressFormField extends StatelessWidget {
-  /// Null for the field that sits directly under the map, where the "Address"
-  /// caption already belongs to the section above it.
   final String? label;
 
   final String hintText;

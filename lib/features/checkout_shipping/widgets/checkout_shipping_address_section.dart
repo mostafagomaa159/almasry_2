@@ -1,11 +1,5 @@
 part of '../checkout_shipping_imports.dart';
 
-/// The "Shipping Address" block: the header with its add link, the address
-/// cards, and the show-all toggle.
-///
-/// Listens to `AddressBookService` directly, so saving from the address form
-/// lands here without this screen having to re-read anything on pop. The
-/// chosen card and the collapsed/expanded state are two more cubits on top.
 class CheckoutShippingAddressSection extends StatelessWidget {
   final CheckoutShippingViewModel vm;
 
@@ -107,8 +101,6 @@ class CheckoutShippingAddressSection extends StatelessWidget {
             14.verticalSpace,
           ],
 
-        // One card is already on screen, so the toggle only earns its place
-        // once there is a second one to reveal.
         if (all.length > 1)
           Center(
             child: InkWell(

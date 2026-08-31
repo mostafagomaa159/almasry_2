@@ -2,16 +2,8 @@ import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// The three checkout steps: address, payment, review.
-///
-/// The index is what each screen passes as `currentStep`, so it also fixes the
-/// order the flow runs in.
 enum CheckoutStep { address, payment, review }
 
-/// The dotted three-dot progress row at the top of every checkout screen.
-///
-/// Steps up to and including [currentStep] glow red; the rest stay grey, and a
-/// connector is only red when both ends of it are.
 class CheckoutStepper extends StatelessWidget {
   final CheckoutStep currentStep;
 
@@ -72,8 +64,6 @@ class _StepCircle extends StatelessWidget {
   }
 }
 
-/// Painted rather than composed out of boxes so the dash run stretches to
-/// whatever width is left between two circles.
 class _StepConnector extends StatelessWidget {
   final bool isActive;
 

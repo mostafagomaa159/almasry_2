@@ -1,13 +1,10 @@
 import 'package:almasry_2/core/constants/app_api.dart';
 
 class ProductListRequest {
-  /// A category id normally; a brand id when [isBrand] is set.
   final String categoryId;
   final int page;
   final int pageSize;
 
-  /// Switches the first filter group from `category_id` to the `brand`
-  /// attribute, so the brands screen can reuse this endpoint.
   final bool isBrand;
 
   const ProductListRequest({

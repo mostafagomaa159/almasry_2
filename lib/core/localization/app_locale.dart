@@ -5,15 +5,6 @@ import 'package:almasry_2/core/services/shared_prefs_services.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-/// The app's locales, and the current language read **without a
-/// [BuildContext]**.
-///
-/// `easy_localization` owns the locale but only hands it out through a context,
-/// which the context-free code — [GraphQLService] picking a store view — cannot
-/// reach. So the language code is mirrored into prefs here.
-///
-/// Change the language through [setLanguage] rather than `context.setLocale`,
-/// or the mirror falls behind.
 class AppLocale {
   const AppLocale._();
 
@@ -22,8 +13,6 @@ class AppLocale {
 
   static const List<Locale> supportedLocales = [english, arabic];
 
-  /// Matches `main()`'s `startLocale`, so a fresh install reports the language
-  /// it is about to show.
   static const String _fallback = AppStores.arabicLanguageCode;
 
   static SharedPrefsServices get _prefs => sl<SharedPrefsServices>();
@@ -33,7 +22,6 @@ class AppLocale {
 
   static bool get isArabic => languageCode == AppStores.arabicLanguageCode;
 
-  /// The Magento store view the current language maps to.
   static String get storeCode => AppStores.forLanguage(languageCode);
 
   static Future<void> setLanguage(BuildContext context, String code) async {
@@ -50,8 +38,6 @@ class AppLocale {
     );
   }
 
-  /// Brings the mirror in line with a locale the app did not set itself — the
-  /// one `easy_localization` restores at launch. A no-op once they agree.
   static Future<void> syncFrom(Locale locale) async {
     if (_prefs.getString(PrefKeys.languageCode) == locale.languageCode) return;
 

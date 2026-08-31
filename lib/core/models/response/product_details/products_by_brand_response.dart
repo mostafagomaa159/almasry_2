@@ -1,6 +1,5 @@
 import 'package:almasry_2/core/models/response/product_details/product_related_item_model.dart';
 
-
 class ProductsByBrandResponse {
   final List<ProductRelatedItemModel> items;
   final int totalCount;

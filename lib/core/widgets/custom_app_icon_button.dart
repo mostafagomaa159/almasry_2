@@ -3,12 +3,6 @@ import 'package:almasry_2/core/utils/app_direction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// A fixed-size tappable square (or circle) holding one icon — the filled
-/// buttons in the headers and over the product images.
-///
-/// Unlike Material's `IconButton` this has no invisible 48dp padding of its
-/// own, so the size passed is the size drawn. That is why the layouts using it
-/// could keep their spacing.
 class CustomAppIconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onTap;
@@ -17,11 +11,9 @@ class CustomAppIconButton extends StatelessWidget {
   final Color backgroundColor;
   final Color iconColor;
 
-  /// Ignored when [isCircle] is set.
   final double borderRadius;
   final bool isCircle;
 
-  /// `null` draws no border.
   final Color? borderColor;
 
   const CustomAppIconButton({
@@ -67,12 +59,6 @@ class CustomAppIconButton extends StatelessWidget {
   }
 }
 
-/// The bare back chevron the inner screens put at the leading edge of their
-/// header. Sized by padding rather than a box, so it lines up with the text
-/// beside it instead of with a button grid.
-///
-/// The glyph comes from [AppDirection], which deliberately does not mirror with
-/// the locale.
 class CustomAppBackButton extends StatelessWidget {
   final VoidCallback onTap;
   final double iconSize;

@@ -7,13 +7,16 @@ class OtpPinInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GenericCubit<UserModel>, GenericState<UserModel>>(
-      bloc: vm._authCubit,
-      builder: (context, blocState) => _buildInput(blocState.data),
+    return BlocBuilder<GenericCubit<bool>, GenericState<bool>>(
+      bloc: vm._validationCubit,
+      builder: (context, blocState) => _buildInput(),
     );
   }
 
-  Widget _buildInput(UserModel state) {
+  Widget _buildInput() {
+    final String? otpError = vm._authService.otpError;
+    final String? authErrorMessage = vm._authService.authErrorMessage;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -21,7 +24,7 @@ class OtpPinInput extends StatelessWidget {
           controller: vm._otpController,
           length: 5,
           keyboardType: TextInputType.number,
-          forceErrorState: state.otpError != null && state.otpError!.isNotEmpty,
+          forceErrorState: otpError != null && otpError.isNotEmpty,
           onChanged: vm._onOtpChanged,
           defaultPinTheme: PinTheme(
             width: 58,
@@ -66,10 +69,10 @@ class OtpPinInput extends StatelessWidget {
             ),
           ),
         ),
-        if (state.otpError != null && state.otpError!.isNotEmpty) ...[
+        if (otpError != null && otpError.isNotEmpty) ...[
           12.verticalSpace,
           Text(
-            state.otpError!,
+            otpError,
             style: const TextStyle(
               color: Colors.red,
               fontSize: 13,
@@ -77,8 +80,7 @@ class OtpPinInput extends StatelessWidget {
             ),
           ),
         ],
-        if (state.authErrorMessage != null &&
-            state.authErrorMessage!.isNotEmpty) ...[
+        if (authErrorMessage != null && authErrorMessage.isNotEmpty) ...[
           14.verticalSpace,
           Container(
             width: double.infinity,
@@ -89,7 +91,7 @@ class OtpPinInput extends StatelessWidget {
               border: Border.all(color: AppColors.redTintBorder),
             ),
             child: Text(
-              state.authErrorMessage!,
+              authErrorMessage,
               style: const TextStyle(color: AppColors.redError, fontSize: 13),
             ),
           ),

@@ -1,7 +1,5 @@
 part of '../checkout_review_imports.dart';
 
-/// "Your products" — the cart lines, read-only. No stepper here: quantities
-/// are changed in the cart, not on the way to paying.
 class CheckoutReviewProductsSection extends StatelessWidget {
   final CheckoutReviewViewModel vm;
   final CartModel cart;

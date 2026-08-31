@@ -1,6 +1,3 @@
-/// `placeOrder` answers with either an order number or a list of errors —
-/// crucially it returns HTTP 200 for both, so a caller that only checks for a
-/// thrown exception would report a failed order as a success.
 class PlaceOrderResponse {
   final String orderNumber;
   final List<String> errors;

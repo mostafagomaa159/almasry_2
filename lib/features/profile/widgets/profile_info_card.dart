@@ -55,8 +55,6 @@ class ProfileInfoCard extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsetsDirectional.fromSTEB(18.w, 14.h, 18.w, 16.h),
       borderRadius: 22,
-      // The original was `Colors.black.withAlpha(15)`; 15/255 keeps the exact
-      // same channel value through the opacity-based API.
       shadowOpacity: 15 / 255,
       child: Stack(
         children: [

@@ -4,7 +4,6 @@ import 'package:almasry_2/core/constants/pref_keys.dart';
 import 'package:almasry_2/core/models/response/checkout/address_model.dart';
 import 'package:almasry_2/core/services/cache_manager_service.dart';
 
-
 class AddressBookService {
   final GenericCubit<List<AddressModel>> addressesCubit =
       GenericCubit<List<AddressModel>>(const []);
@@ -34,7 +33,6 @@ class AddressBookService {
     addressesCubit.onUpdateData(stored);
   }
 
-
   Future<void> save(AddressModel address) async {
     final List<AddressModel> next = List<AddressModel>.from(addresses);
 
@@ -43,7 +41,7 @@ class AddressBookService {
     );
 
     final AddressModel resolved = next.isEmpty
-        ? address.copyWith(isDefault: true)
+        ? AddressModel.flagged(address, isDefault: true)
         : address;
 
     if (index == -1) {
@@ -77,7 +75,7 @@ class AddressBookService {
     return source
         .map(
           (AddressModel address) =>
-              address.copyWith(isDefault: address.id == id),
+              AddressModel.flagged(address, isDefault: address.id == id),
         )
         .toList();
   }

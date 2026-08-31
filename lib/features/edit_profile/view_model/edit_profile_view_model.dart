@@ -1,14 +1,20 @@
 part of '../edit_profile_imports.dart';
 
 class EditProfileViewModel {
-  /// Services
+  final _navService = sl<NavigationService>();
 
-  final NavigationService _nav = sl<NavigationService>();
+  final GenericCubit<String> _genderCubit = GenericCubit<String>('');
+  final GenericCubit<String> _hasPregnancyCubit = GenericCubit<String>('');
+  final GenericCubit<String> _chronicDiseaseCubit = GenericCubit<String>('');
 
-  /// Variables
+  final GenericCubit<bool> _savingCubit = GenericCubit<bool>(false);
 
-  final GenericCubit<EditProfileModel> _editProfileCubit =
-      GenericCubit<EditProfileModel>(EditProfileModel.initial());
+  String _firstName = '';
+  String _lastName = '';
+  String _email = '';
+  String _phone = '';
+  String _birthDate = '';
+  String _diseaseType = '';
 
   late final TextEditingController _firstNameController;
   late final TextEditingController _lastNameController;
@@ -17,39 +23,28 @@ class EditProfileViewModel {
   late final TextEditingController _birthDateController;
   late final TextEditingController _diseaseTypeController;
 
-  EditProfileModel _data() => _editProfileCubit.state.data;
-
-  /// Init
-
   void _init(EditProfileArgs? args) {
     _seedFromArgs(args);
 
-    final data = _editProfileCubit.state.data;
-
-    _firstNameController = TextEditingController(text: data.firstName);
-    _lastNameController = TextEditingController(text: data.lastName);
-    _emailController = TextEditingController(text: data.email);
-    _phoneController = TextEditingController(text: data.phone);
-    _birthDateController = TextEditingController(text: data.birthDate);
-    _diseaseTypeController = TextEditingController(text: data.diseaseType);
+    _firstNameController = TextEditingController(text: _firstName);
+    _lastNameController = TextEditingController(text: _lastName);
+    _emailController = TextEditingController(text: _email);
+    _phoneController = TextEditingController(text: _phone);
+    _birthDateController = TextEditingController(text: _birthDate);
+    _diseaseTypeController = TextEditingController(text: _diseaseType);
   }
 
   void _seedFromArgs(EditProfileArgs? args) {
-    _editProfileCubit.onUpdateData(
-      _editProfileCubit.state.data.copyWith(
-        firstName: args?.firstName ?? '',
-        lastName: args?.lastName ?? '',
-        email: args?.email ?? '',
-        phone: args?.phone ?? '',
-        gender: args?.gender ?? '',
-        birthDate: args?.birthDate ?? '',
-        hasPregnancy: args?.hasPregnancy ?? '',
-        chronicDisease: args?.chronicDisease ?? '',
-        diseaseType: args?.diseaseType ?? '',
-        saveSuccess: false,
-        clearErrorMessage: true,
-      ),
-    );
+    _firstName = args?.firstName ?? '';
+    _lastName = args?.lastName ?? '';
+    _email = args?.email ?? '';
+    _phone = args?.phone ?? '';
+    _birthDate = args?.birthDate ?? '';
+    _diseaseType = args?.diseaseType ?? '';
+
+    _genderCubit.onUpdateData(args?.gender ?? '');
+    _hasPregnancyCubit.onUpdateData(args?.hasPregnancy ?? '');
+    _chronicDiseaseCubit.onUpdateData(args?.chronicDisease ?? '');
   }
 
   void _dispose() {
@@ -59,84 +54,32 @@ class EditProfileViewModel {
     _phoneController.dispose();
     _birthDateController.dispose();
     _diseaseTypeController.dispose();
-    _editProfileCubit.close();
+
+    _genderCubit.close();
+    _hasPregnancyCubit.close();
+    _chronicDiseaseCubit.close();
+    _savingCubit.close();
   }
 
-  /// Form state
+  void _updateFirstName(String value) => _firstName = value;
 
-  void _updateFirstName(String value) {
-    _editProfileCubit.onUpdateData(
-      _editProfileCubit.state.data.copyWith(
-        firstName: value,
-        saveSuccess: false,
-      ),
-    );
-  }
+  void _updateLastName(String value) => _lastName = value;
 
-  void _updateLastName(String value) {
-    _editProfileCubit.onUpdateData(
-      _editProfileCubit.state.data.copyWith(
-        lastName: value,
-        saveSuccess: false,
-      ),
-    );
-  }
+  void _updateEmail(String value) => _email = value;
 
-  void _updateEmail(String value) {
-    _editProfileCubit.onUpdateData(
-      _editProfileCubit.state.data.copyWith(email: value, saveSuccess: false),
-    );
-  }
+  void _updatePhone(String value) => _phone = value;
 
-  void _updatePhone(String value) {
-    _editProfileCubit.onUpdateData(
-      _editProfileCubit.state.data.copyWith(phone: value, saveSuccess: false),
-    );
-  }
+  void _updateBirthDate(String value) => _birthDate = value;
 
-  void _updateGender(String value) {
-    _editProfileCubit.onUpdateData(
-      _editProfileCubit.state.data.copyWith(gender: value, saveSuccess: false),
-    );
-  }
+  void _updateDiseaseType(String value) => _diseaseType = value;
 
-  void _updateBirthDate(String value) {
-    _editProfileCubit.onUpdateData(
-      _editProfileCubit.state.data.copyWith(
-        birthDate: value,
-        saveSuccess: false,
-      ),
-    );
-  }
+  void _updateGender(String value) => _genderCubit.onUpdateData(value);
 
-  void _updateHasPregnancy(String value) {
-    _editProfileCubit.onUpdateData(
-      _editProfileCubit.state.data.copyWith(
-        hasPregnancy: value,
-        saveSuccess: false,
-      ),
-    );
-  }
+  void _updateHasPregnancy(String value) =>
+      _hasPregnancyCubit.onUpdateData(value);
 
-  void _updateChronicDisease(String value) {
-    _editProfileCubit.onUpdateData(
-      _editProfileCubit.state.data.copyWith(
-        chronicDisease: value,
-        saveSuccess: false,
-      ),
-    );
-  }
-
-  void _updateDiseaseType(String value) {
-    _editProfileCubit.onUpdateData(
-      _editProfileCubit.state.data.copyWith(
-        diseaseType: value,
-        saveSuccess: false,
-      ),
-    );
-  }
-
-  /// Dropdown options
+  void _updateChronicDisease(String value) =>
+      _chronicDiseaseCubit.onUpdateData(value);
 
   List<DropdownMenuItem<String>> _yesNoItems() {
     return [
@@ -151,8 +94,6 @@ class EditProfileViewModel {
       DropdownMenuItem(value: 'female', child: Text(LocaleKeys.female.tr())),
     ];
   }
-
-  /// Actions
 
   Future<void> _selectBirthDate(BuildContext context) async {
     final DateTime now = DateTime.now();
@@ -176,40 +117,30 @@ class EditProfileViewModel {
   }
 
   void _goBack() {
-    _nav.pop();
-  }
-
-  void _onStateChanged(EditProfileModel data) {
-    if (data.saveSuccess) {
-      _nav.pop(
-        EditProfileArgs(
-          firstName: data.firstName,
-          lastName: data.lastName,
-          email: data.email,
-          phone: data.phone,
-          gender: data.gender,
-          birthDate: data.birthDate,
-          hasPregnancy: data.hasPregnancy,
-          chronicDisease: data.chronicDisease,
-          diseaseType: data.diseaseType,
-        ),
-      );
-    }
+    _navService.pop();
   }
 
   Future<void> _saveProfile() async {
-    _editProfileCubit.onUpdateData(
-      _editProfileCubit.state.data.copyWith(
-        isSaving: true,
-        saveSuccess: false,
-        clearErrorMessage: true,
-      ),
-    );
+    if (_savingCubit.state.data) return;
+
+    _savingCubit.onUpdateData(true);
 
     await Future.delayed(AppDurations.savePause);
 
-    _editProfileCubit.onUpdateData(
-      _editProfileCubit.state.data.copyWith(isSaving: false, saveSuccess: true),
+    _savingCubit.onUpdateData(false);
+
+    _navService.pop(
+      EditProfileArgs(
+        firstName: _firstName,
+        lastName: _lastName,
+        email: _email,
+        phone: _phone,
+        gender: _genderCubit.state.data,
+        birthDate: _birthDate,
+        hasPregnancy: _hasPregnancyCubit.state.data,
+        chronicDisease: _chronicDiseaseCubit.state.data,
+        diseaseType: _diseaseType,
+      ),
     );
   }
 }

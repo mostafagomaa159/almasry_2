@@ -4,15 +4,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// The full-width grey strip across a product card reading "get N% off".
-///
-/// It owns the translation so no call site has to remember the `args` shape of
-/// [LocaleKeys.getDiscount]. Callers decide *whether* there is a discount —
-/// this never renders itself away.
 class CustomAppDiscountBanner extends StatelessWidget {
   final int percent;
 
-  /// `0` gives the square-edged strip the search grid uses.
   final double borderRadius;
 
   final Color backgroundColor;

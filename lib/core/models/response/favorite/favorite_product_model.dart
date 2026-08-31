@@ -1,3 +1,5 @@
+typedef ListFavorites = List<FavoriteProductModel>;
+
 class FavoriteProductModel {
   final String id;
   final String title;

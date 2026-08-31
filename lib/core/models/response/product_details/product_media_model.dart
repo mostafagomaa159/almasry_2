@@ -1,4 +1,3 @@
-
 class ProductMediaModel {
   final String url;
   final String label;

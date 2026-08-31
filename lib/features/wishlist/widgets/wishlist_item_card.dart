@@ -95,8 +95,6 @@ class WishlistItemCard extends StatelessWidget {
                   axis: Axis.vertical,
                   spacing: 4,
                   price: product.price,
-                  // Non-null even when blank: the model stores an empty string
-                  // for "no old price" and the row is kept either way.
                   oldPrice: product.oldPrice,
                   priceStyle: TextStyle(
                     fontSize: 16.sp,

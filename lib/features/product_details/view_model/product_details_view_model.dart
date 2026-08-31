@@ -3,12 +3,12 @@ part of '../product_details_imports.dart';
 typedef ListRelatedProducts = List<ProductRelatedItemModel>;
 
 class ProductDetailsViewModel {
-  final GraphQLService _graphql = sl<GraphQLService>();
-  final NavigationService _nav = sl<NavigationService>();
-  final FavoritesService _favorites = sl<FavoritesService>();
-  final PushNotificationService _push = sl<PushNotificationService>();
-  final AlertService _alert = sl<AlertService>();
-  final CartService _cart = sl<CartService>();
+  final _graphqlService = sl<GraphQLService>();
+  final _navService = sl<NavigationService>();
+  final _favoritesService = sl<FavoritesService>();
+  final _pushService = sl<PushNotificationService>();
+  final _alertService = sl<AlertService>();
+  final _cartService = sl<CartService>();
 
   static const int _brandProductsPageSize = 10;
 
@@ -39,15 +39,16 @@ class ProductDetailsViewModel {
 
   int _quantity() => _quantityCubit.state.data;
 
-  late final GenericCubit<FavoritesModel> _favoritesCubit =
-      _favorites.favoritesCubit;
+  late final GenericCubit<ListFavorites> _favoritesCubit =
+      _favoritesService.favoritesCubit;
 
-  late final GenericCubit<CartData> _cartCubit = _cart.cartCubit;
+  late final GenericCubit<Set<String>> _addingSkusCubit =
+      _cartService.addingSkusCubit;
 
   Future<void> _init({required ProductDetailsArgs args}) async {
     _args = args;
 
-    await _favorites.loadFavorites();
+    await _favoritesService.loadFavorites();
     await _getProductDetails(args.sku);
     await _loadNotifySubscription(args.sku);
   }
@@ -58,7 +59,7 @@ class ProductDetailsViewModel {
   }
 
   void _back() {
-    _nav.pop();
+    _navService.pop();
   }
 
   void _incrementQuantity() {
@@ -121,23 +122,21 @@ class ProductDetailsViewModel {
 
     if (sku.trim().isEmpty) return;
 
-    if (await _cart.addToCart(sku: sku, quantity: _quantity())) {
-      _alert.showSuccess(LocaleKeys.cartAddedSuccess.tr());
+    if (await _cartService.addToCart(sku: sku, quantity: _quantity())) {
+      _alertService.showSuccess(LocaleKeys.cartAddedSuccess.tr());
 
       return;
     }
 
-    final String message = _cart.data.errorMessage;
+    final String message = _cartService.errorMessage;
 
-    // Whatever Magento said, or nothing: an add that bounced to the login
-    // screen leaves no message, and there is none to invent.
     if (message.trim().isEmpty) return;
 
-    _alert.showError(message);
+    _alertService.showError(message);
   }
 
   void _addReview() {
-    _nav.pushNamed(
+    _navService.pushNamed(
       RouteNames.homeComingSoon,
       extra: LocaleKeys.productDetailsAddReview.tr(),
     );
@@ -146,7 +145,7 @@ class ProductDetailsViewModel {
   void _openRelatedProduct(ProductRelatedItemModel item) {
     if (item.sku.trim().isEmpty) return;
 
-    _nav.pushNamed(
+    _navService.pushNamed(
       RouteNames.productDetails,
       extra: ProductDetailsArgs(
         sku: item.sku,
@@ -161,7 +160,7 @@ class ProductDetailsViewModel {
 
     if (product == null) return;
 
-    await _favorites.toggleFavorite(
+    await _favoritesService.toggleFavorite(
       FavoriteProductModel(
         id: product.sku,
         title: product.name,
@@ -208,8 +207,6 @@ class ProductDetailsViewModel {
     return _selectedImageCubit.state.data.clamp(0, count - 1);
   }
 
-  /// One thumbnail plus the gap after it — what [_centerThumbnail] scrolls by.
-  /// Mirrors the sizes `_GalleryThumbnails` lays out with.
   double _thumbnailExtent() => 74.w + 10.w;
 
   String _formatPrice(double? price) {
@@ -219,7 +216,7 @@ class ProductDetailsViewModel {
   }
 
   Future<void> _loadNotifySubscription(String sku) async {
-    final bool isSubscribed = await _push.isSubscribed(sku);
+    final bool isSubscribed = await _pushService.isSubscribed(sku);
 
     if (!isSubscribed || _notifySubscribedCubit.isClosed) return;
 
@@ -233,7 +230,7 @@ class ProductDetailsViewModel {
 
     _notifyLoadingCubit.onUpdateData(true);
 
-    final bool success = await _push.subscribeToAvailability(
+    final bool success = await _pushService.subscribeToAvailability(
       sku: product.sku,
       productName: _title(),
       imagePath: _imagePath(),
@@ -247,15 +244,13 @@ class ProductDetailsViewModel {
     _notifySubscribedCubit.onUpdateData(success);
 
     if (success) {
-      _alert.showSuccess(LocaleKeys.productDetailsNotifyMeSuccess.tr());
+      _alertService.showSuccess(LocaleKeys.productDetailsNotifyMeSuccess.tr());
       return;
     }
 
-    _alert.showError(LocaleKeys.productDetailsNotifyMeFailed.tr());
+    _alertService.showError(LocaleKeys.productDetailsNotifyMeFailed.tr());
   }
 
-  /// A reload brings a different gallery, so both strips go back to the first
-  /// image — the pager only if it is already laid out.
   void _resetGallery() {
     _selectedImageCubit.onUpdateData(0);
 
@@ -283,7 +278,7 @@ class ProductDetailsViewModel {
         pageSize: _brandProductsPageSize,
       );
 
-      final Map<String, dynamic> data = await _graphql.query(
+      final Map<String, dynamic> data = await _graphqlService.query(
         GraphQLDocuments.productsByBrand,
         variables: request.toVariables(),
       );
@@ -306,7 +301,7 @@ class ProductDetailsViewModel {
   Future<ProductDetailModel?> _fetchProductDetails(String sku) async {
     final ProductDetailRequest request = ProductDetailRequest(sku: sku);
 
-    final Map<String, dynamic> data = await _graphql.query(
+    final Map<String, dynamic> data = await _graphqlService.query(
       GraphQLDocuments.getProductDetail,
       variables: request.toVariables(),
     );
@@ -337,9 +332,6 @@ class ProductDetailsViewModel {
     }
   }
 
-  /// A failed reload keeps the product already on screen and reports the
-  /// failure as a toast — only a first load, with nothing to fall back on,
-  /// hands the screen over to the error view.
   void _handleFetchError(Object error) {
     if (_productCubit.isClosed) return;
 
@@ -348,7 +340,7 @@ class ProductDetailsViewModel {
     final ProductDetailModel? product = _product();
 
     if (product != null) {
-      _alert.showError(message);
+      _alertService.showError(message);
 
       _productCubit.onUpdateData(product);
 

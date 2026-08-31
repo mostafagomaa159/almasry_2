@@ -1,8 +1,5 @@
 part of '../product_search_imports.dart';
 
-/// Scroll-to-top button, shown once you are far enough down the results that
-/// getting back would be a long swipe. Its label is the number of matches the
-/// query returned.
 class ProductSearchFloat extends StatelessWidget {
   const ProductSearchFloat({super.key, required this.vm});
 

@@ -1,7 +1,5 @@
 part of '../product_details_imports.dart';
 
-/// The first-load skeleton — image block, summary lines, then the information
-/// rows, laid out where the real sections land.
 class ProductDetailsShimmer extends StatelessWidget {
   const ProductDetailsShimmer({super.key});
 

@@ -1,11 +1,5 @@
 part of '../order_confirmed_imports.dart';
 
-/// The parcel-with-a-tick mark at the top of the screen.
-///
-/// Drawn rather than loaded: the design's illustration is not among the
-/// project's assets, so this composes the same shape — a green parcel with a
-/// check badge overlapping its lower trailing corner — out of shapes and
-/// icons.
 class OrderConfirmedIllustration extends StatelessWidget {
   const OrderConfirmedIllustration({super.key});
 
@@ -34,7 +28,6 @@ class OrderConfirmedIllustration extends StatelessWidget {
             ),
             child: Stack(
               children: <Widget>[
-                // The tape strip down the top of the box.
                 PositionedDirectional(
                   start: 52.w,
                   top: 0,
@@ -50,7 +43,6 @@ class OrderConfirmedIllustration extends StatelessWidget {
                   ),
                 ),
 
-                // The two label lines.
                 PositionedDirectional(
                   start: 18.w,
                   top: 74.w,

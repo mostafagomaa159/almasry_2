@@ -32,21 +32,21 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<GenericCubit<ProfileData>>.value(
-      value: vm._profileCubit,
-      child: BlocBuilder<GenericCubit<ProfileData>, GenericState<ProfileData>>(
+    return BlocProvider<GenericCubit<String>>.value(
+      value: vm._languageCodeCubit,
+      child: BlocBuilder<GenericCubit<String>, GenericState<String>>(
         builder: (context, state) {
-          final data = vm._data();
+          final String languageCode = vm._languageCode();
 
-          if (data.isGuest) {
+          if (vm._isGuest) {
             return GuestProfileView(
-              key: ValueKey('guest_${data.currentLanguageCode}'),
+              key: ValueKey('guest_$languageCode'),
               vm: vm,
             );
           }
 
           return AccountProfileView(
-            key: ValueKey('account_${data.currentLanguageCode}'),
+            key: ValueKey('account_$languageCode'),
             vm: vm,
           );
         },

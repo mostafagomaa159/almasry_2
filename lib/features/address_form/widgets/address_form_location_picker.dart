@@ -1,12 +1,5 @@
 part of '../address_form_imports.dart';
 
-/// Stands in for the map in the design.
-///
-/// A real picker needs `google_maps_flutter` plus a platform API key, neither
-/// of which this project has — so rather than fake a map, this draws the frame
-/// the design calls for and the street line beneath it stays the field the
-/// user actually types. `AddressModel` already carries `latitude` /
-/// `longitude`, so wiring a picker in later is a change to this widget alone.
 class AddressFormLocationPicker extends StatelessWidget {
   const AddressFormLocationPicker({super.key});
 

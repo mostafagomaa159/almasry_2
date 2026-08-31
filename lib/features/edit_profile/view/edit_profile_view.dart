@@ -26,28 +26,16 @@ class _EditProfileViewState extends State<EditProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<GenericCubit<EditProfileModel>>.value(
-      value: vm._editProfileCubit,
-      child:
-          BlocConsumer<
-            GenericCubit<EditProfileModel>,
-            GenericState<EditProfileModel>
-          >(
-            listener: (context, state) => vm._onStateChanged(state.data),
-            builder: (context, state) {
-              return Scaffold(
-                backgroundColor: AppColors.surfacePage,
-                body: SafeArea(
-                  child: Column(
-                    children: [
-                      EditProfileHeader(onBackTap: vm._goBack),
-                      Expanded(child: EditProfileForm(vm: vm)),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
+    return Scaffold(
+      backgroundColor: AppColors.surfacePage,
+      body: SafeArea(
+        child: Column(
+          children: [
+            EditProfileHeader(onBackTap: vm._goBack),
+            Expanded(child: EditProfileForm(vm: vm)),
+          ],
+        ),
+      ),
     );
   }
 }

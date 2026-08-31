@@ -13,8 +13,6 @@ class BrandModel {
     );
   }
 
-  /// Round-trips through `CacheManagerService`, so it has to mirror the field
-  /// names `fromJson` reads.
   Map<String, dynamic> toJson() {
     return {'id': id, 'name': name, 'image': image};
   }

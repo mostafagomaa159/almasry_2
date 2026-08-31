@@ -17,12 +17,6 @@ class _CheckoutReviewViewState extends State<CheckoutReviewView> {
   }
 
   @override
-  void dispose() {
-    vm._dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,

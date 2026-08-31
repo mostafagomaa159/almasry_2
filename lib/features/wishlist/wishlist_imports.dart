@@ -5,7 +5,6 @@ import 'package:almasry_2/core/base/bloc/generic_state.dart';
 import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/constants/app_colors.dart';
 import 'package:almasry_2/core/models/response/favorite/favorite_product_model.dart';
-import 'package:almasry_2/core/models/response/favorite/favorites_model.dart';
 import 'package:almasry_2/core/models/response/product_details/product_details_args_model.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/core/services/favorites_service.dart';

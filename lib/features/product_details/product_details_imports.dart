@@ -10,7 +10,6 @@ import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:almasry_2/core/models/request/product_details/product_detail_request.dart';
 import 'package:almasry_2/core/models/request/product_details/products_by_brand_request.dart';
 import 'package:almasry_2/core/models/response/favorite/favorite_product_model.dart';
-import 'package:almasry_2/core/models/response/favorite/favorites_model.dart';
 import 'package:almasry_2/core/models/response/product_details/get_product_detail_response.dart';
 import 'package:almasry_2/core/models/response/product_details/product_custom_attribute_model.dart';
 import 'package:almasry_2/core/models/response/product_details/product_detail_model.dart';
@@ -20,7 +19,6 @@ import 'package:almasry_2/core/models/response/product_details/product_review_mo
 import 'package:almasry_2/core/models/response/product_details/products_by_brand_response.dart';
 import 'package:almasry_2/core/constants/app_graphql.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
-import 'package:almasry_2/core/models/response/cart/cart_data_model.dart';
 import 'package:almasry_2/core/services/alert_service.dart';
 import 'package:almasry_2/core/services/cart_service.dart';
 import 'package:almasry_2/core/services/favorites_service.dart';

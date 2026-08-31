@@ -1,8 +1,3 @@
-/// The `{ value, currency }` money shape the whole cart schema uses.
-///
-/// The cart has its own copy rather than reusing `ProductPriceModel`: that one
-/// is a `part`-free library but belongs to the catalogue payload, and the two
-/// drift independently.
 class CartMoneyModel {
   final double value;
   final String currency;

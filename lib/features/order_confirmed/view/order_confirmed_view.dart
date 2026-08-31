@@ -1,7 +1,5 @@
 part of '../order_confirmed_imports.dart';
 
-/// Lives inside the cart branch, so the bottom bar stays visible with Cart
-/// selected — which is what the design shows.
 class OrderConfirmedView extends StatefulWidget {
   final OrderConfirmedArgs args;
 
@@ -18,12 +16,6 @@ class _OrderConfirmedViewState extends State<OrderConfirmedView> {
   void initState() {
     super.initState();
     vm._init(args: widget.args);
-  }
-
-  @override
-  void dispose() {
-    vm._dispose();
-    super.dispose();
   }
 
   @override

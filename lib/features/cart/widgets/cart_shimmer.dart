@@ -1,6 +1,5 @@
 part of '../cart_imports.dart';
 
-/// Skeleton rows shaped like [CartItemTile] while the cart is being read.
 class CartShimmer extends StatelessWidget {
   const CartShimmer({super.key});
 

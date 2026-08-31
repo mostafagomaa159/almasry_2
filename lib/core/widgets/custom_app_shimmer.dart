@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
 
-/// Wraps a skeleton layout in the app's shimmer sweep. Give it grey blocks
-/// shaped like the content that is coming — it paints the animation, the
-/// caller owns the shape.
 class CustomAppShimmer extends StatelessWidget {
   final Widget child;
 
@@ -21,16 +18,10 @@ class CustomAppShimmer extends StatelessWidget {
   }
 }
 
-/// One opaque block of a skeleton. The colour is irrelevant to what is seen —
-/// [CustomAppShimmer] paints its sweep over whatever is opaque — so this exists for
-/// the shape, not the fill.
-///
-/// Only meaningful inside an [CustomAppShimmer].
 class CustomAppShimmerBox extends StatelessWidget {
   final double? width;
   final double? height;
 
-  /// `0` gives square corners, for the full-bleed blocks.
   final double borderRadius;
 
   final Color color;
@@ -58,11 +49,6 @@ class CustomAppShimmerBox extends StatelessWidget {
   }
 }
 
-/// A grid of [CustomAppShimmerBox] tiles standing in for a grid that is still
-/// loading. Give it the same geometry as the real grid so the content drops
-/// straight into the layout it replaces.
-///
-/// Wrap it in an [CustomAppShimmer] — it does not animate on its own.
 class CustomAppShimmerGrid extends StatelessWidget {
   final int itemCount;
   final int crossAxisCount;
@@ -72,7 +58,6 @@ class CustomAppShimmerGrid extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final double borderRadius;
 
-  /// `null` draws no border, which is what the borderless card grids want.
   final Color? borderColor;
 
   const CustomAppShimmerGrid({

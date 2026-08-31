@@ -1,7 +1,5 @@
 part of '../product_details_imports.dart';
 
-/// Brand, SKU, name, stock badge and the price row — the block the design puts
-/// directly under the gallery.
 class ProductDetailsSummarySection extends StatelessWidget {
   final ProductDetailsViewModel vm;
   final ProductDetailModel product;

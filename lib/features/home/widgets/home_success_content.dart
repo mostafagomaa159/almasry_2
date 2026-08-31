@@ -7,7 +7,7 @@ class HomeSuccessContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final data = vm._data();
+    final _HomeStructure? structure = vm._structure();
 
     return RefreshIndicator(
       onRefresh: vm._getHomeData,
@@ -27,7 +27,7 @@ class HomeSuccessContent extends StatelessWidget {
 
               16.verticalSpace,
 
-              if (data.banners.isNotEmpty) ...[
+              if (structure != null && structure.banners.isNotEmpty) ...[
                 HomeBannerSlider(vm: vm),
                 18.verticalSpace,
               ],

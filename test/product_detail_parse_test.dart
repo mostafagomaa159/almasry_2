@@ -6,11 +6,6 @@ import 'package:almasry_2/core/models/response/product_details/product_detail_mo
 import 'package:almasry_2/core/models/response/product_details/products_by_brand_response.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// Parses real `GetProductDetail` payloads captured from the live endpoint, so
-/// a shape the models guess wrong about fails here instead of on the screen.
-///
-/// The two fixtures differ on purpose: one product is plainly priced, the
-/// other carries a discount and a merchandising label.
 void main() {
   ProductDetailModel parse(String fixture) {
     final String raw = File('test/fixtures/$fixture').readAsStringSync();

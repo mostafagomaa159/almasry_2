@@ -68,7 +68,6 @@ class LocaleKeys {
   static const String categories = 'categories';
   static const String homePharmacy = 'home_pharmacy';
 
-  // Profile - guest screen
   static const String guestStartWithPharmacy = 'guest_start_with_pharmacy';
   static const String start = 'start';
   static const String changeLanguage = 'change_language';
@@ -96,7 +95,6 @@ class LocaleKeys {
 
   static const String back = 'back';
 
-  //Edit Profile
   static const String editAccount = 'editAccount';
   static const String choose = 'choose';
   static const String yes = 'yes';
@@ -107,8 +105,6 @@ class LocaleKeys {
   static const String savedSuccessfully = 'savedSuccessfully';
   static const String diseaseType = 'diseaseType';
 
-  //Orders
-
   static const String ordersTitle = 'ordersTitle';
   static const String orderNumber = 'orderNumber';
   static const String orderDelivered = 'orderDelivered';
@@ -118,7 +114,6 @@ class LocaleKeys {
   static const String currency = 'currency';
   static const String noOrdersYet = 'noOrdersYet';
 
-  //order_details
   static const String subtotal = 'subtotal';
   static const String shippingFees = 'shippingFees';
   static const String discount = 'discount';
@@ -136,7 +131,6 @@ class LocaleKeys {
   static const String productDetailsDescriptionValue =
       'product_details_description_value';
 
-  // Common
   static const String retry = 'retry';
   static const String cancel = 'cancel';
   static const String confirm = 'confirm';
@@ -148,11 +142,9 @@ class LocaleKeys {
   static const String currencyShort = 'currency_short';
   static const String details = 'details';
 
-  // Wishlist
   static const String wishlistEmptyTitle = 'wishlist_empty_title';
   static const String wishlistEmptyDesc = 'wishlist_empty_desc';
 
-  // Categories
   static const String categoriesEmpty = 'categories_empty';
   static const String categoriesSearchHint = 'categories_search_hint';
   static const String categoriesNoSelection = 'categories_no_selection';
@@ -160,12 +152,10 @@ class LocaleKeys {
   static const String categoriesNoSub = 'categories_no_sub';
   static const String productsCount = 'products_count';
 
-  // Orders
   static const String myOrders = 'my_orders';
   static const String ordersNotFound = 'orders_not_found';
   static const String itemsCount = 'items_count';
 
-  // Order details
   static const String orderSummary = 'order_summary';
   static const String orderItems = 'order_items';
   static const String orderStatusLabel = 'order_status_label';
@@ -175,7 +165,6 @@ class LocaleKeys {
   static const String orderPriceLabel = 'order_price_label';
   static const String orderDetailsNotFound = 'order_details_not_found';
 
-  // OTP verification
   static const String otpConfirmTitle = 'otp_confirm_title';
   static const String otpConfirmSubtitle = 'otp_confirm_subtitle';
   static const String otpVerify = 'otp_verify';
@@ -192,12 +181,10 @@ class LocaleKeys {
   static const String otpLoginFailed = 'otp_login_failed';
   static const String otpResendPhoneMissing = 'otp_resend_phone_missing';
 
-  // Product list
   static const String noProductsFound = 'no_products_found';
   static const String outOfStock = 'out_of_stock';
   static const String getDiscount = 'get_discount';
 
-  // Product details
   static const String productDetailsTitle = 'product_details_title';
   static const String productDetailsNotFound = 'product_details_not_found';
   static const String productDetailsInfo = 'product_details_info';
@@ -209,7 +196,6 @@ class LocaleKeys {
   static const String productDetailsRatingHas = 'product_details_rating_has';
   static const String productDetailsRatingNone = 'product_details_rating_none';
 
-  // Product attribute labels
   static const String attrBrand = 'attr_brand';
   static const String attrCompanyName = 'attr_company_name';
   static const String attrProductForm = 'attr_product_form';
@@ -223,7 +209,6 @@ class LocaleKeys {
   static const String attrShopByConcern = 'attr_shop_by_concern';
   static const String attrColor = 'attr_color';
 
-  // Home
   static const String homeBrands = 'home_brands';
   static const String homeMomBabyCare = 'home_mom_baby_care';
   static const String homeHomeCare = 'home_home_care';
@@ -233,10 +218,8 @@ class LocaleKeys {
   static const String homeSkinAnalysis = 'home_skin_analysis';
   static const String homeSmartSearch = 'home_smart_search';
 
-  // Edit profile
   static const String birthDateHint = 'birth_date_hint';
 
-  // Notify me when available
   static const String productDetailsOutOfStock = 'product_details_out_of_stock';
   static const String productDetailsNotifyMe = 'product_details_notify_me';
   static const String productDetailsNotifyMeSuccess =
@@ -250,7 +233,6 @@ class LocaleKeys {
   static const String notificationProductAvailableBody =
       'notification_product_available_body';
 
-  // Product details — GraphQL sections
   static const String productDetailsFullDescription =
       'product_details_full_description';
   static const String productDetailsMoreFromBrand =
@@ -261,17 +243,14 @@ class LocaleKeys {
   static const String productDetailsCountry = 'product_details_country';
   static const String productDetailsWeight = 'product_details_weight';
 
-  // Drawer
   static const String drawerMenu = 'drawer_menu';
   static const String drawerShopByBrands = 'drawer_shop_by_brands';
   static const String drawerContactUs = 'drawer_contact_us';
 
-  // Brands
   static const String brandsTitle = 'brands_title';
   static const String brandsSearchHint = 'brands_search_hint';
   static const String brandsEmpty = 'brands_empty';
 
-  // Product search
   static const String productSearchHint = 'product_search_hint';
   static const String productSearchPrompt = 'product_search_prompt';
   static const String productSearchAvailableOnly =
@@ -279,7 +258,6 @@ class LocaleKeys {
   static const String productSearchEmptyDescription =
       'product_search_empty_description';
 
-  // Contact us
   static const String contactUsTitle = 'contact_us_title';
   static const String contactUsName = 'contact_us_name';
   static const String contactUsEmail = 'contact_us_email';
@@ -291,7 +269,6 @@ class LocaleKeys {
   static const String contactUsFailed = 'contact_us_failed';
   static const String contactUsNumbersTitle = 'contact_us_numbers_title';
 
-  // Cart
   static const String cartEmpty = 'cart_empty';
   static const String cartSubTotal = 'cart_sub_total';
   static const String cartShippingCosts = 'cart_shipping_costs';
@@ -301,7 +278,6 @@ class LocaleKeys {
   static const String cartAddedSuccess = 'cart_added_success';
   static const String cartItemRemoved = 'cart_item_removed';
 
-  // Checkout
   static const String checkoutTitle = 'checkout_title';
   static const String checkoutShippingAddress = 'checkout_shipping_address';
   static const String checkoutAddNewAddress = 'checkout_add_new_address';
@@ -334,7 +310,6 @@ class LocaleKeys {
   static const String checkoutPaymentCodHint = 'checkout_payment_cod_hint';
   static const String checkoutPaymentLinkHint = 'checkout_payment_link_hint';
 
-  // Address form
   static const String addressFormTitle = 'address_form_title';
   static const String addressFormEditTitle = 'address_form_edit_title';
   static const String addressFormAddress = 'address_form_address';
@@ -352,7 +327,6 @@ class LocaleKeys {
   static const String addressFormSave = 'address_form_save';
   static const String addressFormSaved = 'address_form_saved';
 
-  // Order confirmed
   static const String orderConfirmedTitle = 'order_confirmed_title';
   static const String orderConfirmedNumber = 'order_confirmed_number';
   static const String orderConfirmedDetails = 'order_confirmed_details';

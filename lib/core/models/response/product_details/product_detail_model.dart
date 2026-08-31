@@ -6,7 +6,6 @@ import 'package:almasry_2/core/models/response/product_details/product_review_mo
 import 'package:almasry_2/core/models/response/product_search/product_search_label_model.dart';
 import 'package:almasry_2/core/utils/media_url.dart';
 
-
 class ProductDetailModel {
   final String id;
   final String uid;

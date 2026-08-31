@@ -1,4 +1,3 @@
-/// Variables for [GraphQLDocuments.addSimpleProductsToCart].
 class AddToCartRequest {
   final String cartId;
   final String sku;
@@ -10,15 +9,11 @@ class AddToCartRequest {
     required this.quantity,
   });
 
-  /// `quantity` is a GraphQL `Float!`, so it goes over the wire as a double
-  /// even though the UI only ever deals in whole units.
   Map<String, dynamic> toVariables() {
     return {'cartId': cartId, 'sku': sku, 'quantity': quantity.toDouble()};
   }
 }
 
-/// Variables for [GraphQLDocuments.updateCartItems]. A [quantity] of 0 is how
-/// Magento is told to drop the line.
 class UpdateCartItemRequest {
   final String cartId;
   final int cartItemId;
@@ -39,7 +34,6 @@ class UpdateCartItemRequest {
   }
 }
 
-/// Variables for [GraphQLDocuments.removeItemFromCart].
 class RemoveCartItemRequest {
   final String cartId;
   final int cartItemId;

@@ -1,7 +1,5 @@
 part of '../brands_imports.dart';
 
-/// The search box under the header. Submit-driven — typing only toggles the
-/// clear button, the query runs on submit or when the box is cleared.
 class BrandsSearchField extends StatelessWidget {
   const BrandsSearchField({super.key, required this.vm});
 

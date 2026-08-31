@@ -1,4 +1,3 @@
-/// Variables for [GraphQLDocuments.productsByBrand].
 class ProductsByBrandRequest {
   final String brandId;
   final int pageSize;

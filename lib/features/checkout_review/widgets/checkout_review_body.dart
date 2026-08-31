@@ -1,9 +1,5 @@
 part of '../checkout_review_imports.dart';
 
-/// The three review sections over the totals panel.
-///
-/// Only the cart is watched here — every section owns the builder for its own
-/// expand flag, so collapsing one does not rebuild the other two.
 class CheckoutReviewBody extends StatelessWidget {
   final CheckoutReviewViewModel vm;
 
@@ -11,10 +7,10 @@ class CheckoutReviewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GenericCubit<CartData>, GenericState<CartData>>(
+    return BlocBuilder<GenericCubit<CartModel>, GenericState<CartModel>>(
       bloc: vm._cartCubit,
-      builder: (BuildContext context, GenericState<CartData> cartState) {
-        final CartModel cart = cartState.data.cart;
+      builder: (BuildContext context, GenericState<CartModel> cartState) {
+        final CartModel cart = cartState.data;
 
         return Column(
           children: <Widget>[
