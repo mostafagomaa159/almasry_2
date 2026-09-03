@@ -1,7 +1,7 @@
-part of '../checkout_imports.dart';
+part of '../cart_imports.dart';
 
 class CartItemTile extends StatelessWidget {
-  final CheckoutViewModel vm;
+  final CartViewModel vm;
   final CartItemModel item;
 
   const CartItemTile({super.key, required this.vm, required this.item});

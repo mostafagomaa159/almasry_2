@@ -1,7 +1,7 @@
-part of '../checkout_imports.dart';
+part of '../cart_imports.dart';
 
 class _CartContent extends StatelessWidget {
-  final CheckoutViewModel vm;
+  final CartViewModel vm;
   final CartModel cart;
 
   const _CartContent({required this.vm, required this.cart});

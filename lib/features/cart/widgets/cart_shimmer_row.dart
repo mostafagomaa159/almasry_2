@@ -1,4 +1,4 @@
-part of '../checkout_imports.dart';
+part of '../cart_imports.dart';
 
 class _CartShimmerRow extends StatelessWidget {
   const _CartShimmerRow();

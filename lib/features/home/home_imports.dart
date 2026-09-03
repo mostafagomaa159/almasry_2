@@ -4,7 +4,6 @@ import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
 import 'package:almasry_2/core/base/bloc/generic_state.dart';
 import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/services/cart_service.dart';
-import 'package:almasry_2/core/services/checkout_flow_service.dart';
 import 'package:almasry_2/core/services/navigation_service.dart';
 import 'package:almasry_2/core/constants/app_api.dart';
 import 'package:almasry_2/core/constants/app_colors.dart';

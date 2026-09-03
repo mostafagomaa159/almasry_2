@@ -5,13 +5,16 @@ typedef ListShippingMethods = List<ShippingMethodModel>;
 typedef ListPaymentMethods = List<PaymentMethodModel>;
 
 class CheckoutViewModel {
+  CheckoutViewModel({required VoidCallback onProceed}) : _onProceed = onProceed;
+
   final _graphqlService = sl<GraphQLService>();
   final _navService = sl<NavigationService>();
   final _alertService = sl<AlertService>();
   final _cartService = sl<CartService>();
   final _addressBookService = sl<AddressBookService>();
-  final _checkoutFlowService = sl<CheckoutFlowService>();
   final _prefsService = sl<SharedPrefsServices>();
+
+  final VoidCallback _onProceed;
 
   final PageController _pageController = PageController();
 
@@ -49,8 +52,6 @@ class CheckoutViewModel {
 
   final GenericCubit<bool> _placingOrderCubit = GenericCubit<bool>(false);
 
-  late final GenericCubit<int> _stepCubit = _checkoutFlowService.stepCubit;
-
   late final GenericCubit<CartModel> _cartCubit = _cartService.cartCubit;
 
   late final GenericCubit<ListAddresses> _addressesCubit =
@@ -62,81 +63,27 @@ class CheckoutViewModel {
 
   CartModel _cart() => _cartService.cart;
 
-  void _init() {
-    _checkoutFlowService.attach(_pageController);
+  void _init() => _loadStep(CheckoutStep.address);
 
-    _loadStep(CheckoutFlowService.cartStep);
-  }
+  void _dispose() => _pageController.dispose();
 
-  void _dispose() {
-    _checkoutFlowService.detach(_pageController);
-    _pageController.dispose();
-  }
-
-  Future<void> _loadStep(int step) => switch (step) {
-    CheckoutFlowService.shippingStep => _loadShipping(),
-    CheckoutFlowService.paymentStep => _loadPayment(),
-    _ => _cartService.loadCart(),
+  Future<void> _loadStep(CheckoutStep step) => switch (step) {
+    CheckoutStep.address => _loadShipping(),
+    CheckoutStep.payment => _loadPayment(),
+    CheckoutStep.review => _cartService.loadCart(),
   };
 
-  void _onPageChanged(int index) => _checkoutFlowService.syncStep(index);
+  Future<void> _goToStep(CheckoutStep step) {
+    _loadStep(step);
 
-  void _forward() {
-    _loadStep(_checkoutFlowService.step + 1);
-
-    _checkoutFlowService.next();
-  }
-
-  void _back() {
-    if (_checkoutFlowService.step == CheckoutFlowService.cartStep) return;
-
-    _loadStep(_checkoutFlowService.step - 1);
-
-    _checkoutFlowService.previous();
-  }
-
-  String _title(int step) {
-    return step == CheckoutFlowService.cartStep
-        ? LocaleKeys.cart.tr()
-        : LocaleKeys.checkoutTitle.tr();
-  }
-
-  CheckoutStep _stepperStep(int step) => switch (step) {
-    CheckoutFlowService.paymentStep => CheckoutStep.payment,
-    CheckoutFlowService.reviewStep => CheckoutStep.review,
-    _ => CheckoutStep.address,
-  };
-
-  Future<void> _refreshCart() => _cartService.loadCart();
-
-  Future<void> _incrementQuantity(CartItemModel item) {
-    return _cartService.updateQuantity(item: item, quantity: item.quantity + 1);
-  }
-
-  Future<void> _decrementQuantity(CartItemModel item) {
-    return _cartService.updateQuantity(item: item, quantity: item.quantity - 1);
-  }
-
-  void _confirmRemoveItem(CartItemModel item) {
-    _alertService.showConfirmation(
-      title: LocaleKeys.cartRemoveConfirm.tr(),
-      confirmTitle: LocaleKeys.confirm.tr(),
-      cancelTitle: LocaleKeys.cancel.tr(),
-      onConfirm: () => _removeItem(item),
+    return _pageController.animateToPage(
+      step.index,
+      duration: AppDurations.page,
+      curve: Curves.easeInOut,
     );
   }
 
-  Future<void> _removeItem(CartItemModel item) async {
-    final bool removed = await _cartService.removeItem(item);
-
-    if (removed) _alertService.showSuccess(LocaleKeys.cartItemRemoved.tr());
-  }
-
-  void _navToCheckout() {
-    if (_cart().isEmpty) return;
-
-    _forward();
-  }
+  void _exitCheckout() => _navService.pop();
 
   ListAddresses _addresses() => _addressBookService.addresses;
 
@@ -160,7 +107,7 @@ class CheckoutViewModel {
   }
 
   AddressModel? _rememberedAddress() {
-    final String id = _checkoutFlowService.selectedAddressId;
+    final String id = _selectedAddressIdCubit.state.data;
 
     if (id.isEmpty) return null;
 
@@ -214,8 +161,6 @@ class CheckoutViewModel {
 
     if (_selectedAddressIdCubit.state.data != address.id) return;
 
-    _checkoutFlowService.selectedAddressId = '';
-
     _selectedAddressIdCubit.onUpdateData('');
     _selectedMethodKeyCubit.onUpdateData('');
     _shippingMethodsCubit.onUpdateData(const []);
@@ -227,8 +172,6 @@ class CheckoutViewModel {
 
   Future<void> _selectAddress(AddressModel address) async {
     _shippingErrorMessage = '';
-
-    _checkoutFlowService.selectedAddressId = address.id;
 
     _selectedAddressIdCubit.onUpdateData(address.id);
     _selectedMethodKeyCubit.onUpdateData('');
@@ -367,7 +310,7 @@ class CheckoutViewModel {
       return;
     }
 
-    _forward();
+    _onProceed();
   }
 
   AddressModel? _selectedAddress() {
@@ -581,7 +524,7 @@ class CheckoutViewModel {
 
       await _cartService.loadCart();
 
-      _forward();
+      _onProceed();
     } catch (error) {
       _alertService.showError(errorMessageFrom(error));
     } finally {
@@ -671,8 +614,6 @@ class CheckoutViewModel {
       }
 
       await _cartService.clearCart();
-
-      _checkoutFlowService.reset();
 
       _navService.goNamed(
         RouteNames.orderConfirmed,

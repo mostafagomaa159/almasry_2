@@ -1,4 +1,4 @@
-part of '../checkout_imports.dart';
+part of '../cart_imports.dart';
 
 class _CartQuantityStepper extends StatelessWidget {
   final int quantity;

@@ -1,4 +1,4 @@
-part of '../checkout_imports.dart';
+part of '../cart_imports.dart';
 
 class CartEmptyView extends StatelessWidget {
   const CartEmptyView({super.key});
