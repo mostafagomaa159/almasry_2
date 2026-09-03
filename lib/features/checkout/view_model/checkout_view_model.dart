@@ -5,8 +5,6 @@ typedef ListShippingMethods = List<ShippingMethodModel>;
 typedef ListPaymentMethods = List<PaymentMethodModel>;
 
 class CheckoutViewModel {
-  CheckoutViewModel({required VoidCallback onProceed}) : _onProceed = onProceed;
-
   final _graphqlService = sl<GraphQLService>();
   final _navService = sl<NavigationService>();
   final _alertService = sl<AlertService>();
@@ -14,9 +12,11 @@ class CheckoutViewModel {
   final _addressBookService = sl<AddressBookService>();
   final _prefsService = sl<SharedPrefsServices>();
 
-  final VoidCallback _onProceed;
-
   final PageController _pageController = PageController();
+
+  final GenericCubit<CheckoutStep> _stepCubit = GenericCubit<CheckoutStep>(
+    CheckoutStep.address,
+  );
 
   final GenericCubit<String> _selectedAddressIdCubit = GenericCubit<String>('');
 
@@ -63,7 +63,9 @@ class CheckoutViewModel {
 
   CartModel _cart() => _cartService.cart;
 
-  void _init() => _loadStep(CheckoutStep.address);
+  CheckoutStep _step() => _stepCubit.state.data;
+
+  void _init() => _loadStep(_step());
 
   void _dispose() => _pageController.dispose();
 
@@ -73,17 +75,37 @@ class CheckoutViewModel {
     CheckoutStep.review => _cartService.loadCart(),
   };
 
-  Future<void> _goToStep(CheckoutStep step) {
+  void _onPageChanged(int index) {
+    final CheckoutStep step = CheckoutStep.values[index];
+
+    if (step == _step()) return;
+
+    _stepCubit.onUpdateData(step);
+  }
+
+  void _forward() => _goTo(_step().index + 1);
+
+  void _back() {
+    if (_step() == CheckoutStep.address) return _navService.pop();
+
+    _goTo(_step().index - 1);
+  }
+
+  void _goTo(int index) {
+    if (index < 0 || index >= CheckoutStep.values.length) return;
+
+    final CheckoutStep step = CheckoutStep.values[index];
+
+    _stepCubit.onUpdateData(step);
+
     _loadStep(step);
 
-    return _pageController.animateToPage(
+    _pageController.animateToPage(
       step.index,
       duration: AppDurations.page,
       curve: Curves.easeInOut,
     );
   }
-
-  void _exitCheckout() => _navService.pop();
 
   ListAddresses _addresses() => _addressBookService.addresses;
 
@@ -310,7 +332,7 @@ class CheckoutViewModel {
       return;
     }
 
-    _onProceed();
+    _forward();
   }
 
   AddressModel? _selectedAddress() {
@@ -524,7 +546,7 @@ class CheckoutViewModel {
 
       await _cartService.loadCart();
 
-      _onProceed();
+      _forward();
     } catch (error) {
       _alertService.showError(errorMessageFrom(error));
     } finally {

@@ -8,20 +8,9 @@ class CheckoutView extends StatefulWidget {
 }
 
 class _CheckoutViewState extends State<CheckoutView> {
-  late final CheckoutViewModel vm = CheckoutViewModel(onProceed: _forward);
+  final CheckoutViewModel vm = CheckoutViewModel();
 
-  late final Widget _pages = PageView(
-    controller: vm._pageController,
-    physics: const NeverScrollableScrollPhysics(),
-    onPageChanged: _onPageChanged,
-    children: <Widget>[
-      CheckoutShippingPage(vm: vm),
-      CheckoutPaymentPage(vm: vm),
-      CheckoutReviewPage(vm: vm),
-    ],
-  );
-
-  CheckoutStep _step = CheckoutStep.address;
+  late final Widget _pages = CheckoutPages(vm: vm);
 
   @override
   void initState() {
@@ -35,53 +24,37 @@ class _CheckoutViewState extends State<CheckoutView> {
     super.dispose();
   }
 
-  void _onPageChanged(int index) {
-    final CheckoutStep step = CheckoutStep.values[index];
-
-    if (step == _step) return;
-
-    setState(() => _step = step);
-  }
-
-  void _forward() => _goTo(_step.index + 1);
-
-  void _back() {
-    if (_step == CheckoutStep.address) return vm._exitCheckout();
-
-    _goTo(_step.index - 1);
-  }
-
-  void _goTo(int index) {
-    if (index < 0 || index >= CheckoutStep.values.length) return;
-
-    final CheckoutStep step = CheckoutStep.values[index];
-
-    setState(() => _step = step);
-
-    vm._goToStep(step);
-  }
-
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: _step == CheckoutStep.address,
-      onPopInvokedWithResult: (bool didPop, Object? result) {
-        if (didPop) return;
+    return BlocBuilder<GenericCubit<CheckoutStep>, GenericState<CheckoutStep>>(
+      bloc: vm._stepCubit,
+      builder: (context, state) {
+        final CheckoutStep step = state.data;
 
-        _back();
+        return PopScope(
+          canPop: step == CheckoutStep.address,
+          onPopInvokedWithResult: (bool didPop, Object? result) {
+            if (didPop) return;
+
+            vm._back();
+          },
+          child: Scaffold(
+            backgroundColor: AppColors.white,
+            body: Column(
+              children: <Widget>[
+                CustomAppBar(
+                  title: LocaleKeys.checkoutTitle.tr(),
+                  onBack: vm._back,
+                ),
+
+                CheckoutStepper(currentStep: step),
+
+                Expanded(child: _pages),
+              ],
+            ),
+          ),
+        );
       },
-      child: Scaffold(
-        backgroundColor: AppColors.white,
-        body: Column(
-          children: <Widget>[
-            CustomAppBar(title: LocaleKeys.checkoutTitle.tr(), onBack: _back),
-
-            CheckoutStepper(currentStep: _step),
-
-            Expanded(child: _pages),
-          ],
-        ),
-      ),
     );
   }
 }
