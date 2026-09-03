@@ -37,6 +37,8 @@ class AppColors {
 
   static const Color lightPink = Color(0xFFF8B7B7);
 
+  static const Color redDisabled = Color(0xFFE0A0A0);
+
   static const Color redTintLightest = Color(0xFFFFF5F5);
   static const Color redTintPink = Color(0xFFFFF1F2);
 
@@ -50,6 +52,16 @@ class AppColors {
   static const Color peachBorder = Color(0xFFF8DCD2);
 
   static const Color successGreen = Color(0xFF43A047);
+
+  static const Color greenConfirmed = Color(0xFF3EA96B);
+
+  static const Color greenBadgeTick = Color(0xFF17BE8B);
+
+  static const Color greenParcelStart = Color(0xFF6DDC9A);
+
+  static const Color greenParcelEnd = Color(0xFF35C79A);
+
+  static const Color greenBadgeTint = Color(0xFFD8F6E9);
 
   static const Color amber = Color(0xFFE07C00);
 
@@ -104,11 +116,15 @@ class AppColors {
 
   static const Color textMuted = Color(0xFF4A4A4A);
 
+  static const Color textFieldInput = Color(0xFF4B4B4B);
+
   static const Color textFormLabel = Color(0xFF4F4F4F);
 
   static const Color textGuestSubtitle = Color(0xFF5A4A4A);
 
   static const Color textTabInactive = Color(0xFF5E5E5E);
+
+  static const Color textReviewValue = Color(0xFF6B6B6B);
 
   static const Color textSlateMuted = Color(0xFF6B7280);
 
@@ -116,7 +132,11 @@ class AppColors {
 
   static const Color textFieldLabel = Color(0xFF7A7A7A);
 
+  static const Color textAddressValue = Color(0xFF7C7C7C);
+
   static const Color iconEdit = Color(0xFF8A8A8A);
+
+  static const Color iconSectionToggle = Color(0xFF8B4A4A);
 
   static const Color textInfoMuted = Color(0xFF8B8B8B);
 
@@ -136,6 +156,8 @@ class AppColors {
 
   static const Color textDisabled = Color(0xFFB0B0B0);
 
+  static const Color textFieldHint = Color(0xFFB5B5B5);
+
   static const Color textHint = Color(0xFFB9B9B9);
 
   static const Color unavailableGrey = Color(0xFFBDBDBD);
@@ -150,11 +172,19 @@ class AppColors {
 
   static const Color disabledGrey = Color(0xFFD0D0D0);
 
+  static const Color dividerTotals = Color(0xFFD6D6D6);
+
   static const Color border = Color(0xFFD9D9D9);
+
+  static const Color borderFieldUnderline = Color(0xFFDCDCDC);
+
+  static const Color borderAddressCard = Color(0xFFDDDDDD);
 
   static const Color borderThumbnail = Color(0xFFE0E0E0);
 
   static const Color borderStepper = Color(0xFFE1E1E1);
+
+  static const Color dividerConfirmed = Color(0xFFE2E2E2);
 
   static const Color borderInfoRow = Color(0xFFE3E3E3);
 
@@ -173,6 +203,8 @@ class AppColors {
   static const Color borderWishlist = Color(0xFFECECEC);
 
   static const Color borderSoft = Color(0xFFEDEDED);
+
+  static const Color surfaceMapPlaceholder = Color(0xFFEFEFEF);
 
   static const Color surfaceGrey = Color(0xFFF0F0F0);
 

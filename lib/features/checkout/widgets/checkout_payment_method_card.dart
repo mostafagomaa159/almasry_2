@@ -10,8 +10,6 @@ class CheckoutPaymentMethodCard extends StatelessWidget {
     required this.method,
   });
 
-  static const Color _titleColor = Color(0xFF2C2C2C);
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GenericCubit<String>, GenericState<String>>(
@@ -37,7 +35,7 @@ class CheckoutPaymentMethodCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
         boxShadow: <BoxShadow>[
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: AppColors.black.withValues(alpha: 0.06),
             blurRadius: 12,
             offset: const Offset(0, 3),
           ),
@@ -72,7 +70,7 @@ class CheckoutPaymentMethodCard extends StatelessWidget {
                             : Icons.radio_button_unchecked,
                         size: 24.sp,
                         color: isSelected
-                            ? _titleColor
+                            ? AppColors.textGraphite
                             : AppColors.textSecondary,
                       ),
                     ],
@@ -92,7 +90,7 @@ class CheckoutPaymentMethodCard extends StatelessWidget {
                             fontSize: 19.sp,
                             fontWeight: FontWeight.w700,
                             color: isSelected
-                                ? _titleColor
+                                ? AppColors.textGraphite
                                 : AppColors.textSecondary,
                           ),
                         ),
@@ -116,7 +114,7 @@ class CheckoutPaymentMethodCard extends StatelessWidget {
                   Icon(
                     vm._iconFor(method),
                     size: 34.sp,
-                    color: const Color(0xFF3B3B3B),
+                    color: AppColors.strongGrey,
                   ),
                 ],
               ),
@@ -146,7 +144,7 @@ class CheckoutPaymentMethodCard extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 8.h),
       child: Column(
         children: <Widget>[
-          Divider(height: 1.h, color: const Color(0xFFEDEDED)),
+          Divider(height: 1.h, color: AppColors.borderSoft),
           for (final PaymentOptionModel option in method.options)
             _OptionRow(
               option: option,
@@ -196,7 +194,7 @@ class _OptionRow extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                  color: const Color(0xFF3B3B3B),
+                  color: AppColors.strongGrey,
                 ),
               ),
             ),

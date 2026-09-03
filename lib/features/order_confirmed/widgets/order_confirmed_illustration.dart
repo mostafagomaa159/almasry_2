@@ -3,11 +3,6 @@ part of '../order_confirmed_imports.dart';
 class OrderConfirmedIllustration extends StatelessWidget {
   const OrderConfirmedIllustration({super.key});
 
-  static const Color _parcelStart = Color(0xFF6DDC9A);
-  static const Color _parcelEnd = Color(0xFF35C79A);
-  static const Color _badgeBackground = Color(0xFFD8F6E9);
-  static const Color _badgeTick = Color(0xFF17BE8B);
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -23,7 +18,10 @@ class OrderConfirmedIllustration extends StatelessWidget {
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: <Color>[_parcelStart, _parcelEnd],
+                colors: <Color>[
+                  AppColors.greenParcelStart,
+                  AppColors.greenParcelEnd,
+                ],
               ),
             ),
             child: Stack(
@@ -67,10 +65,14 @@ class OrderConfirmedIllustration extends StatelessWidget {
               height: 96.w,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: _badgeBackground,
+                color: AppColors.greenBadgeTint,
               ),
               alignment: Alignment.center,
-              child: Icon(Icons.check_rounded, size: 52.sp, color: _badgeTick),
+              child: Icon(
+                Icons.check_rounded,
+                size: 52.sp,
+                color: AppColors.greenBadgeTick,
+              ),
             ),
           ),
         ],

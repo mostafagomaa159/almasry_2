@@ -5,8 +5,6 @@ class OrderConfirmedBody extends StatelessWidget {
 
   const OrderConfirmedBody({super.key, required this.vm});
 
-  static const Color _successGreen = Color(0xFF3EA96B);
-
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -22,7 +20,7 @@ class OrderConfirmedBody extends StatelessWidget {
           style: TextStyle(
             fontSize: 30.sp,
             fontWeight: FontWeight.w700,
-            color: _successGreen,
+            color: AppColors.greenConfirmed,
           ),
         ),
 

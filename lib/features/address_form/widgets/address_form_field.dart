@@ -45,19 +45,19 @@ class AddressFormField extends StatelessWidget {
           style: TextStyle(
             fontSize: 18.sp,
             fontWeight: FontWeight.w500,
-            color: const Color(0xFF4B4B4B),
+            color: AppColors.textFieldInput,
           ),
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w400,
-              color: const Color(0xFFB5B5B5),
+              color: AppColors.textFieldHint,
             ),
             isDense: true,
             contentPadding: EdgeInsets.symmetric(vertical: 12.h),
             enabledBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFFDCDCDC)),
+              borderSide: BorderSide(color: AppColors.borderFieldUnderline),
             ),
             focusedBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: AppColors.darkBlue),

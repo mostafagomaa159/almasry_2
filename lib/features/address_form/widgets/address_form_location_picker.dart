@@ -9,14 +9,14 @@ class AddressFormLocationPicker extends StatelessWidget {
       width: double.infinity,
       height: 168.h,
       decoration: BoxDecoration(
-        color: const Color(0xFFEFEFEF),
+        color: AppColors.surfaceMapPlaceholder,
         borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: const Color(0xFFE0E0E0)),
+        border: Border.all(color: AppColors.borderThumbnail),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Icon(Icons.map_outlined, size: 40.sp, color: const Color(0xFFB0B0B0)),
+          Icon(Icons.map_outlined, size: 40.sp, color: AppColors.textDisabled),
 
           10.verticalSpace,
 
@@ -26,7 +26,7 @@ class AddressFormLocationPicker extends StatelessWidget {
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w500,
-              color: const Color(0xFF9A9A9A),
+              color: AppColors.textPlaceholder,
             ),
           ),
         ],

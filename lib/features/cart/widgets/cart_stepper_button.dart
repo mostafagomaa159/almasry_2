@@ -6,8 +6,6 @@ class _CartStepperButton extends StatelessWidget {
 
   const _CartStepperButton({required this.icon, required this.onTap});
 
-  static const Color _outlineColor = Color(0xFF18314F);
-
   @override
   Widget build(BuildContext context) {
     final bool isEnabled = onTap != null;
@@ -21,7 +19,7 @@ class _CartStepperButton extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.r),
           border: Border.all(
-            color: isEnabled ? _outlineColor : const Color(0xFFCFCFCF),
+            color: isEnabled ? AppColors.titleNavy : AppColors.borderField,
             width: 1.4,
           ),
         ),
@@ -29,7 +27,7 @@ class _CartStepperButton extends StatelessWidget {
         child: Icon(
           icon,
           size: 22.sp,
-          color: isEnabled ? _outlineColor : const Color(0xFFCFCFCF),
+          color: isEnabled ? AppColors.titleNavy : AppColors.borderField,
         ),
       ),
     );

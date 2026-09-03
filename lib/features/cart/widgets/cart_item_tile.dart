@@ -6,8 +6,6 @@ class CartItemTile extends StatelessWidget {
 
   const CartItemTile({super.key, required this.vm, required this.item});
 
-  static const Color _titleColor = Color(0xFF18314F);
-
   static const double _dismissThreshold = 0.4;
 
   @override
@@ -56,7 +54,7 @@ class CartItemTile extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 17.sp,
                   fontWeight: FontWeight.w700,
-                  color: _titleColor,
+                  color: AppColors.titleNavy,
                 ),
               ),
 
@@ -67,7 +65,7 @@ class CartItemTile extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 17.sp,
                   fontWeight: FontWeight.w700,
-                  color: _titleColor,
+                  color: AppColors.titleNavy,
                 ),
               ),
 

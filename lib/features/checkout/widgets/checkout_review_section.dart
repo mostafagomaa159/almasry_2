@@ -14,14 +14,12 @@ class CheckoutReviewSection extends StatelessWidget {
     required this.child,
   });
 
-  static const Color _ruleColor = Color(0xFF8A8A8A);
-
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Divider(height: 1.h, thickness: 1.h, color: _ruleColor),
+        Divider(height: 1.h, thickness: 1.h, color: AppColors.iconEdit),
 
         InkWell(
           onTap: onToggle,
@@ -35,7 +33,7 @@ class CheckoutReviewSection extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w700,
-                      color: const Color(0xFF2C2C2C),
+                      color: AppColors.textGraphite,
                     ),
                   ),
                 ),
@@ -45,7 +43,7 @@ class CheckoutReviewSection extends StatelessWidget {
                       ? Icons.keyboard_arrow_up
                       : Icons.keyboard_arrow_down,
                   size: 28.sp,
-                  color: const Color(0xFF8B4A4A),
+                  color: AppColors.iconSectionToggle,
                 ),
               ],
             ),
@@ -82,7 +80,7 @@ class CheckoutReviewRow extends StatelessWidget {
       style: TextStyle(
         fontSize: 17.sp,
         fontWeight: FontWeight.w700,
-        color: const Color(0xFF2C2C2C),
+        color: AppColors.textGraphite,
       ),
     );
 
@@ -93,7 +91,7 @@ class CheckoutReviewRow extends StatelessWidget {
       style: TextStyle(
         fontSize: 16.sp,
         fontWeight: isCompact ? FontWeight.w700 : FontWeight.w400,
-        color: isCompact ? const Color(0xFF2C2C2C) : const Color(0xFF6B6B6B),
+        color: isCompact ? AppColors.textGraphite : AppColors.textReviewValue,
       ),
     );
 

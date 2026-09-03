@@ -13,7 +13,7 @@ class AddressFormPhoneRow extends StatelessWidget {
         Container(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
           decoration: BoxDecoration(
-            color: const Color(0xFFF3F3F3),
+            color: AppColors.surfacePlaceholder,
             borderRadius: BorderRadius.circular(12.r),
           ),
           child: Row(
@@ -27,7 +27,7 @@ class AddressFormPhoneRow extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.w700,
-                  color: const Color(0xFF4B4B4B),
+                  color: AppColors.textFieldInput,
                 ),
               ),
             ],

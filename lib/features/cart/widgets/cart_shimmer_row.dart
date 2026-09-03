@@ -3,8 +3,6 @@ part of '../cart_imports.dart';
 class _CartShimmerRow extends StatelessWidget {
   const _CartShimmerRow();
 
-  static const Color _block = Color(0xFFEDEDED);
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -14,7 +12,7 @@ class _CartShimmerRow extends StatelessWidget {
           width: 96.w,
           height: 96.w,
           decoration: BoxDecoration(
-            color: _block,
+            color: AppColors.borderSoft,
             borderRadius: BorderRadius.circular(12.r),
           ),
         ),
@@ -46,7 +44,7 @@ class _CartShimmerRow extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: _block,
+        color: AppColors.borderSoft,
         borderRadius: BorderRadius.circular(8.r),
       ),
     );

@@ -71,7 +71,7 @@ class OrderConfirmedCard extends StatelessWidget {
 
           Padding(
             padding: EdgeInsets.symmetric(vertical: 10.h),
-            child: Divider(height: 1.h, color: const Color(0xFFE2E2E2)),
+            child: Divider(height: 1.h, color: AppColors.dividerConfirmed),
           ),
 
           InkWell(

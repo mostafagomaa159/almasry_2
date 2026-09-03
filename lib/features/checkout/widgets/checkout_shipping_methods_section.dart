@@ -102,7 +102,7 @@ class _MethodRow extends StatelessWidget {
   Widget _row({required bool isSelected, required bool isBusy}) {
     final Color color = isSelected
         ? AppColors.primaryRed
-        : const Color(0xFF3B3B3B);
+        : AppColors.strongGrey;
 
     return InkWell(
       onTap: isBusy ? null : () => vm._selectShippingMethod(method),

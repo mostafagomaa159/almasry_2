@@ -47,7 +47,7 @@ class _StepCircle extends StatelessWidget {
       height: 56.w,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: isActive ? AppColors.primaryRed : const Color(0xFF9E9E9E),
+        color: isActive ? AppColors.primaryRed : AppColors.textSecondary,
         boxShadow: isActive
             ? <BoxShadow>[
                 BoxShadow(
@@ -75,7 +75,7 @@ class _StepConnector extends StatelessWidget {
       height: 2.h,
       child: CustomPaint(
         painter: _DashedLinePainter(
-          color: isActive ? AppColors.primaryRed : const Color(0xFFBDBDBD),
+          color: isActive ? AppColors.primaryRed : AppColors.unavailableGrey,
         ),
       ),
     );

@@ -39,8 +39,6 @@ class _ProductRow extends StatelessWidget {
 
   const _ProductRow({required this.item});
 
-  static const Color _accent = AppColors.darkBlue;
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -68,7 +66,7 @@ class _ProductRow extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
-                  color: _accent,
+                  color: AppColors.darkBlue,
                 ),
               ),
 
@@ -79,7 +77,7 @@ class _ProductRow extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
-                  color: _accent,
+                  color: AppColors.darkBlue,
                 ),
               ),
             ],
@@ -94,7 +92,7 @@ class _ProductRow extends StatelessWidget {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
               decoration: BoxDecoration(
-                color: _accent,
+                color: AppColors.darkBlue,
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Text(
@@ -114,7 +112,7 @@ class _ProductRow extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
-                color: _accent,
+                color: AppColors.darkBlue,
               ),
             ),
           ],

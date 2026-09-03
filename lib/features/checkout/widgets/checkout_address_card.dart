@@ -12,9 +12,6 @@ class CheckoutAddressCard extends StatelessWidget {
     required this.isSelected,
   });
 
-  static const Color _labelColor = AppColors.darkBlue;
-  static const Color _valueColor = Color(0xFF7C7C7C);
-
   @override
   Widget build(BuildContext context) {
     final BorderRadius radius = BorderRadius.circular(12.r);
@@ -26,7 +23,9 @@ class CheckoutAddressCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: radius,
           border: Border.all(
-            color: isSelected ? AppColors.primaryRed : const Color(0xFFDDDDDD),
+            color: isSelected
+                ? AppColors.primaryRed
+                : AppColors.borderAddressCard,
             width: isSelected ? 1.6 : 1,
           ),
         ),
@@ -75,7 +74,7 @@ class CheckoutAddressCard extends StatelessWidget {
 
                         _CardIconButton(
                           icon: Icons.edit_outlined,
-                          color: const Color(0xFF2C2C2C),
+                          color: AppColors.textGraphite,
                           onTap: () => vm._editAddress(address),
                         ),
                       ],
@@ -102,7 +101,7 @@ class CheckoutAddressCard extends StatelessWidget {
           style: TextStyle(
             fontSize: 15.sp,
             fontWeight: FontWeight.w700,
-            color: _labelColor,
+            color: AppColors.darkBlue,
           ),
         ),
 
@@ -116,7 +115,7 @@ class CheckoutAddressCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 15.sp,
               fontWeight: FontWeight.w500,
-              color: _valueColor,
+              color: AppColors.textAddressValue,
             ),
           ),
         ),
@@ -167,7 +166,7 @@ class _CardIconButton extends StatelessWidget {
         height: 42.w,
         decoration: const BoxDecoration(
           shape: BoxShape.circle,
-          color: Color(0xFFF3F3F3),
+          color: AppColors.surfacePlaceholder,
         ),
         alignment: Alignment.center,
         child: Icon(icon, size: 20.sp, color: color),

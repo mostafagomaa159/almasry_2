@@ -3,10 +3,6 @@ part of '../../home/home_imports.dart';
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
 
-  static const Color _dividerColor = AppColors.borderSoft;
-  static const Color _skinAnalysisBgColor = AppColors.redTintCard;
-  static const Color _socialIconColor = AppColors.textMuted;
-
   NavigationService _nav() => sl<NavigationService>();
 
   void _close(BuildContext context) {
@@ -46,7 +42,7 @@ class AppDrawer extends StatelessWidget {
               child: _DrawerHighlightCard(
                 title: LocaleKeys.homeSkinAnalysis.tr(),
                 iconPath: AppImages.mask,
-                backgroundColor: _skinAnalysisBgColor,
+                backgroundColor: AppColors.redTintCard,
                 onTap: () =>
                     _openComingSoon(context, LocaleKeys.homeSkinAnalysis.tr()),
               ),
@@ -169,7 +165,7 @@ class _DrawerMenuItem extends StatelessWidget {
           thickness: 1,
           indent: 20.w,
           endIndent: 20.w,
-          color: AppDrawer._dividerColor,
+          color: AppColors.borderSoft,
         ),
         Material(
           color: AppColors.transparent,
@@ -259,7 +255,7 @@ class _SocialIcon extends StatelessWidget {
       borderRadius: BorderRadius.circular(20.r),
       child: Padding(
         padding: EdgeInsets.all(4.w),
-        child: Icon(icon, size: 24.sp, color: AppDrawer._socialIconColor),
+        child: Icon(icon, size: 24.sp, color: AppColors.textMuted),
       ),
     );
   }

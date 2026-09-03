@@ -25,14 +25,11 @@ class CartTotalsCard extends StatelessWidget {
     this.isLoading = false,
   });
 
-  static const Color _background = Color(0xFFF2F2F2);
-  static const Color _labelColor = Color(0xFF3B3B3B);
-
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      color: _background,
+      color: AppColors.surfacePage,
       padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 14.h),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -49,7 +46,7 @@ class CartTotalsCard extends StatelessWidget {
 
           Padding(
             padding: EdgeInsets.symmetric(vertical: 12.h),
-            child: Divider(height: 1.h, color: const Color(0xFFD6D6D6)),
+            child: Divider(height: 1.h, color: AppColors.dividerTotals),
           ),
 
           _TotalsRow(label: LocaleKeys.cartDiscount.tr(), value: discount),
@@ -69,7 +66,7 @@ class CartTotalsCard extends StatelessWidget {
                 backgroundColor: AppColors.primaryRed,
                 foregroundColor: AppColors.white,
                 disabledBackgroundColor: onAction == null && !isLoading
-                    ? const Color(0xFFE0A0A0)
+                    ? AppColors.redDisabled
                     : AppColors.primaryRed,
                 disabledForegroundColor: AppColors.white,
                 elevation: 0,
@@ -113,7 +110,7 @@ class _TotalsRow extends StatelessWidget {
     final TextStyle style = TextStyle(
       fontSize: 18.sp,
       fontWeight: FontWeight.w700,
-      color: CartTotalsCard._labelColor,
+      color: AppColors.strongGrey,
     );
 
     return Row(

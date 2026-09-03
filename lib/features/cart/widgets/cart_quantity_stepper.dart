@@ -27,7 +27,7 @@ class _CartQuantityStepper extends StatelessWidget {
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w700,
-              color: const Color(0xFF2C2C2C),
+              color: AppColors.textGraphite,
             ),
           ),
         ),

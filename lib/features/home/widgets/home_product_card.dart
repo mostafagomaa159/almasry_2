@@ -38,9 +38,6 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
-  static const Color _titleColor = AppColors.navyCard;
-  static const Color _mutedColor = AppColors.textMuted;
-
   int quantity = 1;
 
   Future<void> _toggleFavorite() async {
@@ -179,7 +176,7 @@ class _ProductCardState extends State<ProductCard> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 12.sp,
-                          color: _mutedColor,
+                          color: AppColors.textMuted,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -198,7 +195,7 @@ class _ProductCardState extends State<ProductCard> {
                           fontSize: 14.sp,
                           height: 1.35,
                           fontWeight: FontWeight.w700,
-                          color: _titleColor,
+                          color: AppColors.navyCard,
                         ),
                       ),
                     ),
@@ -214,7 +211,7 @@ class _ProductCardState extends State<ProductCard> {
                         priceStyle: TextStyle(
                           fontSize: 18.sp,
                           fontWeight: FontWeight.w800,
-                          color: _titleColor,
+                          color: AppColors.navyCard,
                         ),
                         oldPriceStyle: TextStyle(
                           fontSize: 11.sp,
@@ -273,14 +270,14 @@ class _ProductCardState extends State<ProductCard> {
                             height: 16.h,
                             child: CircularProgressIndicator(
                               strokeWidth: 2.w,
-                              color: _mutedColor,
+                              color: AppColors.textMuted,
                             ),
                           ),
                         )
                       : Icon(
                           Icons.add_shopping_cart_outlined,
                           size: 19.sp,
-                          color: _mutedColor,
+                          color: AppColors.textMuted,
                         ),
                 ),
               ),
@@ -302,8 +299,8 @@ class _ProductCardState extends State<ProductCard> {
           iconSize: 16,
           spacing: 12,
           fontSize: 14,
-          contentColor: _titleColor,
-          iconColor: _mutedColor,
+          contentColor: AppColors.navyCard,
+          iconColor: AppColors.textMuted,
         ),
       ],
     );
