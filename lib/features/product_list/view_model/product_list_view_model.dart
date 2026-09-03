@@ -3,9 +3,9 @@ part of '../product_list_imports.dart';
 class ProductListViewModel {
   final _apiService = sl<ApiService>();
   final _navService = sl<NavigationService>();
-  final _cartService = sl<CartService>();
   final _alertService = sl<AlertService>();
   final _favoritesService = sl<FavoritesService>();
+  final _cartService = sl<CartService>();
 
   final GenericCubit<List<ProductModel>?> _productsCubit =
       GenericCubit<List<ProductModel>?>(null);
@@ -24,8 +24,11 @@ class ProductListViewModel {
 
   List<ProductModel> _loadedProducts() => _productsCubit.state.data ?? const [];
 
-  late final GenericCubit<Set<String>> _addingSkusCubit =
-      _cartService.addingSkusCubit;
+  final GenericCubit<Set<String>> _addingSkusCubit = GenericCubit<Set<String>>(
+    const <String>{},
+  );
+
+  Set<String> _addingSkus() => _addingSkusCubit.state.data;
 
   late final GenericCubit<ListFavorites> _favoritesCubit =
       _favoritesService.favoritesCubit;
@@ -93,17 +96,16 @@ class ProductListViewModel {
 
     final int quantity = _getProductQuantity(sku);
 
-    if (await _cartService.addToCart(sku: sku, quantity: quantity)) {
-      _alertService.showSuccess(LocaleKeys.cartAddedSuccess.tr());
+    _addingSkusCubit.onUpdateData(<String>{..._addingSkus(), sku});
 
-      return;
-    }
+    final bool added = await _cartService.addToCart(
+      sku: sku,
+      quantity: quantity,
+    );
 
-    final String message = _cartService.errorMessage;
+    _addingSkusCubit.onUpdateData(<String>{..._addingSkus()}..remove(sku));
 
-    if (message.trim().isEmpty) return;
-
-    _alertService.showError(message);
+    if (added) _alertService.showSuccess(LocaleKeys.cartAddedSuccess.tr());
   }
 
   Future<void> _toggleFavorite(FavoriteProductModel product) async {

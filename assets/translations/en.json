@@ -258,6 +258,7 @@
   "cart_buy": "Buy",
   "cart_added_success": "Added to your cart",
   "cart_item_removed": "Item removed from your cart",
+  "cart_remove_confirm": "Remove this product from your cart?",
 
   "checkout_title": "Payment",
   "checkout_shipping_address": "Shipping Address",
@@ -284,6 +285,8 @@
   "checkout_tax": "Tax",
   "checkout_payment_method": "Payment method",
   "checkout_delete_address": "Delete address",
+  "checkout_delete_address_confirm": "Delete this address?",
+  "checkout_address_deleted": "Address deleted",
   "checkout_payment_cod_hint": "Pay in cash upon receipt of the order",
   "checkout_payment_link_hint": "You will receive the payment link immediately on WhatsApp.",
 

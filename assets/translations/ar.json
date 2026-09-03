@@ -259,6 +259,7 @@
   "cart_buy": "شراء",
   "cart_added_success": "تمت الإضافة إلى السلة",
   "cart_item_removed": "تم حذف المنتج من السلة",
+  "cart_remove_confirm": "هل تريد حذف هذا المنتج من السلة؟",
 
   "checkout_title": "الدفع",
   "checkout_shipping_address": "عنوان الشحن",
@@ -285,6 +286,8 @@
   "checkout_tax": "الضريبة",
   "checkout_payment_method": "طريقة الدفع",
   "checkout_delete_address": "حذف العنوان",
+  "checkout_delete_address_confirm": "هل تريد حذف هذا العنوان؟",
+  "checkout_address_deleted": "تم حذف العنوان",
   "checkout_payment_cod_hint": "الدفع نقدًا عند استلام الطلب",
   "checkout_payment_link_hint": "سيصلك رابط الدفع فورًا على واتساب.",
 

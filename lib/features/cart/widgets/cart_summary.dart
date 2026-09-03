@@ -13,7 +13,7 @@ class CartSummary extends StatelessWidget {
       discount: cart.discountTotal,
       grandTotal: cart.grandTotal,
       actionTitle: LocaleKeys.cartBuy.tr(),
-      onAction: vm._buy,
+      onAction: vm._navToCheckout,
     );
   }
 }

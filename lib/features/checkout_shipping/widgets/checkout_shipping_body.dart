@@ -12,7 +12,7 @@ class CheckoutShippingBody extends StatelessWidget {
       GenericState<ListShippingMethods>
     >(
       bloc: vm._methodsCubit,
-      builder: (BuildContext context, GenericState<ListShippingMethods> state) {
+      builder: (context, methodsState) {
         if (vm._errorMessage.isNotEmpty) {
           return CustomAppErrorView(
             message: vm._errorMessage,
@@ -20,23 +20,36 @@ class CheckoutShippingBody extends StatelessWidget {
           );
         }
 
-        return Column(
-          children: <Widget>[
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 24.h),
+        return BlocBuilder<GenericCubit<CartModel>, GenericState<CartModel>>(
+          bloc: vm._cartCubit,
+          builder: (context, state) {
+            if (state is GenericUpdateState) {
+              final cart = state.data;
+
+              return Column(
                 children: <Widget>[
-                  CheckoutShippingAddressSection(vm: vm),
+                  Expanded(
+                    child: ListView(
+                      padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 24.h),
+                      children: <Widget>[
+                        CheckoutShippingAddressSection(vm: vm),
 
-                  28.verticalSpace,
+                        28.verticalSpace,
 
-                  CheckoutShippingMethodsSection(vm: vm, methods: state.data),
+                        CheckoutShippingMethodsSection(
+                          vm: vm,
+                          methods: methodsState.data,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  CheckoutShippingSummary(vm: vm, cart: cart),
                 ],
-              ),
-            ),
-
-            CheckoutShippingSummary(vm: vm),
-          ],
+              );
+            }
+            return const Center(child: CustomAppLoadingView());
+          },
         );
       },
     );

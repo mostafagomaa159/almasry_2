@@ -6,12 +6,15 @@ class RegisterCustomerOtpModel {
 
   final String? email;
 
+  final String? message;
+
   const RegisterCustomerOtpModel({
     this.token,
     this.cartId,
     this.mobileNumber,
     this.customerId,
     this.email,
+    this.message,
   });
 
   factory RegisterCustomerOtpModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +26,7 @@ class RegisterCustomerOtpModel {
       mobileNumber: json['mobile_number']?.toString(),
       customerId: customer?['id'] as int?,
       email: customer?['email']?.toString(),
+      message: json['message']?.toString(),
     );
   }
 }

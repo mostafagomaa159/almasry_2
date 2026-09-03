@@ -4,9 +4,9 @@ typedef ListPaymentMethods = List<PaymentMethodModel>;
 
 class CheckoutPaymentViewModel {
   final _graphqlService = sl<GraphQLService>();
-  final _navService = sl<NavigationService>();
   final _alertService = sl<AlertService>();
   final _cartService = sl<CartService>();
+  final _checkoutFlowService = sl<CheckoutFlowService>();
 
   final GenericCubit<ListPaymentMethods> _methodsCubit =
       GenericCubit<ListPaymentMethods>([]);
@@ -21,14 +21,16 @@ class CheckoutPaymentViewModel {
 
   final GenericCubit<bool> _submittingCubit = GenericCubit<bool>(false);
 
-  late final GenericCubit<CartModel> _cartCubit = _cartService.cartCubit;
+  GenericCubit<CartModel> get _cartCubit => _cartService.cartCubit;
+
+  CartModel _cart() => _cartService.cart;
 
   String _errorMessage = '';
 
-  Future<void> _init() => _loadMethods();
+  Future<void> _init() async {
+    await _cartService.loadCart();
 
-  void _back() {
-    _navService.pop();
+    await _loadMethods();
   }
 
   ListPaymentMethods _methods() => _methodsCubit.state.data;
@@ -87,7 +89,7 @@ class CheckoutPaymentViewModel {
   }
 
   String _initialCode(ListPaymentMethods methods) {
-    final String onCart = _cartService.cart.selectedPaymentMethod.code;
+    final String onCart = _cart().selectedPaymentMethod.code;
 
     for (final PaymentMethodModel method in methods) {
       if (method.code == onCart) return onCart;
@@ -108,8 +110,7 @@ class CheckoutPaymentViewModel {
 
     if (!method.hasOptions) return '';
 
-    final String onCart =
-        _cartService.cart.selectedPaymentMethod.selectedOption;
+    final String onCart = _cart().selectedPaymentMethod.selectedOption;
 
     for (final PaymentOptionModel option in method.options) {
       if (option.code == onCart) return onCart;
@@ -161,9 +162,9 @@ class CheckoutPaymentViewModel {
         ).toVariables(),
       );
 
-      await _cartService.refresh();
+      await _cartService.loadCart();
 
-      _navService.pushNamed(RouteNames.checkoutReview);
+      _checkoutFlowService.next();
     } catch (error) {
       _alertService.showError(errorMessageFrom(error));
     } finally {

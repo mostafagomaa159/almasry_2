@@ -18,15 +18,6 @@ class _CheckoutPaymentViewState extends State<CheckoutPaymentView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: Column(
-        children: <Widget>[
-          CustomAppBar(title: LocaleKeys.checkoutTitle.tr(), onBack: vm._back),
-          const CheckoutStepper(currentStep: CheckoutStep.payment),
-          Expanded(child: CheckoutPaymentBody(vm: vm)),
-        ],
-      ),
-    );
+    return CheckoutPaymentBody(vm: vm);
   }
 }

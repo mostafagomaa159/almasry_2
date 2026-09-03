@@ -18,17 +18,6 @@ class _CartViewState extends State<CartView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.white,
-      child: Column(
-        children: <Widget>[
-          CustomAppBar(
-            title: LocaleKeys.cart.tr(),
-            onMenu: () => Scaffold.of(context).openDrawer(),
-          ),
-          Expanded(child: CartBody(vm: vm)),
-        ],
-      ),
-    );
+    return CartBody(vm: vm);
   }
 }

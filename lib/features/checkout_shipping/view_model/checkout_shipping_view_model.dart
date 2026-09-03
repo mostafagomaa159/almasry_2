@@ -9,6 +9,7 @@ class CheckoutShippingViewModel {
   final _alertService = sl<AlertService>();
   final _cartService = sl<CartService>();
   final _addressBookService = sl<AddressBookService>();
+  final _checkoutFlowService = sl<CheckoutFlowService>();
   final _prefsService = sl<SharedPrefsServices>();
 
   final GenericCubit<String> _selectedAddressIdCubit = GenericCubit<String>('');
@@ -27,11 +28,11 @@ class CheckoutShippingViewModel {
   late final GenericCubit<ListAddresses> _addressesCubit =
       _addressBookService.addressesCubit;
 
-  late final GenericCubit<CartModel> _cartCubit = _cartService.cartCubit;
+  GenericCubit<CartModel> get _cartCubit => _cartService.cartCubit;
 
   String _errorMessage = '';
 
-  CartModel _cartModel() => _cartService.cart;
+  CartModel _cart() => _cartService.cart;
 
   ListAddresses _addresses() => _addressBookService.addresses;
 
@@ -44,15 +45,24 @@ class CheckoutShippingViewModel {
   Future<void> _init() async {
     await _addressBookService.load();
 
-    final AddressModel? preselected = _addressBookService.defaultAddress;
+    final AddressModel? preselected =
+        _rememberedAddress() ?? _addressBookService.defaultAddress;
 
     if (preselected == null) return;
 
     await _selectAddress(preselected);
   }
 
-  void _back() {
-    _navService.pop();
+  AddressModel? _rememberedAddress() {
+    final String id = _checkoutFlowService.selectedAddressId;
+
+    if (id.isEmpty) return null;
+
+    for (final AddressModel address in _addresses()) {
+      if (address.id == id) return address;
+    }
+
+    return null;
   }
 
   void _toggleShowAllAddresses() {
@@ -82,10 +92,23 @@ class CheckoutShippingViewModel {
     await _selectAddress(after);
   }
 
+  void _confirmDeleteAddress(AddressModel address) {
+    _alertService.showConfirmation(
+      title: LocaleKeys.checkoutDeleteAddressConfirm.tr(),
+      confirmTitle: LocaleKeys.confirm.tr(),
+      cancelTitle: LocaleKeys.cancel.tr(),
+      onConfirm: () => _deleteAddress(address),
+    );
+  }
+
   Future<void> _deleteAddress(AddressModel address) async {
     await _addressBookService.remove(address.id);
 
+    _alertService.showSuccess(LocaleKeys.checkoutAddressDeleted.tr());
+
     if (_selectedAddressIdCubit.state.data != address.id) return;
+
+    _checkoutFlowService.selectedAddressId = '';
 
     _selectedAddressIdCubit.onUpdateData('');
     _selectedMethodKeyCubit.onUpdateData('');
@@ -99,15 +122,17 @@ class CheckoutShippingViewModel {
   Future<void> _selectAddress(AddressModel address) async {
     _errorMessage = '';
 
+    _checkoutFlowService.selectedAddressId = address.id;
+
     _selectedAddressIdCubit.onUpdateData(address.id);
     _selectedMethodKeyCubit.onUpdateData('');
     _applyingAddressCubit.onUpdateData(true);
     _methodsCubit.onUpdateData(const []);
 
-    final String cartId = await _cartService.ensureCartId();
+    final String id = await _cartService.ensureCartId();
 
-    if (cartId.isEmpty) {
-      _fail(_cartService.errorMessage);
+    if (id.isEmpty) {
+      _fail(LocaleKeys.somethingWentWrong.tr());
 
       return;
     }
@@ -116,7 +141,7 @@ class CheckoutShippingViewModel {
       await _graphqlService.mutate(
         GraphQLDocuments.setShippingAddressesOnCart,
         variables: SetShippingAddressRequest(
-          cartId: cartId,
+          cartId: id,
           address: address,
         ).toVariables(),
       );
@@ -124,14 +149,14 @@ class CheckoutShippingViewModel {
       await _graphqlService.mutate(
         GraphQLDocuments.setBillingAddressOnCart,
         variables: SetBillingAddressRequest(
-          cartId: cartId,
+          cartId: id,
           address: address,
         ).toVariables(),
       );
 
-      await _setGuestEmail(cartId);
+      await _setGuestEmail(id);
 
-      await _loadShippingMethods(cartId);
+      await _loadShippingMethods(id);
     } catch (error) {
       _fail(errorMessageFrom(error));
     }
@@ -178,7 +203,7 @@ class CheckoutShippingViewModel {
   Future<void> _selectMethod(ShippingMethodModel? method) async {
     if (method == null || method.isEmpty) return;
     if (method.key == _selectedMethodKeyCubit.state.data &&
-        _cartModel().shippingCost > 0) {
+        _cart().shippingCost > 0) {
       return;
     }
 
@@ -207,7 +232,7 @@ class CheckoutShippingViewModel {
         ).toVariables(),
       );
 
-      await _cartService.refresh();
+      await _cartService.loadCart();
     } catch (error) {
       if (!silent) _alertService.showError(errorMessageFrom(error));
     } finally {
@@ -236,7 +261,7 @@ class CheckoutShippingViewModel {
       return;
     }
 
-    _navService.pushNamed(RouteNames.checkoutPayment);
+    _checkoutFlowService.next();
   }
 
   AddressModel? _selectedAddress() {

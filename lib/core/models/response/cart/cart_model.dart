@@ -146,6 +146,8 @@ class CartModel {
 
   bool get isEmpty => items.isEmpty;
 
+  int get productCount => items.length;
+
   ShippingMethodModel? get selectedShippingMethod =>
       shippingAddress?.selectedShippingMethod;
 

@@ -277,6 +277,7 @@ class LocaleKeys {
   static const String cartBuy = 'cart_buy';
   static const String cartAddedSuccess = 'cart_added_success';
   static const String cartItemRemoved = 'cart_item_removed';
+  static const String cartRemoveConfirm = 'cart_remove_confirm';
 
   static const String checkoutTitle = 'checkout_title';
   static const String checkoutShippingAddress = 'checkout_shipping_address';
@@ -307,6 +308,9 @@ class LocaleKeys {
   static const String checkoutTax = 'checkout_tax';
   static const String checkoutPaymentMethod = 'checkout_payment_method';
   static const String checkoutDeleteAddress = 'checkout_delete_address';
+  static const String checkoutDeleteAddressConfirm =
+      'checkout_delete_address_confirm';
+  static const String checkoutAddressDeleted = 'checkout_address_deleted';
   static const String checkoutPaymentCodHint = 'checkout_payment_cod_hint';
   static const String checkoutPaymentLinkHint = 'checkout_payment_link_hint';
 

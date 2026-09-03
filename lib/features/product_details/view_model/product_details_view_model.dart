@@ -42,8 +42,11 @@ class ProductDetailsViewModel {
   late final GenericCubit<ListFavorites> _favoritesCubit =
       _favoritesService.favoritesCubit;
 
-  late final GenericCubit<Set<String>> _addingSkusCubit =
-      _cartService.addingSkusCubit;
+  final GenericCubit<Set<String>> _addingSkusCubit = GenericCubit<Set<String>>(
+    const <String>{},
+  );
+
+  Set<String> _addingSkus() => _addingSkusCubit.state.data;
 
   Future<void> _init({required ProductDetailsArgs args}) async {
     _args = args;
@@ -122,17 +125,16 @@ class ProductDetailsViewModel {
 
     if (sku.trim().isEmpty) return;
 
-    if (await _cartService.addToCart(sku: sku, quantity: _quantity())) {
-      _alertService.showSuccess(LocaleKeys.cartAddedSuccess.tr());
+    _addingSkusCubit.onUpdateData(<String>{..._addingSkus(), sku});
 
-      return;
-    }
+    final bool added = await _cartService.addToCart(
+      sku: sku,
+      quantity: _quantity(),
+    );
 
-    final String message = _cartService.errorMessage;
+    _addingSkusCubit.onUpdateData(<String>{..._addingSkus()}..remove(sku));
 
-    if (message.trim().isEmpty) return;
-
-    _alertService.showError(message);
+    if (added) _alertService.showSuccess(LocaleKeys.cartAddedSuccess.tr());
   }
 
   void _addReview() {

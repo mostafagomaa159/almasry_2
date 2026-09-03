@@ -1,28 +1,27 @@
-import 'package:easy_localization/easy_localization.dart';
-import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
 import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/constants/app_api.dart';
+import 'package:almasry_2/core/constants/app_durations.dart';
+import 'package:almasry_2/core/constants/pref_keys.dart';
+import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:almasry_2/core/models/request/login/activate_account_model.dart';
 import 'package:almasry_2/core/models/request/login/auth_after_otp_model.dart';
 import 'package:almasry_2/core/models/request/login/forget_password_model.dart';
 import 'package:almasry_2/core/models/response/login/activate_account_model.dart';
 import 'package:almasry_2/core/models/response/login/register_customer_otp_model.dart';
-import 'package:almasry_2/core/constants/pref_keys.dart';
 import 'package:almasry_2/core/services/api_services.dart';
 import 'package:almasry_2/core/services/app_startup_service.dart';
 import 'package:almasry_2/core/services/cart_service.dart';
 import 'package:almasry_2/core/services/shared_prefs_services.dart';
 import 'package:almasry_2/core/services/user_profile_service.dart';
-import 'package:dio/dio.dart';
 import 'package:almasry_2/core/utils/error_message.dart';
-import 'package:almasry_2/core/constants/app_durations.dart';
+import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AuthSessionService {
   final _apiService = sl<ApiService>();
   final _prefsService = sl<SharedPrefsServices>();
   final _startupService = sl<AppStartupService>();
-  final _cartService = sl<CartService>();
   final _userProfileService = sl<UserProfileService>();
 
   final GenericCubit<bool> passwordHiddenCubit = GenericCubit<bool>(true);
@@ -50,7 +49,9 @@ class AuthSessionService {
   String? authErrorMessage;
 
   String? verificationPhone;
+  String? verificationLocalPhone;
   String? verificationCode;
+  String? verificationCustomerId;
 
   static const int _otpCountdownStart = 30;
 
@@ -144,7 +145,9 @@ class AuthSessionService {
     otpError = null;
     authErrorMessage = null;
     verificationPhone = null;
+    verificationLocalPhone = null;
     verificationCode = null;
+    verificationCustomerId = null;
 
     phoneAuthLoadingCubit.onUpdateData(false);
     otpLoadingCubit.onUpdateData(false);
@@ -175,6 +178,63 @@ class AuthSessionService {
     if (cleaned.startsWith('0')) return '+2$cleaned';
 
     return cleaned;
+  }
+
+  String _customerIdFrom(Map<String, dynamic> response) {
+    final Object? customer = response['customer'];
+
+    final List<Object?> fields = <Object?>[
+      response['customer_id'],
+      response['customerId'],
+      customer is Map ? customer['id'] : null,
+      response['id'],
+    ];
+
+    for (final Object? field in fields) {
+      final String value = (field ?? '').toString().trim();
+
+      if (value.isNotEmpty && value != '0') return value;
+    }
+
+    return '';
+  }
+
+  List<String> _activationCandidates(String code) {
+    final List<String> candidates = <String>[];
+
+    final List<String> ordered = <String>[
+      (verificationCustomerId ?? '').trim(),
+      code,
+    ];
+
+    for (final String candidate in ordered) {
+      if (candidate.isEmpty || candidates.contains(candidate)) continue;
+
+      candidates.add(candidate);
+    }
+
+    return candidates;
+  }
+
+  List<String> _mobileCandidates() {
+    final String local = (verificationLocalPhone ?? '').trim();
+    final String normalized = (verificationPhone ?? '').trim();
+
+    final List<String> ordered = <String>[
+      local,
+      normalized,
+      normalized.startsWith('+') ? normalized.substring(1) : '',
+    ];
+
+    final List<String> candidates = <String>[];
+
+    for (final String candidate in ordered) {
+      if (candidate.isEmpty || candidates.contains(candidate)) continue;
+
+      candidates.add(candidate);
+    }
+
+    return candidates;
   }
 
   void _failPhoneAuth(String message) {
@@ -285,7 +345,9 @@ class AuthSessionService {
       }
 
       verificationPhone = normalizedPhone;
+      verificationLocalPhone = phone.trim().replaceAll(' ', '');
       verificationCode = code;
+      verificationCustomerId = _customerIdFrom(response);
 
       otpCountdownCubit.onUpdateData(_otpCountdownStart);
       phoneAuthLoadingCubit.onUpdateData(false);
@@ -322,7 +384,7 @@ class AuthSessionService {
     if (token.isNotEmpty) {
       await _prefsService.setString(PrefKeys.customerToken, token);
 
-      await _cartService.adoptCustomerCart();
+      await sl<CartService>().adoptCustomerCart();
     }
 
     await _startupService.saveLoggedIn();
@@ -374,22 +436,62 @@ class AuthSessionService {
     otpLoadingCubit.onUpdateData(true);
 
     try {
-      final activateRequest = ActivateAccountRequest(customerId: savedCode);
+      bool activated = false;
+      String activateFailure = '';
 
-      final activateResponse = await _activateAccount(request: activateRequest);
+      for (final String customerId in _activationCandidates(savedCode)) {
+        try {
+          final ActivateAccountModel attempt = await _activateAccount(
+            request: ActivateAccountRequest(customerId: customerId),
+          );
 
-      if ((activateResponse.status ?? '').toLowerCase() != 'success') {
-        _failOtp(activateResponse.message ?? LocaleKeys.otpActivateFailed.tr());
+          if ((attempt.status ?? '').toLowerCase() == 'success') {
+            activated = true;
+
+            break;
+          }
+
+          activateFailure = (attempt.message ?? '').trim();
+        } on DioException catch (e) {
+          activateFailure = errorMessageFrom(e);
+        }
+      }
+
+      if (!activated) {
+        _failOtp(
+          activateFailure.isEmpty
+              ? LocaleKeys.otpActivateFailed.tr()
+              : activateFailure,
+        );
 
         return false;
       }
 
-      final loginRequest = AuthAfterOtpModel(mobile: phone);
+      RegisterCustomerOtpModel? loginResponse;
+      String loginFailure = '';
 
-      final loginResponse = await _loginAfterOtp(request: loginRequest);
+      for (final String mobile in _mobileCandidates()) {
+        try {
+          final RegisterCustomerOtpModel attempt = await _loginAfterOtp(
+            request: AuthAfterOtpModel(mobile: mobile),
+          );
 
-      if ((loginResponse.token ?? '').isEmpty) {
-        _failOtp(LocaleKeys.otpLoginFailed.tr());
+          if ((attempt.token ?? '').isNotEmpty) {
+            loginResponse = attempt;
+
+            break;
+          }
+
+          loginFailure = (attempt.message ?? '').trim();
+        } on DioException catch (e) {
+          loginFailure = errorMessageFrom(e);
+        }
+      }
+
+      if (loginResponse == null) {
+        _failOtp(
+          loginFailure.isEmpty ? LocaleKeys.otpLoginFailed.tr() : loginFailure,
+        );
 
         return false;
       }

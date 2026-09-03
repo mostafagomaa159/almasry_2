@@ -5,6 +5,7 @@ class CheckoutReviewViewModel {
   final _navService = sl<NavigationService>();
   final _alertService = sl<AlertService>();
   final _cartService = sl<CartService>();
+  final _checkoutFlowService = sl<CheckoutFlowService>();
 
   final GenericCubit<bool> _productsExpandedCubit = GenericCubit<bool>(true);
   final GenericCubit<bool> _orderExpandedCubit = GenericCubit<bool>(true);
@@ -12,15 +13,11 @@ class CheckoutReviewViewModel {
 
   final GenericCubit<bool> _placingOrderCubit = GenericCubit<bool>(false);
 
-  late final GenericCubit<CartModel> _cartCubit = _cartService.cartCubit;
+  GenericCubit<CartModel> get _cartCubit => _cartService.cartCubit;
 
-  CartModel _cartModel() => _cartService.cart;
+  CartModel _cart() => _cartService.cart;
 
-  void _init() {}
-
-  void _back() {
-    _navService.pop();
-  }
+  Future<void> _init() => _cartService.loadCart();
 
   void _toggleProducts() {
     _productsExpandedCubit.onUpdateData(!_productsExpandedCubit.state.data);
@@ -35,26 +32,25 @@ class CheckoutReviewViewModel {
   }
 
   String _shippingAddressLine() {
-    final CartModel cart = _cartModel();
+    final CartModel cart = _cart();
 
     return cart.shippingAddress?.summaryLine ?? '';
   }
 
   String _shippingCompanyLine() {
-    final ShippingMethodModel? method = _cartModel().selectedShippingMethod;
+    final ShippingMethodModel? method = _cart().selectedShippingMethod;
 
     return method == null ? '' : method.displayTitle;
   }
 
-  String _paymentMethodLine() =>
-      _cartModel().selectedPaymentMethod.displayTitle;
+  String _paymentMethodLine() => _cart().selectedPaymentMethod.displayTitle;
 
   Future<void> _placeOrder() async {
     if (_placingOrderCubit.state.data) return;
 
     _placingOrderCubit.onUpdateData(true);
 
-    final double grandTotal = _cartModel().grandTotal;
+    final double grandTotal = _cart().grandTotal;
 
     try {
       final Map<String, dynamic> json = await _graphqlService.mutate(
@@ -74,7 +70,9 @@ class CheckoutReviewViewModel {
         return;
       }
 
-      await _cartService.clearAfterOrder();
+      await _cartService.clearCart();
+
+      _checkoutFlowService.reset();
 
       _navService.goNamed(
         RouteNames.orderConfirmed,

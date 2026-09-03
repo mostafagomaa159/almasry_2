@@ -18,15 +18,6 @@ class _CheckoutReviewViewState extends State<CheckoutReviewView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: Column(
-        children: <Widget>[
-          CustomAppBar(title: LocaleKeys.checkoutTitle.tr(), onBack: vm._back),
-          const CheckoutStepper(currentStep: CheckoutStep.review),
-          Expanded(child: CheckoutReviewBody(vm: vm)),
-        ],
-      ),
-    );
+    return CheckoutReviewBody(vm: vm);
   }
 }

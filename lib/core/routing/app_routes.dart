@@ -17,9 +17,6 @@ class AppRoutes {
   static const String cart = '/cart';
   static const String orderConfirmed = '/orderConfirmed';
 
-  static const String checkoutShipping = '/checkout-shipping';
-  static const String checkoutPayment = '/checkout-payment';
-  static const String checkoutReview = '/checkout-review';
   static const String addressForm = '/address-form';
 
   static const String homeComingSoon = '/comingSoon';
@@ -47,9 +44,6 @@ class RouteNames {
   static const String categories = 'categories';
   static const String cart = 'cart';
   static const String orderConfirmed = 'orderConfirmed';
-  static const String checkoutShipping = 'checkoutShipping';
-  static const String checkoutPayment = 'checkoutPayment';
-  static const String checkoutReview = 'checkoutReview';
   static const String addressForm = 'addressForm';
   static const String homeComingSoon = 'homeComingSoon';
   static const String brands = 'brands';

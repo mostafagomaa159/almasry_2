@@ -65,14 +65,14 @@ class CheckoutAddressCard extends StatelessWidget {
 
                     Column(
                       children: <Widget>[
-                        if (!address.isDefault) ...<Widget>[
-                          _CardIconButton(
-                            icon: Icons.delete_outline,
-                            color: AppColors.primaryRed,
-                            onTap: () => vm._deleteAddress(address),
-                          ),
-                          10.verticalSpace,
-                        ],
+                        _CardIconButton(
+                          icon: Icons.delete_outline,
+                          color: AppColors.primaryRed,
+                          onTap: () => vm._confirmDeleteAddress(address),
+                        ),
+
+                        10.verticalSpace,
+
                         _CardIconButton(
                           icon: Icons.edit_outlined,
                           color: const Color(0xFF2C2C2C),

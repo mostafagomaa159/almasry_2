@@ -18,15 +18,6 @@ class _CheckoutShippingViewState extends State<CheckoutShippingView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: Column(
-        children: <Widget>[
-          CustomAppBar(title: LocaleKeys.checkoutTitle.tr(), onBack: vm._back),
-          const CheckoutStepper(currentStep: CheckoutStep.address),
-          Expanded(child: CheckoutShippingBody(vm: vm)),
-        ],
-      ),
-    );
+    return CheckoutShippingBody(vm: vm);
   }
 }

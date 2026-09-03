@@ -2,40 +2,43 @@ part of '../cart_imports.dart';
 
 class CartViewModel {
   final _cartService = sl<CartService>();
-  final _navService = sl<NavigationService>();
   final _alertService = sl<AlertService>();
+  final _checkoutFlowService = sl<CheckoutFlowService>();
 
-  late final GenericCubit<CartModel> _cartCubit = _cartService.cartCubit;
-  late final GenericCubit<bool> _loadingCubit = _cartService.loadingCubit;
-  late final GenericCubit<Set<int>> _busyItemsCubit =
-      _cartService.busyItemsCubit;
+  GenericCubit<CartModel> get _cartCubit => _cartService.cartCubit;
+
+  CartModel _cart() => _cartService.cart;
 
   Future<void> _init() => _cartService.loadCart();
 
-  Future<void> _refresh() => _cartService.refresh();
+  Future<void> _refresh() => _cartService.loadCart();
 
-  Future<void> _retry() => _cartService.loadCart();
-
-  Future<void> _increment(CartItemModel item) {
+  Future<void> _incrementQuantity(CartItemModel item) {
     return _cartService.updateQuantity(item: item, quantity: item.quantity + 1);
   }
 
-  Future<void> _decrement(CartItemModel item) async {
-    final bool isRemoving = item.quantity <= 1;
-
-    final bool succeeded = await _cartService.updateQuantity(
-      item: item,
-      quantity: item.quantity - 1,
-    );
-
-    if (succeeded && isRemoving) {
-      _alertService.showSuccess(LocaleKeys.cartItemRemoved.tr());
-    }
+  Future<void> _decrementQuantity(CartItemModel item) {
+    return _cartService.updateQuantity(item: item, quantity: item.quantity - 1);
   }
 
-  void _buy() {
-    if (_cartService.cart.isEmpty) return;
+  void _confirmRemoveItem(CartItemModel item) {
+    _alertService.showConfirmation(
+      title: LocaleKeys.cartRemoveConfirm.tr(),
+      confirmTitle: LocaleKeys.confirm.tr(),
+      cancelTitle: LocaleKeys.cancel.tr(),
+      onConfirm: () => _removeItem(item),
+    );
+  }
 
-    _navService.pushNamed(RouteNames.checkoutShipping);
+  Future<void> _removeItem(CartItemModel item) async {
+    final bool removed = await _cartService.removeItem(item);
+
+    if (removed) _alertService.showSuccess(LocaleKeys.cartItemRemoved.tr());
+  }
+
+  void _navToCheckout() {
+    if (_cart().isEmpty) return;
+
+    _checkoutFlowService.next();
   }
 }

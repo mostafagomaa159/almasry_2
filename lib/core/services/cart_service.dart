@@ -2,10 +2,10 @@ import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
 import 'package:almasry_2/core/base/locator/locator.dart';
 import 'package:almasry_2/core/constants/app_graphql.dart';
 import 'package:almasry_2/core/constants/pref_keys.dart';
+import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:almasry_2/core/models/request/cart/cart_item_request.dart';
 import 'package:almasry_2/core/models/response/cart/cart_item_model.dart';
 import 'package:almasry_2/core/models/response/cart/cart_model.dart';
-import 'package:almasry_2/core/localization/locale_keys.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/core/services/alert_service.dart';
 import 'package:almasry_2/core/services/graphql_service.dart';
@@ -18,19 +18,7 @@ class CartService {
   final GenericCubit<CartModel> cartCubit = GenericCubit<CartModel>(
     const CartModel(),
   );
-
   final GenericCubit<bool> loadingCubit = GenericCubit<bool>(false);
-
-  final GenericCubit<Set<int>> busyItemsCubit = GenericCubit<Set<int>>(
-    const <int>{},
-  );
-
-  final GenericCubit<Set<String>> addingSkusCubit = GenericCubit<Set<String>>(
-    const <String>{},
-  );
-
-  String errorMessage = '';
-
   final _graphqlService = sl<GraphQLService>();
   final _prefsService = sl<SharedPrefsServices>();
   final _alertService = sl<AlertService>();
@@ -38,112 +26,59 @@ class CartService {
 
   CartModel get cart => cartCubit.state.data;
 
-  Set<int> get busyItemIds => busyItemsCubit.state.data;
-
-  Set<String> get addingSkus => addingSkusCubit.state.data;
-
   String get cartId => _prefsService.getString(PrefKeys.cartId);
 
-  bool get hasCart => cartId.trim().isNotEmpty;
+  bool get hasCartId => cartId.trim().isNotEmpty;
 
   bool get hasCustomerToken =>
       _prefsService.getString(PrefKeys.customerToken).trim().isNotEmpty;
 
-  Future<void> adoptCustomerCart() async {
-    await _prefsService.remove(PrefKeys.cartId);
-
-    await loadCart();
-  }
-
-  Future<void> clearForLogout() async {
-    await _prefsService.remove(PrefKeys.cartId);
-
-    errorMessage = '';
-
-    cartCubit.onUpdateData(const CartModel());
-  }
+  bool get isLoggedIn => _prefsService.getBool(PrefKeys.isLoggedIn);
 
   Future<void> loadCart() async {
-    if (!hasCart && !hasCustomerToken) {
-      errorMessage = '';
+    final String id = await resolveCartId();
 
+    if (id.isEmpty) {
       cartCubit.onUpdateData(const CartModel());
 
       return;
     }
 
-    errorMessage = '';
-
     loadingCubit.onUpdateData(true);
 
     try {
-      if (!hasCart) {
-        final String id = await ensureCartId();
-
-        if (id.isEmpty) return;
-      }
-
-      await _readCart();
+      await _readCart(id);
     } finally {
       loadingCubit.onUpdateData(false);
     }
   }
 
-  Future<void> refresh() async {
-    if (!hasCart) return loadCart();
+  Future<String> resolveCartId() async {
+    final String stored = cartId;
 
-    await _readCart();
+    if (stored.trim().isNotEmpty) return stored;
+
+    if (!hasCustomerToken) return '';
+
+    return _customerCartId();
   }
 
   Future<String> ensureCartId() async {
-    final String existing = cartId;
+    final String resolved = await resolveCartId();
 
-    if (existing.trim().isNotEmpty) return existing;
+    if (resolved.trim().isNotEmpty) return resolved;
 
-    if (hasCustomerToken) {
-      final String customerCartId = await _customerCartId();
-
-      if (customerCartId.isNotEmpty) return customerCartId;
-    }
-
-    try {
-      final Map<String, dynamic> response = await _graphqlService.mutate(
-        GraphQLDocuments.createEmptyCart,
-      );
-
-      final String created = response['createEmptyCart']?.toString() ?? '';
-
-      if (created.trim().isEmpty) {
-        errorMessage = '';
-
-        cartCubit.onUpdateData(cart);
-
-        return '';
-      }
-
-      await _prefsService.setString(PrefKeys.cartId, created);
-
-      return created;
-    } catch (error) {
-      errorMessage = errorMessageFrom(error);
-
-      cartCubit.onUpdateData(cart);
-
-      return '';
-    }
-  }
-
-  bool get isLoggedIn => _prefsService.getBool(PrefKeys.isLoggedIn);
-
-  void _askToSignIn() {
-    errorMessage = '';
-
-    _alertService.showConfirmation(
-      title: LocaleKeys.signInToContinue.tr(),
-      confirmTitle: LocaleKeys.confirm.tr(),
-      cancelTitle: LocaleKeys.cancel.tr(),
-      onConfirm: () => _navService.pushNamed(RouteNames.login),
+    final Map<String, dynamic> response = await _graphqlService.mutate(
+      GraphQLDocuments.createEmptyCart,
     );
+
+    final String created = response['createEmptyCart']?.toString() ?? '';
+
+    if (created.trim().isEmpty) return '';
+
+    await _prefsService.setString(PrefKeys.cartId, created);
+
+    return created;
   }
 
   Future<bool> addToCart({required String sku, int quantity = 1}) async {
@@ -157,31 +92,78 @@ class CartService {
       return false;
     }
 
-    errorMessage = '';
+    try {
+      final String id = await ensureCartId();
 
-    addingSkusCubit.onUpdateData(<String>{...addingSkus, trimmedSku});
+      if (id.isEmpty) return false;
 
-    final String id = await ensureCartId();
-
-    if (id.isEmpty) {
-      _clearAdding(trimmedSku);
+      return _mutateCart(
+        document: GraphQLDocuments.addSimpleProductsToCart,
+        mutationKey: 'addSimpleProductsToCart',
+        variables: AddToCartRequest(
+          cartId: id,
+          sku: trimmedSku,
+          quantity: quantity,
+        ).toVariables(),
+      );
+    } catch (error) {
+      await _handleFailure(error);
 
       return false;
     }
+  }
 
-    final bool succeeded = await _mutateCart(
-      document: GraphQLDocuments.addSimpleProductsToCart,
-      mutationKey: 'addSimpleProductsToCart',
-      variables: AddToCartRequest(
-        cartId: id,
-        sku: trimmedSku,
+  Future<bool> updateQuantity({
+    required CartItemModel item,
+    required int quantity,
+  }) {
+    if (quantity <= 0) return removeItem(item);
+    return _mutateCart(
+      document: GraphQLDocuments.updateCartItems,
+      mutationKey: 'updateCartItems',
+      variables: UpdateCartItemRequest(
+        cartId: cartId,
+        cartItemId: item.numericId,
         quantity: quantity,
       ).toVariables(),
     );
+  }
 
-    _clearAdding(trimmedSku);
+  Future<bool> removeItem(CartItemModel item) {
+    return _mutateCart(
+      document: GraphQLDocuments.removeItemFromCart,
+      mutationKey: 'removeItemFromCart',
+      variables: RemoveCartItemRequest(
+        cartId: cartId,
+        cartItemId: item.numericId,
+      ).toVariables(),
+    );
+  }
 
-    return succeeded;
+  Future<void> adoptCustomerCart() async {
+    await _prefsService.remove(PrefKeys.cartId);
+
+    await loadCart();
+  }
+
+  Future<void> clearCart() async {
+    await _prefsService.remove(PrefKeys.cartId);
+
+    cartCubit.onUpdateData(const CartModel());
+  }
+
+  void dispose() {
+    cartCubit.close();
+    loadingCubit.close();
+  }
+
+  void _askToSignIn() {
+    _alertService.showConfirmation(
+      title: LocaleKeys.signInToContinue.tr(),
+      confirmTitle: LocaleKeys.confirm.tr(),
+      cancelTitle: LocaleKeys.cancel.tr(),
+      onConfirm: () => _navService.pushNamed(RouteNames.login),
+    );
   }
 
   Future<String> _customerCartId() async {
@@ -205,84 +187,12 @@ class CartService {
     }
   }
 
-  void _clearAdding(String sku) {
-    addingSkusCubit.onUpdateData(<String>{...addingSkus}..remove(sku));
-  }
-
-  Future<bool> updateQuantity({
-    required CartItemModel item,
-    required int quantity,
-  }) async {
-    if (quantity <= 0) return removeItem(item);
-
-    return _withItemBusy(
-      item,
-      () => _mutateCart(
-        document: GraphQLDocuments.updateCartItems,
-        mutationKey: 'updateCartItems',
-        variables: UpdateCartItemRequest(
-          cartId: cartId,
-          cartItemId: item.numericId,
-          quantity: quantity,
-        ).toVariables(),
-      ),
-    );
-  }
-
-  Future<bool> removeItem(CartItemModel item) {
-    return _withItemBusy(
-      item,
-      () => _mutateCart(
-        document: GraphQLDocuments.removeItemFromCart,
-        mutationKey: 'removeItemFromCart',
-        variables: RemoveCartItemRequest(
-          cartId: cartId,
-          cartItemId: item.numericId,
-        ).toVariables(),
-      ),
-    );
-  }
-
-  Future<void> clearAfterOrder() async {
-    await _prefsService.remove(PrefKeys.cartId);
-
-    errorMessage = '';
-
-    cartCubit.onUpdateData(const CartModel());
-  }
-
-  void dispose() {
-    cartCubit.close();
-    loadingCubit.close();
-    busyItemsCubit.close();
-    addingSkusCubit.close();
-  }
-
-  Future<bool> _withItemBusy(
-    CartItemModel item,
-    Future<bool> Function() action,
-  ) async {
-    if (!hasCart || item.numericId <= 0) return false;
-
-    errorMessage = '';
-
-    busyItemsCubit.onUpdateData(<int>{...busyItemIds, item.numericId});
-
-    final bool succeeded = await action();
-
-    busyItemsCubit.onUpdateData(<int>{...busyItemIds}..remove(item.numericId));
-
-    return succeeded;
-  }
-
-  Future<void> _readCart() async {
+  Future<void> _readCart(String id) async {
     try {
       final Map<String, dynamic> response = await _graphqlService.query(
         GraphQLDocuments.getCartDetails,
-        variables: {'cartId': cartId},
+        variables: <String, dynamic>{'cartId': id},
       );
-
-      errorMessage = '';
 
       cartCubit.onUpdateData(CartModel.fromResponse(response));
     } catch (error) {
@@ -301,8 +211,6 @@ class CartService {
         variables: variables,
       );
 
-      errorMessage = '';
-
       cartCubit.onUpdateData(
         CartModel.fromResponse(response, mutationKey: mutationKey),
       );
@@ -319,16 +227,12 @@ class CartService {
     final String message = errorMessageFrom(error);
 
     if (_isMissingCart(message)) {
-      await _prefsService.remove(PrefKeys.cartId);
-
-      errorMessage = '';
-
-      cartCubit.onUpdateData(const CartModel());
+      await clearCart();
 
       return;
     }
 
-    errorMessage = message;
+    _alertService.showError(message);
 
     cartCubit.onUpdateData(cart);
   }

@@ -18,17 +18,25 @@ class LayoutShellView extends StatelessWidget {
       backgroundColor: AppColors.surfaceScaffold,
       drawer: const AppDrawer(),
       body: navigationShell,
-      bottomNavigationBar:
-          BlocBuilder<GenericCubit<CartModel>, GenericState<CartModel>>(
+      bottomNavigationBar: BlocBuilder<GenericCubit<int>, GenericState<int>>(
+        bloc: sl<CheckoutFlowService>().stepCubit,
+        builder: (BuildContext context, GenericState<int> stepState) {
+          if (stepState.data > CheckoutFlowService.cartStep) {
+            return const SizedBox.shrink();
+          }
+
+          return BlocBuilder<GenericCubit<CartModel>, GenericState<CartModel>>(
             bloc: sl<CartService>().cartCubit,
             builder: (BuildContext context, GenericState<CartModel> state) {
               return HomeBottomNavBar(
                 selectedIndex: navigationShell.currentIndex,
-                cartCount: state.data.totalQuantity,
+                cartCount: state.data.productCount,
                 onTap: _onTap,
               );
             },
-          ),
+          );
+        },
+      ),
     );
   }
 }

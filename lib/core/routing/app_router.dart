@@ -9,11 +9,8 @@ import 'package:almasry_2/core/models/response/profile/profile_args_model.dart';
 import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/features/address_form/address_form_imports.dart';
 import 'package:almasry_2/features/brands/brands_imports.dart';
-import 'package:almasry_2/features/cart/cart_imports.dart';
 import 'package:almasry_2/features/categories/categories_imports.dart';
-import 'package:almasry_2/features/checkout_payment/checkout_payment_imports.dart';
-import 'package:almasry_2/features/checkout_review/checkout_review_imports.dart';
-import 'package:almasry_2/features/checkout_shipping/checkout_shipping_imports.dart';
+import 'package:almasry_2/features/checkout_flow/checkout_flow_imports.dart';
 import 'package:almasry_2/features/coming_soon/view/coming_soon_view.dart';
 import 'package:almasry_2/features/contact_us/contact_us_imports.dart';
 import 'package:almasry_2/features/order_confirmed/order_confirmed_imports.dart';
@@ -61,21 +58,6 @@ class AppRouter {
         builder: (context, state) => const RegisterCustomerView(),
       ),
 
-      GoRoute(
-        path: AppRoutes.checkoutShipping,
-        name: RouteNames.checkoutShipping,
-        builder: (context, state) => const CheckoutShippingView(),
-      ),
-      GoRoute(
-        path: AppRoutes.checkoutPayment,
-        name: RouteNames.checkoutPayment,
-        builder: (context, state) => const CheckoutPaymentView(),
-      ),
-      GoRoute(
-        path: AppRoutes.checkoutReview,
-        name: RouteNames.checkoutReview,
-        builder: (context, state) => const CheckoutReviewView(),
-      ),
       GoRoute(
         path: AppRoutes.addressForm,
         name: RouteNames.addressForm,
@@ -162,7 +144,7 @@ class AppRouter {
               GoRoute(
                 path: AppRoutes.cart,
                 name: RouteNames.cart,
-                builder: (context, state) => const CartView(),
+                builder: (context, state) => const CheckoutFlowView(),
                 routes: [
                   GoRoute(
                     path: AppRoutes.orderConfirmed.replaceFirst('/', ''),

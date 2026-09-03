@@ -1,8 +1,9 @@
 import 'package:almasry_2/core/base/bloc/generic_cubit.dart';
 import 'package:almasry_2/core/base/locator/locator.dart';
-import 'package:almasry_2/core/models/response/splash/startup_model.dart';
 import 'package:almasry_2/core/constants/pref_keys.dart';
+import 'package:almasry_2/core/models/response/splash/startup_model.dart';
 import 'package:almasry_2/core/services/cart_service.dart';
+import 'package:almasry_2/core/services/checkout_flow_service.dart';
 import 'package:almasry_2/core/services/shared_prefs_services.dart';
 import 'package:almasry_2/core/services/user_profile_service.dart';
 
@@ -57,7 +58,9 @@ class AppStartupService {
 
     await _prefs.remove(PrefKeys.customerToken);
 
-    await sl<CartService>().clearForLogout();
+    await sl<CartService>().clearCart();
+
+    sl<CheckoutFlowService>().reset();
 
     await sl<UserProfileService>().clear();
 
