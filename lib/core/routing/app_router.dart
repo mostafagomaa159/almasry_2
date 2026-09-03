@@ -10,7 +10,7 @@ import 'package:almasry_2/core/routing/app_routes.dart';
 import 'package:almasry_2/features/address_form/address_form_imports.dart';
 import 'package:almasry_2/features/brands/brands_imports.dart';
 import 'package:almasry_2/features/categories/categories_imports.dart';
-import 'package:almasry_2/features/checkout_flow/checkout_flow_imports.dart';
+import 'package:almasry_2/features/checkout/checkout_imports.dart';
 import 'package:almasry_2/features/coming_soon/view/coming_soon_view.dart';
 import 'package:almasry_2/features/contact_us/contact_us_imports.dart';
 import 'package:almasry_2/features/order_confirmed/order_confirmed_imports.dart';
@@ -144,7 +144,7 @@ class AppRouter {
               GoRoute(
                 path: AppRoutes.cart,
                 name: RouteNames.cart,
-                builder: (context, state) => const CheckoutFlowView(),
+                builder: (context, state) => const CheckoutView(),
                 routes: [
                   GoRoute(
                     path: AppRoutes.orderConfirmed.replaceFirst('/', ''),
