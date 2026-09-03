@@ -40,6 +40,8 @@ part 'view/checkout_view.dart';
 
 part 'view_model/checkout_view_model.dart';
 
+part 'widgets/checkout_pages.dart';
+
 part 'widgets/checkout_shipping_page.dart';
 part 'widgets/checkout_payment_page.dart';
 part 'widgets/checkout_review_page.dart';
